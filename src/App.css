@@ -1,8 +1,66 @@
 @import 'tailwindcss';
 
-@theme {
-  /******  ((( COLORS )))  ******/
+/* font-face for the primary font */
+@font-face {
+  font-family: inter;
+  src: url(./assets/fonts/inter/inter.ttf) format('truetype-variations');
+}
 
+/* Typography for headings */
+@layer base {
+  h1 {
+    @apply text-[64px] lg:text-7xl;
+  }
+
+  h2 {
+    @apply text-[56px] lg:text-[64px];
+  }
+
+  h3 {
+    @apply text-5xl lg:text-[56px];
+  }
+
+  h4 {
+    @apply text-[40pxّ] lg:text-5xl;
+  }
+
+  h5 {
+    @apply text-4xl lg:text-[40px];
+  }
+}
+
+/* Typography for sub-headings, paragraphs and captions  */
+@layer components {
+  .subheading-1 {
+    @apply text-[32px];
+  }
+
+  .subheading-2 {
+    @apply text-2xl;
+  }
+
+  .subheading-3 {
+    @apply text-lg;
+  }
+
+  .paragraph-1 {
+    @apply text-[16px] lg:text-lg;
+  }
+
+  .paragraph-2 {
+    @apply text-sm lg:text-[16px];
+  }
+
+  .caption-1 {
+    @apply text-xs lg:text-sm;
+  }
+
+  .caption-2 {
+    @apply text-[10px] lg:text-xs;
+  }
+}
+
+@theme {
   /* Primary color */
   --color-primary: #3a5fcd;
   --color-primary-50: #d8dff5;
@@ -93,4 +151,7 @@
   --color-yellow-700: #726821;
   --color-yellow-800: #4c4516;
   --color-yellow-900: #2d2a0d;
+
+  /* Primary font-family */
+  --font-inter: inter, sans-serif;
 }
