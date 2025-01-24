@@ -1,7 +1,8 @@
 import LogoImg from '../../assets/images/Logo/Logo.png';
 import PropTypes from 'prop-types';
+import './Logo.css';
 
-export default function Logo({ size }) {
+export default function Logo({ size, isLoading = false }) {
   const logoSize = {
     sm: 'w-[30px] h-[23px]',
     md: 'w-14 h-11',
@@ -33,7 +34,11 @@ export default function Logo({ size }) {
         <div className={`text-center ${textSize[size]}`}>
           {/* set diffrent color for each letter of logo text */}
           {'VioTune'.split('').map((char, index) => (
-            <span key={index} className={letterColors[index]}>
+            <span
+              key={index}
+              //Loading state only works if the letter has the display of inline-block
+              className={`letter tracking-tight transition-all ${letterColors[index]} ${isLoading ? 'inline-block' : ''}`}
+            >
               {char}
             </span>
           ))}
@@ -45,4 +50,5 @@ export default function Logo({ size }) {
 
 Logo.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']).isRequired,
+  isLoading: PropTypes.bool,
 };
