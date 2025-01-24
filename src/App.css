@@ -27,6 +27,10 @@
   h5 {
     @apply text-4xl lg:text-[40px];
   }
+
+  body{
+    font-family: inter, sans-serif
+  }
 }
 
 /* Typography for sub-headings, paragraphs and captions  */
