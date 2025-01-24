@@ -7,7 +7,7 @@ export default function Logo({ size, isLoading = false }) {
     sm: 'w-[30px] h-[23px]',
     md: 'w-14 h-11',
     lg: 'w-[100px] h-[80px]',
-    xl: 'w-[412px h-[317px] mt-16',
+    xl: 'w-[412px] h-[317px] mt-16',
   };
 
   const textSize = {
@@ -29,7 +29,7 @@ export default function Logo({ size, isLoading = false }) {
 
   return (
     <div className="inline-flex flex-col items-center">
-      <img className={`${logoSize[size]}`} src={LogoImg} alt="VioTune" />
+      <img className={logoSize[size]} src={LogoImg} alt="VioTune" />
       {size !== 'sm' && (
         <div className={`text-center ${textSize[size]}`}>
           {/* set diffrent color for each letter of logo text */}
