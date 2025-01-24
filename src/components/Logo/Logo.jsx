@@ -1,12 +1,13 @@
 import LogoImg from '../../assets/images/Logo/Logo.png';
 import PropTypes from 'prop-types';
+import './Logo.css';
 
-export default function Logo({ size }) {
+export default function Logo({ size, isLoading = false }) {
   const logoSize = {
     sm: 'w-[30px] h-[23px]',
     md: 'w-14 h-11',
     lg: 'w-[100px] h-[80px]',
-    xl: 'w-[412px h-[317px] mt-16',
+    xl: 'w-[412px] h-[317px] mt-16',
   };
 
   const textSize = {
@@ -28,12 +29,16 @@ export default function Logo({ size }) {
 
   return (
     <div className="inline-flex flex-col items-center">
-      <img className={`${logoSize[size]}`} src={LogoImg} alt="VioTune" />
+      <img className={logoSize[size]} src={LogoImg} alt="VioTune" />
       {size !== 'sm' && (
         <div className={`text-center ${textSize[size]}`}>
           {/* set diffrent color for each letter of logo text */}
           {'VioTune'.split('').map((char, index) => (
-            <span key={index} className={letterColors[index]}>
+            <span
+              key={index}
+              //Loading state only works if the letter has the display of inline-block
+              className={`letter tracking-tight transition-all ${letterColors[index]} ${isLoading ? 'inline-block' : ''}`}
+            >
               {char}
             </span>
           ))}
@@ -45,4 +50,5 @@ export default function Logo({ size }) {
 
 Logo.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']).isRequired,
+  isLoading: PropTypes.bool,
 };
