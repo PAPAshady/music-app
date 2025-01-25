@@ -28,7 +28,7 @@ export default function Logo({ size, isLoading = false }) {
   ];
 
   return (
-    <div className="inline-flex flex-col items-center">
+    <div className="flex flex-col items-center">
       <img className={logoSize[size]} src={LogoImg} alt="VioTune" />
       {size !== 'sm' && (
         <div className={`text-center ${textSize[size]}`}>
