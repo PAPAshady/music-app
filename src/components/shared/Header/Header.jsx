@@ -4,6 +4,7 @@ import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-re
 import Logo from '../../Logo/Logo';
 import SearchInput from '../../SearchInput/SearchInput';
 import Avatar from '../../Avatar/Avatar';
+import IconButton from '../../Buttons/IconButton/IconButton';
 import profileImg from '../../../assets/images/Avatar/profile-pic.jpg';
 
 export default memo(function Header() {
@@ -16,13 +17,9 @@ export default memo(function Header() {
   return (
     <header>
       <div className="flex items-center justify-between lg:hidden">
-        <div className="text-primary-50 flex items-center gap-2">
-          <button>
-            <HambergerMenu className="sm:size-8" />
-          </button>
-          <button>
-            <SearchNormal1 className="sm:size-8" />
-          </button>
+        <div className="flex items-center gap-2">
+          <IconButton icon={<HambergerMenu />} />
+          <IconButton icon={<SearchNormal1 />} />
         </div>
         <div>
           <Link className="block">
@@ -35,12 +32,8 @@ export default memo(function Header() {
           <SearchInput value={searchInputValue} onChangeHandler={handleSearchInputChange} />
         </div>
         <div className="text-secondary-100 flex items-center gap-2">
-          <button>
-            <Notification size={32} />
-          </button>
-          <button>
-            <Setting2 size={32} />
-          </button>
+          <IconButton icon={<Notification/>}/>
+          <IconButton icon={<Setting2/>}/>
           <button>
             <Avatar size="xs" profilePic={profileImg} />
           </button>
