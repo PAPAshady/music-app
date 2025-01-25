@@ -28,8 +28,12 @@
     @apply text-4xl lg:text-[40px];
   }
 
-  body{
-    font-family: inter, sans-serif
+  body {
+    font-family: inter, sans-serif;
+  }
+
+  button {
+    cursor: pointer;
   }
 }
 
@@ -62,6 +66,10 @@
   .caption-2 {
     @apply text-[10px] lg:text-xs;
   }
+}
+
+@utility container {
+  @apply mx-auto w-[90%] max-w-[1440px];
 }
 
 @theme {
