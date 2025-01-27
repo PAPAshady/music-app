@@ -29,7 +29,7 @@ export default function Layout() {
         </div>
       </div>
 
-      <main className="text-secondary-50 relative container flex h-[5000px] gap-8">
+      <main className="text-secondary-50 relative container flex gap-8">
         <div className="relative hidden lg:block">
           <div className="sticky top-0 z-10 pt-6">
             <DesktopNavbar />
