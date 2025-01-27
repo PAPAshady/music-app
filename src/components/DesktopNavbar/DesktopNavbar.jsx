@@ -10,8 +10,6 @@ export default function DesktopNavbar() {
     { id: 4, href: '/browse', icon: <MusicSquareSearch /> },
   ];
 
-  document.body.style.background = '#152740';
-
   return (
     <div className="border-primary-50 bg-secondary-400/40 relative inline-flex flex-col items-center justify-between rounded-lg border px-2.5 py-3">
       <div className="flex flex-col gap-4 pb-[300px]">
