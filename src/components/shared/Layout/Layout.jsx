@@ -23,7 +23,7 @@ export default function Layout() {
         className="absolute size-full bg-cover bg-center bg-no-repeat opacity-10 blur-lg"
         style={{ backgroundImage: `url(${pagesBackgrounds[currentPage]})` }}
       ></div>
-      <div className="z-10 w-full pt-4">
+      <div className="relative w-full pt-4">
         <div className="container">
           <Header />
         </div>
