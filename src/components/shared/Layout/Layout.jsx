@@ -1,13 +1,28 @@
+import { useState, useEffect } from 'react';
 import homePageBgImg from '../../../assets/images/backgrounds/home-page.jpg';
 import favoritesPageBgImg from '../../../assets/images/backgrounds/favorites-page.jpg';
 import playlistAndSubscriptionPageBgImg from '../../../assets/images/backgrounds/playlist and-subscription-page.jpg';
 import browsePageBgImg from '../../../assets/images/backgrounds/browse-page.jpg';
 import Header from '../Header/Header';
 import DesktopNavbar from '../../DesktopNavbar/DesktopNavbar';
-import { useLocation, Outlet } from 'react-router-dom';
+import Logo from '../../Logo/Logo';
+import { useLocation, Outlet, Link } from 'react-router-dom';
 
 export default function Layout() {
+  const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
+
+  useEffect(() => {
+    function handleScroll() {
+      if (window.scrollY < 82) {
+        setShowDesktopLogoNavbar(false);
+      } else {
+        setShowDesktopLogoNavbar(true);
+      }
+    }
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  });
 
   const pagesBackgrounds = {
     '/': homePageBgImg,
@@ -32,7 +47,16 @@ export default function Layout() {
       <main className="text-secondary-50 relative container flex gap-8">
         <div className="relative hidden lg:block">
           <div className="sticky top-0 z-10 pt-6">
-            <DesktopNavbar />
+            <Link
+              className={`absolute mb-5 block transition-all duration-300 ${showDesktopLogoNavbar ? 'translate-y-0 opacity-100' : '-translate-y-5 opacity-0'}`}
+            >
+              <Logo size="md" />
+            </Link>
+            <div
+              className={`transition-all duration-300 ${showDesktopLogoNavbar ? 'pt-[90px]' : 'pt-0'}`}
+            >
+              <DesktopNavbar />
+            </div>
           </div>
         </div>
         <div className="pt-6">
