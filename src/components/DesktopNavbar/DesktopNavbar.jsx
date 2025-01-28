@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Home2, Heart, MusicFilter, MusicSquareSearch, Medal, Messages3 } from 'iconsax-react';
 import PropTypes from 'prop-types';
 
-export default function DesktopNavbar() {
+export default memo(function DesktopNavbar() {
   const navLinks = [
     { id: 1, href: '/', icon: <Home2 /> },
     { id: 2, href: '/favorites', icon: <Heart /> },
@@ -11,8 +12,8 @@ export default function DesktopNavbar() {
   ];
 
   return (
-    <div className="border-primary-50 bg-secondary-400/40 relative inline-flex flex-col items-center justify-between rounded-lg border px-2.5 py-3">
-      <div className="flex flex-col gap-4 pb-[300px]">
+    <div className="border-primary-50 bg-secondary-400/40 relative inline-flex h-[calc(100dvh-150px)] max-h-[700px] min-h-[300px] flex-col items-center justify-between rounded-lg border px-2.5 py-3">
+      <div className="flex flex-col gap-4">
         {navLinks.map((link) => (
           <DesktopNavLink key={link.id} {...link} />
         ))}
@@ -24,7 +25,7 @@ export default function DesktopNavbar() {
       </div>
     </div>
   );
-}
+});
 
 function DesktopNavLink({ icon, href }) {
   return (
