@@ -5,6 +5,7 @@ import playlistAndSubscriptionPageBgImg from '../../../assets/images/backgrounds
 import browsePageBgImg from '../../../assets/images/backgrounds/browse-page.jpg';
 import Header from '../Header/Header';
 import DesktopNavbar from '../../DesktopNavbar/DesktopNavbar';
+import HamburgerMenu from '../../HamburgerMenu/HamburgerMenu';
 import Logo from '../../Logo/Logo';
 import { useLocation, Outlet, Link } from 'react-router-dom';
 
@@ -63,6 +64,7 @@ export default function Layout() {
           <Outlet />
         </div>
       </main>
+      <HamburgerMenu />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { memo, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
+import useHamburgerMenu from '../../../hooks/useHamburgerMenu';
 import Logo from '../../Logo/Logo';
 import SearchInput from '../../SearchInput/SearchInput';
 import Avatar from '../../Avatar/Avatar';
@@ -9,6 +10,7 @@ import profileImg from '../../../assets/images/Avatar/profile-pic.jpg';
 
 export default memo(function Header() {
   const [searchInputValue, setSearchInputValue] = useState('');
+  const { setIsShowHamburgerMenu } = useHamburgerMenu();
 
   const handleSearchInputChange = useCallback((newValue) => {
     setSearchInputValue(newValue);
@@ -18,7 +20,7 @@ export default memo(function Header() {
     <header>
       <div className="flex items-center justify-between lg:hidden">
         <div className="flex items-center gap-2">
-          <IconButton icon={<HambergerMenu />} />
+          <IconButton clickHandler={() => setIsShowHamburgerMenu(true)} icon={<HambergerMenu />} />
           <IconButton icon={<SearchNormal1 />} />
         </div>
         <div>
@@ -32,8 +34,8 @@ export default memo(function Header() {
           <SearchInput value={searchInputValue} onChangeHandler={handleSearchInputChange} />
         </div>
         <div className="text-secondary-100 flex items-center gap-2">
-          <IconButton icon={<Notification/>}/>
-          <IconButton icon={<Setting2/>}/>
+          <IconButton icon={<Notification />} />
+          <IconButton icon={<Setting2 />} />
           <button>
             <Avatar size="xs" profilePic={profileImg} />
           </button>
