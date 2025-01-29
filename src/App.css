@@ -8,6 +8,26 @@
 
 /* Typography for headings */
 @layer base {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d8dff5;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 2px;
+    border: 1px solid rgba(216, 223, 245, 0.5);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #d8dff5 transparent;
+  }
+
   h1 {
     @apply text-[64px] lg:text-7xl;
   }
