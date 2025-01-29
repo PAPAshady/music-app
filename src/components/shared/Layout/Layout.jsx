@@ -60,7 +60,7 @@ export default function Layout() {
             </div>
           </div>
         </div>
-        <div className="pt-6">
+        <div className="grow pt-6">
           <Outlet />
         </div>
       </main>
