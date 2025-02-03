@@ -5,6 +5,10 @@ import songCover4 from './assets/images/covers/true-love-waits-radiohead.jpg';
 import trackCardImg1 from './assets/images/covers/recently-listened.jpg';
 import trackCardImg2 from './assets/images/covers/most-listened.jpg';
 import trackCardImg3 from './assets/images/covers/liked-tracks.jpg';
+import playlistCoverImg1 from './assets/images/covers/playlist-cover-1.jpg';
+import playlistCoverImg2 from './assets/images/covers/playlist-cover-2.jpg';
+import playlistCoverImg3 from './assets/images/covers/playlist-cover-3.jpg';
+import playlistCoverImg4 from './assets/images/covers/playlist-cover-4.jpg';
 
 export const sidebarPlaylistSongs = [
   {
@@ -68,4 +72,23 @@ export const tracksCardsInfos = [
   { id: 1, title: 'Recently Listened', image: trackCardImg1 },
   { id: 2, title: 'Most Listened', image: trackCardImg2 },
   { id: 3, title: 'Liked Tracks', image: trackCardImg3 },
+];
+
+export const playlists = [
+  { id: 1, title: 'Arcane', numberOfTracks: 86, image: playlistCoverImg1, isFavorite: true },
+  { id: 2, title: 'Eyes', numberOfTracks: 256, image: playlistCoverImg2 },
+  { id: 3, title: 'No Shame', numberOfTracks: 98, image: playlistCoverImg3, isFavorite: true },
+  { id: 4, title: 'Till Dusk', numberOfTracks: 42, image: playlistCoverImg4 },
+  { id: 5, title: 'V.E.T', numberOfTracks: 87, image: playlistCoverImg1, isFavorite: true },
+  { id: 6, title: 'Pop Hits', numberOfTracks: 86, image: playlistCoverImg2 },
+  {
+    id: 7,
+    title: 'Best Of Hip-Hop',
+    numberOfTracks: 256,
+    image: playlistCoverImg3,
+    isFavorite: true,
+  },
+  { id: 8, title: 'Rock & Roll', numberOfTracks: 98, image: playlistCoverImg4 },
+  { id: 9, title: 'Electronics', numberOfTracks: 134, image: playlistCoverImg1, isFavorite: true },
+  { id: 10, title: 'Bombs', numberOfTracks: 111, image: playlistCoverImg2 },
 ];
