@@ -12,7 +12,7 @@ export default function SidebarPlaylist({ playList }) {
   ];
 
   return (
-    <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-150px)] max-h-[760px] min-h-[430px] w-[300px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[350px]">
+    <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-150px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[310px]">
       <div className="flex items-center justify-between gap-1">
         <p className="text-white-50 subheading-3 truncate">Sad playlist</p>
         <button className="text-secondary-50">
@@ -25,7 +25,7 @@ export default function SidebarPlaylist({ playList }) {
           <img
             src={PlaylistImg}
             alt=""
-            className="size-32 rounded-[10px] object-cover xl:size-[160px]"
+            className="size-32 rounded-[10px] object-cover xl:size-[140px]"
           />
         </div>
         <div className="flex flex-col">
