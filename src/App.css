@@ -186,4 +186,7 @@
 
   /* Primary font-family */
   --font-inter: inter, sans-serif;
+
+  /* Breakpoints */
+  --breakpoint-xs: 360px;
 }
