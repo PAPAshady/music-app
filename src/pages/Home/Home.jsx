@@ -1,11 +1,8 @@
 import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
 import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
-import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
 import SectionHeader from '../../components/SectionHeader/SectionHeader';
+import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
 import { sidebarPlaylistSongs, tracksCardsInfos, playlists } from '../../data';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { FreeMode } from 'swiper/modules';
-import 'swiper/css';
 
 export default function Home() {
   return (
@@ -20,41 +17,11 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="Playlists Tailored for You" />
-          <div>
-            <Swiper
-              slidesPerView={1.5}
-              spaceBetween={24}
-              modules={[FreeMode]}
-              freeMode
-              breakpoints={{
-                480: {
-                  slidesPerView: 2.5,
-                },
-                640: {
-                  slidesPerView: 3.5,
-                },
-                768: {
-                  slidesPerView: 4.3,
-                },
-                1024: {
-                  slidesPerView: 5,
-                },
-                1280: {
-                  slidesPerView: 5,
-                },
-              }}
-              className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-450px)]"
-            >
-              {playlists.slice(0, 5).map((playlist) => (
-                <SwiperSlide
-                  key={playlist.id}
-                  className="xs:max-w-[295px] p-[1px] min-[480px]:max-w-[226px] sm:max-w-[190px] md:max-w-[205px] lg:p-0 xl:max-w-[190px]"
-                >
-                  <PlaylistCard {...playlist} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+          <PlaylistsSlider playlists={playlists.slice(0, 5)} />
+        </div>
+        <div>
+          <SectionHeader title="Your Personal Music Space" />
+          <PlaylistsSlider playlists={playlists.slice(5, 10)} />
         </div>
       </div>
       <div className="hidden xl:block">
