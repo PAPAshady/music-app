@@ -25,6 +25,7 @@ export default function Home() {
               slidesPerView={1.5}
               spaceBetween={24}
               modules={[FreeMode]}
+              freeMode
               breakpoints={{
                 480: {
                   slidesPerView: 2.5,
