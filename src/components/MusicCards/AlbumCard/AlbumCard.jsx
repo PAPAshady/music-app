@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Music, Share } from 'iconsax-react';
 
-const AlbumCard = memo(({ size, name, singer, tracks, image = noCoverImg, isFavorite = true }) => {
+const AlbumCard = memo(({ size, name, singer, tracks, image = noCoverImg, isFavorite }) => {
   return (
     <div
       className={`lg:bg-secondary-700/40 lg:hover:border-secondary-300 lg:hover:bg-secondary-600/48 inset-shadow-secondary-400/70 group relative w-[408px] overflow-hidden rounded-lg border border-transparent bg-black/80 shadow-[1px_1px_12px_rgba(0,0,0,.7)] transition-all duration-300 hover:border-white lg:inset-shadow-[1px_1px_7px] ${size === 'lg' ? 'lg:w-[402px]' : 'lg:w-[328px]'}`}
