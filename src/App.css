@@ -189,4 +189,17 @@
 
   /* Breakpoints */
   --breakpoint-xs: 360px;
+
+  /* Animations */
+  --animate-infinite-rotate: rotate 9s linear infinite;
+
+  /* Keyframes */
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
