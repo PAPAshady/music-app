@@ -16,12 +16,6 @@ const PlayBar = memo(
     clickHandler,
     classNames,
   }) => {
-    const wrapperSizes = {
-      lg: 'max-w-[410px] lg:max-w-[890px]',
-      md: 'max-w-[320px] lg:max-w-[510px]',
-      sm: 'max-w-[320px]',
-    };
-
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',
       md: 'paragraph-1',
@@ -36,7 +30,7 @@ const PlayBar = memo(
 
     return (
       <div
-        className={`bg-primary-800/60 hover:inset-shadow-secondary-400 border-primaty-10 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex items-center justify-between gap-4 rounded-lg border p-1 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${wrapperSizes[size]} ${classNames}`}
+        className={`bg-primary-800/60 hover:inset-shadow-secondary-400 border-primaty-10 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-[285px] items-center justify-between gap-4 rounded-lg border p-1 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${size === 'lg' ? 'lg:max-w-[890px]' : 'lg:max-w-[510px]'} ${classNames}`}
       >
         <div className="flex grow gap-2">
           <button className="relative overflow-hidden rounded-md" onClick={clickHandler}>
