@@ -3,7 +3,7 @@ import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionHeader from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
 import AlbumCard from '../../components/MusicCards/AlbumCard/AlbumCard';
-import { sidebarPlaylistSongs, tracksCardsInfos, playlists, albums } from '../../data';
+import { songs, tracksCardsInfos, playlists, albums } from '../../data';
 import { chunkArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
@@ -31,7 +31,6 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="Updates from Followed Artists" />
-
           <div className="mx-auto w-[95%] max-w-[1050px]">
             <Swiper
               slidesPerView={1}
@@ -65,7 +64,7 @@ export default function Home() {
         </div>
       </div>
       <div className="hidden xl:block">
-        <SidebarPlaylist playList={sidebarPlaylistSongs} />
+        <SidebarPlaylist playList={songs} />
       </div>
     </div>
   );

@@ -1,10 +1,16 @@
-import songCover1 from './assets/images/covers/when-i-grow-up-nf.jpg';
-import songCover2 from './assets/images/covers/endless-love-dvrst.jpg';
-import songCover3 from './assets/images/covers/given-up-linkinpark.jpg';
-import songCover4 from './assets/images/covers/true-love-waits-radiohead.jpg';
-import trackCardImg1 from './assets/images/covers/recently-listened.jpg';
-import trackCardImg2 from './assets/images/covers/most-listened.jpg';
-import trackCardImg3 from './assets/images/covers/liked-tracks.jpg';
+import songCover1 from './assets/images/covers/song-cover-1.jpg';
+import songCover2 from './assets/images/covers/song-cover-2.jpg';
+import songCover3 from './assets/images/covers/song-cover-3.jpg';
+import songCover4 from './assets/images/covers/song-cover-4.jpg';
+import songCover5 from './assets/images/covers/song-cover-5.jpg';
+import songCover6 from './assets/images/covers/song-cover-6.jpg';
+import songCover7 from './assets/images/covers/song-cover-7.jpg';
+import songCover8 from './assets/images/covers/song-cover-8.jpg';
+import songCover9 from './assets/images/covers/song-cover-9.jpg';
+import songCover10 from './assets/images/covers/song-cover-10.jpg';
+import trackCardImg1 from './assets/images/covers/track-cover-1.jpg';
+import trackCardImg2 from './assets/images/covers/track-cover-2.jpg';
+import trackCardImg3 from './assets/images/covers/track-cover-3.jpg';
 import playlistCoverImg1 from './assets/images/covers/playlist-cover-1.jpg';
 import playlistCoverImg2 from './assets/images/covers/playlist-cover-2.jpg';
 import playlistCoverImg3 from './assets/images/covers/playlist-cover-3.jpg';
@@ -25,61 +31,91 @@ import albumCover7 from './assets/images/covers/album-cover-7.jpg';
 import albumCover8 from './assets/images/covers/album-cover-8.jpg';
 import albumCover9 from './assets/images/covers/album-cover-9.jpg';
 
-export const sidebarPlaylistSongs = [
+export const songs = [
   {
     id: 1,
-    title: 'When i grow up',
+    title: 'When I Grow Up',
     artist: 'NF',
-    album: 'The search',
-    time: '3:12',
+    album: 'The Search',
+    time: '2:11',
+    cover: songCover1,
+    isFavorite: true,
   },
   {
     id: 2,
     title: 'Endless Love',
     artist: 'DVRST',
-    album: 'Single',
-    time: '3:12',
-    isLiked: true,
-    cover: songCover1,
+    album: 'Memories Of Childhood',
+    time: '3:19',
+    cover: songCover2,
   },
   {
     id: 3,
-    title: 'Given Up',
+    title: 'Wake',
     artist: 'Linkin Park',
-    time: '3:02',
+    album: 'Minutes To Midnight',
+    time: '1:09',
+    cover: songCover3,
+    isFavorite: true,
   },
   {
     id: 4,
     title: 'True Love Waits',
     artist: 'Radiohead',
-    time: '5:23',
     album: 'A Moon Shaped Pool',
-    isLiked: true,
-    cover: songCover2,
+    time: '2:17',
+    cover: songCover4,
   },
-  { id: 5, title: 'When i grow up', artist: 'NF', album: 'The search', time: '3:12' },
+  {
+    id: 5,
+    title: 'Bliding Lights',
+    artist: 'The Weeknd',
+    album: 'After Hours',
+    time: '4:06',
+    cover: songCover5,
+    isFavorite: true,
+  },
   {
     id: 6,
-    title: 'Endless Love',
-    artist: 'DVRST',
-    album: 'Single',
-    time: '3:12',
-    isLiked: true,
-    cover: songCover3,
+    title: 'Him And I',
+    artist: 'G-Easy & Halsey',
+    album: 'The Beautiful & Damned',
+    time: '4:01',
+    cover: songCover6,
   },
   {
     id: 7,
-    title: 'Given Up',
-    artist: 'Linkin Park',
-    time: '3:02',
+    title: 'Celestial',
+    artist: 'Ed Sheeran',
+    album: 'Single',
+    time: '1:11',
+    cover: songCover7,
+    isFavorite: true,
   },
   {
     id: 8,
-    title: 'True Love Waits',
-    artist: 'Radiohead',
-    time: '5:23',
-    album: 'A Moon Shaped Pool',
-    cover: songCover4,
+    title: 'Fed Up',
+    artist: 'GHOSTEMANE',
+    album: 'ANTI-ICON',
+    time: '2:14',
+    cover: songCover8,
+  },
+  {
+    id: 9,
+    title: 'Dancin',
+    artist: 'Aaron Smith ft. Luvli',
+    album: "Dancin' (Remixes)",
+    time: '2:35',
+    cover: songCover9,
+    isFavorite: true,
+  },
+  {
+    id: 10,
+    title: 'Freaks',
+    artist: 'Surf Curse',
+    album: 'Buds',
+    time: '2:28',
+    cover: songCover10,
   },
 ];
 
