@@ -86,6 +86,15 @@
   .caption-2 {
     @apply text-[10px] lg:text-xs;
   }
+
+  /* Swiper JS custom global styles */
+  .swiper-scrollbar {
+    @apply !bg-primary-700 !w-[6px] !rounded-[2px];
+  }
+
+  .swiper-scrollbar-drag {
+    @apply !rounded-[2px] !bg-[#d8dff5];
+  }
 }
 
 @utility container {
