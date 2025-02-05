@@ -28,7 +28,7 @@ const HamburgerMenu = memo(() => {
 
   return createPortal(
     <div
-      className={`fixed top-0 h-[100dvh] w-full bg-black/50 transition-all ${isShowHamburgerMenu ? 'z-30 backdrop-blur-xs' : 'z-[-1] backdrop-blur-[0]'}`}
+      className={`fixed top-0 h-[100dvh] w-full bg-black/50 transition-[backdrop-filter,z-index] ${isShowHamburgerMenu ? 'z-30 backdrop-blur-xs' : 'z-[-1] backdrop-blur-[0]'}`}
       // close the menu if use clicks outside of menu box
       onClick={(e) => e.target === e.currentTarget && setIsShowHamburgerMenu(false)}
     >
