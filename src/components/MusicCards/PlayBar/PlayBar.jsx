@@ -12,7 +12,7 @@ const PlayBar = memo(
     artist = 'Unknown artist',
     time,
     album = 'Unknown album',
-    isLiked,
+    isFavorite,
     clickHandler,
     classNames,
   }) => {
@@ -87,7 +87,7 @@ const PlayBar = memo(
                 icon={
                   <Heart
                     size={size === 'sm' ? 16 : 24}
-                    className={`transition-colors ${isLiked ? 'fill-red-500 text-red-500' : ''}`}
+                    className={`transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : ''}`}
                   />
                 }
               />
@@ -114,7 +114,7 @@ PlayBar.propTypes = {
   time: PropTypes.string.isRequired,
   album: PropTypes.string,
   clickHandler: PropTypes.func,
-  isLiked: PropTypes.bool,
+  isFavorite: PropTypes.bool,
   classNames: PropTypes.string,
 };
 
