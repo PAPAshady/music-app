@@ -15,6 +15,15 @@ import playlistCoverImg7 from './assets/images/covers/playlist-cover-7.jpg';
 import playlistCoverImg8 from './assets/images/covers/playlist-cover-8.jpg';
 import playlistCoverImg9 from './assets/images/covers/playlist-cover-9.jpg';
 import playlistCoverImg10 from './assets/images/covers/playlist-cover-10.jpg';
+import albumCover1 from './assets/images/covers/album-cover-1.jpg';
+import albumCover2 from './assets/images/covers/album-cover-2.jpg';
+import albumCover3 from './assets/images/covers/album-cover-3.jpg';
+import albumCover4 from './assets/images/covers/album-cover-4.jpg';
+import albumCover5 from './assets/images/covers/album-cover-5.jpg';
+import albumCover6 from './assets/images/covers/album-cover-6.png';
+import albumCover7 from './assets/images/covers/album-cover-7.jpg';
+import albumCover8 from './assets/images/covers/album-cover-8.jpg';
+import albumCover9 from './assets/images/covers/album-cover-9.jpg';
 
 export const sidebarPlaylistSongs = [
   {
@@ -97,4 +106,44 @@ export const playlists = [
   { id: 8, title: 'Rock & Roll', numberOfTracks: 98, image: playlistCoverImg8 },
   { id: 9, title: 'Electronics', numberOfTracks: 134, image: playlistCoverImg9, isFavorite: true },
   { id: 10, title: 'Bombs', numberOfTracks: 111, image: playlistCoverImg10 },
+];
+
+export const albums = [
+  { id: 1, name: 'Hope', singer: 'NF', tracks: 12, image: albumCover1, isFavorite: true },
+  { id: 2, name: 'Kamikaze', singer: 'Eminem', tracks: 16, image: albumCover2 },
+  {
+    id: 3,
+    name: 'Happier Than Ever',
+    singer: 'Billie Eilish',
+    tracks: 15,
+    image: albumCover3,
+    isFavorite: true,
+  },
+  { id: 4, name: 'A Girl Like Me', singer: 'Rihanna', tracks: 19, image: albumCover4 },
+  {
+    id: 5,
+    name: 'Smoke + Mirrors',
+    singer: 'Imagine Dragons',
+    tracks: 11,
+    image: albumCover5,
+    isFavorite: true,
+  },
+  { id: 6, name: 'The E.N.D', singer: 'The Black Eyed Peas', tracks: 7, image: albumCover6 },
+  {
+    id: 7,
+    name: 'Hurry Up Tomorrow',
+    singer: 'The Weeknd',
+    tracks: 12,
+    image: albumCover7,
+    isFavorite: true,
+  },
+  { id: 8, name: 'Hybrid Theory', singer: 'Linkin Park', tracks: 18, image: albumCover8 },
+  {
+    id: 9,
+    name: 'Astronomical',
+    singer: 'Masked Wolf',
+    tracks: 9,
+    image: albumCover9,
+    isFavorite: true,
+  },
 ];
