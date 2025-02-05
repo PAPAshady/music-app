@@ -6,12 +6,12 @@ import { Heart, Music, Share } from 'iconsax-react';
 const AlbumCard = memo(({ size, name, singer, tracks, image = noCoverImg, isFavorite }) => {
   return (
     <div
-      className={`lg:bg-secondary-700/40 lg:hover:border-secondary-300 lg:hover:bg-secondary-600/48 inset-shadow-secondary-400/70 group relative w-[408px] overflow-hidden rounded-lg border border-transparent bg-black/80 shadow-[1px_1px_12px_rgba(0,0,0,.7)] transition-all duration-300 hover:border-white lg:inset-shadow-[1px_1px_7px] ${size === 'lg' ? 'lg:w-[402px]' : 'lg:w-[328px]'}`}
+      className={`lg:bg-secondary-700/40 lg:hover:border-secondary-300 lg:hover:bg-secondary-600/48 inset-shadow-secondary-400/70 group relative w-full overflow-hidden rounded-lg border border-transparent bg-black/80 shadow-[1px_1px_12px_rgba(0,0,0,.7)] transition-all duration-300 hover:border-white lg:inset-shadow-[1px_1px_7px] ${size === 'md' ? 'lg:max-w-[328px]' : ''}`}
     >
       <div className="flex items-center lg:p-3">
         <div className="relative flex items-center justify-center lg:pe-10">
           <img
-            className="z-[1] size-[85px] cursor-pointer rounded-sm transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
+            className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
             src={image}
             alt={name}
           />
@@ -29,15 +29,11 @@ const AlbumCard = memo(({ size, name, singer, tracks, image = noCoverImg, isFavo
         <div className="flex grow items-center justify-between px-3.5 lg:block">
           <div>
             <p
-              className={`text-white-50 max-w-[250px] cursor-pointer truncate text-base ${size === 'lg' ? 'lg:max-w-[210px]' : 'lg:max-w-[145px]'} ${size === 'lg' ? 'lg:text-lg' : ''}`}
+              className={`text-white-50 cursor-pointer truncate text-base ${size === 'lg' ? 'lg:text-lg' : ''}`}
             >
               {name}
             </p>
-            <span
-              className={`block max-w-[250px] truncate text-sm text-white ${size === 'lg' ? 'lg:max-w-[210px]' : 'lg:max-w-[145px]'}`}
-            >
-              {singer}
-            </span>
+            <span className="block truncate text-sm text-white">{singer}</span>
           </div>
           {size === 'md' && (
             <div className="mt-3 hidden items-center justify-between gap-4 text-sm lg:flex">
