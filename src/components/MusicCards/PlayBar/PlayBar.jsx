@@ -23,22 +23,20 @@ const PlayBar = memo(
     };
 
     const albumNameSizes = {
-      lg: 'text-base',
+      lg: 'text-base lg:max-w-[250px] lg:w-[250px] lg:truncate',
       md: 'text-sm',
       sm: 'hidden',
     };
 
     return (
       <div
-        className={`bg-primary-800/60 hover:inset-shadow-secondary-400 border-primaty-10 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-[285px] items-center justify-between gap-4 rounded-lg border p-1 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${size === 'lg' ? 'lg:max-w-[890px]' : 'lg:max-w-[510px]'} ${classNames}`}
+        className={`bg-primary-800/60 hover:inset-shadow-secondary-400 border-primaty-10 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-[285px] items-center justify-between gap-4 rounded-lg border p-1.5 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${size === 'lg' ? 'lg:max-w-[890px]' : 'lg:max-w-[510px]'} ${classNames}`}
       >
-        <div className="flex grow gap-2">
+        <div
+          className={`flex grow gap-2 ${size === 'lg' ? 'lg:w-[270px] lg:max-w-[270px] lg:truncate' : ''}`}
+        >
           <button className="relative overflow-hidden rounded-md" onClick={clickHandler}>
-            <img
-              src={cover}
-              className={`size-12 object-cover ${size !== 'sm' ? 'lg:size-14' : ''}`}
-              alt={title}
-            />
+            <img src={cover} className="size-14 object-cover" alt={title} />
             <span
               className={`absolute top-1/2 left-1/2 flex size-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition-all duration-300 group-hover:bg-black/60 group-hover:opacity-100`}
             >
@@ -55,7 +53,7 @@ const PlayBar = memo(
               {title}
             </button>
             <span
-              className={`text-secondary-200 grow ${size === 'lg' ? 'text-xs lg:text-sm' : 'caption-2'}`}
+              className={`text-secondary-200 grow ${size === 'lg' ? 'text-xs lg:text-sm' : 'paragraph-2'}`}
             >
               {artist}
             </span>
