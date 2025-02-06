@@ -11,7 +11,7 @@ const ArtistCard = memo(({ name, image = noAvatarImg }) => {
         </div>
       </div>
 
-      <p className="text-white-50 inline max-w-[100px] px-3 text-center text-xs lg:max-w-[180px] lg:text-base">
+      <p className="text-white-50 flex h-8 max-w-[100px] items-center px-3 text-center text-xs break-all lg:max-w-[180px] lg:text-base">
         {name}
       </p>
     </div>

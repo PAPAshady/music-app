@@ -4,11 +4,12 @@ import SectionHeader from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
 import AlbumCard from '../../components/MusicCards/AlbumCard/AlbumCard';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
+import ArtistCard from '../../components/MusicCards/ArtistCard/ArtistCard';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import { songs, tracksCardsInfos, playlists, albums } from '../../data';
+import { songs, tracksCardsInfos, playlists, albums, artists } from '../../data';
 import { chunkArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, FreeMode, Mousewheel, Scrollbar } from 'swiper/modules';
+import { Pagination, FreeMode, Mousewheel, Scrollbar, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
@@ -112,6 +113,37 @@ export default function Home() {
                       />
                     ))}
                   </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+        <div>
+          <SectionHeader title="Artists You Follow" />
+          <div className="mx-auto w-[97%] max-w-[940px]">
+            <Swiper
+              slidesPerView="auto"
+              spaceBetween={15}
+              modules={[FreeMode, Pagination, Autoplay]}
+              pagination={{ enabled: false, clickable: true }}
+              autoplay={{ delay: 2500 }}
+              freeMode
+              breakpoints={{
+                1024: {
+                  slidesPerView: 4.5,
+                  freeMode: false,
+                },
+                1440: {
+                  slidesPerView: 5,
+                  freeMode: false,
+                  pagination: { enabled: true },
+                },
+              }}
+              className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
+            >
+              {artists.map((artist) => (
+                <SwiperSlide key={artist.id} className="pb-11 max-[1024px]:!w-auto">
+                  <ArtistCard {...artist} />
                 </SwiperSlide>
               ))}
             </Swiper>
