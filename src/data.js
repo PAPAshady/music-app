@@ -30,6 +30,17 @@ import albumCover6 from './assets/images/covers/album-cover-6.png';
 import albumCover7 from './assets/images/covers/album-cover-7.jpg';
 import albumCover8 from './assets/images/covers/album-cover-8.jpg';
 import albumCover9 from './assets/images/covers/album-cover-9.jpg';
+import artist1 from './assets/images/artists/artist-1.jpg';
+import artist2 from './assets/images/artists/artist-2.jpg';
+import artist3 from './assets/images/artists/artist-3.jpeg';
+import artist4 from './assets/images/artists/artist-4.jpg';
+import artist5 from './assets/images/artists/artist-5.jpg';
+import artist6 from './assets/images/artists/artist-6.jpg';
+import artist7 from './assets/images/artists/artist-7.jpg';
+import artist8 from './assets/images/artists/artist-8.jpg';
+import artist9 from './assets/images/artists/artist-9.jpg';
+import artist10 from './assets/images/artists/artist-10.jpg';
+import artist11 from './assets/images/artists/artist-11.jpg';
 
 export const songs = [
   {
@@ -182,4 +193,18 @@ export const albums = [
     image: albumCover9,
     isFavorite: true,
   },
+];
+
+export const artists = [
+  { id: 1, name: 'NF', image: artist1 },
+  { id: 2, name: 'Eminem', image: artist2 },
+  { id: 3, name: 'Billie Eilish', image: artist3 },
+  { id: 4, name: 'Tupac Shakur', image: artist4 },
+  { id: 5, name: 'Ed Sheeran', image: artist5 },
+  { id: 6, name: 'Katy Perry', image: artist6 },
+  { id: 7, name: 'Rihanna', image: artist7 },
+  { id: 8, name: 'Ray Charles', image: artist8 },
+  { id: 9, name: 'Frank Sinatra', image: artist9 },
+  { id: 10, name: 'The Weeknd', image: artist10 },
+  { id: 11, name: 'Amy Winehouse', image: artist11 },
 ];

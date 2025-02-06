@@ -95,6 +95,14 @@
   .swiper-scrollbar-drag {
     @apply !rounded-[2px] !bg-[#d8dff5];
   }
+
+  .swiper-pagination-bullet{
+    @apply !bg-neutral-400
+  }
+
+  .swiper-pagination-bullet-active{
+    @apply !bg-primary-400
+  }
 }
 
 @utility container {
