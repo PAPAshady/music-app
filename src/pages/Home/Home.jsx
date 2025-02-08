@@ -125,27 +125,27 @@ export default function Home() {
           <SectionHeader title="Artists You Follow" />
           <div className="mx-auto w-[97%] max-w-[940px]">
             <Swiper
-              slidesPerView="auto"
+              slidesPerView={2.3}
               spaceBetween={15}
-              modules={[FreeMode, Pagination, Autoplay]}
+              modules={[Pagination, Autoplay, FreeMode]}
               pagination={{ enabled: false, clickable: true }}
-              autoplay={{ delay: 2500 }}
+              autoplay={{ delay: 2500, enabled: false }}
               freeMode
               breakpoints={{
-                1024: {
-                  slidesPerView: 4.5,
-                  freeMode: false,
-                },
-                1440: {
-                  slidesPerView: 5,
-                  freeMode: false,
-                  pagination: { enabled: true },
-                },
+                360: { slidesPerView: 2.4 },
+                420: { slidesPerView: 3, spaceBetween: 10 },
+                480: { slidesPerView: 3.4 },
+                590: { slidesPerView: 4 },
+                640: { slidesPerView: 4.5 },
+                768: { slidesPerView: 5 },
+                850: { slidesPerView: 5.5 },
+                1024: { slidesPerView: 4.5, freeMode: false },
+                1440: { slidesPerView: 5, pagination: { enabled: true }, freeMode: false },
               }}
               className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
             >
               {artists.map((artist) => (
-                <SwiperSlide key={artist.id} className="pb-11 max-[1024px]:!w-auto">
+                <SwiperSlide key={artist.id} className="pb-11">
                   <ArtistCard {...artist} />
                 </SwiperSlide>
               ))}
