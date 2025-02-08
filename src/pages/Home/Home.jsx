@@ -16,6 +16,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
+import PropTypes from 'prop-types';
 
 export default function Home() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
@@ -40,36 +41,7 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="Updates from Followed Artists" />
-          <div className="mx-auto w-[95%] max-w-[940px]">
-            <Swiper
-              slidesPerView={1}
-              spaceBetween={24}
-              modules={[Pagination]}
-              pagination={{ clickable: true }}
-              className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
-              breakpoints={{
-                500: {
-                  slidesPerView: 1.2,
-                },
-                570: {
-                  slidesPerView: 1.4,
-                },
-                768: {
-                  slidesPerView: 2,
-                },
-              }}
-            >
-              {chunkArray(albums, 3).map((albumsArray, index) => (
-                <SwiperSlide key={index} className="p-[1px] pb-11">
-                  <div className="flex flex-col gap-4">
-                    {albumsArray.map((album) => (
-                      <AlbumCard key={album.id} size="lg" {...album} />
-                    ))}
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+          <AlbumsSlider albums={albums} />
         </div>
         <div className="-mt-11">
           <SectionHeader title="Daily Picks" />
@@ -215,6 +187,14 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <div>
+          <SectionHeader title="Since You Enjoy Eminem" />
+          <PlaylistsSlider playlists={[...playlists.slice(2, 7)].reverse()} />
+        </div>
+        <div>
+          <SectionHeader title="Albums You Were Listening To" />
+          <AlbumsSlider albums={[...albums].reverse()} />
+        </div>
       </div>
       <div className="hidden xl:block">
         <SidebarPlaylist playList={songs} />
@@ -222,3 +202,42 @@ export default function Home() {
     </div>
   );
 }
+
+function AlbumsSlider({ albums }) {
+  return (
+    <div className="mx-auto w-[95%] max-w-[940px]">
+      <Swiper
+        slidesPerView={1}
+        spaceBetween={24}
+        modules={[Pagination]}
+        pagination={{ clickable: true }}
+        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
+        breakpoints={{
+          500: {
+            slidesPerView: 1.2,
+          },
+          570: {
+            slidesPerView: 1.4,
+          },
+          768: {
+            slidesPerView: 2,
+          },
+        }}
+      >
+        {chunkArray(albums, 3).map((albumsArray, index) => (
+          <SwiperSlide key={index} className="p-[1px] pb-11">
+            <div className="flex flex-col gap-4">
+              {albumsArray.map((album) => (
+                <AlbumCard key={album.id} size="lg" {...album} />
+              ))}
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+}
+
+AlbumsSlider.propTypes = {
+  albums: PropTypes.array.isRequired,
+};
