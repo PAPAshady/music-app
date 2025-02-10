@@ -6,7 +6,7 @@ import 'swiper/css';
 
 export default function PlaylistsSlider({ playlists }) {
   return (
-    <div className="mx-auto w-[95%] max-w-[1050px]">
+    <div className="mx-auto w-[95%] max-w-[940px]">
       <Swiper
         slidesPerView={1.5}
         spaceBetween={24}
