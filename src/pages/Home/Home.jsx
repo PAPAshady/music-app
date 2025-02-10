@@ -45,53 +45,7 @@ export default function Home() {
         </div>
         <div className="-mt-11">
           <SectionHeader title="Daily Picks" />
-
-          <div className="mx-auto w-[95%] max-w-[1050px]">
-            <Swiper
-              spaceBetween={24}
-              slidesPerView={1}
-              modules={[Pagination, FreeMode, Mousewheel, Scrollbar]}
-              pagination={{ clickable: true, enabled: isDesktop ? false : true }}
-              className="max-w-[95dvw] lg:max-h-[450px]"
-              scrollbar={{ enabled: false, draggable: true }}
-              breakpoints={{
-                480: {
-                  slidesPerView: 1.2,
-                },
-                570: {
-                  slidesPerView: 1.4,
-                },
-                640: {
-                  slidesPerView: 2,
-                  spaceBetween: 16,
-                },
-                1024: {
-                  direction: 'vertical',
-                  slidesPerView: 'auto',
-                  spaceBetween: 24,
-                  freeMode: true,
-                  mousewheel: { enabled: true, forceToAxis: true },
-                  scrollbar: { enabled: true },
-                },
-              }}
-            >
-              {/* Divide the songs array into chunks of 3 or 5 (depnends on screen size) and map over each chunk */}
-              {chunkArray(songs.slice(0, 9), isDesktop ? 5 : 3).map((songsArray, index) => (
-                <SwiperSlide key={index} className="p-[1px] pb-11 lg:!h-auto lg:p-0 lg:pe-8">
-                  <div className="flex flex-col gap-4 lg:gap-6">
-                    {songsArray.map((song) => (
-                      <PlayBar
-                        key={song.id}
-                        size={isDesktop ? 'lg' : 'md'}
-                        classNames="!max-w-none"
-                        {...song}
-                      />
-                    ))}
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+          <PlayBarSlider songs={songs} />
         </div>
         <div>
           <SectionHeader title="Artists You Follow" />
@@ -224,6 +178,10 @@ export default function Home() {
           <SectionHeader title="More Artists You'll Love" />
           <ArtistsSlider artists={shuffleArray(artists)} />
         </div>
+        <div className='-mt-8'>
+          <SectionHeader title="Trending Now" />
+          <PlayBarSlider songs={shuffleArray(songs)} />
+        </div>
       </div>
       <div className="hidden xl:block">
         <SidebarPlaylist playList={songs} />
@@ -300,10 +258,67 @@ function ArtistsSlider({ artists }) {
   );
 }
 
+function PlayBarSlider({ songs }) {
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+
+  return (
+    <div className="mx-auto w-[95%] max-w-[1050px]">
+      <Swiper
+        spaceBetween={24}
+        slidesPerView={1}
+        modules={[Pagination, FreeMode, Mousewheel, Scrollbar]}
+        pagination={{ clickable: true, enabled: isDesktop ? false : true }}
+        className="max-w-[95dvw] lg:max-h-[450px]"
+        scrollbar={{ enabled: false, draggable: true }}
+        breakpoints={{
+          480: {
+            slidesPerView: 1.2,
+          },
+          570: {
+            slidesPerView: 1.4,
+          },
+          640: {
+            slidesPerView: 2,
+            spaceBetween: 16,
+          },
+          1024: {
+            direction: 'vertical',
+            slidesPerView: 'auto',
+            spaceBetween: 24,
+            freeMode: true,
+            mousewheel: { enabled: true, forceToAxis: true },
+            scrollbar: { enabled: true },
+          },
+        }}
+      >
+        {/* Divide the songs array into chunks of 3 or 5 (depnends on screen size) and map over each chunk */}
+        {chunkArray(songs.slice(0, 9), isDesktop ? 5 : 3).map((songsArray, index) => (
+          <SwiperSlide key={index} className="p-[1px] pb-11 lg:!h-auto lg:p-0 lg:pe-8">
+            <div className="flex flex-col gap-4 lg:gap-6">
+              {songsArray.map((song) => (
+                <PlayBar
+                  key={song.id}
+                  size={isDesktop ? 'lg' : 'md'}
+                  classNames="!max-w-none"
+                  {...song}
+                />
+              ))}
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+}
+
 AlbumsSlider.propTypes = {
   albums: PropTypes.array.isRequired,
 };
 
 ArtistsSlider.propTypes = {
   artists: PropTypes.array.isRequired,
+};
+
+PlayBarSlider.propTypes = {
+  songs: PropTypes.array.isRequired,
 };
