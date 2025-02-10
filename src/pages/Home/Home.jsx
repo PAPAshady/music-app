@@ -187,7 +187,7 @@ export default function Home() {
           <PlaylistsSlider playlists={shuffleArray(playlists)} />
         </div>
       </div>
-      <div className="hidden xl:block">
+      <div className="hidden xl:block sticky top-10">
         <SidebarPlaylist playList={songs} />
       </div>
     </div>
