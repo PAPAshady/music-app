@@ -182,6 +182,10 @@ export default function Home() {
           <SectionHeader title="Trending Now" />
           <PlayBarSlider songs={shuffleArray(songs)} />
         </div>
+        <div>
+          <SectionHeader title='Recently Seen' />
+          <PlaylistsSlider playlists={shuffleArray(playlists)} />
+        </div>
       </div>
       <div className="hidden xl:block">
         <SidebarPlaylist playList={songs} />
