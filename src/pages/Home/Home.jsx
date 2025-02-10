@@ -7,7 +7,7 @@ import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import ArtistCard from '../../components/MusicCards/ArtistCard/ArtistCard';
 import MainButton from '../../components/Buttons/MainButton/MainButton';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import { songs, tracksCardsInfos, playlists, albums, artists } from '../../data';
+import { songs, tracks, playlists, albums, artists } from '../../data';
 import { chunkArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode, Mousewheel, Scrollbar, Autoplay } from 'swiper/modules';
@@ -25,7 +25,7 @@ export default function Home() {
     <div className="flex items-start gap-6 pb-14">
       <div className="flex grow flex-col gap-8 lg:gap-10">
         <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
-          {tracksCardsInfos.map((track) => (
+          {tracks.slice(0, 3).map((track) => (
             <div key={track.id} className="flex w-full justify-center">
               <TracksCard {...track} />
             </div>
@@ -194,6 +194,31 @@ export default function Home() {
         <div>
           <SectionHeader title="Albums You Were Listening To" />
           <AlbumsSlider albums={[...albums].reverse()} />
+        </div>
+        <div>
+          <SectionHeader title="Genres You Interested In" />
+          <div className="mx-auto w-[95%] max-w-[940px]">
+            <Swiper
+              slidesPerView={1}
+              spaceBetween={16}
+              modules={[Pagination]}
+              pagination={{ clickable: true }}
+              className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
+              breakpoints={{
+                360: { slidesPerView: 3 },
+              }}
+            >
+              {chunkArray(tracks, 3).map((tracksArray, index) => (
+                <SwiperSlide key={index} className="mb-11 p-[1px]">
+                  <div className="flex flex-col gap-4">
+                    {tracksArray.map((track) => (
+                      <TracksCard key={track.id} {...track} />
+                    ))}
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
         </div>
       </div>
       <div className="hidden xl:block">

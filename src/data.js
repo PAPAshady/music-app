@@ -11,6 +11,18 @@ import songCover10 from './assets/images/covers/song-cover-10.jpg';
 import trackCardImg1 from './assets/images/covers/track-cover-1.jpg';
 import trackCardImg2 from './assets/images/covers/track-cover-2.jpg';
 import trackCardImg3 from './assets/images/covers/track-cover-3.jpg';
+import trackCardImg4 from './assets/images/covers/track-cover-4.jpg';
+import trackCardImg5 from './assets/images/covers/track-cover-5.jpg';
+import trackCardImg6 from './assets/images/covers/track-cover-6.jpg';
+import trackCardImg7 from './assets/images/covers/track-cover-7.jpg';
+import trackCardImg8 from './assets/images/covers/track-cover-8.jpg';
+import trackCardImg9 from './assets/images/covers/track-cover-9.jpg';
+import trackCardImg10 from './assets/images/covers/track-cover-10.jpg';
+import trackCardImg11 from './assets/images/covers/track-cover-11.jpg';
+import trackCardImg12 from './assets/images/covers/track-cover-12.jpg';
+import trackCardImg13 from './assets/images/covers/track-cover-13.jpg';
+import trackCardImg14 from './assets/images/covers/track-cover-14.jpg';
+import trackCardImg15 from './assets/images/covers/track-cover-15.jpg';
 import playlistCoverImg1 from './assets/images/covers/playlist-cover-1.jpg';
 import playlistCoverImg2 from './assets/images/covers/playlist-cover-2.jpg';
 import playlistCoverImg3 from './assets/images/covers/playlist-cover-3.jpg';
@@ -130,10 +142,22 @@ export const songs = [
   },
 ];
 
-export const tracksCardsInfos = [
+export const tracks = [
   { id: 1, title: 'Recently Listened', image: trackCardImg1 },
   { id: 2, title: 'Most Listened', image: trackCardImg2 },
   { id: 3, title: 'Liked Tracks', image: trackCardImg3 },
+  { id: 4, title: 'Pop', image: trackCardImg4 },
+  { id: 5, title: 'Hip-Hop', image: trackCardImg5 },
+  { id: 6, title: 'Rap', image: trackCardImg6 },
+  { id: 7, title: 'Country', image: trackCardImg7 },
+  { id: 8, title: 'Funk', image: trackCardImg8 },
+  { id: 9, title: 'Classic', image: trackCardImg9 },
+  { id: 10, title: 'Jazz', image: trackCardImg10 },
+  { id: 11, title: 'Blues', image: trackCardImg11 },
+  { id: 12, title: 'House Music', image: trackCardImg12 },
+  { id: 13, title: 'K-pop', image: trackCardImg13 },
+  { id: 14, title: 'Heavy Metal', image: trackCardImg14 },
+  { id: 15, title: 'Rock', image: trackCardImg15 },
 ];
 
 export const playlists = [
