@@ -6,6 +6,7 @@ import browsePageBgImg from '../../../assets/images/backgrounds/browse-page.jpg'
 import Header from '../Header/Header';
 import DesktopNavbar from '../../DesktopNavbar/DesktopNavbar';
 import HamburgerMenu from '../../HamburgerMenu/HamburgerMenu';
+import Footer from '../Footer/Footer';
 import Logo from '../../Logo/Logo';
 import { useLocation, Outlet, Link } from 'react-router-dom';
 
@@ -60,8 +61,9 @@ export default function Layout() {
             </div>
           </div>
         </div>
-        <div className="grow pt-6">
+        <div className="flex grow flex-col items-start gap-12 pt-6 pb-10">
           <Outlet />
+          <Footer />
         </div>
       </main>
       <HamburgerMenu />
