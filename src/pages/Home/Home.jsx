@@ -22,7 +22,7 @@ export default function Home() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   return (
-    <div className="flex items-start gap-6 pb-14">
+    <div className="flex items-start gap-6">
       <div className="flex grow flex-col gap-8 lg:gap-10">
         <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
           {tracks.slice(0, 3).map((track) => (

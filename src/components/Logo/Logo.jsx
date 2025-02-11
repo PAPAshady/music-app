@@ -2,7 +2,7 @@ import LogoImg from '../../assets/images/Logo/Logo.png';
 import PropTypes from 'prop-types';
 import './Logo.css';
 
-export default function Logo({ size, isLoading = false }) {
+export default function Logo({ size, isLoading, row }) {
   const logoSize = {
     sm: 'w-[30px] h-[23px]',
     md: 'w-14 h-11',
@@ -12,7 +12,7 @@ export default function Logo({ size, isLoading = false }) {
 
   const textSize = {
     md: 'text-sm mt-1 font-medium',
-    lg: 'subheading-1 font-bold mt-4',
+    lg: `subheading-1 font-bold ${!row ? 'mt-4' : ''}`,
     xl: 'text-7xl mt-16 font-bold',
   };
 
@@ -28,7 +28,7 @@ export default function Logo({ size, isLoading = false }) {
   ];
 
   return (
-    <div className="flex flex-col items-center">
+    <div className={`flex items-center ${row ? 'gap-4' : 'flex-col'}`}>
       <img className={logoSize[size]} src={LogoImg} alt="VioTune" />
       {size !== 'sm' && (
         <div className={`text-center ${textSize[size]}`}>
@@ -51,4 +51,5 @@ export default function Logo({ size, isLoading = false }) {
 Logo.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']).isRequired,
   isLoading: PropTypes.bool,
+  row: PropTypes.bool,
 };
