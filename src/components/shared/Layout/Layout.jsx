@@ -62,7 +62,7 @@ export default function Layout() {
             </div>
           </div>
         </div>
-        <div className="flex grow flex-col items-start gap-12 pt-6 pb-10">
+        <div className="flex grow flex-col items-start gap-12 pt-6 pb-32 lg:pb-10">
           <Outlet />
           <Player />
           <Footer />
