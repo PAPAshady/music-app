@@ -48,7 +48,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="bg-primary-50/10 container border-primary-200 w-ful rounded-4xl border px-3 py-6 min-[420px]:p-6 lg:p-6">
+      <footer className="bg-primary-50/10 border-primary-200 w-full rounded-4xl border px-3 py-6 min-[420px]:p-6 lg:p-6">
         <div className="!container !w-[90%]">
           <div className="flex flex-col gap-10 md:flex-row md:items-center lg:justify-between">
             <div className="flex flex-col items-center gap-4">
@@ -72,7 +72,7 @@ export default function Footer() {
             <span className="bg-primary-50 size-[3px] rotate-45"></span>
             <span className="bg-primary-50 size-[3px] rotate-45"></span>
           </div>
-          <div className="mt-10 items-end justify-between sm:gap-4 sm:flex">
+          <div className="mt-10 items-end justify-between sm:flex sm:gap-4">
             <div className="mb-6 grow-[0.5] sm:m-0">
               <p className="text-primary-200 mb-4 text-sm">
                 Enter your email to receive the latest news.
