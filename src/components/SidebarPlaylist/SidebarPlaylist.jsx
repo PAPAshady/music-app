@@ -1,7 +1,7 @@
 import { cloneElement } from 'react';
 import { Menu, Music, Timer, User } from 'iconsax-react';
 import PropTypes from 'prop-types';
-import PlaylistImg from '../../assets/images/backgrounds/login-signup page.jpg';
+import PlaylistImg from '../../assets/images/backgrounds/login-signup-page.jpg';
 import PlayBar from '../MusicCards/PlayBar/PlayBar';
 
 export default function SidebarPlaylist({ playList }) {
