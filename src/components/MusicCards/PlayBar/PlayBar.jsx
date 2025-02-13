@@ -36,7 +36,7 @@ const PlayBar = memo(
           className={`flex grow gap-2 ${size === 'lg' ? 'lg:w-[270px] lg:max-w-[270px] lg:truncate' : ''}`}
         >
           <button className="relative overflow-hidden rounded-md" onClick={clickHandler}>
-            <img src={cover} className="size-14 object-cover" alt={title} />
+            <img src={cover} className="size-14 min-h-14 min-w-14 object-cover" alt={title} />
             <span
               className={`absolute top-1/2 left-1/2 flex size-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition-all duration-300 group-hover:bg-black/60 group-hover:opacity-100`}
             >
@@ -52,9 +52,7 @@ const PlayBar = memo(
             >
               {title}
             </button>
-            <span
-              className={`text-secondary-200 grow ${size === 'lg' ? 'text-xs lg:text-sm' : 'paragraph-2'}`}
-            >
+            <span className={`text-secondary-200 grow ${size === 'lg' ? 'lg:text-sm' : 'text-xs'}`}>
               {artist}
             </span>
           </div>
