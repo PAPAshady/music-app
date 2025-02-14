@@ -1,3 +1,4 @@
+import { Navigate } from 'react-router-dom';
 import Layout from './components/shared/Layout/Layout';
 import Home from './pages/Home/Home';
 import AuthLayout from './pages/Auth/AuthLayout';
@@ -10,6 +11,7 @@ const routes = [
     path: '/auth',
     element: <AuthLayout />,
     children: [
+      { index: true, element: <Navigate to="/auth/sign-in" replace /> },
       { path: 'sign-in', element: <SignIn /> },
       { path: 'sign-up', element: <SignUp /> },
     ],
