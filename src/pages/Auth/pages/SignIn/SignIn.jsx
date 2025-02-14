@@ -46,7 +46,7 @@ export default function SignIn() {
         <p className="text-white-200 text-sm lg:hidden">
           You do not have an account ?{' '}
           <Link className="text-primary-200 underline" to="/auth/sign-up">
-            Sign In
+            Sign Up
           </Link>
         </p>
       </div>

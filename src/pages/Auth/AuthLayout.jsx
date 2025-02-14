@@ -6,7 +6,7 @@ import bgImg from '../../assets/images/backgrounds/login-signup-page.jpg';
 import './AuthLayout.css';
 
 export default function Authentication() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const currentPath = useLocation().pathname.split('/')[2];
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const isSignUpPage = currentPath === 'sign-up';

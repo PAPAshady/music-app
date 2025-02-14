@@ -18,15 +18,14 @@ export default function TextField({ type = 'text', value, onChange, placeholder,
     <div
       className={`flex w-full items-center rounded-md border transition-all duration-200 lg:rounded-lg ${isFocused ? 'border-primary-50 bg-transparent' : 'bg-primary-50/60 border-transparent'}`}
     >
-      <div className="relative grow">
+      <div className={`relative grow ${isPassword ? 'pe-8' : ''} `}>
         <input
           type={isPasswordVisible ? 'text' : type}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           value={value}
           onChange={(e) => onChange(e)}
-          className={`relative z-[1] w-full px-2 text-base outline-none lg:px-3 ${isFocused ? 'text-primary-50' : 'text-primary-800'} ${isPassword ? 'py-4' : 'py-3'}`}
-          style={{ font: isPassword ? 'small-caption' : '' }} // decrease the size of password bullets
+          className={`relative z-[1] w-full px-2 !bg-transparent text-base outline-none lg:px-3 ${isFocused ? 'text-primary-50' : 'text-primary-800'} ${isPassword ? 'py-2.5 font-[Inter_UI,serif] text-lg tracking-wider' : 'py-3'}`}
         />
         <span
           className={`text-primary-800/50 absolute left-0 flex -translate-y-1/2 items-center gap-1 text-sm transition-all duration-200 ${isFocusedOrHasValue ? '-top-[38%]' : 'top-1/2 px-2'} `}
@@ -45,7 +44,7 @@ export default function TextField({ type = 'text', value, onChange, placeholder,
         {isPassword && (
           <button
             onMouseDown={togglePasswordVisibility} // using onMouseDown instead of onClick prevents the input from blurring after click.
-            className={`absolute top-1/2 right-0 z-[2] -translate-y-1/2 pe-1.5 ${isFocused ? 'inline' : 'hidden'}`}
+            className={`absolute top-1/2 right-0 z-[2] -translate-y-1/2 pe-3 ${isFocused ? 'inline' : 'hidden'}`}
           >
             {isPasswordVisible ? (
               <EyeSlash size={16} className="text-primary-50" />
