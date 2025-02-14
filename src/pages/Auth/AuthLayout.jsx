@@ -6,7 +6,7 @@ import bgImg from '../../assets/images/backgrounds/login-signup-page.jpg';
 import './AuthLayout.css';
 
 export default function Authentication() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const currentPath = useLocation().pathname.split('/')[2];
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const isSignUpPage = currentPath === 'sign-up';
@@ -30,12 +30,12 @@ export default function Authentication() {
         <div
           className={`absolute top-0 flex size-full transition-all duration-300 ${isLoading ? 'invisible z-[-1] size-0 opacity-0' : 'visible z-10 opacity-100'}`}
         >
-          <div className="relative hidden min-h-[720px] w-[300px] overflow-hidden rounded-4xl lg:block">
+          <div className="relative hidden w-[300px] overflow-hidden rounded-4xl lg:block">
             <div
-              className={`mask-layer mask-1 absolute size-full bg-[#E5E8F3]/60 transition-opacity ${isSignUpPage ? 'opacity-0' : 'opacity-100'}`}
+              className={`mask-layer mask-1 absolute size-full bg-[#E5E8F3]/50 transition-opacity ${isSignUpPage ? 'opacity-0' : 'opacity-100'}`}
             ></div>
             <div
-              className={`mask-layer mask-2 absolute size-full bg-[#E5E8F3]/60 transition-opacity ${isSignUpPage ? 'opacity-100' : 'opacity-0'}`}
+              className={`mask-layer mask-2 absolute size-full bg-[#E5E8F3]/50 transition-opacity ${isSignUpPage ? 'opacity-100' : 'opacity-0'}`}
             ></div>
             <NavLink
               className={({ isActive }) =>

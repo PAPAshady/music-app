@@ -25,7 +25,7 @@ export default function TextField({ type = 'text', value, onChange, placeholder,
           onBlur={() => setIsFocused(false)}
           value={value}
           onChange={(e) => onChange(e)}
-          className={`relative z-[1] w-full px-2 py-1.5 text-xs xs:text-sm outline-none lg:px-3 lg:py-2 ${isFocused ? 'text-primary-50' : 'text-primary-800'}`}
+          className={`relative z-[1] w-full px-2 text-base outline-none lg:px-3 ${isFocused ? 'text-primary-50' : 'text-primary-800'} ${isPassword ? 'py-4' : 'py-3'}`}
           style={{ font: isPassword ? 'small-caption' : '' }} // decrease the size of password bullets
         />
         <span
