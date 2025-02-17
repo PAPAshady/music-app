@@ -4,6 +4,7 @@ import Home from './pages/Home/Home';
 import AuthLayout from './pages/Auth/AuthLayout';
 import SignIn from './pages/Auth/pages/SignIn/SignIn';
 import SignUp from './pages/Auth/pages/SignUp/SignUp';
+import ForgotPassword from './pages/Auth/pages/ForgotPassword/ForgotPassword';
 
 const routes = [
   { path: '/', element: <Layout />, children: [{ path: '/', element: <Home /> }] },
@@ -12,7 +13,11 @@ const routes = [
     element: <AuthLayout />,
     children: [
       { index: true, element: <Navigate to="/auth/sign-in" replace /> },
-      { path: 'sign-in', element: <SignIn /> },
+      {
+        path: 'sign-in',
+        element: <SignIn />,
+        children: [{ path: 'forgot-pass', element: <ForgotPassword /> }],
+      },
       { path: 'sign-up', element: <SignUp /> },
     ],
   },

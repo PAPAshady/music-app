@@ -5,7 +5,7 @@ import { Eye, EyeSlash } from 'iconsax-react';
 export default function TextField({ type = 'text', value, onChange, placeholder, icon }) {
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const styledIcon = icon ? cloneElement(icon, { size: 16 }) : null;
+  const styledIcon = icon ? cloneElement(icon, { size: '100%' }) : null;
   const isFocusedOrHasValue = isFocused || value;
   const isPassword = type === 'password';
 
@@ -31,12 +31,12 @@ export default function TextField({ type = 'text', value, onChange, placeholder,
           className={`text-primary-800/50 absolute left-0 flex -translate-y-1/2 items-center gap-1 text-sm transition-all duration-200 ${isFocusedOrHasValue ? '-top-[38%]' : 'top-1/2 px-2'} `}
         >
           <span
-            className={`absolute transition-all duration-200 ${isFocusedOrHasValue ? 'invisible opacity-0' : 'visible opacity-100'}`}
+            className={`absolute size-5 lg:size-6 transition-all 1 duration-200 ${isFocusedOrHasValue ? 'invisible opacity-0' : 'visible opacity-100'}`}
           >
             {styledIcon}
           </span>
           <span
-            className={`pb-1 transition-all duration-200 ${isFocusedOrHasValue ? 'text-primary-50' : styledIcon ? 'translate-x-5' : ''}`}
+            className={` transition-all duration-200 ${isFocusedOrHasValue ? 'text-primary-50' : styledIcon ? 'translate-x-6 lg:translate-x-8' : ''}`}
           >
             {placeholder}
           </span>
@@ -59,7 +59,7 @@ export default function TextField({ type = 'text', value, onChange, placeholder,
 }
 
 TextField.propTypes = {
-  type: PropTypes.oneOf(['text', 'password', 'email']),
+  type: PropTypes.oneOf(['text', 'password', 'email', 'number']),
   value: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   icon: PropTypes.element,
