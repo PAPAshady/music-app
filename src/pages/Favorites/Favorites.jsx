@@ -1,8 +1,11 @@
 import bannerBg from '../../assets/images/backgrounds/player-and-settings-page.png';
 import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
+import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
+import useMediaQuery from '../../hooks/useMediaQuery';
 import { songs } from '../../data';
 
 export default function Favorites() {
+  const isTablet = useMediaQuery('(min-width: 480px)');
   return (
     <div className="flex w-full items-start gap-6">
       <div className="flex grow flex-col gap-8 lg:gap-10">
@@ -18,6 +21,17 @@ export default function Favorites() {
               Because Favorites Deserve Their Own Space ..
             </p>
           </div>
+        </div>
+
+        <div className="sm: flex max-h-[280px] flex-col gap-3 overflow-y-auto px-3 sm:max-h-[360px] lg:max-h-[414px] lg:gap-4">
+          {songs.map((song) => (
+            <PlayBar
+              key={song.id}
+              size={isTablet ? 'lg' : 'md'}
+              {...song}
+              classNames="!max-w-full"
+            />
+          ))}
         </div>
       </div>
       <SidebarPlaylist playList={songs} />
