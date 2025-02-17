@@ -2,8 +2,9 @@ import bannerBg from '../../assets/images/backgrounds/player-and-settings-page.p
 import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
+import AlbumsSlider from '../../components/AlbumsSlider/AlbumsSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import { songs } from '../../data';
+import { songs, albums } from '../../data';
 import { shuffleArray, chunkArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
@@ -83,6 +84,10 @@ export default function Favorites() {
               ))}
             </Swiper>
           </div>
+        </div>
+        <div>
+          <SectionTitle title="You Might Also Like" />
+          <AlbumsSlider albums={albums} albumCardSize='md' albumCardStyles='!max-w-none' />
         </div>
       </div>
       <SidebarPlaylist playList={songs} />

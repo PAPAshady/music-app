@@ -2,7 +2,7 @@ import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
 import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionHeader from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
-import AlbumCard from '../../components/MusicCards/AlbumCard/AlbumCard';
+import AlbumsSlider from '../../components/AlbumsSlider/AlbumsSlider';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import ArtistCard from '../../components/MusicCards/ArtistCard/ArtistCard';
 import MainButton from '../../components/Buttons/MainButton/MainButton';
@@ -192,41 +192,6 @@ export default function Home() {
   );
 }
 
-function AlbumsSlider({ albums }) {
-  return (
-    <div className="mx-auto w-[95%] max-w-[940px]">
-      <Swiper
-        slidesPerView={1}
-        spaceBetween={24}
-        modules={[Pagination]}
-        pagination={{ clickable: true }}
-        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
-        breakpoints={{
-          500: {
-            slidesPerView: 1.2,
-          },
-          570: {
-            slidesPerView: 1.4,
-          },
-          768: {
-            slidesPerView: 2,
-          },
-        }}
-      >
-        {chunkArray(albums, 3).map((albumsArray, index) => (
-          <SwiperSlide key={index} className="p-[1px] pb-11">
-            <div className="flex flex-col gap-4">
-              {albumsArray.map((album) => (
-                <AlbumCard key={album.id} size="lg" {...album} />
-              ))}
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
-  );
-}
-
 function ArtistsSlider({ artists }) {
   return (
     <div className="mx-auto w-[97%] max-w-[940px]">
@@ -312,10 +277,6 @@ function PlayBarSlider({ songs }) {
     </div>
   );
 }
-
-AlbumsSlider.propTypes = {
-  albums: PropTypes.array.isRequired,
-};
 
 ArtistsSlider.propTypes = {
   artists: PropTypes.array.isRequired,
