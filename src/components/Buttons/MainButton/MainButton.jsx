@@ -7,6 +7,7 @@ export default function MainButton({
   variant = 'primary',
   clickHandler,
   disabled,
+  classNames,
 }) {
   const buttonSizes = {
     sm: 'px-4 py-2.5 text-xs lg:py-2 lg:text-sm',
@@ -42,7 +43,7 @@ export default function MainButton({
 
   return (
     <button
-      className={`rounded-lg border py-2 transition-all duration-300 disabled:cursor-default disabled:inset-shadow-none disabled:shadow-none ${buttonSizes[size]} ${buttonTypes[type]}`}
+      className={`rounded-lg border py-2 transition-all duration-300 disabled:cursor-default disabled:inset-shadow-none disabled:shadow-none ${buttonSizes[size]} ${buttonTypes[type]} ${classNames}`}
       disabled={disabled}
       onClick={clickHandler}
     >
@@ -58,4 +59,5 @@ MainButton.propTypes = {
   variant: PropTypes.oneOf(['primary', 'secondary', 'neutral']),
   disabled: PropTypes.bool,
   clickHandler: PropTypes.func,
+  classNames: PropTypes.string,
 };
