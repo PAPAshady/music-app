@@ -18,12 +18,16 @@ import PropTypes from 'prop-types';
 
 const HamburgerMenu = memo(() => {
   const { isShowHamburgerMenu, setIsShowHamburgerMenu } = useHamburgerMenu();
-
+  const closeHamburgerMenu = () => setIsShowHamburgerMenu(false);
   const mobileNavLinks = [
-    { id: 1, title: 'Home', icon: <Home2 />, href: '/' },
-    { id: 2, title: 'Favorites', icon: <Heart />, href: '/favorites' },
-    { id: 3, title: 'Playlists', icon: <MusicFilter />, href: '/playlists' },
-    { id: 4, title: 'Browse', icon: <MusicSquareSearch />, href: '/browse' },
+    { id: 1, title: 'Notifications', icon: <Notification /> },
+    { id: 2, title: 'Settings', icon: <Setting2 /> },
+    { id: 3, title: 'Home', icon: <Home2 />, href: '/' },
+    { id: 4, title: 'Favorites', icon: <Heart />, href: '/favorites' },
+    { id: 5, title: 'Playlists', icon: <MusicFilter />, href: '/playlists' },
+    { id: 6, title: 'Browse', icon: <MusicSquareSearch />, href: '/browse' },
+    { id: 7, title: 'Permium', icon: <Medal />, href: '/subscription' },
+    { id: 8, title: 'Q&A', icon: <Messages3 />, href: '/q&a' },
   ];
 
   return createPortal(
@@ -48,17 +52,19 @@ const HamburgerMenu = memo(() => {
 
           <div className="my-9 flex flex-col gap-10">
             <div className="flex flex-col gap-7">
-              <MobileNavLink title="Notifications" icon={<Notification />} />
-              <MobileNavLink title="Settings" icon={<Setting2 />} />
+              {mobileNavLinks.slice(0, 2).map((link) => (
+                <MobileNavLink key={link.id} {...link} onClick={closeHamburgerMenu} />
+              ))}
             </div>
             <div className="border-secondary-400/53 flex flex-col gap-7 border-y py-10">
-              {mobileNavLinks.map((link) => (
-                <MobileNavLink key={link.id} {...link} />
+              {mobileNavLinks.slice(2, 6).map((link) => (
+                <MobileNavLink key={link.id} {...link} onClick={closeHamburgerMenu} />
               ))}
             </div>
             <div className="flex flex-col gap-7">
-              <MobileNavLink title="Permium" href="/subscription" icon={<Medal />} />
-              <MobileNavLink title="Q&A" href="/q&a" icon={<Messages3 />} />
+              {mobileNavLinks.slice(6, 8).map((link) => (
+                <MobileNavLink key={link.id} {...link} onClick={closeHamburgerMenu} />
+              ))}
             </div>
           </div>
           <Link to="#" className="text-primary-300 text-xs">
@@ -71,7 +77,7 @@ const HamburgerMenu = memo(() => {
   );
 });
 
-function MobileNavLink({ title, href, icon }) {
+function MobileNavLink({ title, href, icon, onClick }) {
   const styledIcon = cloneElement(icon, { className: 'size-6' });
   return (
     <NavLink
@@ -79,6 +85,7 @@ function MobileNavLink({ title, href, icon }) {
         `flex items-center gap-2 rounded-lg px-2 py-1.5 ${href && isActive ? 'bg-secondary-300 text-white-50' : 'text-secondary-50'}`
       }
       to={href}
+      onClick={onClick}
     >
       {styledIcon}
       <span>{title}</span>
@@ -90,6 +97,7 @@ MobileNavLink.propTypes = {
   title: PropTypes.string.isRequired,
   href: PropTypes.string,
   icon: PropTypes.element.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 HamburgerMenu.displayName = 'HamburgerMenu';

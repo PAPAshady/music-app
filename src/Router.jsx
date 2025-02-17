@@ -25,7 +25,7 @@ const routes = [
         path: 'sign-in',
         element: <SignIn />,
         children: [{ path: 'forgot-pass', element: <ForgotPassword /> }],
-      },
+      },  
       { path: 'sign-up', element: <SignUp /> },
     ],
   },
