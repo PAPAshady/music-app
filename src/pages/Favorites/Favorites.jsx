@@ -85,7 +85,7 @@ export default function Favorites() {
             </Swiper>
           </div>
         </div>
-        <div>
+        <div className='-mt-11'>
           <SectionTitle title="You Might Also Like" />
           <AlbumsSlider albums={albums} albumCardSize='md' albumCardStyles='!max-w-none' />
         </div>
