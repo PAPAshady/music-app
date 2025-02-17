@@ -178,18 +178,16 @@ export default function Home() {
           <SectionHeader title="More Artists You'll Love" />
           <ArtistsSlider artists={shuffleArray(artists)} />
         </div>
-        <div className='-mt-8'>
+        <div className="-mt-8">
           <SectionHeader title="Trending Now" />
           <PlayBarSlider songs={shuffleArray(songs)} />
         </div>
         <div>
-          <SectionHeader title='Recently Seen' />
+          <SectionHeader title="Recently Seen" />
           <PlaylistsSlider playlists={shuffleArray(playlists)} />
         </div>
       </div>
-      <div className="hidden xl:block sticky top-10">
-        <SidebarPlaylist playList={songs} />
-      </div>
+      <SidebarPlaylist playList={songs} />
     </div>
   );
 }

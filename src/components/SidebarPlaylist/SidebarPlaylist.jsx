@@ -12,6 +12,8 @@ export default function SidebarPlaylist({ playList }) {
   ];
 
   return (
+    <div className='hidden xl:block sticky top-10'>
+
     <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-210px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[310px]">
       <div className="flex items-center justify-between gap-1">
         <p className="text-white-50 subheading-3 truncate">Sad playlist</p>
@@ -40,6 +42,7 @@ export default function SidebarPlaylist({ playList }) {
           <PlayBar key={song.id} size="sm" {...song} />
         ))}
       </div>
+    </div>
     </div>
   );
 }
