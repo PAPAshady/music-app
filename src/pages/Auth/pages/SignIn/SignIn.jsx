@@ -7,8 +7,8 @@ import facebookLogo from '../../../../assets/images/socials/facebook.png';
 import googleLogo from '../../../../assets/images/socials/google.png';
 
 export default function SignIn() {
-  const emailInput = useInput('');
-  const passwordInput = useInput('');
+  const emailInput = useInput();
+  const passwordInput = useInput();
   const isForgotPasswordPage = useLocation().pathname.includes('forgot-pass');
 
   return (
