@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper/modules';
 import 'swiper/css';
 
-export default function PlaylistsSlider({ playlists }) {
+export default function PlaylistsSlider({ playlists, numberOfPlaylists = playlists.length }) {
   return (
     <div className="mx-auto w-[95%] max-w-[940px]">
       <Swiper
@@ -28,7 +28,7 @@ export default function PlaylistsSlider({ playlists }) {
         }}
         className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
       >
-        {playlists.map((playlist) => (
+        {playlists.slice(0, numberOfPlaylists).map((playlist) => (
           <SwiperSlide
             key={playlist.id}
             className="xs:max-w-[295px] p-[1px] min-[480px]:max-w-[226px] sm:max-w-[190px] md:max-w-[205px] lg:p-0 xl:max-w-[190px]"
@@ -43,4 +43,5 @@ export default function PlaylistsSlider({ playlists }) {
 
 PlaylistsSlider.propTypes = {
   playlists: PropTypes.array.isRequired,
+  numberOfPlaylists: PropTypes.number,
 };

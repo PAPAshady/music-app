@@ -30,7 +30,7 @@ export default function Layout() {
   const pagesBackgrounds = {
     '/': homePageBgImg,
     '/favorites': favoritesPageBgImg,
-    '/playlist': playlistAndSubscriptionPageBgImg,
+    '/playlists': playlistAndSubscriptionPageBgImg,
     '/browse': browsePageBgImg,
     '/subscription': playlistAndSubscriptionPageBgImg,
   };

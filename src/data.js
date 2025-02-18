@@ -142,7 +142,7 @@ export const songs = [
   },
 ];
 
-export const tracks = [
+export const genres = [
   { id: 1, title: 'Recently Listened', image: trackCardImg1 },
   { id: 2, title: 'Most Listened', image: trackCardImg2 },
   { id: 3, title: 'Liked Tracks', image: trackCardImg3 },
