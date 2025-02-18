@@ -4,6 +4,7 @@ import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
+import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import { shuffleArray } from '../../utils/arrayUtils';
 import { songs, genres, playlists as allPlaylists } from '../../data';
 import PropTypes from 'prop-types';
@@ -32,6 +33,18 @@ export default function PlayLists() {
             <PlaylistsContainer numberOfPlayLists={numberOfPlayLists} />
           </div>
         ))}
+        <div>
+          <SectionTitle title="Add Tracks to your playlists" />
+          <div className="flex flex-col gap-4">
+            {songs.slice(0, 4).map((song) => (
+              <PlayBar key={song.id} size="lg" classNames="!max-w-none" {...song} />
+            ))}
+          </div>
+        </div>
+        <div>
+          <SectionTitle title="Playlists You Recently Seen" />
+          <PlaylistsContainer numberOfPlayLists={5} />
+        </div>
       </div>
       <SidebarPlaylist playList={songs} />
     </div>
@@ -61,7 +74,7 @@ function PlaylistsContainer({
 }
 
 PlaylistsContainer.propTypes = {
-  playlists: PropTypes.array.isRequired,
+  playlists: PropTypes.array,
   numberOfPlayLists: PropTypes.number,
   classNames: PropTypes.string,
 };
