@@ -9,6 +9,11 @@ import { songs, genres, playlists as allPlaylists } from '../../data';
 import PropTypes from 'prop-types';
 
 export default function PlayLists() {
+  const playlistsSections = [
+    { id: 1, title: 'Your Playlists', href: '#', numberOfPlayLists: 8 },
+    { id: 2, title: 'Updated Playlists', href: '#', numberOfPlayLists: 2 },
+  ];
+
   return (
     <div className="flex w-full items-start gap-6">
       <div className="flex grow flex-col gap-8 lg:gap-10">
@@ -19,14 +24,12 @@ export default function PlayLists() {
             </div>
           ))}
         </div>
-        <div>
-          <SectionTitle title="Your Playlists" />
-          <PlaylistsContainer numberOfPlayLists={8} />
-        </div>
-        <div>
-          <SectionTitle title="Updated Playlists" />
-          <PlaylistsContainer numberOfPlayLists={2} />
-        </div>
+        {playlistsSections.map((section) => (
+          <div key={section.id}>
+            <SectionTitle title={section.title} href={section.href} />
+            <PlaylistsContainer numberOfPlayLists={section.numberOfPlayLists} />
+          </div>
+        ))}
       </div>
       <SidebarPlaylist playList={songs} />
     </div>
