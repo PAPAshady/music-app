@@ -4,11 +4,11 @@ import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
-import { songs, genres, playlists } from '../../data';
+import { shuffleArray } from '../../utils/arrayUtils';
+import { songs, genres, playlists as allPlaylists } from '../../data';
+import PropTypes from 'prop-types';
 
 export default function PlayLists() {
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
-
   return (
     <div className="flex w-full items-start gap-6">
       <div className="flex grow flex-col gap-8 lg:gap-10">
@@ -21,18 +21,42 @@ export default function PlayLists() {
         </div>
         <div>
           <SectionTitle title="Your Playlists" />
-          {isDesktop ? (
-            <div className="flex flex-wrap gap-6">
-              {playlists.slice(0, 8).map((playList) => (
-                <PlaylistCard key={playList.id} {...playList} classNames="grow !max-w-[170px]" />
-              ))}
-            </div>
-          ) : (
-            <PlaylistsSlider playlists={playlists} />
-          )}
+          <PlaylistsContainer numberOfPlayLists={8} />
+        </div>
+        <div>
+          <SectionTitle title="Updated Playlists" />
+          <PlaylistsContainer numberOfPlayLists={2} />
         </div>
       </div>
       <SidebarPlaylist playList={songs} />
     </div>
   );
 }
+
+function PlaylistsContainer({
+  playlists = allPlaylists,
+  numberOfPlayLists = playlists.length,
+  classNames = 'grow !max-w-[170px]',
+}) {
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const shuffledPlaylists = shuffleArray(playlists);
+  return (
+    <>
+      {isDesktop ? (
+        <div className="flex flex-wrap gap-6">
+          {shuffledPlaylists.slice(0, numberOfPlayLists).map((playList) => (
+            <PlaylistCard key={playList.id} {...playList} classNames={classNames} />
+          ))}
+        </div>
+      ) : (
+        <PlaylistsSlider playlists={shuffledPlaylists} numberOfPlaylists={numberOfPlayLists} />
+      )}
+    </>
+  );
+}
+
+PlaylistsContainer.propTypes = {
+  playlists: PropTypes.array.isRequired,
+  numberOfPlayLists: PropTypes.number,
+  classNames: PropTypes.string,
+};
