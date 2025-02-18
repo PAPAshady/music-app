@@ -6,6 +6,7 @@ import AuthLayout from './pages/Auth/AuthLayout';
 import SignIn from './pages/Auth/pages/SignIn/SignIn';
 import SignUp from './pages/Auth/pages/SignUp/SignUp';
 import ForgotPassword from './pages/Auth/pages/ForgotPassword/ForgotPassword';
+import PlayLists from './pages/PlayLists/PlayLists';
 
 const routes = [
   {
@@ -14,6 +15,7 @@ const routes = [
     children: [
       { path: '/', element: <Home /> },
       { path: '/favorites', element: <Favorites /> },
+      { path: '/playlists', element: <PlayLists /> },
     ],
   },
   {
@@ -25,7 +27,7 @@ const routes = [
         path: 'sign-in',
         element: <SignIn />,
         children: [{ path: 'forgot-pass', element: <ForgotPassword /> }],
-      },  
+      },
       { path: 'sign-up', element: <SignUp /> },
     ],
   },

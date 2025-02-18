@@ -7,7 +7,7 @@ import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import ArtistCard from '../../components/MusicCards/ArtistCard/ArtistCard';
 import MainButton from '../../components/Buttons/MainButton/MainButton';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import { songs, tracks, playlists, albums, artists } from '../../data';
+import { songs, genres, playlists, albums, artists } from '../../data';
 import { chunkArray, shuffleArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode, Mousewheel, Scrollbar, Autoplay } from 'swiper/modules';
@@ -25,7 +25,7 @@ export default function Home() {
     <div className="flex items-start gap-6">
       <div className="flex grow flex-col gap-8 lg:gap-10">
         <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
-          {tracks.slice(0, 3).map((track) => (
+          {genres.slice(0, 3).map((track) => (
             <div key={track.id} className="flex w-full justify-center">
               <TracksCard {...track} />
             </div>
@@ -162,7 +162,7 @@ export default function Home() {
                 360: { slidesPerView: 3 },
               }}
             >
-              {chunkArray(tracks, 3).map((tracksArray, index) => (
+              {chunkArray(genres, 3).map((tracksArray, index) => (
                 <SwiperSlide key={index} className="mb-11 p-[1px]">
                   <div className="flex flex-col gap-4">
                     {tracksArray.map((track) => (
