@@ -7,7 +7,7 @@ export default memo(function DesktopNavbar() {
   const navLinks = [
     { id: 1, href: '/', icon: <Home2 /> },
     { id: 2, href: '/favorites', icon: <Heart /> },
-    { id: 3, href: '/playlist', icon: <MusicFilter /> },
+    { id: 3, href: '/playlists', icon: <MusicFilter /> },
     { id: 4, href: '/browse', icon: <MusicSquareSearch /> },
   ];
 
