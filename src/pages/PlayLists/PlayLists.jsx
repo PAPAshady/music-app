@@ -10,8 +10,10 @@ import PropTypes from 'prop-types';
 
 export default function PlayLists() {
   const playlistsSections = [
-    { id: 1, title: 'Your Playlists', href: '#', numberOfPlayLists: 8 },
-    { id: 2, title: 'Updated Playlists', href: '#', numberOfPlayLists: 2 },
+    { id: 1, title: 'Your Playlists', numberOfPlayLists: 8 },
+    { id: 2, title: 'Updated Playlists', numberOfPlayLists: 2 },
+    { id: 3, title: 'Subscribed playlists' },
+    { id: 4, title: 'Popular playlists based on you', numberOfPlayLists: 5 },
   ];
 
   return (
@@ -24,10 +26,10 @@ export default function PlayLists() {
             </div>
           ))}
         </div>
-        {playlistsSections.map((section) => (
-          <div key={section.id}>
-            <SectionTitle title={section.title} href={section.href} />
-            <PlaylistsContainer numberOfPlayLists={section.numberOfPlayLists} />
+        {playlistsSections.map(({ id, title, numberOfPlayLists }) => (
+          <div key={id}>
+            <SectionTitle title={title} />
+            <PlaylistsContainer numberOfPlayLists={numberOfPlayLists} />
           </div>
         ))}
       </div>
