@@ -4,7 +4,8 @@ import TracksSlider from '../../components/TracksSlider/TracksSlider';
 import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
 import DiscoverPlaylistsSlider from '../../components/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/ArtistsSlider/ArtistsSlider';
-import { songs, playlists, artists } from '../../data';
+import GenresSlider from '../../components/GenresSlider/GenresSlider';
+import { songs, playlists, artists, genres } from '../../data';
 
 export default function Browse() {
   return (
@@ -22,6 +23,10 @@ export default function Browse() {
         <div>
           <SectionTitle title="People's Favorite Artists" />
           <ArtistsSlider artists={artists} />
+        </div>
+        <div>
+          <SectionTitle title="Trending Genres" />
+          <GenresSlider genres={genres} />
         </div>
       </div>
       <SidebarPlaylist playList={songs} />

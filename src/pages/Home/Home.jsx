@@ -7,6 +7,7 @@ import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import ArtistCard from '../../components/MusicCards/ArtistCard/ArtistCard';
 import DiscoverPlaylistsSlider from '../../components/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/ArtistsSlider/ArtistsSlider';
+import GenresSlider from '../../components/GenresSlider/GenresSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { songs, genres, playlists, albums, artists } from '../../data';
 import { chunkArray, shuffleArray } from '../../utils/arrayUtils';
@@ -86,28 +87,7 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="Genres You Interested In" />
-          <div className="mx-auto w-[95%] max-w-[940px]">
-            <Swiper
-              slidesPerView={1}
-              spaceBetween={16}
-              modules={[Pagination]}
-              pagination={{ clickable: true }}
-              className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
-              breakpoints={{
-                360: { slidesPerView: 3 },
-              }}
-            >
-              {chunkArray(genres, 3).map((tracksArray, index) => (
-                <SwiperSlide key={index} className="mb-11 p-[1px]">
-                  <div className="flex flex-col gap-4">
-                    {tracksArray.map((track) => (
-                      <TracksCard key={track.id} {...track} />
-                    ))}
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+          <GenresSlider genres={genres} />
         </div>
         <div>
           <SectionHeader title="More Artists You'll Love" />
