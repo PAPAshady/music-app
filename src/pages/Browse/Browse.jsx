@@ -2,6 +2,7 @@ import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import TracksSlider from '../../components/TracksSlider/TracksSlider';
 import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
+import DiscoverPlaylistsSlider from '../../components/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import { songs, playlists } from '../../data';
 
 export default function Browse() {
@@ -16,6 +17,7 @@ export default function Browse() {
           <SectionTitle title="Trending Playlists" />
           <PlaylistsSlider playlists={playlists} />
         </div>
+        <DiscoverPlaylistsSlider playlists={playlists} />
       </div>
       <SidebarPlaylist playList={songs} />
     </div>
