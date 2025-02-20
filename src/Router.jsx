@@ -7,6 +7,7 @@ import SignIn from './pages/Auth/pages/SignIn/SignIn';
 import SignUp from './pages/Auth/pages/SignUp/SignUp';
 import ForgotPassword from './pages/Auth/pages/ForgotPassword/ForgotPassword';
 import PlayLists from './pages/PlayLists/PlayLists';
+import Browse from './pages/Browse/Browse';
 
 const routes = [
   {
@@ -16,6 +17,7 @@ const routes = [
       { path: '/', element: <Home /> },
       { path: '/favorites', element: <Favorites /> },
       { path: '/playlists', element: <PlayLists /> },
+      { path: '/browse', element: <Browse /> },
     ],
   },
   {
