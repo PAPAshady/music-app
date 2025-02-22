@@ -19,7 +19,7 @@ const PlayBar = memo(
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',
       md: 'paragraph-1',
-      sm: 'text-xs',
+      sm: 'text-sm',
     };
 
     const albumNameSizes = {
@@ -33,10 +33,13 @@ const PlayBar = memo(
         className={`bg-primary-800/60 hover:inset-shadow-secondary-400 border-primaty-10 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-[285px] items-center justify-between gap-4 rounded-lg border p-1.5 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${size === 'lg' ? 'lg:max-w-[890px]' : 'lg:max-w-[510px]'} ${classNames}`}
       >
         <div
-          className={`flex grow gap-2 ${size === 'lg' ? 'lg:w-[270px] lg:max-w-[270px] lg:truncate' : ''}`}
+          className={`flex grow gap-2 overflow-hidden ${size === 'lg' ? 'lg:w-[270px] lg:max-w-[270px] lg:truncate' : ''}`}
         >
-          <button className="relative overflow-hidden rounded-md" onClick={clickHandler}>
-            <img src={cover} className="size-14 min-h-14 min-w-14 object-cover" alt={title} />
+          <button
+            className="relative size-14 min-h-14 min-w-14 overflow-hidden rounded-md"
+            onClick={clickHandler}
+          >
+            <img src={cover} className="size-full object-cover" alt={title} />
             <span
               className={`absolute top-1/2 left-1/2 flex size-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition-all duration-300 group-hover:bg-black/60 group-hover:opacity-100`}
             >
@@ -45,14 +48,15 @@ const PlayBar = memo(
               </span>
             </span>
           </button>
-          <div className="flex flex-col">
+          <div className="flex flex-col overflow-hidden">
             <button
-              className={`text-white-50 grow text-start ${musicTitleSizes[size]}`}
+              className={`text-white-50 grow truncate text-start ${musicTitleSizes[size]}`}
               onClick={clickHandler}
+              title={title}
             >
               {title}
             </button>
-            <span className={`text-secondary-200 grow ${size === 'lg' ? 'lg:text-sm' : 'text-xs'}`}>
+            <span className="text-secondary-200 grow truncate text-[13px]" title={artist}>
               {artist}
             </span>
           </div>
