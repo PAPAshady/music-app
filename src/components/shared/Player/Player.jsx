@@ -4,7 +4,7 @@ import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 
 export default function Player() {
   return (
-    <div className="border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-10 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-sm min-[400px]:items-center min-[480px]:p-4 sm:items-center sm:gap-4 lg:sticky lg:bottom-2 lg:justify-between lg:gap-8 lg:rounded-lg lg:border xl:w-[65dvw] 2xl:!w-full">
+    <div className="border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-10 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-sm min-[400px]:items-center min-[480px]:p-4 sm:items-center sm:gap-4 lg:sticky lg:bottom-2 lg:justify-between lg:gap-8 lg:rounded-lg lg:border xl:w-[63dvw] 2xl:!w-full">
       <div className="flex items-center gap-4">
         <div className="relative size-12 overflow-hidden rounded-lg min-[400px]:size-15 sm:size-20 lg:size-16">
           <img className="size-full object-cover" src={noCoverImg} alt="" />
