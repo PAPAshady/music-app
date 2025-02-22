@@ -1,6 +1,6 @@
-import PlayBar from '../MusicCards/PlayBar/PlayBar';
-import useMediaQuery from '../../hooks/useMediaQuery';
-import { shuffleArray, chunkArray } from '../../utils/arrayUtils';
+import PlayBar from '../../MusicCards/PlayBar/PlayBar';
+import useMediaQuery from '../../../hooks/useMediaQuery';
+import { shuffleArray, chunkArray } from '../../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import PropTypes from 'prop-types';

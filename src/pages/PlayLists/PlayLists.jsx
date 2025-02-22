@@ -2,7 +2,7 @@ import useMediaQuery from '../../hooks/useMediaQuery';
 import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
 import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
-import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
+import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import { shuffleArray } from '../../utils/arrayUtils';

@@ -1,5 +1,5 @@
-import AlbumCard from '../MusicCards/AlbumCard/AlbumCard';
-import { chunkArray } from '../../utils/arrayUtils';
+import AlbumCard from '../../MusicCards/AlbumCard/AlbumCard';
+import { chunkArray } from '../../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';

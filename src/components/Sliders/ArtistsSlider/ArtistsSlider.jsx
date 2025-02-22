@@ -1,4 +1,4 @@
-import ArtistCard from '../MusicCards/ArtistCard/ArtistCard';
+import ArtistCard from '../../MusicCards/ArtistCard/ArtistCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, FreeMode } from 'swiper/modules';
 import PropTypes from 'prop-types';

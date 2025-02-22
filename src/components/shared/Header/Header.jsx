@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
 import useHamburgerMenu from '../../../hooks/useHamburgerMenu';
 import Logo from '../../Logo/Logo';
-import SearchInput from '../../SearchInput/SearchInput';
+import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import Avatar from '../../Avatar/Avatar';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import profileImg from '../../../assets/images/Avatar/profile-pic.jpg';
