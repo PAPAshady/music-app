@@ -108,6 +108,18 @@ export default function Browse() {
             </div>
           </div>
         </div>
+        <div>
+          <SectionTitle title="Workout Playlists" />
+          <PlaylistsSlider playlists={playlists} />
+        </div>
+        <div>
+          <SectionTitle title="Best Albums Of 2024" />
+          <AlbumsSlider albums={albums} albumCardSize="md" albumCardStyles="!max-w-none" />
+        </div>
+        <div>
+          <SectionTitle title="Meet the Top New Singers of 2024" />
+          <ArtistsSlider artists={artists} />
+        </div>
       </div>
       <SidebarPlaylist playList={songs} />
     </div>
