@@ -27,14 +27,17 @@ const AlbumCard = memo(
               <span className="size-[31%] rounded-full border border-white lg:size-[21px] lg:border"></span>
             </div>
           </div>
-          <div className="flex grow items-center justify-between px-3.5 lg:block">
-            <div>
+          <div className="flex grow items-center justify-between overflow-hidden px-3.5 lg:block">
+            <div className="overflow-hidden">
               <p
                 className={`text-white-50 cursor-pointer truncate text-base ${size === 'lg' ? 'lg:text-lg' : ''}`}
+                title={name}
               >
                 {name}
               </p>
-              <span className="block truncate text-sm text-white">{singer}</span>
+              <span title={singer} className="block truncate text-sm text-white">
+                {singer}
+              </span>
             </div>
             {size === 'md' && (
               <div className="mt-3 hidden items-center justify-between gap-4 text-sm lg:flex">
