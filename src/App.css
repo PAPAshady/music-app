@@ -17,7 +17,7 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: #304fab;
     border-radius: 2px;
     border: 1px solid rgba(216, 223, 245, 0.5);
   }
@@ -36,7 +36,7 @@
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: #d8dff5 transparent;
+    scrollbar-color: #d8dff5 #304fab;
   }
 
   h1 {
