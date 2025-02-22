@@ -4,8 +4,8 @@ import favoritesPageBgImg from '../../../assets/images/backgrounds/favorites-pag
 import playlistAndSubscriptionPageBgImg from '../../../assets/images/backgrounds/playlist and-subscription-page.jpg';
 import browsePageBgImg from '../../../assets/images/backgrounds/browse-page.jpg';
 import Header from '../Header/Header';
-import DesktopNavbar from '../../DesktopNavbar/DesktopNavbar';
-import HamburgerMenu from '../../HamburgerMenu/HamburgerMenu';
+import DesktopNavbar from '../DesktopNavbar/DesktopNavbar';
+import HamburgerMenu from '../HamburgerMenu/HamburgerMenu';
 import Player from '../Player/Player';
 import Footer from '../Footer/Footer';
 import Logo from '../../Logo/Logo';

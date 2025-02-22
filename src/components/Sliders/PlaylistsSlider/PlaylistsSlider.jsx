@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import PlaylistCard from '../MusicCards/PlaylistCard/PlaylistCard';
+import PlaylistCard from '../../MusicCards/PlaylistCard/PlaylistCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper/modules';
 import 'swiper/css';

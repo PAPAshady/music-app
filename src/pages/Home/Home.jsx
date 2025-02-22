@@ -1,13 +1,13 @@
 import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
 import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionHeader from '../../components/SectionHeader/SectionHeader';
-import PlaylistsSlider from '../../components/PlaylistsSlider/PlaylistsSlider';
-import AlbumsSlider from '../../components/AlbumsSlider/AlbumsSlider';
+import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
+import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import ArtistCard from '../../components/MusicCards/ArtistCard/ArtistCard';
-import DiscoverPlaylistsSlider from '../../components/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
-import ArtistsSlider from '../../components/ArtistsSlider/ArtistsSlider';
-import GenresSlider from '../../components/GenresSlider/GenresSlider';
+import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
+import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
+import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { songs, genres, playlists, albums, artists } from '../../data';
 import { chunkArray, shuffleArray } from '../../utils/arrayUtils';

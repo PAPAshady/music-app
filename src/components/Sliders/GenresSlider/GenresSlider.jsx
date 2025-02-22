@@ -1,5 +1,5 @@
-import TracksCard from '../MusicCards/TracksCard/TracksCard';
-import { chunkArray } from '../../utils/arrayUtils';
+import TracksCard from '../../MusicCards/TracksCard/TracksCard';
+import { chunkArray } from '../../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import PropTypes from 'prop-types';

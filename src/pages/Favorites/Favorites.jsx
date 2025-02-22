@@ -2,8 +2,8 @@ import bannerBg from '../../assets/images/backgrounds/player-and-settings-page.p
 import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
-import AlbumsSlider from '../../components/AlbumsSlider/AlbumsSlider';
-import TracksSlider from '../../components/TracksSlider/TracksSlider';
+import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
+import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { songs, albums } from '../../data';
 

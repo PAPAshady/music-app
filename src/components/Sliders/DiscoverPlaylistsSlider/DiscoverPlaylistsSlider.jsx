@@ -1,7 +1,7 @@
-import MainButton from '../../components/Buttons/MainButton/MainButton';
-import sectionBg from '../../assets/images/backgrounds/section-bg-1.jpg';
-import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
-import useMediaQuery from '../../hooks/useMediaQuery';
+import MainButton from '../../Buttons/MainButton/MainButton';
+import sectionBg from '../../../assets/images/backgrounds/section-bg-1.jpg';
+import PlaylistCard from '../../MusicCards/PlaylistCard/PlaylistCard';
+import useMediaQuery from '../../../hooks/useMediaQuery';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import PropTypes from 'prop-types';
