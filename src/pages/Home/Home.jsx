@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 
 export default function Home() {
   return (
-    <div className="flex items-start gap-6">
+    <div className="flex items-start gap-6 w-full">
       <div className="flex grow flex-col gap-8 lg:gap-10">
         <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
           {genres.slice(0, 3).map((track) => (
@@ -66,7 +66,7 @@ export default function Home() {
                 1024: { slidesPerView: 4.5, freeMode: false },
                 1440: { slidesPerView: 5, pagination: { enabled: true }, freeMode: false },
               }}
-              className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
+              className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
             >
               {artists.map((artist) => (
                 <SwiperSlide key={artist.id} className="pb-11">

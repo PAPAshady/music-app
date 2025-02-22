@@ -14,7 +14,7 @@ export default function GenresSlider({ genres }) {
         spaceBetween={16}
         modules={[Pagination]}
         pagination={{ clickable: true }}
-        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
+        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
         breakpoints={{ 360: { slidesPerView: 3 } }}
       >
         {chunkArray(genres, 3).map((tracksArray, index) => (

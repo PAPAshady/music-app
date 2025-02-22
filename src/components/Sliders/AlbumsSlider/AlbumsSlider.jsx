@@ -14,7 +14,7 @@ export default function AlbumsSlider({ albums, albumCardSize = 'lg', albumCardSt
         spaceBetween={24}
         modules={[Pagination]}
         pagination={{ clickable: true }}
-        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
+        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
         breakpoints={{
           500: {
             slidesPerView: 1.2,

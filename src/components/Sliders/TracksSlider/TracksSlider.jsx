@@ -32,7 +32,7 @@ export default function TracksSlider({ songs }) {
             slidesPerView: 3,
           },
         }}
-        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
+        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
       >
         {chunkArray(shuffleArray(songs), 2).map((songsArray, index) => (
           <SwiperSlide key={index} className="pb-11 p-[1px]">

@@ -11,7 +11,7 @@ export default function DiscoverPlaylistsSlider({ playlists }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   return (
     <div
-      className="mx-auto flex w-full max-w-[95dvw] flex-col overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat md:mx-auto lg:w-[93%] lg:max-w-[calc(95dvw-126px)] xl:w-[calc(95dvw-410px)] xl:max-w-[940px]"
+      className="mx-auto flex w-full max-w-[95dvw] flex-col overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat md:mx-auto lg:w-[93%] lg:max-w-[calc(95dvw-126px)] xl:w-[calc(95dvw-428px)] xl:max-w-[940px]"
       style={{ backgroundImage: `url(${sectionBg})` }}
     >
       <div className="size-full items-center justify-between gap-4 backdrop-blur-md min-[480px]:flex min-[480px]:py-5 min-[480px]:ps-4 min-[480px]:pe-0 sm:flex-col sm:gap-8 sm:px-0 sm:py-8 lg:gap-10">

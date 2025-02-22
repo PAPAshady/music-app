@@ -26,7 +26,7 @@ export default function PlaylistsSlider({ playlists, numberOfPlaylists = playlis
             slidesPerView: 5,
           },
         }}
-        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
+        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
       >
         {playlists.slice(0, numberOfPlaylists).map((playlist) => (
           <SwiperSlide
