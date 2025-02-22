@@ -26,7 +26,7 @@ export default function ArtistsSlider({ artists }) {
           1024: { slidesPerView: 4.5, freeMode: false },
           1440: { slidesPerView: 5, pagination: { enabled: true }, freeMode: false },
         }}
-        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-410px)]"
+        className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
       >
         {artists.map((artist) => (
           <SwiperSlide key={artist.id} className="pb-11">

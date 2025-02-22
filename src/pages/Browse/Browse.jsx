@@ -90,7 +90,7 @@ export default function Browse() {
                 modules={[FreeMode, Autoplay]}
                 autoplay={{ delay: 2000 }}
                 freeMode
-                className="mx-auto max-w-[90dvw] !bg-transparent min-[480px]:max-w-[225px] min-[480px]:!pe-4 min-[590px]:max-w-[300px] sm:max-w-[93dvw] lg:max-w-[calc(93dvw-86px)] lg:!pe-0 xl:max-w-[calc(95dvw-446px)] 2xl:!max-w-[888px]"
+                className="mx-auto max-w-[90dvw] !bg-transparent min-[480px]:max-w-[225px] min-[480px]:!pe-4 min-[590px]:max-w-[300px] sm:max-w-[93dvw] lg:max-w-[calc(93dvw-86px)] lg:!pe-0 xl:max-w-[calc(95dvw-460px)] 2xl:!max-w-[888px]"
                 breakpoints={{
                   360: { slidesPerView: 2 },
                   480: { slidesPerView: 1.3 },
