@@ -33,6 +33,10 @@ export default function Browse() {
           <SectionTitle title="Trending Albums" />
           <AlbumsSlider albums={albums} albumCardSize="md" albumCardStyles="!max-w-none" />
         </div>
+        <div>
+          <SectionTitle title="Let's Party " />
+          <TracksSlider songs={songs} />
+        </div>
       </div>
       <SidebarPlaylist playList={songs} />
     </div>
