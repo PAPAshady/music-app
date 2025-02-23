@@ -1,0 +1,7 @@
+#lyrics-wrapper::-webkit-scrollbar {
+  width: 0;
+}
+
+#lyrics-wrapper {
+  scrollbar-width: none;
+}

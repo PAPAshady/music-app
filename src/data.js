@@ -63,6 +63,7 @@ export const songs = [
     time: '2:11',
     cover: songCover1,
     isFavorite: true,
+    isPlaying: true,
   },
   {
     id: 2,
@@ -231,4 +232,16 @@ export const artists = [
   { id: 9, name: 'Frank Sinatra', image: artist9 },
   { id: 10, name: 'The Weeknd', image: artist10 },
   { id: 11, name: 'Amy Winehouse', image: artist11 },
+];
+
+export const lyrics = [
+  { id: 0, lyric: 'Mais aussi', isShown: false },
+  { id: 1, lyric: "Encore plus près d'tes adversaires", isShown: false },
+  { id: 2, lyric: 'A tattered gown and a kingdom of ash', isShown: false },
+  { id: 3, lyric: "Mais ma meilleure ennemie, c'est toi", isShown: true },
+  { id: 4, lyric: "Fuis-moi, le pire, c'est toi et moi", isShown: false },
+  { id: 5, lyric: 'Mais si tu cherches encore ma voix', isShown: false },
+  { id: 6, lyric: "Oublie-moi, le pire, c'est toi et moi", isShown: false },
+  { id: 7, lyric: 'Pourquoi ton prénom me blesse', isShown: false },
+  { id: 8, lyric: "Quand il se cache juste là dans l'espace?", isShown: false },
 ];
