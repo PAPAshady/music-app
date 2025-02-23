@@ -8,6 +8,7 @@ import SignUp from './pages/Auth/pages/SignUp/SignUp';
 import ForgotPassword from './pages/Auth/pages/ForgotPassword/ForgotPassword';
 import PlayLists from './pages/PlayLists/PlayLists';
 import Browse from './pages/Browse/Browse';
+import PlayerPage from './pages/PlayerPage/PlayerPage';
 
 const routes = [
   {
@@ -20,6 +21,7 @@ const routes = [
       { path: '/browse', element: <Browse /> },
     ],
   },
+  { path: '/player', element: <PlayerPage /> },
   {
     path: '/auth',
     element: <AuthLayout />,

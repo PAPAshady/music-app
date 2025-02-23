@@ -9,19 +9,34 @@ export default function MusicPlayerCard({
   time,
   isFavorite,
   cover = noCoverImg,
+  isPlaying,
+  onClick,
   classNames,
 }) {
   return (
     <div
-      className={`border-secondary-300 hover:border-secondary-50 flex max-w-[325px] items-center overflow-hidden rounded-lg border transition-colors duration-300 ${classNames}`}
+      className={`border-secondary-300 hover:border-secondary-50 flex items-center gap-2 overflow-hidden rounded-lg border-2 p-2 transition-all duration-300 ${classNames} ${isPlaying ? '' : '!border-transparent'}`}
     >
-      <img src={cover} alt={title} className="size-28 object-cover" />
-      <div className="grow overflow-hidden px-2">
+      <img
+        onClick={onClick}
+        src={cover}
+        alt={title}
+        className={`size-24 cursor-pointer rounded-md border-2 border-transparent object-cover transition-colors duration-300 ${!isPlaying ? 'hover:border-secondary-300' : ''}`}
+      />
+      <div
+        className={`grow overflow-hidden transition-all duration-300 ${isPlaying ? 'visible opacity-100' : 'invisible opacity-0'}`}
+      >
         <div className="mb-2">
-          <h3 className="text-primary-50 mb-2 truncate text-lg" title={title}>
+          <h3
+            onClick={onClick}
+            className="text-primary-50 mb-1 cursor-pointer truncate text-base"
+            title={title}
+          >
             {title}
           </h3>
-          <p className="text-primary-100 truncate text-sm">{artist}</p>
+          <p className="text-primary-100 truncate text-sm" title={artist}>
+            {artist}
+          </p>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-primary-100 text-sm">{time}</span>
@@ -38,5 +53,7 @@ MusicPlayerCard.propTypes = {
   time: PropTypes.string.isRequired,
   isFavorite: PropTypes.bool,
   cover: PropTypes.string,
+  isPlaying: PropTypes.bool,
+  onClick: PropTypes.func,
   classNames: PropTypes.string,
 };
