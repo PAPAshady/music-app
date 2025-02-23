@@ -15,7 +15,7 @@ export default function MusicPlayerCard({
 }) {
   return (
     <div
-      className={`border-secondary-300 hover:border-secondary-50 flex items-center gap-2 overflow-hidden rounded-lg border-2 p-2 transition-all duration-300 ${classNames} ${isPlaying ? '' : '!border-transparent'}`}
+      className={`border-secondary-300 hover:border-secondary-50 flex items-center gap-2 overflow-hidden rounded-lg border-2 p-2 transition-all duration-300 ${classNames} ${isPlaying ? 'backdrop-blur-xs bg-secondary-600/40' : '!border-transparent'}`}
     >
       <img
         onClick={onClick}

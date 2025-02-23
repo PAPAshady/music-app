@@ -15,7 +15,7 @@ export default function PlayerPage() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   const CD_Sizes =
-    'size-[220px] xs:size-[260px] min-[480px]:size-[350px] sm:size-[380px] md:size-[450px] lg:size-[300px] min-[1150px]:!size-[370px] xl:!size-[420px]';
+    'size-[220px] xs:size-[260px] min-[480px]:size-[350px] sm:size-[380px] md:size-[450px] lg:size-[300px] min-[1150px]:!size-[370px]';
   return (
     <div
       className="pb- relative min-h-[100dvh] overflow-y-auto bg-cover bg-center bg-no-repeat"
