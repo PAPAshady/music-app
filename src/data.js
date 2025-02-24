@@ -245,3 +245,12 @@ export const lyrics = [
   { id: 7, lyric: 'Pourquoi ton prénom me blesse', isShown: false },
   { id: 8, lyric: "Quand il se cache juste là dans l'espace?", isShown: false },
 ];
+
+export const notifications = [
+  { id: 1, body: 'A new song has been add to your playlist.', time: '2 min ago' },
+  { id: 2, body: 'Music successfully added to favorites.', time: '2 hours ago' },
+  { id: 3, body: 'A new song has been add to your playlist.', time: '10 hours ago' },
+  { id: 4, body: 'Music successfully added to favorites.', time: '3 days ago' },
+  { id: 5, body: 'A new song has been add to your playlist.', time: '2 weeks ago' },
+  { id: 6, body: 'Music successfully added to favorites.', time: '1 month ago' },
+];

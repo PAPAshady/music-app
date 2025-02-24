@@ -1,20 +1,37 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
 import useHamburgerMenu from '../../../hooks/useHamburgerMenu';
+import useInput from '../../../hooks/useInput';
 import Logo from '../../Logo/Logo';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import Avatar from '../../Avatar/Avatar';
+import NotificationMenu from '../NotificationMenu/NotificationMenu';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import profileImg from '../../../assets/images/Avatar/profile-pic.jpg';
 
 export default memo(function Header() {
-  const [searchInputValue, setSearchInputValue] = useState('');
+  const [isNotificationMenuVisible, setIsNotificationMenuVisible] = useState(false);
   const { setIsShowHamburgerMenu } = useHamburgerMenu();
+  const searchInput = useInput();
+  const notificationMenuRef = useRef(null);
 
-  const handleSearchInputChange = useCallback((newValue) => {
-    setSearchInputValue(newValue);
-  }, []);
+  // Close notification menu when user clicks outside.
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationMenuRef.current && !notificationMenuRef.current.contains(event.target)) {
+        setIsNotificationMenuVisible(false);
+      }
+    };
+
+    if (isNotificationMenuVisible) {
+      document.addEventListener('click', handleClickOutside);
+    } else {
+      document.removeEventListener('click', handleClickOutside);
+    }
+
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isNotificationMenuVisible]);
 
   return (
     <header>
@@ -31,10 +48,17 @@ export default memo(function Header() {
       </div>
       <div className="hidden items-center justify-between lg:flex">
         <div>
-          <SearchInput value={searchInputValue} onChangeHandler={handleSearchInputChange} />
+          <SearchInput {...searchInput} />
         </div>
         <div className="text-secondary-100 flex items-center gap-2">
-          <IconButton icon={<Notification />} />
+          <div className="relative" ref={notificationMenuRef}>
+            <IconButton
+              onClick={() => setIsNotificationMenuVisible((prev) => !prev)}
+              icon={<Notification />}
+              isActive={isNotificationMenuVisible}
+            />
+            <NotificationMenu isVisible={isNotificationMenuVisible} />
+          </div>
           <IconButton icon={<Setting2 />} />
           <button>
             <Avatar size="xs" profilePic={profileImg} />
