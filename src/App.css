@@ -17,7 +17,7 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #304fab;
+    background: #273f89;
     border-radius: 2px;
     border: 1px solid rgba(216, 223, 245, 0.5);
   }
@@ -36,7 +36,7 @@
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: #d8dff5 #304fab;
+    scrollbar-color: #d8dff5 #273f89;
   }
 
   h1 {
@@ -100,7 +100,7 @@
 
   /* Swiper JS custom global styles */
   .swiper-scrollbar {
-    @apply !bg-primary-700 !w-[6px] !rounded-[2px];
+    @apply !bg-primary-600 !w-[6px] !rounded-[2px];
   }
 
   .swiper-scrollbar-drag {
