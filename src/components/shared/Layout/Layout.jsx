@@ -32,7 +32,7 @@ export default function Layout() {
     '/favorites': favoritesPageBgImg,
     '/playlists': playlistAndSubscriptionPageBgImg,
     '/browse': browsePageBgImg,
-    '/subscription': playlistAndSubscriptionPageBgImg,
+    '/permium': playlistAndSubscriptionPageBgImg,
   };
 
   return (
