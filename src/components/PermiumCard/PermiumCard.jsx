@@ -16,15 +16,15 @@ export default function PermiumCard({ title, permiumType, price, disabled }) {
 
   return (
     <div
-      className={`group inline-flex max-w-[240px] flex-col gap-6 rounded-lg border p-6 text-center transition-all duration-300 lg:max-w-[290px] lg:gap-9 ${disabled ? 'border-white-700 bg-white-800/70' : `border-secondary-300 bg-black/24 lg:border-transparent lg:bg-[#092142]/52 lg:inset-shadow-[4px_4px_8px_2px] lg:inset-shadow-[#4873AE]/40 ${hoverEffects}`}`}
+      className={`group inline-flex max-w-[240px] flex-col gap-6 rounded-lg border p-6 text-center transition-all duration-300 lg:max-w-[290px] lg:gap-9 xl:w-full xl:max-w-none xl:px-4 ${disabled ? 'border-white-700 bg-white-800/70' : `border-secondary-300 bg-black/24 lg:border-transparent lg:bg-[#092142]/52 lg:inset-shadow-[4px_4px_8px_2px] lg:inset-shadow-[#4873AE]/40 ${hoverEffects}`}`}
     >
       <p
-        className={`text-lg lg:text-2xl lg:font-semibold ${disabled ? 'text-white-500' : 'text-white-50'}`}
+        className={`grow text-lg lg:text-2xl lg:font-semibold ${disabled ? 'text-white-500' : 'text-white-50'}`}
       >
         {permiumType}
       </p>
       <h4
-        className={`text-2xl transition-colors duration-300 lg:text-[32px] ${disabled ? 'text-white-700' : 'text-primary-300 lg:group-hover:text-primary-50'}`}
+        className={`mx-auto text-2xl transition-colors duration-300 lg:text-[32px] xl:max-w-[220px] ${disabled ? 'text-white-700' : 'text-primary-300 lg:group-hover:text-primary-50'}`}
       >
         {title}
       </h4>

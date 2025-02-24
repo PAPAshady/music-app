@@ -20,7 +20,7 @@ export default memo(function DesktopNavbar() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <DesktopNavLink href="/subscription" icon={<Medal />} />
+        <DesktopNavLink href="/permium" icon={<Medal />} />
         <DesktopNavLink href="/messages" icon={<Messages3 />} />
       </div>
     </div>

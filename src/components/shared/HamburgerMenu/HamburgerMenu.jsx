@@ -26,7 +26,7 @@ const HamburgerMenu = memo(() => {
     { id: 4, title: 'Favorites', icon: <Heart />, href: '/favorites' },
     { id: 5, title: 'Playlists', icon: <MusicFilter />, href: '/playlists' },
     { id: 6, title: 'Browse', icon: <MusicSquareSearch />, href: '/browse' },
-    { id: 7, title: 'Permium', icon: <Medal />, href: '/subscription' },
+    { id: 7, title: 'Permium', icon: <Medal />, href: '/permium' },
     { id: 8, title: 'Q&A', icon: <Messages3 />, href: '/q&a' },
   ];
 
