@@ -53,7 +53,7 @@ export default memo(function Header() {
         <div className="text-secondary-100 flex items-center gap-2">
           <div className="relative" ref={notificationMenuRef}>
             <IconButton
-              clickHandler={() => setIsNotificationMenuVisible((prev) => !prev)}
+              onClick={() => setIsNotificationMenuVisible((prev) => !prev)}
               icon={<Notification />}
               isActive={isNotificationMenuVisible}
             />
