@@ -9,6 +9,7 @@ import ForgotPassword from './pages/Auth/pages/ForgotPassword/ForgotPassword';
 import PlayLists from './pages/PlayLists/PlayLists';
 import Browse from './pages/Browse/Browse';
 import PlayerPage from './pages/PlayerPage/PlayerPage';
+import Permium from './pages/Permium/Permium';
 
 const routes = [
   {
@@ -19,6 +20,7 @@ const routes = [
       { path: '/favorites', element: <Favorites /> },
       { path: '/playlists', element: <PlayLists /> },
       { path: '/browse', element: <Browse /> },
+      { path: '/permium', element: <Permium /> },
     ],
   },
   { path: '/player', element: <PlayerPage /> },
