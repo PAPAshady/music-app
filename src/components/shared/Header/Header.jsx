@@ -55,6 +55,7 @@ export default memo(function Header() {
             <IconButton
               clickHandler={() => setIsNotificationMenuVisible((prev) => !prev)}
               icon={<Notification />}
+              isActive={isNotificationMenuVisible}
             />
             <NotificationMenu isVisible={isNotificationMenuVisible} />
           </div>
