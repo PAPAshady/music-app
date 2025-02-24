@@ -1,7 +1,8 @@
-import { memo, useCallback, useState, useRef, useEffect } from 'react';
+import { memo, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
 import useHamburgerMenu from '../../../hooks/useHamburgerMenu';
+import useInput from '../../../hooks/useInput';
 import Logo from '../../Logo/Logo';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import Avatar from '../../Avatar/Avatar';
@@ -10,9 +11,9 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import profileImg from '../../../assets/images/Avatar/profile-pic.jpg';
 
 export default memo(function Header() {
-  const [searchInputValue, setSearchInputValue] = useState('');
   const [isNotificationMenuVisible, setIsNotificationMenuVisible] = useState(false);
   const { setIsShowHamburgerMenu } = useHamburgerMenu();
+  const searchInput = useInput();
   const notificationMenuRef = useRef(null);
 
   // Close notification menu when user clicks outside.
@@ -32,10 +33,6 @@ export default memo(function Header() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isNotificationMenuVisible]);
 
-  const handleSearchInputChange = useCallback((newValue) => {
-    setSearchInputValue(newValue);
-  }, []);
-
   return (
     <header>
       <div className="flex items-center justify-between lg:hidden">
@@ -51,7 +48,7 @@ export default memo(function Header() {
       </div>
       <div className="hidden items-center justify-between lg:flex">
         <div>
-          <SearchInput value={searchInputValue} onChangeHandler={handleSearchInputChange} />
+          <SearchInput {...searchInput} />
         </div>
         <div className="text-secondary-100 flex items-center gap-2">
           <div className="relative" ref={notificationMenuRef}>
