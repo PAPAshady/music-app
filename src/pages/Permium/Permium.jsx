@@ -25,10 +25,10 @@ export default function Permium() {
     <div className="flex w-full items-start gap-6">
       <div className="flex grow flex-col gap-8 lg:gap-10">
         <div className="mb-4 pt-4 text-center">
-          <h4 className="text-white-200 mb-5 text-3xl font-semibold sm:text-4xl lg:text-5xl">
+          <h4 className="text-white-200 mb-5 text-3xl font-semibold sm:text-4xl lg:text-4xl 2xl:!text-5xl">
             Unlock Your Music Potential
           </h4>
-          <p className="text-primary-200 text-lg sm:text-xl lg:text-[32px]">
+          <p className="text-primary-200 text-lg sm:text-xl lg:text-2xl 2xl:!text-[32px]">
             Enjoy Unlimited Streaming with Premium Access
           </p>
         </div>
