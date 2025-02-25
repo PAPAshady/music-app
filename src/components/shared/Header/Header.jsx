@@ -37,7 +37,7 @@ export default memo(function Header() {
     <header>
       <div className="flex items-center justify-between lg:hidden">
         <div className="flex items-center gap-2">
-          <IconButton clickHandler={() => setIsShowHamburgerMenu(true)} icon={<HambergerMenu />} />
+          <IconButton onClick={() => setIsShowHamburgerMenu(true)} icon={<HambergerMenu />} />
           <IconButton icon={<SearchNormal1 />} />
         </div>
         <div>
