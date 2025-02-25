@@ -1,5 +1,5 @@
 import TextField from '../../../../components/Inputs/TextField/TextField';
-import MainButton from '../../../../components/Buttons/MainButton/MainButton';
+import LoginButton from '../../../../components/Buttons/LoginButton/LoginButton';
 import useInput from '../../../../hooks/useInput';
 import { Sms, Lock } from 'iconsax-react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
@@ -45,7 +45,7 @@ export default function SignIn() {
                 </div>
                 <Link to="forgot-pass">Fogot Password ?</Link>
               </div>
-              <MainButton title="LOGIN" variant="neutral" size="lg" />
+              <LoginButton title="Sign in" size="md" />
             </form>
             <div className="text-center">
               <p className="text-white-200 mb-4">OR Log In With</p>

@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import useInput from '../../../../hooks/useInput';
 import { Sms, Call } from 'iconsax-react';
 import TextField from '../../../../components/Inputs/TextField/TextField';
-import MainButton from '../../../../components/Buttons/MainButton/MainButton';
+import LoginButton from '../../../../components/Buttons/LoginButton/LoginButton';
 
 export default function ForgotPassword() {
   const [otp, setOtp] = useState(Array(6).fill(''));
@@ -69,13 +69,8 @@ export default function ForgotPassword() {
               />
             ))}
           </div>
-          <div className="text-center">
-            <MainButton
-              title="SUBMIT"
-              variant="neutral"
-              size="lg"
-              classNames="lg:w-full sm:w-3/4 w-1/2 py-4"
-            />
+          <div className="w-full text-center">
+            <LoginButton title="SUBMIT" size="md" classNames="w-full" />
           </div>
         </form>
       ) : (
@@ -89,7 +84,7 @@ export default function ForgotPassword() {
             <span className="text-primary-50 my-4 text-center">OR</span>
             <TextField type="number" placeholder="Phone" icon={<Call />} {...phoneInput} />
           </div>
-          <MainButton title="SUBMIT" variant="neutral" size="lg" classNames="py-3" />
+          <LoginButton title="SUBMIT" size="md" />
         </form>
       )}
     </div>

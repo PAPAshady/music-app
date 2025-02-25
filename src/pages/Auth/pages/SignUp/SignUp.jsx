@@ -1,5 +1,5 @@
 import TextField from '../../../../components/Inputs/TextField/TextField';
-import MainButton from '../../../../components/Buttons/MainButton/MainButton';
+import LoginButton from '../../../../components/Buttons/LoginButton/LoginButton';
 import useInput from '../../../../hooks/useInput';
 import { User, Sms, Lock } from 'iconsax-react';
 import { Link } from 'react-router-dom';
@@ -18,12 +18,12 @@ export default function SignUp() {
         <p className="text-lg">Welcome To VioTune</p>
       </div>
       <form action="#" className="mb-10 flex flex-col gap-6">
-        <div className="flex flex-col gap-10 mb-4">
+        <div className="mb-4 flex flex-col gap-10">
           <TextField placeholder="User Name" icon={<User />} {...userNameInput} />
           <TextField type="email" placeholder="Email" icon={<Sms />} {...emailInput} />
           <TextField type="password" placeholder="Password" icon={<Lock />} {...passwordInput} />
         </div>
-        <MainButton title="SIGN UP" variant="neutral" size="lg" />
+        <LoginButton title="Sign up" size="md" />
       </form>
       <div className="text-center">
         <p className="text-white-200 mb-4">OR Sign Up With</p>
