@@ -26,9 +26,10 @@ export default memo(function Header() {
             <IconButton
               icon={<SearchNormal1 />}
               onClick={() => mobileSearchBox.setIsVisible((prev) => !prev)}
+              isActive={mobileSearchBox.isVisible}
             />
             <div
-              className={`absolute z-10 transition-all duration-300 ${mobileSearchBox.isVisible ? 'visible top-full opacity-100' : 'invisible top-[150%] opacity-0'}`}
+              className={`absolute z-10 transition-all duration-300 ${mobileSearchBox.isVisible ? 'visible top-[110%] opacity-100' : 'invisible top-[150%] opacity-0'}`}
             >
               <SearchInput classNames="backdrop-blur-sm" {...searchInput} />
             </div>
