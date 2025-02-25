@@ -11,7 +11,7 @@ export default function LoginButton({ title, size, classNames, onClick, disabled
     <button
       disabled={disabled}
       onClick={(e) => onClick(e)}
-      className={`bg-primary-50 border-primary-50 text-primary hover:border-primary-100 hover:text-primary-50 rounded-lg border px-8 py-[14px] text-base font-medium transition-colors duration-300 hover:bg-[#9CAFE6]/50 ${buttonSizes[size]} ${classNames}`}
+      className={`bg-primary-50 border-primary-50 text-primary disabled:bg-white-700 disabled:text-white-500 hover:border-primary-100 hover:text-primary-50 rounded-lg border px-8 py-[14px] text-base font-medium transition-colors duration-300 hover:bg-[#9CAFE6]/50 ${buttonSizes[size]} ${classNames}`}
     >
       {title}
     </button>
