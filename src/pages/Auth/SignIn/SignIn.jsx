@@ -1,10 +1,10 @@
-import TextField from '../../../../components/Inputs/TextField/TextField';
-import LoginButton from '../../../../components/Buttons/LoginButton/LoginButton';
-import useInput from '../../../../hooks/useInput';
+import TextField from '../../../components/Inputs/TextField/TextField';
+import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
+import useInput from '../../../hooks/useInput';
 import { Sms, Lock } from 'iconsax-react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import facebookLogo from '../../../../assets/images/socials/facebook.png';
-import googleLogo from '../../../../assets/images/socials/google.png';
+import facebookLogo from '../../../assets/images/socials/facebook.png';
+import googleLogo from '../../../assets/images/socials/google.png';
 
 export default function SignIn() {
   const emailInput = useInput();

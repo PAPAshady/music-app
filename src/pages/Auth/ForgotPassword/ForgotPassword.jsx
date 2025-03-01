@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
-import useInput from '../../../../hooks/useInput';
+import useInput from '../../../hooks/useInput';
 import { Sms, Call } from 'iconsax-react';
-import TextField from '../../../../components/Inputs/TextField/TextField';
-import LoginButton from '../../../../components/Buttons/LoginButton/LoginButton';
+import TextField from '../../../components/Inputs/TextField/TextField';
+import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 
 export default function ForgotPassword() {
   const [otp, setOtp] = useState(Array(6).fill(''));
