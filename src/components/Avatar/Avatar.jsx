@@ -2,13 +2,11 @@ import PropTypes from 'prop-types';
 import { User } from 'iconsax-react';
 
 export default function Avatar({ size, profilePic, disabled }) {
-  const desktopHoverStyles = `border-2 border-transparent ${profilePic ? 'hover:border-white-50/50' : ''}`;
-
   const avatarSizes = {
-    xs: 'size-8 hover:size-9',
-    sm: 'size-10 hover:size-11',
-    md: `size-20 ${desktopHoverStyles}`,
-    lg: `size-40 ${desktopHoverStyles}`,
+    xs: 'size-8 min-h-8 min-w-8',
+    sm: 'size-10 min-h-10 min-w-10',
+    md: `size-20 min-h-20 min-w-20`,
+    lg: `size-40 min-h-40 min-w-40`,
   };
 
   const avatarPaddings = {
@@ -20,7 +18,7 @@ export default function Avatar({ size, profilePic, disabled }) {
 
   return (
     <div
-      className={`flex items-center justify-center rounded-full shadow-[2px_2px_7px_rgba(0,0,0,0.6)] transition-all duration-300 ${avatarSizes[size]} ${profilePic ? 'overflow-hidden' : ''}`}
+      className={`hover:border-white-50/50 flex items-center justify-center rounded-full border-2 border-transparent shadow-[2px_2px_7px_rgba(0,0,0,0.6)] transition-all duration-300 ${avatarSizes[size]} ${profilePic ? 'overflow-hidden' : ''}`}
     >
       {profilePic ? (
         <div className="relative size-full">

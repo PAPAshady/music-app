@@ -8,6 +8,7 @@ import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import Avatar from '../../Avatar/Avatar';
 import NotificationMenu from '../NotificationMenu/NotificationMenu';
 import IconButton from '../../Buttons/IconButton/IconButton';
+import SettingsMenu from '../SettingsMenu/SettingsMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
 import profileImg from '../../../assets/images/Avatar/profile-pic.jpg';
 
@@ -16,6 +17,7 @@ export default memo(function Header() {
   const searchInput = useInput();
   const notificationMenu = useCloseOnClickOutside();
   const mobileSearchBox = useCloseOnClickOutside();
+  const settingsMenu = useCloseOnClickOutside();
 
   return (
     <header>
@@ -54,7 +56,14 @@ export default memo(function Header() {
             />
             <NotificationMenu isVisible={notificationMenu.isVisible} />
           </div>
-          <IconButton icon={<Setting2 />} />
+          <div ref={settingsMenu.ref} className="relative">
+            <IconButton
+              icon={<Setting2 />}
+              onClick={() => settingsMenu.setIsVisible((prev) => !prev)}
+              isActive={settingsMenu.isVisible}
+            />
+            <SettingsMenu isVisible={settingsMenu.isVisible} />
+          </div>
           <button>
             <Avatar size="xs" profilePic={profileImg} />
           </button>
