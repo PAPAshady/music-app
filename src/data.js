@@ -53,6 +53,10 @@ import artist8 from './assets/images/artists/artist-8.jpg';
 import artist9 from './assets/images/artists/artist-9.jpg';
 import artist10 from './assets/images/artists/artist-10.jpg';
 import artist11 from './assets/images/artists/artist-11.jpg';
+import teamMemeber1 from './assets/images/Team-members/team-member-1.jpg';
+import teamMemeber2 from './assets/images/Team-members/team-member-2.jpg';
+import teamMemeber3 from './assets/images/Team-members/team-member-3.jpg';
+import teamMemeber4 from './assets/images/Team-members/team-member-4.jpg';
 
 export const songs = [
   {
@@ -268,4 +272,11 @@ export const usageChartData = [
   { month: 'Oct', music: 30, musicVideo: 35, webBrowsing: 21 },
   { month: 'Nov', music: 39, musicVideo: 30, webBrowsing: 35 },
   { month: 'Dec', music: 45, musicVideo: 27, webBrowsing: 42 },
+];
+
+export const teamMembers = [
+  { id: 1, name: 'Ada Wong', profilePic: teamMemeber1, memberId: '@ada_wong' },
+  { id: 2, name: 'Leon Kennedy', profilePic: teamMemeber2, memberId: '@scottkennedy' },
+  { id: 3, name: 'Chris Redfield', profilePic: teamMemeber3, memberId: '@chris_redfield11' },
+  { id: 4, name: 'Jill Valentine', profilePic: teamMemeber4, memberId: '@valentine_jill' },
 ];

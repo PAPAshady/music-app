@@ -5,7 +5,7 @@ import socialIcon3 from '../../assets/images/special-icons/dribbble.png';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-export default function TeamMemberCard({ name, profilePic, id, classNames }) {
+export default function TeamMemberCard({ name, profilePic, memberId, classNames }) {
   const socials = [
     { id: 1, img: socialIcon1, socialMediaTitle: 'X' },
     { id: 2, img: socialIcon2, socialMediaTitle: 'Linkdin' },
@@ -14,13 +14,13 @@ export default function TeamMemberCard({ name, profilePic, id, classNames }) {
 
   return (
     <div
-      className={`hover:bg-secondary-400/53 duraiton-300 inline-flex w-[200px] flex-col items-center gap-5 rounded-2xl p-4 text-center transition-colors lg:w-[280px] ${classNames}`}
+      className={`hover:bg-secondary-400/53 duraiton-300 !w-full flex flex-col items-center gap-5 rounded-2xl p-4 text-center transition-colors ${classNames}`}
     >
       <Avatar size="md" profilePic={profilePic} />
       <div className="w-full">
         <div className="mb-5">
           <p className="text-primary-50 mb-1 truncate lg:text-lg">{name}</p>
-          <span className="text-primary-100 block truncate text-sm lg:text-base">{id}</span>
+          <span className="text-primary-100 block truncate text-sm lg:text-base">{memberId}</span>
         </div>
         <div className="flex items-center justify-center gap-3">
           {socials.map((social) => (
@@ -43,7 +43,7 @@ function SocialLinkImg({ img, href = '#', socialMediaTitle }) {
 TeamMemberCard.propTypes = {
   name: PropTypes.string.isRequired,
   profilePic: PropTypes.string,
-  id: PropTypes.string.isRequired,
+  memberId: PropTypes.string.isRequired,
   classNames: PropTypes.string,
 };
 
