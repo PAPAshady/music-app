@@ -55,7 +55,7 @@ export default function ContactUs() {
           title="Our Team"
           description="We’re lucky to be supported by some of the best investors in the world."
         />
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(175px,1fr))] gap-8">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-8">
           {teamMembers.map((member) => (
             <TeamMemberCard key={member.id} {...member} />
           ))}
