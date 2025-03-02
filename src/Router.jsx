@@ -10,6 +10,8 @@ import PlayLists from './pages/PlayLists/PlayLists';
 import Browse from './pages/Browse/Browse';
 import PlayerPage from './pages/PlayerPage/PlayerPage';
 import Permium from './pages/Permium/Permium';
+import SettingsLayout from './components/shared/Layouts/SettingsLayout/SettingsLayout';
+import Profile from './pages/Profile/Profile';
 
 const routes = [
   {
@@ -21,6 +23,14 @@ const routes = [
       { path: '/playlists', element: <PlayLists /> },
       { path: '/browse', element: <Browse /> },
       { path: '/permium', element: <Permium /> },
+      {
+        path: '/settings',
+        element: <SettingsLayout />,
+        children: [
+          { index: true, element: <Navigate to="/settings/profile" replace /> },
+          { path: 'profile', element: <Profile /> },
+        ],
+      },
     ],
   },
   { path: '/player', element: <PlayerPage /> },

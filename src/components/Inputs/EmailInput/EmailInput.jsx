@@ -16,7 +16,7 @@ export default function EmailInput({ value, onChange, classNames }) {
           <Sms size="100%" />
         </span>
         <input
-          className="text-primary-50 grow py-2 text-sm outline-none lg:py-2.5 lg:text-base"
+          className="text-primary-50 grow py-2.5 text-sm outline-none lg:text-base"
           type="email"
           placeholder="Email"
           id={id}
