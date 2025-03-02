@@ -254,3 +254,18 @@ export const notifications = [
   { id: 5, body: 'A new song has been add to your playlist.', time: '2 weeks ago' },
   { id: 6, body: 'Music successfully added to favorites.', time: '1 month ago' },
 ];
+
+export const usageChartData = [
+  { month: 'Jan', music: 10, musicVideo: 15, webBrowsing: 13 },
+  { month: 'Feb', music: 13, musicVideo: 17, webBrowsing: 7 },
+  { month: 'Mar', music: 15, musicVideo: 13, webBrowsing: 16 },
+  { month: 'Apr', music: 17, musicVideo: 19, webBrowsing: 22 },
+  { month: 'May', music: 12, musicVideo: 24, webBrowsing: 19 },
+  { month: 'Jun', music: 19, musicVideo: 34, webBrowsing: 14 },
+  { month: 'Jul', music: 26, musicVideo: 30, webBrowsing: 20 },
+  { month: 'Aug', music: 31, musicVideo: 38, webBrowsing: 24 },
+  { month: 'Sep', music: 36, musicVideo: 40, webBrowsing: 30 },
+  { month: 'Oct', music: 30, musicVideo: 35, webBrowsing: 21 },
+  { month: 'Nov', music: 39, musicVideo: 30, webBrowsing: 35 },
+  { month: 'Dec', music: 45, musicVideo: 27, webBrowsing: 42 },
+];
