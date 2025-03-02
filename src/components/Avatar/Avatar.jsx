@@ -22,7 +22,7 @@ export default function Avatar({ size, profilePic, disabled }) {
     >
       {profilePic ? (
         <div className="relative size-full">
-          <img src={profilePic} alt="User" className={`size-full`} />
+          <img src={profilePic} alt="User" className="size-full object-cover" />
           <div
             className={`absolute top-1/2 left-1/2 size-full -translate-x-1/2 -translate-y-1/2 ${disabled ? 'bg-white-800/70' : 'bg-transparent'}`}
           ></div>

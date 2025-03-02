@@ -13,6 +13,7 @@ import Permium from './pages/Permium/Permium';
 import SettingsLayout from './components/shared/Layouts/SettingsLayout/SettingsLayout';
 import Profile from './pages/Profile/Profile';
 import Analytics from './pages/Auth/Analytics/Analytics';
+import ContactUs from './pages/ContactUs/ContactUs';
 
 const routes = [
   {
@@ -31,6 +32,7 @@ const routes = [
           { index: true, element: <Navigate to="/settings/profile" replace /> },
           { path: 'profile', element: <Profile /> },
           { path: 'analytics', element: <Analytics /> },
+          { path: 'contact-us', element: <ContactUs /> },
         ],
       },
     ],
