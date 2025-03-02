@@ -1,11 +1,11 @@
 import { Navigate } from 'react-router-dom';
-import Layout from './components/shared/Layout/Layout';
+import MainLayout from './components/shared/Layouts/MainLayout/MainLayout';
 import Home from './pages/Home/Home';
 import Favorites from './pages/Favorites/Favorites';
-import AuthLayout from './pages/Auth/AuthLayout';
-import SignIn from './pages/Auth/pages/SignIn/SignIn';
-import SignUp from './pages/Auth/pages/SignUp/SignUp';
-import ForgotPassword from './pages/Auth/pages/ForgotPassword/ForgotPassword';
+import AuthLayout from './components/shared/Layouts/AuthLayout/AuthLayout';
+import SignIn from './pages/Auth/SignIn/SignIn';
+import SignUp from './pages/Auth/SignUp/SignUp';
+import ForgotPassword from './pages/Auth/ForgotPassword/ForgotPassword';
 import PlayLists from './pages/PlayLists/PlayLists';
 import Browse from './pages/Browse/Browse';
 import PlayerPage from './pages/PlayerPage/PlayerPage';
@@ -14,7 +14,7 @@ import Permium from './pages/Permium/Permium';
 const routes = [
   {
     path: '/',
-    element: <Layout />,
+    element: <MainLayout />,
     children: [
       { path: '/', element: <Home /> },
       { path: '/favorites', element: <Favorites /> },

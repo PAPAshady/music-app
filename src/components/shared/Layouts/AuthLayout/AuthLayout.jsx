@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import useMediaQuery from '../../hooks/useMediaQuery';
+import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { NavLink, useLocation, Outlet } from 'react-router-dom';
-import Logo from '../../components/Logo/Logo';
-import bgImg from '../../assets/images/backgrounds/login-signup-page.jpg';
+import Logo from '../../../Logo/Logo';
+import bgImg from '../../../../assets/images/backgrounds/login-signup-page.jpg';
 import './AuthLayout.css';
 
 export default function Authentication() {

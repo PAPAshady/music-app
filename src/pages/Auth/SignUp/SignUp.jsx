@@ -1,10 +1,10 @@
-import TextField from '../../../../components/Inputs/TextField/TextField';
-import LoginButton from '../../../../components/Buttons/LoginButton/LoginButton';
-import useInput from '../../../../hooks/useInput';
+import TextField from '../../../components/Inputs/TextField/TextField';
+import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
+import useInput from '../../../hooks/useInput';
 import { User, Sms, Lock } from 'iconsax-react';
 import { Link } from 'react-router-dom';
-import facebookLogo from '../../../../assets/images/socials/facebook.png';
-import googleLogo from '../../../../assets/images/socials/google.png';
+import facebookLogo from '../../../assets/images/socials/facebook.png';
+import googleLogo from '../../../assets/images/socials/google.png';
 
 export default function SignUp() {
   const userNameInput = useInput('');
