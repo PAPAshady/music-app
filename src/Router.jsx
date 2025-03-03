@@ -14,6 +14,7 @@ import SettingsLayout from './components/shared/Layouts/SettingsLayout/SettingsL
 import Profile from './pages/Profile/Profile';
 import Analytics from './pages/Auth/Analytics/Analytics';
 import ContactUs from './pages/ContactUs/ContactUs';
+import FAQ from './pages/FAQ/FAQ';
 
 const routes = [
   {
@@ -33,6 +34,7 @@ const routes = [
           { path: 'profile', element: <Profile /> },
           { path: 'analytics', element: <Analytics /> },
           { path: 'contact-us', element: <ContactUs /> },
+          { path: 'FAQ', element: <FAQ /> },
         ],
       },
     ],
