@@ -7,8 +7,6 @@ import MainButton from '../../components/Buttons/MainButton/MainButton';
 import TeamMemberCard from '../../components/TeamMemberCard/TeamMemberCard';
 import { teamMembers } from '../../data';
 import PropTypes from 'prop-types';
-import FAQQuestion from '../../components/FAQQuestion/FAQQuestion';
-import { Headphone } from 'iconsax-react';
 
 export default function ContactUs() {
   const [isAgreedToConditions, setIsAgreedToConditions] = useState(false);
@@ -20,9 +18,6 @@ export default function ContactUs() {
 
   return (
     <div className="flex flex-col gap-8 pt-8 lg:gap-12">
-      <div>
-        <FAQQuestion question='qestion' answer='anser' icon={<Headphone/>} />
-      </div>
       <div>
         <SectionInfo
           title="Contact Us"
