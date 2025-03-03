@@ -7,7 +7,7 @@ export default function SettingsLayout() {
     { id: 1, title: 'Profile', href: 'profile' },
     { id: 2, title: 'Analytics', href: 'analytics' },
     { id: 3, title: 'Contact Us', href: 'contact-us' },
-    { id: 4, title: 'F&Q', href: 'f&q' },
+    { id: 4, title: 'FAQ', href: 'FAQ' },
   ];
 
   return (
