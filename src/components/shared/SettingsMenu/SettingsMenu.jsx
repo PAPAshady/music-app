@@ -9,7 +9,7 @@ export default function SettingsMenu({ isVisible }) {
     { id: 1, title: 'Edit Profile', icon: <UserEdit />, href: '/settings/profile' },
     { id: 2, title: 'Analytics', icon: <Chart />, href: '/settings/analytics' },
     { id: 3, title: 'Contact Us', icon: <Headphone />, href: '/settings/contact-us' },
-    { id: 4, title: 'F&Q', icon: <Messages />, href: '/settings/F&Q' },
+    { id: 4, title: 'FAQ', icon: <Messages />, href: '/settings/FAQ' },
   ];
 
   return (
