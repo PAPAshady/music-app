@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 
 export default function Player({ classNames, isPlayerPage }) {
   const [volume, setVolume] = useState([70]);
+  const [musicProgress, setMusicProgress] = useState([50]);
   const verticalVolumeSlider = useCloseOnClickOutside();
 
   return (
@@ -61,10 +62,31 @@ export default function Player({ classNames, isPlayerPage }) {
             </div>
             <span className="text-primary-100 hidden text-sm lg:block">02:28</span>
           </div>
-
-          <div className="border-primary-400 lg:border-primary-300 flex h-2 cursor-pointer items-center rounded-3xl border lg:h-2.5">
-            <div className="bg-primary-400 border-primary-400 lg:bg-primary-300 lg:border-primary-300 inline h-2 w-1/2 rounded-3xl border lg:h-2.5"></div>
-          </div>
+          <Range
+            values={musicProgress}
+            onChange={(values) => setMusicProgress(values)}
+            min={0}
+            max={100}
+            renderTrack={({ props, children }) => (
+              <div
+                {...props}
+                className="border-primary-400 lg:border-primary-300 flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2"
+              >
+                <div
+                  className="bg-primary-400 border-primary-400 lg:bg-primary-300 lg:border-primary-300 relative h-1.5 rounded-3xl border sm:h-2"
+                  style={{ width: `${musicProgress[0]}%` }}
+                ></div>
+                {children}
+              </div>
+            )}
+            renderThumb={({ props }) => (
+              <div
+                className="bg-primary-300 lg:bg-priamry-300 top-0 size-3 rounded-full outline-none sm:size-4"
+                {...props}
+                key={props.key}
+              ></div>
+            )}
+          />
         </div>
         <div className="ms-4 hidden items-center gap-4 lg:flex">
           <IconButton
