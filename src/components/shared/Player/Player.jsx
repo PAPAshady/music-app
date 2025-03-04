@@ -1,10 +1,22 @@
+import { useState } from 'react';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
-import { Pause, Next, Previous, RepeateOne, MusicFilter, Heart, VolumeHigh } from 'iconsax-react';
+import {
+  Pause,
+  Next,
+  Previous,
+  RepeateOne,
+  MusicFilter,
+  Heart,
+  VolumeHigh,
+  VolumeSlash,
+} from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
+import { Range } from 'react-range';
 import PropTypes from 'prop-types';
 
 export default function Player({ classNames, isPlayerPage }) {
+  const [volume, setVolume] = useState([70]);
   const verticalVolumeSlider = useCloseOnClickOutside();
 
   return (
@@ -65,22 +77,79 @@ export default function Player({ classNames, isPlayerPage }) {
             ref={verticalVolumeSlider.ref}
           >
             <IconButton
-              icon={<VolumeHigh />}
+              icon={volume[0] ? <VolumeHigh /> : <VolumeSlash />}
               onClick={() => verticalVolumeSlider.setIsVisible((prev) => !prev)}
             />
+
             {/* Horizantal volume slider */}
-            <div
-              className={`border-primary-400 hidden h-2 w-24 cursor-pointer overflow-hidden rounded-lg border ${isPlayerPage ? 'lg:block' : '2xl:block'} `}
-            >
-              <div className="bg-primary-400 h-full w-1/2 rounded-lg"></div>
-            </div>
-            {/* Vertical volume slider */}
+            <Range
+              values={volume}
+              onChange={(values) => setVolume(values)}
+              min={0}
+              max={100}
+              renderTrack={({ props, children }) => (
+                <div
+                  {...props}
+                  className={`border-primary-400 hidden h-1.5 w-24 cursor-pointer rounded-lg border ${isPlayerPage ? 'lg:block' : '2xl:block'} `}
+                >
+                  <div
+                    className="bg-primary-400 border-primary-400 h-full rounded-lg border"
+                    style={{ width: `${volume[0]}%` }}
+                  ></div>
+                  {children}
+                </div>
+              )}
+              renderThumb={({ props, isDragged }) => (
+                <div
+                  className="bg-primary-400 top-0 h-3 w-3 rounded-full outline-none"
+                  {...props}
+                  key={props.key}
+                >
+                  <span
+                    className={`bg-primary-400 absolute left-1/2 -translate-x-1/2 rounded-sm px-1.5 py-0.5 text-xs transition-all delay-150 duration-300 ${isDragged ? '-top-[26px] opacity-100' : '-top-5 opacity-0'}`}
+                  >
+                    {volume[0]}
+                  </span>
+                </div>
+              )}
+            />
+
+            {/* Vertical volume slider (for devices less than 1400px) */}
             <div
               className={`bg-secondary-400/40 border-secondary-300 absolute left-1/2 flex w-8 -translate-x-1/2 justify-center rounded-xl border py-4 backdrop-blur-md transition-all duration-200 2xl:hidden ${!isPlayerPage && verticalVolumeSlider.isVisible ? 'visible bottom-[130%] opacity-100' : 'invisible bottom-full opacity-0'}`}
             >
-              <div className="border-secondary-100 flex h-28 w-2.5 items-end overflow-hidden rounded-lg border">
-                <div className="bg-secondary-100 h-1/2 w-full rounded-lg"></div>
-              </div>
+              <Range
+                values={volume}
+                onChange={(values) => setVolume(values)}
+                min={0}
+                max={100}
+                direction="to top"
+                renderTrack={({ props, children }) => (
+                  <div
+                    {...props}
+                    className="border-primary-400 relative flex h-24 w-1.5 items-end rounded-full border"
+                  >
+                    <div
+                      className="bg-primary-400 flex w-full items-start justify-center rounded-full"
+                      style={{ height: `${volume[0]}%` }}
+                    ></div>
+                    {children}
+                  </div>
+                )}
+                renderThumb={({ props, isDragged }) => (
+                  <div
+                    className="bg-primary-400 top-0 h-3 w-3 rounded-full"
+                    {...props}
+                    key={props.key}
+                  >
+                    <span
+                      className={`bg-primary-400 absolute top-1/2 -translate-y-1/2 rounded-sm px-1.5 py-0.5 text-xs transition-all delay-150 duration-300 ${isDragged ? 'left-4 opacity-100' : 'left-3 opacity-0'}`}
+                    >
+                      {volume[0]}
+                    </span>
+                  </div>
+                )}
+              />
             </div>
           </div>
         </div>
