@@ -5,8 +5,8 @@ import EmailInput from '../../components/Inputs/EmailInput/EmailInput';
 import TextArea from '../../components/Inputs/TextArea/TextArea';
 import MainButton from '../../components/Buttons/MainButton/MainButton';
 import TeamMemberCard from '../../components/TeamMemberCard/TeamMemberCard';
+import SettingsPagesSectionHeader from '../../components/SettingsPagesSectionHeader/SettingsPagesSectionHeader';
 import { teamMembers } from '../../data';
-import PropTypes from 'prop-types';
 
 export default function ContactUs() {
   const [isAgreedToConditions, setIsAgreedToConditions] = useState(false);
@@ -19,7 +19,7 @@ export default function ContactUs() {
   return (
     <div className="flex flex-col gap-8 pt-8 lg:gap-12">
       <div>
-        <SectionInfo
+        <SettingsPagesSectionHeader
           title="Contact Us"
           description="We’d love to hear from you. Please fill out this form."
         />
@@ -51,7 +51,7 @@ export default function ContactUs() {
         </form>
       </div>
       <div>
-        <SectionInfo
+        <SettingsPagesSectionHeader
           title="Our Team"
           description="We’re lucky to be supported by some of the best investors in the world."
         />
@@ -64,17 +64,3 @@ export default function ContactUs() {
     </div>
   );
 }
-
-function SectionInfo({ title, description }) {
-  return (
-    <div className="mb-8 text-center md:mb-14">
-      <p className="mb-4 text-2xl font-bold md:text-3xl">{title}</p>
-      <p className="text-primary-200 md:text-lg">{description}</p>
-    </div>
-  );
-}
-
-SectionInfo.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-};
