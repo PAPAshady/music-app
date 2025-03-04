@@ -7,11 +7,9 @@ import {
   Home2,
   MusicFilter,
   MusicSquareSearch,
-  Candle,
   Notification,
   Setting2,
   Medal,
-  Messages3,
 } from 'iconsax-react';
 import { NavLink, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -20,14 +18,12 @@ const HamburgerMenu = memo(() => {
   const { isShowHamburgerMenu, setIsShowHamburgerMenu } = useHamburgerMenu();
   const closeHamburgerMenu = () => setIsShowHamburgerMenu(false);
   const mobileNavLinks = [
-    { id: 1, title: 'Notifications', icon: <Notification /> },
-    { id: 2, title: 'Settings', icon: <Setting2 /> },
-    { id: 3, title: 'Home', icon: <Home2 />, href: '/' },
-    { id: 4, title: 'Favorites', icon: <Heart />, href: '/favorites' },
-    { id: 5, title: 'Playlists', icon: <MusicFilter />, href: '/playlists' },
-    { id: 6, title: 'Browse', icon: <MusicSquareSearch />, href: '/browse' },
-    { id: 7, title: 'Permium', icon: <Medal />, href: '/permium' },
-    { id: 8, title: 'Q&A', icon: <Messages3 />, href: '/q&a' },
+    { id: 1, title: 'Home', icon: <Home2 />, href: '/' },
+    { id: 2, title: 'Favorites', icon: <Heart />, href: '/favorites' },
+    { id: 3, title: 'Playlists', icon: <MusicFilter />, href: '/playlists' },
+    { id: 4, title: 'Browse', icon: <MusicSquareSearch />, href: '/browse' },
+    { id: 5, title: 'Permium', icon: <Medal />, href: '/permium' },
+    { id: 6, title: 'Settings', icon: <Setting2 />, href: '/settings/' },
   ];
 
   return createPortal(
@@ -45,24 +41,19 @@ const HamburgerMenu = memo(() => {
               <Avatar size="sm" />
             </button>
             <button>
-              <Candle size={24} />
+              <Notification size={24} />
             </button>
           </div>
           <p className="text-white-50 text-lg">Olivia Rhye</p>
 
           <div className="my-9 flex flex-col gap-10">
             <div className="flex flex-col gap-7">
-              {mobileNavLinks.slice(0, 2).map((link) => (
+              {mobileNavLinks.slice(0, 4).map((link) => (
                 <MobileNavLink key={link.id} {...link} onClick={closeHamburgerMenu} />
               ))}
             </div>
-            <div className="border-secondary-400/53 flex flex-col gap-7 border-y py-10">
-              {mobileNavLinks.slice(2, 6).map((link) => (
-                <MobileNavLink key={link.id} {...link} onClick={closeHamburgerMenu} />
-              ))}
-            </div>
-            <div className="flex flex-col gap-7">
-              {mobileNavLinks.slice(6, 8).map((link) => (
+            <div className="border-secondary-400/53 flex flex-col gap-7 border-t py-8">
+              {mobileNavLinks.slice(4, 6).map((link) => (
                 <MobileNavLink key={link.id} {...link} onClick={closeHamburgerMenu} />
               ))}
             </div>
