@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home2, Heart, MusicFilter, MusicSquareSearch, Medal, Messages3 } from 'iconsax-react';
+import { Home2, Heart, MusicFilter, MusicSquareSearch, Medal, Setting2 } from 'iconsax-react';
 import PropTypes from 'prop-types';
 
 export default memo(function DesktopNavbar() {
@@ -21,7 +21,7 @@ export default memo(function DesktopNavbar() {
 
       <div className="flex flex-col gap-4">
         <DesktopNavLink href="/permium" icon={<Medal />} />
-        <DesktopNavLink href="/messages" icon={<Messages3 />} />
+        <DesktopNavLink href="/settings" icon={<Setting2 />} />
       </div>
     </div>
   );
