@@ -57,7 +57,7 @@ import teamMemeber1 from './assets/images/Team-members/team-member-1.jpg';
 import teamMemeber2 from './assets/images/Team-members/team-member-2.jpg';
 import teamMemeber3 from './assets/images/Team-members/team-member-3.jpg';
 import teamMemeber4 from './assets/images/Team-members/team-member-4.jpg';
-import { ReceiveSquare, User, Music, MusicSquareSearch } from 'iconsax-react';
+import { ReceiveSquare, User, Music, MusicSquareSearch, Sms, Call, Location } from 'iconsax-react';
 
 export const songs = [
   {
@@ -324,5 +324,29 @@ export const faqQuestions = [
     question: 'Is music download free?',
     answer:
       'We offer both free and premium downloads. Some tracks can be downloaded for free, while others require a subscription for access',
+  },
+];
+
+export const contactInfos = [
+  {
+    id: 1,
+    icon: <Sms />,
+    title: 'Email',
+    description: 'Our friendly team is here to help.',
+    contactInfo: 'Zamani.nima18@gmail.com',
+  },
+  {
+    id: 2,
+    icon: <Call />,
+    title: 'Phone',
+    description: 'Our friendly team is here to help.',
+    contactInfo: '+1 (555) 000-0000',
+  },
+  {
+    id: 3,
+    icon: <Location />,
+    title: 'Office',
+    description: 'Our friendly team is here to help.',
+    contactInfo: '100 Smith Street',
   },
 ];
