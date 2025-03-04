@@ -17,7 +17,7 @@ export default function SettingsLayout() {
           {navLinks.map((link) => (
             <NavLink
               className={({ isActive }) =>
-                `xs:text-sm rounded-md p-2 px-3 text-xs font-semibold sm:text-base lg:text-base ${isActive ? 'text-white-50 bg-secondary-300/64' : 'text-primary-100'}`
+                `xs:text-sm rounded-md p-2 px-3 text-xs transition-colors duration-300 font-semibold sm:text-base lg:text-base ${isActive ? 'text-white-50 bg-secondary-300/64' : 'text-primary-100'}`
               }
               key={link.id}
               to={link.href}
