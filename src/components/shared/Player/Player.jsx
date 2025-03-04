@@ -83,7 +83,7 @@ export default function Player({ classNames, isPlayerPage }) {
               <div
                 className="bg-primary-300 lg:bg-priamry-300 top-0 size-3 rounded-full outline-none sm:size-4"
                 {...props}
-                key={props.key}
+                key={1}
               ></div>
             )}
           />
@@ -125,7 +125,7 @@ export default function Player({ classNames, isPlayerPage }) {
                 <div
                   className="bg-primary-400 top-0 h-3 w-3 rounded-full outline-none"
                   {...props}
-                  key={props.key}
+                  key={2}
                 >
                   <span
                     className={`bg-primary-400 absolute left-1/2 -translate-x-1/2 rounded-sm px-1.5 py-0.5 text-xs transition-all delay-150 duration-300 ${isDragged ? '-top-[26px] opacity-100' : '-top-5 opacity-0'}`}
@@ -159,11 +159,7 @@ export default function Player({ classNames, isPlayerPage }) {
                   </div>
                 )}
                 renderThumb={({ props, isDragged }) => (
-                  <div
-                    className="bg-primary-400 top-0 h-3 w-3 rounded-full"
-                    {...props}
-                    key={props.key}
-                  >
+                  <div className="bg-primary-400 top-0 h-3 w-3 rounded-full" {...props} key={3}>
                     <span
                       className={`bg-primary-400 absolute top-1/2 -translate-y-1/2 rounded-sm px-1.5 py-0.5 text-xs transition-all delay-150 duration-300 ${isDragged ? 'left-4 opacity-100' : 'left-3 opacity-0'}`}
                     >
