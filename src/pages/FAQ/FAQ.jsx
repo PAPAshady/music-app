@@ -20,7 +20,7 @@ export default function FAQ() {
         </div>
       </div>
       <div>
-        <SectionInfo
+        <SettingsPagesSectionHeader
           title="We’d Love To Hear From You"
           description="Our Friendly Team Is Always Here To Chat."
         />
