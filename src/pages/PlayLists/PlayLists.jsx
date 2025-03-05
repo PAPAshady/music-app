@@ -34,9 +34,11 @@ export default function PlayLists() {
           {/* Render the "Add New Playlist" button as the first item in the playlists list. */}
           {isDesktop ? (
             <div className="flex flex-wrap gap-6">
-              {[{ isAddPlaylistButton: true }, ...allPlaylists].slice(0, 8).map((playList) => (
-                <PlaylistCard key={playList.id} {...playList} classNames="grow !max-w-[170px]" />
-              ))}
+              {[{ id: 0, isAddPlaylistButton: true }, ...allPlaylists]
+                .slice(0, 8)
+                .map((playList) => (
+                  <PlaylistCard key={playList.id} {...playList} classNames="grow !max-w-[170px]" />
+                ))}
             </div>
           ) : (
             <PlaylistsSlider

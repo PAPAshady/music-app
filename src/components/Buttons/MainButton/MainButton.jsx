@@ -5,7 +5,7 @@ export default function MainButton({
   title,
   type = 'fill',
   variant = 'primary',
-  clickHandler,
+  onClick,
   disabled,
   classNames,
 }) {
@@ -45,7 +45,7 @@ export default function MainButton({
     <button
       className={`rounded-lg border py-2 transition-all duration-300 disabled:cursor-default disabled:inset-shadow-none disabled:shadow-none ${buttonSizes[size]} ${buttonTypes[type]} ${classNames}`}
       disabled={disabled}
-      onClick={clickHandler}
+      onClick={onClick}
     >
       {title}
     </button>
@@ -58,6 +58,6 @@ MainButton.propTypes = {
   type: PropTypes.oneOf(['fill', 'outline', 'text']),
   variant: PropTypes.oneOf(['primary', 'secondary', 'neutral']),
   disabled: PropTypes.bool,
-  clickHandler: PropTypes.func,
+  onClick: PropTypes.func,
   classNames: PropTypes.string,
 };

@@ -55,8 +55,8 @@ const PlaylistCard = memo(
 );
 PlaylistCard.propTypes = {
   isAddPlaylistButton: PropTypes.bool,
-  title: PropTypes.string.isRequired,
-  numberOfTracks: PropTypes.number.isRequired,
+  title: PropTypes.string,
+  numberOfTracks: PropTypes.number,
   image: PropTypes.string,
   isFavorite: PropTypes.bool,
   classNames: PropTypes.string,
