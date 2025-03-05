@@ -1,5 +1,5 @@
 import { cloneElement } from 'react';
-import { Menu, Music, Timer, User } from 'iconsax-react';
+import { Menu, Music, Timer, User, Edit2 } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlaylistImg from '../../assets/images/backgrounds/login-signup-page.jpg';
 import PlayBar from '../MusicCards/PlayBar/PlayBar';
@@ -22,12 +22,14 @@ export default function SidebarPlaylist({ playList }) {
         </div>
 
         <div className="my-6 flex gap-2">
-          <div>
-            <img
-              src={PlaylistImg}
-              alt=""
-              className="size-32 rounded-[10px] object-cover xl:size-[140px]"
-            />
+          <div className="group relative overflow-hidden rounded-[10px]">
+            <img src={PlaylistImg} alt="" className="size-32 object-cover xl:size-[140px]" />
+            <button className="absolute top-0 flex size-full flex-col items-center justify-center gap-3 bg-[black]/40 p-3 opacity-0 transition-opacity group-hover:opacity-100">
+              <span className="size-9">
+                <Edit2 size="100%" />
+              </span>
+              <p className='font-semibold'>Edit Playlist</p>
+            </button>
           </div>
           <div className="flex flex-col">
             {PlaylistInfosArray.map((info) => (

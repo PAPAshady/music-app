@@ -10,11 +10,13 @@ import { songs, genres, playlists as allPlaylists } from '../../data';
 import PropTypes from 'prop-types';
 
 export default function PlayLists() {
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+
   const playlistsSections = [
-    { id: 1, title: 'Your Playlists', numberOfPlayLists: 8 },
-    { id: 2, title: 'Updated Playlists', numberOfPlayLists: 2 },
-    { id: 3, title: 'Subscribed playlists' },
-    { id: 4, title: 'Popular playlists based on you', numberOfPlayLists: 5 },
+    // { id: 1, title: 'Your Playlists', numberOfPlayLists: 8 },
+    { id: 1, title: 'Updated Playlists', numberOfPlayLists: 2 },
+    { id: 2, title: 'Subscribed playlists' },
+    { id: 3, title: 'Popular playlists based on you', numberOfPlayLists: 5 },
   ];
 
   return (
@@ -26,6 +28,24 @@ export default function PlayLists() {
               <TracksCard {...track} />
             </div>
           ))}
+        </div>
+        <div>
+          <SectionTitle title="Your Playlists" />
+          {/* Render the "Add New Playlist" button as the first item in the playlists list. */}
+          {isDesktop ? (
+            <div className="flex flex-wrap gap-6">
+              {[{ id: 0, isAddPlaylistButton: true }, ...allPlaylists]
+                .slice(0, 8)
+                .map((playList) => (
+                  <PlaylistCard key={playList.id} {...playList} classNames="grow !max-w-[170px]" />
+                ))}
+            </div>
+          ) : (
+            <PlaylistsSlider
+              playlists={[{ isAddPlaylistButton: true }, ...allPlaylists]}
+              numberOfPlaylists={8}
+            />
+          )}
         </div>
         {playlistsSections.map(({ id, title, numberOfPlayLists }) => (
           <div key={id}>
