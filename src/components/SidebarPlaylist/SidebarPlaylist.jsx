@@ -10,7 +10,7 @@ import useInput from '../../hooks/useInput';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 
 export default function SidebarPlaylist({ playList }) {
-  const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(true);
+  const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(false);
   const modalFileInputRef = useRef(null);
   const playlistNameInput = useInput('Sad playlist');
   const playlistDescriptionInput = useInput();
