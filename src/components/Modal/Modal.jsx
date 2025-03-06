@@ -21,10 +21,15 @@ export default function Modal({
 
   return (
     <Dialog open={isOpen} onClose={closeHandler} className="relative z-50">
-      <DialogBackdrop className="fixed inset-0 bg-black/30 backdrop-blur-xs" />
+      <DialogBackdrop
+        className={`fixed inset-0 bg-black/30 backdrop-blur-xs transition ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+      />
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-        <DialogPanel className="bg-primary-700/60 flex max-h-[450px] w-full max-w-[550px] flex-col gap-3 rounded-xl p-6 backdrop-blur-sm">
-          <div className="flex items-center justify-between">
+        <DialogPanel
+          transition
+          className="bg-primary-700/60 flex max-h-[450px] w-full max-w-[500px] flex-col gap-3 rounded-xl p-6 backdrop-blur-sm transition data-[closed]:scale-95 data-[closed]:opacity-0"
+        >
+          <div className="mb-2 flex items-center justify-between">
             <DialogTitle className="text-primary-50 text-xl font-semibold">{title}</DialogTitle>
             <button className="text-white-400 size-6" onClick={closeHandler}>
               <CloseCircle size="100%" />
