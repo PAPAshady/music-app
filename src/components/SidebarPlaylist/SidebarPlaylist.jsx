@@ -1,24 +1,45 @@
 import { cloneElement, useState, useRef } from 'react';
-import { Menu as MenuIcon, Music, Timer, User, Edit2, Image, Trash } from 'iconsax-react';
+import { Music, Timer, User, Edit2, Image, Trash, Share } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlaylistImg from '../../assets/images/backgrounds/login-signup-page.jpg';
 import PlayBar from '../MusicCards/PlayBar/PlayBar';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
+import DropDownList from '../DropDownList/DropDownList';
 import useInput from '../../hooks/useInput';
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 
 export default function SidebarPlaylist({ playList }) {
-  const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(true);
+  const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(false);
   const modalFileInputRef = useRef(null);
   const playlistNameInput = useInput('Sad playlist');
   const playlistDescriptionInput = useInput();
 
-  const PlaylistInfosArray = [
+  const playlistInfosArray = [
     { id: 1, title: `${playList.length} Tracks`, icon: <Music /> },
     { id: 2, title: '01:11:58', icon: <Timer /> },
     { id: 3, title: 'Rayan', icon: <User /> },
+  ];
+
+  const modalDropDownListItems = [
+    {
+      id: 1,
+      icon: <Image />,
+      title: 'Change photo',
+      onClick: () => modalFileInputRef.current.click(), // trigger the file input when the user clicks the “Change photo” dropdown item.
+    },
+    { id: 2, icon: <Trash />, title: 'Remove photo' },
+  ];
+
+  const playlistDropDownListItems = [
+    {
+      id: 1,
+      icon: <Edit2 />,
+      title: 'Edit playlist',
+      onClick: () => setShowEditPlaylistModal(true),
+    },
+    { id: 2, icon: <Trash />, title: 'Delete playlist' },
+    { id: 3, icon: <Share />, title: 'Share' },
   ];
 
   return (
@@ -27,9 +48,7 @@ export default function SidebarPlaylist({ playList }) {
         <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
           <div className="flex items-center justify-between gap-1">
             <p className="text-white-50 subheading-3 truncate">Sad playlist</p>
-            <button className="text-secondary-50">
-              <MenuIcon />
-            </button>
+            <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
           </div>
 
           <div className="my-6 flex gap-2">
@@ -46,7 +65,7 @@ export default function SidebarPlaylist({ playList }) {
               </button>
             </div>
             <div className="flex flex-col">
-              {PlaylistInfosArray.map((info) => (
+              {playlistInfosArray.map((info) => (
                 <PlaylistInfo key={info.id} {...info} />
               ))}
             </div>
@@ -88,25 +107,7 @@ export default function SidebarPlaylist({ playList }) {
               </span>
               <span>Choose picture</span>
             </div>
-            <Menu>
-              <div className="absolute top-3 right-2 transition-opacity duration-200">
-                <MenuButton className="hover:bg-primary-700 text-secondary-100 data-[open]:bg-primary-700 hover:text-secondary-50 rounded-md p-1 transition-colors duration-300">
-                  <MenuIcon />
-                </MenuButton>
-                <MenuItems
-                  transition
-                  anchor="bottom start"
-                  className="text-primary-50 bg-primary-600/60 mt-1 flex flex-col gap-1 rounded-md p-1 backdrop-blur-sm transition duration-200 data-[closed]:translate-y-2 data-[closed]:opacity-0"
-                >
-                  <ModalDropDownListItem
-                    icon={<Image />}
-                    title="Change photo"
-                    onClick={() => modalFileInputRef.current.click()} // trigger the file input when the user clicks the “Change photo” dropdown item.
-                  />
-                  <ModalDropDownListItem icon={<Trash />} title="Remove photo" />
-                </MenuItems>
-              </div>
-            </Menu>
+            <DropDownList menuItems={modalDropDownListItems} />
           </label>
           <div className="flex grow flex-col gap-2">
             <InputField placeholder="Name" {...playlistNameInput} classNames="!text-sm" />
@@ -133,32 +134,6 @@ function PlaylistInfo({ title, icon }) {
   );
 }
 
-function ModalDropDownListItem({ icon, title, onClick }) {
-  const styledIcon = cloneElement(icon, { size: '100%' });
-
-  const clickHandler = async (e, closeHandler) => {
-    e.preventDefault();
-    await onClick?.();
-    closeHandler();
-  };
-
-  return (
-    <MenuItem>
-      {({ close }) => (
-        <button
-          className="hover:bg-primary-500/60 cursor-default"
-          onClick={(e) => clickHandler(e, close)}
-        >
-          <div className="flex items-center gap-2 p-2 text-sm">
-            <span className="size-5">{styledIcon}</span>
-            <span>{title}</span>
-          </div>
-        </button>
-      )}
-    </MenuItem>
-  );
-}
-
 SidebarPlaylist.propTypes = {
   playList: PropTypes.arrayOf(
     PropTypes.shape({
@@ -178,10 +153,4 @@ SidebarPlaylist.propTypes = {
 PlaylistInfo.propTypes = {
   title: PropTypes.string.isRequired,
   icon: PropTypes.element.isRequired,
-};
-
-ModalDropDownListItem.propTypes = {
-  icon: PropTypes.element.isRequired,
-  title: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
 };
