@@ -1,12 +1,12 @@
 import { cloneElement, useState, useRef } from 'react';
-import { Menu as MenuIcon, Music, Timer, User, Edit2, Image, Trash } from 'iconsax-react';
+import { Music, Timer, User, Edit2, Image, Trash, Share } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlaylistImg from '../../assets/images/backgrounds/login-signup-page.jpg';
 import PlayBar from '../MusicCards/PlayBar/PlayBar';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
-import DropDownList from '../DropDownList/DropDownList'
+import DropDownList from '../DropDownList/DropDownList';
 import useInput from '../../hooks/useInput';
 
 export default function SidebarPlaylist({ playList }) {
@@ -15,7 +15,7 @@ export default function SidebarPlaylist({ playList }) {
   const playlistNameInput = useInput('Sad playlist');
   const playlistDescriptionInput = useInput();
 
-  const PlaylistInfosArray = [
+  const playlistInfosArray = [
     { id: 1, title: `${playList.length} Tracks`, icon: <Music /> },
     { id: 2, title: '01:11:58', icon: <Timer /> },
     { id: 3, title: 'Rayan', icon: <User /> },
@@ -31,15 +31,24 @@ export default function SidebarPlaylist({ playList }) {
     { id: 2, icon: <Trash />, title: 'Remove photo' },
   ];
 
+  const playlistDropDownListItems = [
+    {
+      id: 1,
+      icon: <Edit2 />,
+      title: 'Edit playlist',
+      onClick: () => setShowEditPlaylistModal(true),
+    },
+    { id: 2, icon: <Trash />, title: 'Delete playlist' },
+    { id: 3, icon: <Share />, title: 'Share' },
+  ];
+
   return (
     <>
       <div className="sticky top-10 hidden xl:block">
         <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
           <div className="flex items-center justify-between gap-1">
             <p className="text-white-50 subheading-3 truncate">Sad playlist</p>
-            <button className="text-secondary-50">
-              <MenuIcon />
-            </button>
+            <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
           </div>
 
           <div className="my-6 flex gap-2">
@@ -56,7 +65,7 @@ export default function SidebarPlaylist({ playList }) {
               </button>
             </div>
             <div className="flex flex-col">
-              {PlaylistInfosArray.map((info) => (
+              {playlistInfosArray.map((info) => (
                 <PlaylistInfo key={info.id} {...info} />
               ))}
             </div>
