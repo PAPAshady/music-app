@@ -42,7 +42,7 @@ export default function PlayLists() {
             </div>
           ) : (
             <PlaylistsSlider
-              playlists={[{ isAddPlaylistButton: true }, ...allPlaylists]}
+              playlists={[{ id: 0, isAddPlaylistButton: true }, ...allPlaylists]}
               numberOfPlaylists={8}
             />
           )}

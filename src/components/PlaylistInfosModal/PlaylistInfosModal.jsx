@@ -1,0 +1,78 @@
+import { useRef } from 'react';
+import { Image, Trash, Edit2 } from 'iconsax-react';
+import useInput from '../../hooks/useInput';
+import Modal from '../../components/Modal/Modal';
+import InputField from '../Inputs/InputField/InputField';
+import TextArea from '../Inputs/TextArea/TextArea';
+import DropDownList from '../DropDownList/DropDownList';
+import defaultImage from '../../assets/images/covers/no-cover.jpg';
+import PropTypes from 'prop-types';
+
+export default function PlaylistInfosModal({
+  isOpen,
+  setIsOpen,
+  playlistImg = defaultImage,
+  playlistName,
+  playlistDescription,
+  modalTitle,
+}) {
+  const playlistNameInput = useInput(playlistName);
+  const playlistDescriptionInput = useInput(playlistDescription);
+  const fileInputRef = useRef(null);
+
+  const modalDropDownListItems = [
+    {
+      id: 1,
+      icon: <Image />,
+      title: 'Change photo',
+      onClick: () => fileInputRef.current.click(), // trigger the file input when the user clicks the “Change photo” dropdown item.
+    },
+    { id: 2, icon: <Trash />, title: 'Remove photo' },
+  ];
+
+  return (
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen} title={modalTitle} confirmButton>
+      <div className="flex flex-col items-center gap-3 sm:flex-row">
+        <div className="group relative size-[120px] xs:w-[140px] min-[420px]:size-[150px] overflow-hidden rounded-xl sm:size-[190px] sm:min-w-[190px]">
+          <img className="size-full object-cover" src={playlistImg} alt={playlistName} />
+          <label
+            className="absolute inset-0 size-full bg-black/30 sm:bg-transparent"
+            htmlFor="choose-playlist-img"
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="absolute hidden"
+              id="choose-playlist-img"
+            />
+            <div className="text-primary-50 flex size-full flex-col items-center justify-center gap-3 rounded-xl bg-black/50 opacity-0 backdrop-blur-xs transition-all duration-200 group-hover:opacity-100">
+              <span className="size-9 text-center">
+                <Edit2 size="100%" />
+              </span>
+              <span className="text-sm sm:text-base">Choose picture</span>
+            </div>
+            <DropDownList menuItems={modalDropDownListItems} />
+          </label>
+        </div>
+        <div className="flex w-full grow flex-col gap-2">
+          <InputField placeholder="Name" {...playlistNameInput} classNames="!text-sm" />
+          <TextArea
+            placeholder="Description"
+            maxLength={100}
+            classNames="!min-w-full !min-h-[90px] !h-[105px] text-sm"
+            {...playlistDescriptionInput}
+          />
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+PlaylistInfosModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  setIsOpen: PropTypes.func.isRequired,
+  playlistImg: PropTypes.string,
+  playlistName: PropTypes.string,
+  playlistDescription: PropTypes.string,
+  modalTitle: PropTypes.string.isRequired,
+};
