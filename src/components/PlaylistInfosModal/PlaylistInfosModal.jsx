@@ -6,6 +6,7 @@ import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
 import DropDownList from '../DropDownList/DropDownList';
 import defaultImage from '../../assets/images/covers/no-cover.jpg';
+import useMediaQuery from '../../hooks/useMediaQuery';
 import PropTypes from 'prop-types';
 
 export default function PlaylistInfosModal({
@@ -19,6 +20,7 @@ export default function PlaylistInfosModal({
   const playlistNameInput = useInput(playlistName);
   const playlistDescriptionInput = useInput(playlistDescription);
   const fileInputRef = useRef(null);
+  const isMobileSmall = useMediaQuery('(min-width: 371px)');
 
   const modalDropDownListItems = [
     {
@@ -33,7 +35,7 @@ export default function PlaylistInfosModal({
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen} title={modalTitle} confirmButton>
       <div className="flex flex-col items-center gap-3 sm:flex-row">
-        <div className="group relative size-[120px] xs:w-[140px] min-[420px]:size-[150px] overflow-hidden rounded-xl sm:size-[190px] sm:min-w-[190px]">
+        <div className="group xs:w-[140px] relative size-[120px] overflow-hidden rounded-xl min-[420px]:size-[150px] sm:size-[190px] sm:min-w-[190px]">
           <img className="size-full object-cover" src={playlistImg} alt={playlistName} />
           <label
             className="absolute inset-0 size-full bg-black/30 sm:bg-transparent"
@@ -51,7 +53,12 @@ export default function PlaylistInfosModal({
               </span>
               <span className="text-sm sm:text-base">Choose picture</span>
             </div>
-            <DropDownList menuItems={modalDropDownListItems} />
+            <div className="absolute top-2 right-2">
+              <DropDownList
+                menuItems={modalDropDownListItems}
+                dropDownPlacement={isMobileSmall ? 'bottom start' : 'bottom'}
+              />
+            </div>
           </label>
         </div>
         <div className="flex w-full grow flex-col gap-2">
