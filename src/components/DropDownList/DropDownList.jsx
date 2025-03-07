@@ -18,7 +18,7 @@ export default function DropDownList({
         <MenuItems
           transition
           anchor={dropDownPlacement}
-          className="text-primary-50 bg-primary-500/60 absolute top-3 right-2 mt-1 flex !max-w-max flex-col gap-1 rounded-md p-1 backdrop-blur-sm transition duration-200 data-[closed]:translate-y-2 data-[closed]:opacity-0"
+          className="text-primary-50 z-10 bg-primary-500/60 absolute top-3 right-2 mt-1 flex !max-w-max flex-col gap-1 rounded-md p-1 backdrop-blur-sm transition duration-200 data-[closed]:translate-y-2 data-[closed]:opacity-0"
         >
           {menuItems.map((listItem) => (
             <DropDownListItem key={listItem.id} {...listItem} />
