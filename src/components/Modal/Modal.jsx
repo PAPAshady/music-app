@@ -27,7 +27,7 @@ export default function Modal({
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogPanel
           transition
-          className="bg-primary-700/60 flex max-h-[450px] w-full max-w-[500px] flex-col gap-3 rounded-xl p-6 backdrop-blur-sm transition data-[closed]:scale-95 data-[closed]:opacity-0"
+          className="bg-primary-700/60 flex max-h-[520px] w-full max-w-[580px] flex-col gap-3 rounded-xl p-6 backdrop-blur-sm transition data-[closed]:scale-95 data-[closed]:opacity-0"
         >
           <div className="mb-2 flex items-center justify-between">
             <DialogTitle className="text-primary-50 text-xl font-semibold">{title}</DialogTitle>
@@ -35,7 +35,7 @@ export default function Modal({
               <CloseCircle size="100%" />
             </button>
           </div>
-          <div className="grow overflow-y-auto">{children}</div>
+          <div className="grow overflow-y-auto px-3">{children}</div>
           <div className="flex items-center justify-end gap-3">
             {cancelButton && (
               <MainButton

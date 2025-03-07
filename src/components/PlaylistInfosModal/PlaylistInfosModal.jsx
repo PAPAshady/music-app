@@ -32,32 +32,34 @@ export default function PlaylistInfosModal({
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen} title={modalTitle} confirmButton>
-      <div className="flex items-center gap-3">
-        <label
-          className="group relative size-[190px] min-w-[190px] rounded-xl bg-cover bg-center bg-no-repeat"
-          htmlFor="choose-playlist-img"
-          style={{ backgroundImage: `url(${playlistImg})` }}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            className="absolute hidden"
-            id="choose-playlist-img"
-          />
-          <div className="text-primary-50 flex size-full flex-col items-center justify-center gap-3 rounded-xl bg-black/50 opacity-0 backdrop-blur-xs transition-all duration-200 group-hover:opacity-100">
-            <span className="size-9 text-center">
-              <Edit2 size="100%" />
-            </span>
-            <span>Choose picture</span>
-          </div>
-          <DropDownList menuItems={modalDropDownListItems} />
-        </label>
-        <div className="flex grow flex-col gap-2">
+      <div className="flex flex-col items-center gap-3 sm:flex-row">
+        <div className="group relative size-[120px] xs:w-[140px] min-[420px]:size-[150px] overflow-hidden rounded-xl sm:size-[190px] sm:min-w-[190px]">
+          <img className="size-full object-cover" src={playlistImg} alt={playlistName} />
+          <label
+            className="absolute inset-0 size-full bg-black/30 sm:bg-transparent"
+            htmlFor="choose-playlist-img"
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="absolute hidden"
+              id="choose-playlist-img"
+            />
+            <div className="text-primary-50 flex size-full flex-col items-center justify-center gap-3 rounded-xl bg-black/50 opacity-0 backdrop-blur-xs transition-all duration-200 group-hover:opacity-100">
+              <span className="size-9 text-center">
+                <Edit2 size="100%" />
+              </span>
+              <span className="text-sm sm:text-base">Choose picture</span>
+            </div>
+            <DropDownList menuItems={modalDropDownListItems} />
+          </label>
+        </div>
+        <div className="flex w-full grow flex-col gap-2">
           <InputField placeholder="Name" {...playlistNameInput} classNames="!text-sm" />
           <TextArea
             placeholder="Description"
             maxLength={100}
-            classNames="!min-w-full !min-h-[90px] !h-[95px] text-sm"
+            classNames="!min-w-full !min-h-[90px] !h-[105px] text-sm"
             {...playlistDescriptionInput}
           />
         </div>
