@@ -70,6 +70,7 @@ export default function SidebarPlaylist({ playList }) {
         setIsOpen={setShowEditPlaylistModal}
         playlistImg={playlistImg}
         playlistName="Sad playlist"
+        modalTitle='Edit playlist'
       />
     </>
   );

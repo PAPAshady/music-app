@@ -14,6 +14,7 @@ export default function PlaylistInfosModal({
   playlistImg = defaultImage,
   playlistName,
   playlistDescription,
+  modalTitle,
 }) {
   const playlistNameInput = useInput(playlistName);
   const playlistDescriptionInput = useInput(playlistDescription);
@@ -30,7 +31,7 @@ export default function PlaylistInfosModal({
   ];
 
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen} title="Edit Details" confirmButton>
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen} title={modalTitle} confirmButton>
       <div className="flex items-center gap-3">
         <label
           className="group relative size-[190px] min-w-[190px] rounded-xl bg-cover bg-center bg-no-repeat"
@@ -71,4 +72,5 @@ PlaylistInfosModal.propTypes = {
   playlistImg: PropTypes.string,
   playlistName: PropTypes.string,
   playlistDescription: PropTypes.string,
+  modalTitle: PropTypes.string.isRequired,
 };
