@@ -28,7 +28,7 @@ const PlaylistCard = memo(
           <PlaylistInfosModal
             isOpen={showAddNewPlaylistModal}
             setIsOpen={setShowAddNewPlaylistModal}
-            modalTitle='Create new playlist'
+            modalTitle="Create new playlist"
           />
         </>
       );

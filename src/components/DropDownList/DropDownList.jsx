@@ -11,14 +11,14 @@ export default function DropDownList({
   const styledMenuButtonIcon = cloneElement(menuButtonIcon, { size: '100%' });
   return (
     <Menu>
-      <div className="absolute top-3 right-2 transition-opacity duration-200">
+      <div className="relative">
         <MenuButton className="hover:bg-primary-700 text-secondary-100 data-[open]:bg-primary-700 hover:text-secondary-50 size-8 rounded-md p-1 transition-colors duration-300">
           {styledMenuButtonIcon}
         </MenuButton>
         <MenuItems
           transition
           anchor={dropDownPlacement}
-          className="text-primary-50 bg-primary-500/60 mt-1 flex flex-col gap-1 rounded-md p-1 backdrop-blur-sm transition duration-200 data-[closed]:translate-y-2 data-[closed]:opacity-0"
+          className="text-primary-50 z-10 bg-primary-500/60 absolute top-3 right-2 mt-1 flex !max-w-max flex-col gap-1 rounded-md p-1 backdrop-blur-sm transition duration-200 data-[closed]:translate-y-2 data-[closed]:opacity-0"
         >
           {menuItems.map((listItem) => (
             <DropDownListItem key={listItem.id} {...listItem} />
@@ -45,7 +45,7 @@ function DropDownListItem({ icon, title, onClick }) {
           className="hover:bg-primary-400/60 cursor-default"
           onClick={(e) => clickHandler(e, close)}
         >
-          <div className="flex items-center gap-2 p-2 text-sm">
+          <div className="flex items-center text-start gap-2 p-2 text-sm">
             <span className="size-5">{styledIcon}</span>
             <span>{title}</span>
           </div>
