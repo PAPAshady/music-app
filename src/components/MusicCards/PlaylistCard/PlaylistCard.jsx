@@ -2,18 +2,12 @@ import { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
-import { Heart, Play, AddCircle, Share } from 'iconsax-react';
+import { Heart, Play, AddCircle } from 'iconsax-react';
 import PlaylistInfosModal from '../../PlaylistInfosModal/PlaylistInfosModal';
-import DropDownList from '../../DropDownList/DropDownList';
 
 const PlaylistCard = memo(
   ({ isAddPlaylistButton, title, numberOfTracks, image = noCoverImg, isFavorite, classNames }) => {
     const [showAddNewPlaylistModal, setShowAddNewPlaylistModal] = useState(false);
-
-    const dropDownMenuItems = [
-      { id: 1, title: 'Add to library', icon: <AddCircle /> },
-      { id: 2, title: 'Share', icon: <Share /> },
-    ];
 
     // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.
     if (isAddPlaylistButton) {
@@ -61,12 +55,9 @@ const PlaylistCard = memo(
             </button>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="overflow-hidden">
-              <h3 className="text-white-50 mb-1 cursor-pointer truncate text-base">{title}</h3>
-              <p className="text-sm text-white">{numberOfTracks} Tracks</p>
-            </div>
-            <DropDownList menuItems={dropDownMenuItems} />
+          <div>
+            <h3 className="text-white-50 mb-1 cursor-pointer truncate text-base">{title}</h3>
+            <p className="text-sm text-white">{numberOfTracks} Tracks</p>
           </div>
         </div>
       </div>
