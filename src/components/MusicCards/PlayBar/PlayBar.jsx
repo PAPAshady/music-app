@@ -1,7 +1,8 @@
-import { memo } from 'react';
-import { Heart, Menu, Play } from 'iconsax-react';
+import { memo, cloneElement } from 'react';
+import { Heart, Menu, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
+import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
 import PropTypes from 'prop-types';
 
 const PlayBar = memo(
@@ -16,6 +17,8 @@ const PlayBar = memo(
     clickHandler,
     classNames,
   }) => {
+    const dropDownMenu = useCloseOnClickOutside();
+
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',
       md: 'paragraph-1',
@@ -27,6 +30,11 @@ const PlayBar = memo(
       md: 'text-sm',
       sm: 'hidden',
     };
+
+    const dropDownMenuItems = [
+      { id: 1, title: 'Add to playlist', icon: <AddCircle /> },
+      { id: 2, title: 'Add to favorites', icon: <Heart /> },
+    ];
 
     return (
       <div
@@ -89,7 +97,20 @@ const PlayBar = memo(
             <div
               className={`${size === 'md' ? 'hidden lg:block' : ''} ${size === 'sm' ? 'hidden lg:block' : ''}`}
             >
-              <IconButton icon={<Menu size={size === 'sm' ? 16 : 24} />} />
+              <div className="relative" ref={dropDownMenu.ref}>
+                <IconButton
+                  icon={<Menu size={size === 'sm' ? 16 : 24} />}
+                  onClick={() => dropDownMenu.setIsVisible((prev) => !prev)}
+                  isActive={dropDownMenu.isVisible}
+                />
+                <ul
+                  className={`bg-primary-500/60 absolute right-[110%] z-[9999] w-max -translate-y-1/2 flex-col gap-1 rounded-md p-1 backdrop-blur-sm transition-all duration-300 ${dropDownMenu.isVisible ? 'visible top-1/2 opacity-100' : 'invisible top-[70%] opacity-0'}`}
+                >
+                  {dropDownMenuItems.map((item) => (
+                    <DropDownMenuItem key={item.id} {...item} />
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -98,7 +119,20 @@ const PlayBar = memo(
   }
 );
 
-PlayBar.displayName = 'PlayBar';
+function DropDownMenuItem({ icon, title, onClick }) {
+  const styledIcon = cloneElement(icon, { size: '100%' });
+
+  return (
+    <li>
+      <button onClick={onClick} className="hover:bg-primary-400/60 w-full cursor-default">
+        <div className="flex items-center gap-2 p-2 text-start text-sm">
+          <span className="size-5">{styledIcon}</span>
+          <span>{title}</span>
+        </div>
+      </button>
+    </li>
+  );
+}
 
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
@@ -112,4 +146,11 @@ PlayBar.propTypes = {
   classNames: PropTypes.string,
 };
 
+DropDownMenuItem.propTypes = {
+  icon: PropTypes.element.isRequired,
+  title: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
+};
+
+PlayBar.displayName = 'PlayBar';
 export default PlayBar;
