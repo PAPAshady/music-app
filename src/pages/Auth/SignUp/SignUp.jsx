@@ -37,12 +37,12 @@ export default function SignUp() {
 
   return (
     <div className="mx-auto flex w-[85%] max-w-[620px] flex-col lg:max-w-[530px] xl:max-w-[600px]">
-      <div className="text-primary-100 mb-14 text-center">
+      <div className="text-primary-100 mb-8 text-center">
         <h3 className="mb-6 text-5xl font-semibold">Sign Up</h3>
         <p className="text-lg">Welcome To VioTune</p>
       </div>
       <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
-        <div className="mb-4 flex flex-col gap-10">
+        <div className="mb-4 flex flex-col gap-9">
           <div className="flex flex-col">
             <Controller
               name="username"
@@ -87,7 +87,7 @@ export default function SignUp() {
             <img className="size-10" src={googleLogo} alt="Login with Google" />
           </a>
         </div>
-        <p className="text-white-200 text-sm lg:hidden">
+        <p className="text-white-200 pb-2">
           Already have an account ?{' '}
           <Link className="text-primary-200 underline" to="/auth/sign-in">
             Sign In
