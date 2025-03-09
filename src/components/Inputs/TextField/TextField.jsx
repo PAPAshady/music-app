@@ -31,6 +31,7 @@ const TextField = forwardRef(({ type = 'text', value, placeholder, icon, ...prop
           onFocus={() => setIsFocused(true)}
           onBlur={onBlur}
           ref={ref}
+          autoComplete="new-password" // remove autocomplete for all input types
           className={`relative z-[1] w-full !bg-transparent px-2 text-base outline-none lg:px-3 ${isFocused ? 'text-primary-50' : 'text-primary-800'} ${isPassword ? 'py-2.5 font-[Inter_UI,serif] text-lg tracking-wider' : 'py-3'}`}
         />
         <span

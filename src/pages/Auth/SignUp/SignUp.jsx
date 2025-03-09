@@ -43,8 +43,7 @@ export default function SignUp() {
       </div>
       <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
         <div className="mb-4 flex flex-col gap-10">
-          <div className='flex flex-col gap-8'>
-            {errors.username && <p className="text-red-500">{errors.username.message}</p>}
+          <div className="flex flex-col">
             <Controller
               name="username"
               control={control}
@@ -52,9 +51,9 @@ export default function SignUp() {
                 <TextField placeholder="Username" icon={<User />} {...field} />
               )}
             />
+            {errors.username && <p className="text-red font-semibold">{errors.username.message}</p>}
           </div>
-          <div className='flex flex-col gap-8'>
-            {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+          <div className="flex flex-col">
             <Controller
               name="email"
               control={control}
@@ -62,9 +61,9 @@ export default function SignUp() {
                 <TextField type="email" placeholder="Email" icon={<Sms />} {...field} />
               )}
             />
+            {errors.email && <p className="text-red font-semibold">{errors.email.message}</p>}
           </div>
-          <div className='flex flex-col gap-8'>
-            {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+          <div className="flex flex-col">
             <Controller
               name="password"
               control={control}
@@ -72,6 +71,7 @@ export default function SignUp() {
                 <TextField type="password" placeholder="Password" icon={<Lock />} {...field} />
               )}
             />
+            {errors.password && <p className="text-red font-semibold">{errors.password.message}</p>}
           </div>
         </div>
         <LoginButton title="Sign up" size="md" />
