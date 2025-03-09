@@ -1,8 +1,8 @@
-import { cloneElement, useState } from 'react';
+import { cloneElement, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { Eye, EyeSlash } from 'iconsax-react';
 
-export default function TextField({ type = 'text', value, onChange, placeholder, icon }) {
+const TextField = forwardRef(({ type = 'text', value, placeholder, icon, ...props }, ref) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const styledIcon = icon ? cloneElement(icon, { size: '100%' }) : null;
@@ -24,19 +24,20 @@ export default function TextField({ type = 'text', value, onChange, placeholder,
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           value={value}
-          onChange={(e) => onChange(e)}
-          className={`relative z-[1] w-full px-2 !bg-transparent text-base outline-none lg:px-3 ${isFocused ? 'text-primary-50' : 'text-primary-800'} ${isPassword ? 'py-2.5 font-[Inter_UI,serif] text-lg tracking-wider' : 'py-3'}`}
+          ref={ref}
+          className={`relative z-[1] w-full !bg-transparent px-2 text-base outline-none lg:px-3 ${isFocused ? 'text-primary-50' : 'text-primary-800'} ${isPassword ? 'py-2.5 font-[Inter_UI,serif] text-lg tracking-wider' : 'py-3'}`}
+          {...props}
         />
         <span
           className={`text-primary-800/50 absolute left-0 flex -translate-y-1/2 items-center gap-1 text-sm transition-all duration-200 ${isFocusedOrHasValue ? '-top-[38%]' : 'top-1/2 px-2'} `}
         >
           <span
-            className={`absolute size-5 lg:size-6 transition-all 1 duration-200 ${isFocusedOrHasValue ? 'invisible opacity-0' : 'visible opacity-100'}`}
+            className={`1 absolute size-5 transition-all duration-200 lg:size-6 ${isFocusedOrHasValue ? 'invisible opacity-0' : 'visible opacity-100'}`}
           >
             {styledIcon}
           </span>
           <span
-            className={` transition-all duration-200 ${isFocusedOrHasValue ? 'text-primary-50' : styledIcon ? 'translate-x-6 lg:translate-x-8' : ''}`}
+            className={`transition-all duration-200 ${isFocusedOrHasValue ? 'text-primary-50' : styledIcon ? 'translate-x-6 lg:translate-x-8' : ''}`}
           >
             {placeholder}
           </span>
@@ -56,7 +57,7 @@ export default function TextField({ type = 'text', value, onChange, placeholder,
       </div>
     </div>
   );
-}
+});
 
 TextField.propTypes = {
   type: PropTypes.oneOf(['text', 'password', 'email', 'number']),
@@ -65,3 +66,7 @@ TextField.propTypes = {
   icon: PropTypes.element,
   onChange: PropTypes.func.isRequired,
 };
+
+TextField.displayName = 'TextField';
+
+export default TextField;
