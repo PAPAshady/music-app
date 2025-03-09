@@ -6,6 +6,7 @@ import facebookLogo from '../../../assets/images/socials/facebook.png';
 import googleLogo from '../../../assets/images/socials/google.png';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import supabase from '../../../services/supabaseClient';
 import { z } from 'zod';
 
 const formSchema = z.object({
@@ -22,7 +23,7 @@ export default function SignUp() {
     handleSubmit,
     register,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       username: '',
@@ -32,7 +33,21 @@ export default function SignUp() {
     resolver: zodResolver(formSchema),
   });
 
-  const submitHandler = (data) => console.log(data);
+  const submitHandler = async ({ email, password, username }) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { username } },
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (err) {
+      console.log(err.code);
+    }
+  };
 
   const formInputs = [
     {
@@ -77,7 +92,7 @@ export default function SignUp() {
             />
           ))}
         </div>
-        <LoginButton title="Sign up" size="md" />
+        <LoginButton title={isSubmitting ? 'Please wait...' : 'Sign up'} size="md" />
       </form>
       <div className="text-center">
         <p className="text-white-200 mb-4">OR Sign Up With</p>
