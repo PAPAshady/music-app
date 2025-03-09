@@ -4,10 +4,9 @@ import { User, Sms, Lock } from 'iconsax-react';
 import { Link } from 'react-router-dom';
 import facebookLogo from '../../../assets/images/socials/facebook.png';
 import googleLogo from '../../../assets/images/socials/google.png';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import PropTypes from 'prop-types';
 
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Username is required' }),
@@ -20,8 +19,9 @@ const formSchema = z.object({
 
 export default function SignUp() {
   const {
-    control,
     handleSubmit,
+    register,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -35,12 +35,24 @@ export default function SignUp() {
   const submitHandler = (data) => console.log(data);
 
   const formInputs = [
-    { id: 1, inputName: 'username', inputType: 'text', placeholder: 'Username', icon: <User /> },
-    { id: 2, inputName: 'email', inputType: 'email', placeholder: 'Email', icon: <Sms /> },
+    {
+      id: 1,
+      type: 'text',
+      name: 'username',
+      placeholder: 'Username',
+      icon: <User />,
+    },
+    {
+      id: 2,
+      type: 'email',
+      name: 'email',
+      placeholder: 'Email',
+      icon: <Sms />,
+    },
     {
       id: 3,
-      inputName: 'password',
-      inputType: 'password',
+      type: 'password',
+      name: 'password',
       placeholder: 'Password',
       icon: <Lock />,
     },
@@ -55,14 +67,13 @@ export default function SignUp() {
       <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
         <div className="mb-4 flex flex-col gap-9">
           {formInputs.map((input) => (
-            <FormInput
+            <TextField
               key={input.id}
-              control={control}
-              errors={errors}
-              inputName={input.inputName}
-              inputType={input.inputType}
-              placeholder={input.placeholder}
-              icon={input.icon}
+              value={watch(input.name)}
+              isInvalid={errors[input.name] && true}
+              errorMsg={errors[input.name]?.message}
+              {...register(input.name)}
+              {...input}
             />
           ))}
         </div>
@@ -89,30 +100,3 @@ export default function SignUp() {
     </div>
   );
 }
-
-function FormInput({ control, errors, inputName, inputType, ...props }) {
-  return (
-    <Controller
-      name={inputName}
-      control={control}
-      render={({ field }) => (
-        <TextField
-          type={inputType}
-          errorMsg={errors[inputName]?.message}
-          isInvalid={errors.password && true}
-          {...field}
-          {...props}
-        />
-      )}
-    />
-  );
-}
-
-FormInput.propTypes = {
-  control: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired,
-  inputName: PropTypes.string.isRequired,
-  inputType: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
-  icon: PropTypes.element.isRequired,
-};

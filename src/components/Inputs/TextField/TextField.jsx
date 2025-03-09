@@ -27,7 +27,6 @@ const TextField = forwardRef(
         <div className={`relative grow ${isPassword ? 'pe-8' : ''} `}>
           <input
             {...props}
-            value={value}
             type={isPasswordVisible ? 'text' : type}
             onFocus={() => setIsFocused(true)}
             onBlur={onBlur}
