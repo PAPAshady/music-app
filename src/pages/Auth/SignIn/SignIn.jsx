@@ -18,7 +18,7 @@ export default function SignIn() {
           <Outlet />
         ) : (
           <div className="flex w-full flex-col">
-            <div className="text-primary-100 mb-14 text-center">
+            <div className="text-primary-100 mb-8 text-center">
               <h3 className="mb-6 text-5xl font-semibold">Sign In</h3>
               <p className="text-lg">Welcome Back To VioTune</p>
             </div>
@@ -58,7 +58,7 @@ export default function SignIn() {
                   <img className="size-10" src={googleLogo} alt="Login with Google" />
                 </a>
               </div>
-              <p className="text-white-200 text-sm lg:hidden">
+              <p className="text-white-200">
                 You do not have an account ?{' '}
                 <Link className="text-primary-200 underline" to="/auth/sign-up">
                   Sign Up
