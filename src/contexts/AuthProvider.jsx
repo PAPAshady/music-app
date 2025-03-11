@@ -5,23 +5,23 @@ import PropTypes from 'prop-types';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
-        setSession(null);
+        setUser(null);
       } else if (session) {
-        setSession(session);
+        setUser(session.user);
       }
     });
 
-    return () => subscription.unsubscribe;
+    return () => subscription.unsubscribe();
   }, []);
 
-  return <AuthContext.Provider value={session}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 }
 
 AuthProvider.propTypes = {
