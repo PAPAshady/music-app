@@ -1,5 +1,6 @@
 import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
+import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSignUpButton';
 import { User, Sms, Lock } from 'iconsax-react';
 import { Link, useNavigate } from 'react-router-dom';
 import githubLogo from '../../../assets/images/socials/github.png';
@@ -8,7 +9,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '../../../services/supabaseClient';
 import { z } from 'zod';
-import PropTypes from 'prop-types';
 
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Username is required' }),
@@ -57,17 +57,6 @@ export default function SignUp() {
           setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
           break;
       }
-    }
-  };
-
-  // handle sign up with google or github
-  const handleSocialSignUp = async (provider) => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider });
-      if (error) throw error;
-    } catch (err) {
-      console.error(`${provider} sign-up error:`, err);
-      setError('root', { message: `Failed to sign up with ${provider}. Please try again.` });
     }
   };
 
@@ -128,7 +117,11 @@ export default function SignUp() {
           {socialSignUpButtons.map((button) => (
             <SocialSignUpButton
               key={button.id}
-              socialSignUpHandler={handleSocialSignUp}
+              onError={() =>
+                setError('root', {
+                  message: `Failed to sign up with ${button.provider}. Please try again.`,
+                })
+              }
               {...button}
             />
           ))}
@@ -143,21 +136,3 @@ export default function SignUp() {
     </div>
   );
 }
-
-function SocialSignUpButton({ imageSrc, socialSignUpHandler, provider }) {
-  return (
-    <button onClick={() => socialSignUpHandler(provider)}>
-      <img
-        className="size-10 transition-transform hover:scale-110"
-        src={imageSrc}
-        alt={`Login with ${provider}`}
-      />
-    </button>
-  );
-}
-
-SocialSignUpButton.propTypes = {
-  imageSrc: PropTypes.string.isRequired,
-  socialSignUpHandler: PropTypes.func.isRequired,
-  provider: PropTypes.string.isRequired,
-};
