@@ -4,7 +4,7 @@ import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSig
 import { User, Sms, Lock } from 'iconsax-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { socialSignUpButtons } from '../../../data';
-import { useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';  
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '../../../services/supabaseClient';
 import { z } from 'zod';
