@@ -1,7 +1,7 @@
 import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import { User, Sms, Lock } from 'iconsax-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import facebookLogo from '../../../assets/images/socials/facebook.png';
 import googleLogo from '../../../assets/images/socials/google.png';
 import { useForm } from 'react-hook-form';
@@ -19,10 +19,12 @@ const formSchema = z.object({
 });
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
     watch,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -40,12 +42,20 @@ export default function SignUp() {
         password,
         options: { data: { username } },
       });
-
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
+      navigate('/');
     } catch (err) {
-      console.log(err.code);
+      switch (err.code) {
+        case 'user_already_exists':
+          setError('email', { message: 'This email already exists. Please login.' });
+          break;
+        case 'over_request_rate_limit':
+          setError('root', 'Too many attempts. Please wait and try again later.');
+          break;
+        default:
+          setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
+          break;
+      }
     }
   };
 
@@ -80,6 +90,7 @@ export default function SignUp() {
         <p className="text-lg">Welcome To VioTune</p>
       </div>
       <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
+        <p className="text-red mb-2 text-lg font-semibold">{errors.root?.message}</p>
         <div className="mb-4 flex flex-col gap-9">
           {formInputs.map((input) => (
             <TextField
