@@ -57,6 +57,8 @@ import teamMemeber1 from './assets/images/Team-members/team-member-1.jpg';
 import teamMemeber2 from './assets/images/Team-members/team-member-2.jpg';
 import teamMemeber3 from './assets/images/Team-members/team-member-3.jpg';
 import teamMemeber4 from './assets/images/Team-members/team-member-4.jpg';
+import googleLogo from './assets/images/socials/google.png';
+import githubLogo from './assets/images/socials/github.png';
 import { ReceiveSquare, User, Music, MusicSquareSearch, Sms, Call, Location } from 'iconsax-react';
 
 export const songs = [
@@ -349,4 +351,9 @@ export const contactInfos = [
     description: 'Our friendly team is here to help.',
     contactInfo: '100 Smith Street',
   },
+];
+
+export const socialSignUpButtons = [
+  { id: 1, imageSrc: googleLogo, provider: 'google' },
+  { id: 2, imageSrc: githubLogo, provider: 'github' },
 ];

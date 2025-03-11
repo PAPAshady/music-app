@@ -3,8 +3,7 @@ import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSignUpButton';
 import { User, Sms, Lock } from 'iconsax-react';
 import { Link, useNavigate } from 'react-router-dom';
-import githubLogo from '../../../assets/images/socials/github.png';
-import googleLogo from '../../../assets/images/socials/google.png';
+import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '../../../services/supabaseClient';
@@ -83,11 +82,6 @@ export default function SignUp() {
       placeholder: 'Password',
       icon: <Lock />,
     },
-  ];
-
-  const socialSignUpButtons = [
-    { id: 1, imageSrc: googleLogo, provider: 'google' },
-    { id: 2, imageSrc: githubLogo, provider: 'github' },
   ];
 
   return (

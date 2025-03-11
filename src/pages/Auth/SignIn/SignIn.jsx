@@ -3,8 +3,8 @@ import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import useInput from '../../../hooks/useInput';
 import { Sms, Lock } from 'iconsax-react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import facebookLogo from '../../../assets/images/socials/facebook.png';
-import googleLogo from '../../../assets/images/socials/google.png';
+import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSignUpButton';
+import { socialSignUpButtons } from '../../../data';
 
 export default function SignIn() {
   const emailInput = useInput();
@@ -50,13 +50,9 @@ export default function SignIn() {
             <div className="text-center">
               <p className="text-white-200 mb-4">OR Log In With</p>
               <div className="mb-6 flex items-center justify-center gap-6">
-                <a href="#">
-                  <img className="size-10" src={facebookLogo} alt="Login with Facebook" />
-                </a>
-
-                <a href="#">
-                  <img className="size-10" src={googleLogo} alt="Login with Google" />
-                </a>
+                {socialSignUpButtons.map((button) => (
+                  <SocialSignUpButton key={button.id} {...button} />
+                ))}
               </div>
               <p className="text-white-200">
                 You do not have an account ?{' '}
