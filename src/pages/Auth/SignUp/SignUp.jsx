@@ -9,10 +9,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '../../../services/supabaseClient';
 import { z } from 'zod';
-import { addUser } from '../../../services/users';
 
 const formSchema = z.object({
-  username: z.string().min(1, { message: 'Username is required' }),
+  user_name: z.string().min(1, { message: 'Username is required' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z
     .string()
@@ -30,26 +29,22 @@ export default function SignUp() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      username: '',
+      user_name: '',
       email: '',
       password: '',
     },
     resolver: zodResolver(formSchema),
   });
 
-  const submitHandler = async ({ email, password, username }) => {
+  const submitHandler = async ({ email, password, user_name }) => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { username } },
+        options: { data: { user_name } },
       });
 
       if (error) throw error;
-      const {
-        data: { user },
-      } = await supabase.auth.getUser(); // get logged in user
-      await addUser({ email, username, auth_id: user.id }); // add user to database
       navigate('/');
     } catch (err) {
       switch (err.code) {
@@ -70,7 +65,7 @@ export default function SignUp() {
     {
       id: 1,
       type: 'text',
-      name: 'username',
+      name: 'user_name',
       placeholder: 'Username',
       icon: <User />,
     },
