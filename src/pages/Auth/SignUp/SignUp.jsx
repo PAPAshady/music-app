@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '../../../services/supabaseClient';
 import { z } from 'zod';
+import { addUser } from '../../../services/users';
 
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Username is required' }),
@@ -43,7 +44,12 @@ export default function SignUp() {
         password,
         options: { data: { username } },
       });
+
       if (error) throw error;
+      const {
+        data: { user },
+      } = await supabase.auth.getUser(); // get logged in user
+      await addUser({ email, username, auth_id: user.id }); // add user to database
       navigate('/');
     } catch (err) {
       switch (err.code) {
