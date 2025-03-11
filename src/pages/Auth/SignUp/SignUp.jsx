@@ -1,12 +1,15 @@
 import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
+import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSignUpButton';
 import { User, Sms, Lock } from 'iconsax-react';
-import { Link } from 'react-router-dom';
-import facebookLogo from '../../../assets/images/socials/facebook.png';
+import { Link, useNavigate } from 'react-router-dom';
+import githubLogo from '../../../assets/images/socials/github.png';
 import googleLogo from '../../../assets/images/socials/google.png';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import supabase from '../../../services/supabaseClient';
 import { z } from 'zod';
+import { addUser } from '../../../services/users';
 
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Username is required' }),
@@ -18,11 +21,13 @@ const formSchema = z.object({
 });
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
     watch,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       username: '',
@@ -32,7 +37,34 @@ export default function SignUp() {
     resolver: zodResolver(formSchema),
   });
 
-  const submitHandler = (data) => console.log(data);
+  const submitHandler = async ({ email, password, username }) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { username } },
+      });
+
+      if (error) throw error;
+      const {
+        data: { user },
+      } = await supabase.auth.getUser(); // get logged in user
+      await addUser({ email, username, auth_id: user.id }); // add user to database
+      navigate('/');
+    } catch (err) {
+      switch (err.code) {
+        case 'user_already_exists':
+          setError('email', { message: 'This email already exists. Please login.' });
+          break;
+        case 'over_request_rate_limit':
+          setError('root', 'Too many attempts. Please wait and try again later.');
+          break;
+        default:
+          setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
+          break;
+      }
+    }
+  };
 
   const formInputs = [
     {
@@ -58,6 +90,11 @@ export default function SignUp() {
     },
   ];
 
+  const socialSignUpButtons = [
+    { id: 1, imageSrc: googleLogo, provider: 'google' },
+    { id: 2, imageSrc: githubLogo, provider: 'github' },
+  ];
+
   return (
     <div className="mx-auto flex w-[85%] max-w-[620px] flex-col lg:max-w-[530px] xl:max-w-[600px]">
       <div className="text-primary-100 mb-8 text-center">
@@ -65,6 +102,7 @@ export default function SignUp() {
         <p className="text-lg">Welcome To VioTune</p>
       </div>
       <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
+        <p className="text-red mb-2 text-lg font-semibold">{errors.root?.message}</p>
         <div className="mb-4 flex flex-col gap-9">
           {formInputs.map((input) => (
             <TextField
@@ -77,18 +115,22 @@ export default function SignUp() {
             />
           ))}
         </div>
-        <LoginButton title="Sign up" size="md" />
+        <LoginButton title={isSubmitting ? 'Please wait...' : 'Sign up'} size="md" />
       </form>
       <div className="text-center">
         <p className="text-white-200 mb-4">OR Sign Up With</p>
         <div className="mb-6 flex items-center justify-center gap-6">
-          <a href="#">
-            <img className="size-10" src={facebookLogo} alt="Login with Facebook" />
-          </a>
-
-          <a href="#">
-            <img className="size-10" src={googleLogo} alt="Login with Google" />
-          </a>
+          {socialSignUpButtons.map((button) => (
+            <SocialSignUpButton
+              key={button.id}
+              onError={() =>
+                setError('root', {
+                  message: `Failed to sign up with ${button.provider}. Please try again.`,
+                })
+              }
+              {...button}
+            />
+          ))}
         </div>
         <p className="text-white-200 pb-2">
           Already have an account ?{' '}
