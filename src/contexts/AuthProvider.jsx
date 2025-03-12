@@ -16,9 +16,10 @@ export function AuthProvider({ children }) {
         setUser(null);
         localStorage.clear();
       } else if (event === 'SIGNED_IN') {
+        const { user } = session;
+        setUser(user);
         // Acoording to supabase.com docs, using an async callback with 'onAuthStateChange' can cause deadlocks and performance issues.
         // To avoid this, we use setTimeout. Reference: https://supabase.com/docs/reference/javascript/auth-onauthstatechange
-        const { user } = session;
         setTimeout(async () => {
           const { email, id, user_metadata = {} } = user;
           const { avatar_url, user_name } = user_metadata;
@@ -34,8 +35,6 @@ export function AuthProvider({ children }) {
           }
         }, 0);
       }
-
-      session && setUser(user);
     });
 
     return () => data.subscription.unsubscribe();
