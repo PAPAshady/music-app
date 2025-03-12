@@ -12,14 +12,13 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      const { user } = session;
-
       if (event === 'SIGNED_OUT') {
         setUser(null);
         localStorage.clear();
       } else if (event === 'SIGNED_IN') {
         // Acoording to supabase.com docs, using an async callback with 'onAuthStateChange' can cause deadlocks and performance issues.
         // To avoid this, we use setTimeout. Reference: https://supabase.com/docs/reference/javascript/auth-onauthstatechange
+        const { user } = session;
         setTimeout(async () => {
           const { email, id, user_metadata = {} } = user;
           const { avatar_url, user_name } = user_metadata;
@@ -40,7 +39,7 @@ export function AuthProvider({ children }) {
     });
 
     return () => data.subscription.unsubscribe();
-  }, [mutate]);
+  }, [mutate, user]);
 
   return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 }
