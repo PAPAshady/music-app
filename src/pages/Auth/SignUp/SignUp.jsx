@@ -4,7 +4,7 @@ import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSig
 import { User, Sms, Lock } from 'iconsax-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { socialSignUpButtons } from '../../../data';
-import { useForm } from 'react-hook-form';  
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '../../../services/supabaseClient';
 import { z } from 'zod';
@@ -85,8 +85,8 @@ export default function SignUp() {
   ];
 
   return (
-    <div className="mx-auto flex w-[85%] max-w-[620px] flex-col lg:max-w-[530px] xl:max-w-[600px]">
-      <div className="text-primary-100 mb-8 text-center">
+    <>
+      <div className="text-primary-100 text-center">
         <h3 className="mb-6 text-5xl font-semibold">Sign Up</h3>
         <p className="text-lg">Welcome To VioTune</p>
       </div>
@@ -128,6 +128,6 @@ export default function SignUp() {
           </Link>
         </p>
       </div>
-    </div>
+    </>
   );
 }
