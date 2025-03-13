@@ -1,91 +1,88 @@
-import { useState, useRef } from 'react';
-import useInput from '../../../hooks/useInput';
-import { Sms, Call } from 'iconsax-react';
+import { useState } from 'react';
+import { Sms } from 'iconsax-react';
 import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import supabase from '../../../services/supabaseClient';
+import { z } from 'zod';
+
+const formSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email address' }),
+});
 
 export default function ForgotPassword() {
-  const [otp, setOtp] = useState(Array(6).fill(''));
-  const inputRefs = useRef([]);
-  const [isCodeSectionVisible, setIsCodeSectionVisible] = useState(false); // check if the enter otp code section is visible or not.
-  const emailInput = useInput();
-  const phoneInput = useInput();
+  const {
+    handleSubmit,
+    watch,
+    register,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: { email: '' },
+    resolver: zodResolver(formSchema),
+  });
 
-  const sendCodeHandler = (e) => {
-    e.preventDefault();
-    setIsCodeSectionVisible(true);
-  };
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false); // check if the success message is visible or not.
 
-  const updateOtp = (index, newValue) => {
-    const newOtp = [...otp];
-    newOtp[index] = newValue;
-    setOtp(newOtp);
-  };
-
-  const handleChange = (e, index) => {
-    const value = e.target.value;
-    if (!/^\d{1}$/.test(value)) return; // only accept numbers.
-    updateOtp(index, value);
-    if (index < otp.length - 1) {
-      inputRefs.current[index + 1].focus();
-    }
-  };
-
-  const keyDownHandler = (e, index) => {
-    if (e.key === 'Backspace') {
-      if (!otp[index] && index) {
-        inputRefs.current[index - 1].focus();
+  const sendCodeHandler = async ({ email }) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'localhost:5173/auth/update-password',
+      });
+      if (error) throw error;
+      setShowSuccessMessage(true);
+    } catch (err) {
+      if (err.code === 'over_request_rate_limit') {
+        setError('root', { message: 'Too many attempts. Please wait and try again later.' });
       } else {
-        updateOtp(index, '');
+        setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
+        console.error('An error occured while sending password reset link => ', err);
       }
     }
   };
 
   return (
     <div className="relative flex w-full flex-col">
-      <div className="text-primary-100 mb-10 text-center lg:mb-14">
-        <h3 className="mb-4 text-3xl font-semibold md:text-4xl lg:mb-6 lg:text-5xl">
-          {isCodeSectionVisible ? 'Enter Code' : 'Forgot Password'}
-        </h3>
-        <p className="text-lg md:text-xl">
-          {isCodeSectionVisible
-            ? 'Enter the code sent to the Phone'
-            : 'Enter your email or phone number.'}
-        </p>
-      </div>
-      {isCodeSectionVisible ? (
-        <form onSubmit={(e) => e.preventDefault()}>
-          <div className="mb-10 flex items-center justify-center gap-2 sm:mb-14 sm:gap-4">
-            {otp.map((value, index) => (
-              <input
-                key={index}
-                type="text"
-                value={value}
-                maxLength={1}
-                onChange={(e) => handleChange(e, index)}
-                onKeyDown={(e) => keyDownHandler(e, index)}
-                ref={(el) => (inputRefs.current[index] = el)}
-                className="bg-primary-50/60 size-[40px] rounded-lg text-center text-2xl text-[white] outline-none sm:size-16 sm:text-3xl md:size-[70px] lg:rounded-3xl"
-              />
-            ))}
-          </div>
-          <div className="w-full text-center">
-            <LoginButton title="SUBMIT" size="md" classNames="w-full" />
-          </div>
-        </form>
+      {showSuccessMessage ? (
+        <div className="text-primary-100 mb-8 text-center">
+          <h3 className="mb-4 text-3xl font-semibold md:text-4xl lg:mb-6 lg:text-5xl">
+            Check your email
+          </h3>
+          <p className="text-primary-50 text-lg">
+            We’ve sent a password reset link to the email address you provided. Please check your
+            inbox (and your spam folder, just in case) and follow the instructions to reset your
+            password.
+          </p>
+        </div>
       ) : (
-        <form
-          onSubmit={sendCodeHandler}
-          action="#"
-          className="mb-10 flex flex-col gap-8 lg:mx-auto lg:w-[90%]"
-        >
-          <div className="flex flex-col">
-            <TextField type="email" placeholder="Email" icon={<Sms />} {...emailInput} />
-            <span className="text-primary-50 my-4 text-center">OR</span>
-            <TextField type="number" placeholder="Phone" icon={<Call />} {...phoneInput} />
+        <>
+          <div className="text-primary-100 mb-8 text-center">
+            <h3 className="mb-4 text-3xl font-semibold md:text-4xl lg:mb-6 lg:text-5xl">
+              Forgot Password
+            </h3>
+            <p className="text-lg md:text-xl">Enter the email associated with your account</p>
           </div>
-          <LoginButton title="SUBMIT" size="md" />
-        </form>
+          <form
+            onSubmit={handleSubmit(sendCodeHandler)}
+            action="#"
+            className="mb-10 flex flex-col gap-8 lg:mx-auto lg:w-[90%]"
+          >
+            <p className="text-red text-lg font-semibold">{errors.root?.message}</p>
+            <div>
+              <TextField
+                type="email"
+                placeholder="Email"
+                icon={<Sms />}
+                value={watch('email')}
+                isInvalid={errors.email && true}
+                errorMsg={errors.email?.message}
+                {...register('email')}
+              />
+            </div>
+            <LoginButton title={isSubmitting ? 'Please wait...' : 'SUBMIT'} size="md" />
+          </form>
+        </>
       )}
     </div>
   );
