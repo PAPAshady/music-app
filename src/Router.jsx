@@ -1,4 +1,5 @@
 import { Navigate } from 'react-router-dom';
+import ProtectedRoute from './components/shared/ProtectedRoute/ProtectedRoute';
 import MainLayout from './components/shared/Layouts/MainLayout/MainLayout';
 import Home from './pages/Home/Home';
 import Favorites from './pages/Favorites/Favorites';
@@ -19,7 +20,12 @@ import FAQ from './pages/FAQ/FAQ';
 const routes = [
   {
     path: '/',
-    element: <MainLayout />,
+
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { path: '/', element: <Home /> },
       { path: '/favorites', element: <Favorites /> },
@@ -39,7 +45,14 @@ const routes = [
       },
     ],
   },
-  { path: '/player', element: <PlayerPage /> },
+  {
+    path: '/player',
+    element: (
+      <ProtectedRoute>
+        <PlayerPage />
+      </ProtectedRoute>
+    ),
+  },
   {
     path: '/auth',
     element: <AuthLayout />,
