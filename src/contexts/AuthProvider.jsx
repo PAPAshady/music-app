@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
       if (event === 'SIGNED_OUT') {
         localStorage.clear();
       } else if (event === 'SIGNED_IN') {
-        if (userData?.data?.user) {
+        if (session) {
           // Acoording to supabase.com docs, using an async callback with 'onAuthStateChange' can cause deadlocks and performance issues.
           // To avoid this, we use setTimeout. Reference: https://supabase.com/docs/reference/javascript/auth-onauthstatechange
           setTimeout(async () => {
