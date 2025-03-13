@@ -26,7 +26,11 @@ export default function Authentication() {
         <div
           className={`transision-all grow duration-300 ${isLoading ? 'invisible opacity-0' : 'visible opacity-100'}`}
         >
-          <Outlet />
+          <div className="flex w-full items-center justify-center">
+            <div className="mx-auto flex w-[85%] max-w-[620px] flex-col lg:max-w-[530px] xl:max-w-[600px]">
+              <Outlet />
+            </div>
+          </div>
         </div>
       </div>
     </div>

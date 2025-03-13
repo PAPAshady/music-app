@@ -1,4 +1,5 @@
 import { Navigate } from 'react-router-dom';
+import ProtectedRoute from './components/shared/ProtectedRoute/ProtectedRoute';
 import MainLayout from './components/shared/Layouts/MainLayout/MainLayout';
 import Home from './pages/Home/Home';
 import Favorites from './pages/Favorites/Favorites';
@@ -6,6 +7,7 @@ import AuthLayout from './components/shared/Layouts/AuthLayout/AuthLayout';
 import SignIn from './pages/Auth/SignIn/SignIn';
 import SignUp from './pages/Auth/SignUp/SignUp';
 import ForgotPassword from './pages/Auth/ForgotPassword/ForgotPassword';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
 import PlayLists from './pages/PlayLists/PlayLists';
 import Browse from './pages/Browse/Browse';
 import PlayerPage from './pages/PlayerPage/PlayerPage';
@@ -19,7 +21,12 @@ import FAQ from './pages/FAQ/FAQ';
 const routes = [
   {
     path: '/',
-    element: <MainLayout />,
+
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { path: '/', element: <Home /> },
       { path: '/favorites', element: <Favorites /> },
@@ -39,18 +46,23 @@ const routes = [
       },
     ],
   },
-  { path: '/player', element: <PlayerPage /> },
+  {
+    path: '/player',
+    element: (
+      <ProtectedRoute>
+        <PlayerPage />
+      </ProtectedRoute>
+    ),
+  },
   {
     path: '/auth',
     element: <AuthLayout />,
     children: [
-      { index: true, element: <Navigate to="/auth/sign-in" replace /> },
-      {
-        path: 'sign-in',
-        element: <SignIn />,
-        children: [{ path: 'forgot-pass', element: <ForgotPassword /> }],
-      },
+      { index: true, element: <Navigate to="/auth/sign-up" replace /> },
+      { path: 'sign-in', element: <SignIn /> },
+      { path: 'forgot-pass', element: <ForgotPassword /> },
       { path: 'sign-up', element: <SignUp /> },
+      { path: 'reset-pass', element: <ResetPassword /> },
     ],
   },
 ];
