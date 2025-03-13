@@ -7,6 +7,7 @@ import AuthLayout from './components/shared/Layouts/AuthLayout/AuthLayout';
 import SignIn from './pages/Auth/SignIn/SignIn';
 import SignUp from './pages/Auth/SignUp/SignUp';
 import ForgotPassword from './pages/Auth/ForgotPassword/ForgotPassword';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
 import PlayLists from './pages/PlayLists/PlayLists';
 import Browse from './pages/Browse/Browse';
 import PlayerPage from './pages/PlayerPage/PlayerPage';
@@ -61,6 +62,7 @@ const routes = [
       { path: 'sign-in', element: <SignIn /> },
       { path: 'forgot-pass', element: <ForgotPassword /> },
       { path: 'sign-up', element: <SignUp /> },
+      { path: 'reset-pass', element: <ResetPassword /> },
     ],
   },
 ];
