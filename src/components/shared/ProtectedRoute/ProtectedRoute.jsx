@@ -13,8 +13,6 @@ export default function ProtectedRoute({ children }) {
     return <Navigate to="/auth/sign-up" replace />;
   }
 
-  console.log(user);
-
   return children;
 }
 
