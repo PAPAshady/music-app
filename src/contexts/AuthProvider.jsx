@@ -1,67 +1,74 @@
-import supabase from '../services/supabaseClient';
 import { createContext, useEffect } from 'react';
-import { addUser, getUser } from '../services/users';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import supabase from '../services/supabaseClient';
 import PropTypes from 'prop-types';
+import { useQuery } from '@tanstack/react-query';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const { mutate } = useMutation({
-    mutationFn: addUser,
-    onError: (err) =>
-      console.error('An error occured while creating a new user to database => ', err),
-  });
-  const { data: userData, isPending } = useQuery({
+  const {
+    data: userData,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['user'],
     queryFn: async () => await supabase.auth.getUser(),
     retry: true,
     retryDelay: 3000,
+    initialData: null,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        localStorage.clear();
-      } else if (event === 'SIGNED_IN') {
-        if (session) {
-          // Acoording to supabase.com docs, using an async callback with 'onAuthStateChange' can cause deadlocks and performance issues.
-          // To avoid this, we use setTimeout. Reference: https://supabase.com/docs/reference/javascript/auth-onauthstatechange
-          setTimeout(async () => {
-            try {
-              const { user } = session;
-              const { email, id, user_metadata = {} } = user;
-              const { avatar_url, user_name } = user_metadata;
-              const isUserExists = await getUser(id);
-              if (!isUserExists) {
-                const newUserData = {
-                  auth_id: id,
-                  email,
-                  user_name: user_name || email,
-                  avatar_url,
-                };
-                mutate(newUserData); // add new user to the database.
-              }
-            } catch (err) {
-              console.log('An error occured while handling sign-in => ', err);
-            }
-          }, 0);
-        }
-      }
+    if (isError) {
+      console.log('An error occured while getting data from server => ', error);
+    }
+  }, [isError, error]);
+
+  const signUp = async ({ email, password, userـname }) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { userـname } },
     });
+    if (error) throw error;
+    await refetch();
+    return data;
+  };
 
-    return () => authListener?.subscription?.unsubscribe();
-  }, [mutate, userData]);
+  const signIn = async (formData) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ ...formData });
+    if (error) throw error;
+    await refetch();
+    return data;
+  };
 
-  return (
-    <AuthContext.Provider value={{ user: userData?.data?.user, isPending }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const signInWithOAuth = async (provider) => {
+    const { error, data } = supabase.auth.signInWithOAuth({ provider });
+    if (error) throw error;
+    return data;
+  };
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  };
+
+  const authContextValues = {
+    user: userData?.data?.user,
+    isLoading: isFetching,
+    signUp,
+    signIn,
+    signInWithOAuth,
+    signOut,
+  };
+
+  return <AuthContext.Provider value={authContextValues}>{children}</AuthContext.Provider>;
 }
 
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+AuthProvider.propTypes = { children: PropTypes.node.isRequired };
 
 export default AuthContext;

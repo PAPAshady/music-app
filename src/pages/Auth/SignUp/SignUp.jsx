@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import supabase from '../../../services/supabaseClient';
+import useAuth from '../../../hooks/useAuth';
 import { z } from 'zod';
 
 const formSchema = z.object({
@@ -20,6 +20,7 @@ const formSchema = z.object({
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const { signUp } = useAuth();
   const {
     handleSubmit,
     register,
@@ -35,15 +36,9 @@ export default function SignUp() {
     resolver: zodResolver(formSchema),
   });
 
-  const submitHandler = async ({ email, password, user_name }) => {
+  const submitHandler = async (formData) => {
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { user_name } },
-      });
-
-      if (error) throw error;
+      await signUp(formData);
       navigate('/');
     } catch (err) {
       switch (err.code) {
