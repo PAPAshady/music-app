@@ -28,11 +28,11 @@ export function AuthProvider({ children }) {
     }
   }, [isError, error]);
 
-  const signUp = async ({ email, password, userـname }) => {
+  const signUp = async ({ email, password, userـname, first_name, last_name }) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { userـname } },
+      options: { data: { userـname, full_name: `${first_name} ${last_name}` } },
     });
     if (error) throw error;
     await refetch();

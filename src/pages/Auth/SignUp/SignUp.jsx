@@ -10,6 +10,8 @@ import useAuth from '../../../hooks/useAuth';
 import { z } from 'zod';
 
 const formSchema = z.object({
+  first_name: z.string().min(1, { message: 'Firstname is required' }),
+  last_name: z.string().min(1, { message: 'Lastname is required' }),
   user_name: z.string().min(1, { message: 'Username is required' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z
@@ -29,6 +31,8 @@ export default function SignUp() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
+      first_name: '',
+      last_name: '',
       user_name: '',
       email: '',
       password: '',
@@ -59,19 +63,33 @@ export default function SignUp() {
     {
       id: 1,
       type: 'text',
+      name: 'first_name',
+      placeholder: 'Firstname',
+      icon: <User />,
+    },
+    {
+      id: 2,
+      type: 'text',
+      name: 'last_name',
+      placeholder: 'Lastname',
+      icon: <User />,
+    },
+    {
+      id: 3,
+      type: 'text',
       name: 'user_name',
       placeholder: 'Username',
       icon: <User />,
     },
     {
-      id: 2,
+      id: 4,
       type: 'email',
       name: 'email',
       placeholder: 'Email',
       icon: <Sms />,
     },
     {
-      id: 3,
+      id: 5,
       type: 'password',
       name: 'password',
       placeholder: 'Password',
@@ -81,14 +99,26 @@ export default function SignUp() {
 
   return (
     <>
-      <div className="text-primary-100 text-center">
+      <div className="text-primary-100 pt-6 text-center">
         <h3 className="mb-6 text-5xl font-semibold">Sign Up</h3>
         <p className="text-lg">Welcome To VioTune</p>
       </div>
       <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
         <p className="text-red mb-2 text-lg font-semibold">{errors.root?.message}</p>
         <div className="mb-4 flex flex-col gap-9">
-          {formInputs.map((input) => (
+          <div className="flex flex-col gap-4 sm:flex-row">
+            {formInputs.slice(0, 2).map((input) => (
+              <TextField
+                key={input.id}
+                value={watch(input.name)}
+                isInvalid={errors[input.name] && true}
+                errorMsg={errors[input.name]?.message}
+                {...register(input.name)}
+                {...input}
+              />
+            ))}
+          </div>
+          {formInputs.slice(2, 5).map((input) => (
             <TextField
               key={input.id}
               value={watch(input.name)}
@@ -116,7 +146,7 @@ export default function SignUp() {
             />
           ))}
         </div>
-        <p className="text-white-200 pb-2">
+        <p className="text-white-200 pb-4">
           Already have an account ?{' '}
           <Link className="text-primary-200 underline" to="/auth/sign-in">
             Sign In
