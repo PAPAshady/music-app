@@ -1,17 +1,18 @@
-import supabase from '../../services/supabaseClient';
 import PropTypes from 'prop-types';
+import useAuth from '../../hooks/useAuth';
 
 export default function SocialSignUpButton({ imageSrc, provider, onError }) {
-  // handle signup/signin with other platforms such as google or github
+  const { signInWithOAuth } = useAuth();
+
   const handleOAuth = async (provider) => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider });
-      if (error) throw error;
+      await signInWithOAuth(provider);
     } catch (err) {
       onError?.(err);
       console.error(`${provider} auth error:`, err);
     }
   };
+
   return (
     <button onClick={() => handleOAuth(provider)}>
       <img

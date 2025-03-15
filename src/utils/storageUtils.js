@@ -5,3 +5,4 @@ export const setToLocalStorage = (key, value) => localStorage.setItem(key, JSON.
 export const removeFromLocalStorage = (key) => localStorage.removeItem(key);
 
 export const clearLocalStorage = () => localStorage.clear();
+

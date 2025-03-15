@@ -7,7 +7,7 @@ import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import supabase from '../../../services/supabaseClient';
+import useAuth from '../../../hooks/useAuth';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -18,6 +18,7 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
+  const { signIn } = useAuth();
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -40,8 +41,7 @@ export default function SignIn() {
 
   const submitHandler = async (formData) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword(formData);
-      if (error) throw error;
+      await signIn(formData);
       navigate('/');
     } catch (err) {
       switch (err.code) {

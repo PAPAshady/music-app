@@ -1,67 +1,92 @@
+import { createContext, useState, useEffect } from 'react';
 import supabase from '../services/supabaseClient';
-import { createContext, useEffect } from 'react';
-import { addUser, getUser } from '../services/users';
-import { useMutation, useQuery } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
+import { addUser, getUser } from '../services/users';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const { mutate } = useMutation({
-    mutationFn: addUser,
-    onError: (err) =>
-      console.error('An error occured while creating a new user to database => ', err),
-  });
-  const { data: userData, isPending } = useQuery({
-    queryKey: ['user'],
-    queryFn: async () => await supabase.auth.getUser(),
-    retry: true,
-    retryDelay: 3000,
-  });
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        localStorage.clear();
-      } else if (event === 'SIGNED_IN') {
-        if (session) {
-          // Acoording to supabase.com docs, using an async callback with 'onAuthStateChange' can cause deadlocks and performance issues.
-          // To avoid this, we use setTimeout. Reference: https://supabase.com/docs/reference/javascript/auth-onauthstatechange
-          setTimeout(async () => {
-            try {
-              const { user } = session;
-              const { email, id, user_metadata = {} } = user;
-              const { avatar_url, user_name } = user_metadata;
-              const isUserExists = await getUser(id);
-              if (!isUserExists) {
-                const newUserData = {
-                  auth_id: id,
-                  email,
-                  user_name: user_name || email,
-                  avatar_url,
-                };
-                mutate(newUserData); // add new user to the database.
-              }
-            } catch (err) {
-              console.log('An error occured while handling sign-in => ', err);
-            }
-          }, 0);
-        }
+      if (!session) {
+        setUser(null);
+        setIsLoading(false);
+        return;
       }
+
+      // keep user data up-to-date
+      setUser(session.user);
+
+      if (event === 'SIGNED_IN') {
+        // using setTimeout is necessary to avoid dead-locks and performance issues.
+        // refrence : https://supabase.com/docs/reference/javascript/auth-onauthstatechange
+        setTimeout(async () => {
+          // add user to database if they sign up for the first time
+          const isUserExists = await getUser(session.user.id);
+          if (!isUserExists) {
+            try {
+              const { id, email, user_metadata } = session.user;
+              const { full_name, user_name, avatar_url } = user_metadata;
+              const newUserData = {
+                auth_id: id,
+                email,
+                full_name,
+                user_name: user_name || email,
+                avatar_url,
+              };
+              await addUser(newUserData);
+            } catch (err) {
+              console.error('An error occured while adding a new user to database => ', err);
+            }
+          }
+        }, 0);
+      }
+
+      setIsLoading(false);
     });
 
-    return () => authListener?.subscription?.unsubscribe();
-  }, [mutate, userData]);
+    return () => authListener.subscription.unsubscribe();
+  }, []);
 
-  return (
-    <AuthContext.Provider value={{ user: userData?.data?.user, isPending }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const signUp = async ({ email, password, user_name, first_name, last_name }) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { user_name, full_name: `${first_name} ${last_name}` } },
+    });
+    if (error) throw error;
+  };
+
+  const signIn = async (formData) => {
+    const { error } = await supabase.auth.signInWithPassword({ ...formData });
+    if (error) throw error;
+  };
+
+  const signInWithOAuth = async (provider) => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider });
+    if (error) throw error;
+  };
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  };
+
+  const authContextValues = {
+    user,
+    isLoading,
+    signUp,
+    signIn,
+    signInWithOAuth,
+    signOut,
+  };
+
+  return <AuthContext.Provider value={authContextValues}>{children}</AuthContext.Provider>;
 }
 
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+AuthProvider.propTypes = { children: PropTypes.node.isRequired };
 
 export default AuthContext;
