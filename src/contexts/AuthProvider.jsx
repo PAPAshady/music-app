@@ -21,9 +21,16 @@ export function AuthProvider({ children }) {
         if (error) throw error;
         setUser(user);
         setIsLogin(true);
-        setIsLoading(false);
       } catch (err) {
-        console.error(`An error occured while fetching user data => `, err);
+        if (err.message === 'Auth session missing!') {
+          console.warn('User is not registered');
+        } else if (err.code === 'user_not_found') {
+          console.warn('User not found');
+        } else {
+          console.error('An error occured while fetching user data => ', err.code);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
     getUser();
@@ -65,7 +72,6 @@ export function AuthProvider({ children }) {
     setUser(data.user);
     setIsLogin(true);
   };
-
 
   //  there is a bug in this secition where when user logs in it will stay in auth page.
   const signInWithOAuth = async (provider) => {
