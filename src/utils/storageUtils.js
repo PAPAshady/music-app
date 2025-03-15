@@ -6,4 +6,3 @@ export const removeFromLocalStorage = (key) => localStorage.removeItem(key);
 
 export const clearLocalStorage = () => localStorage.clear();
 
-export const getSession = () => getFromLocalStorage('sb-okuypoeobjphvsgwjrce-auth-token');
