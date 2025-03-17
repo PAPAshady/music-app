@@ -3,8 +3,14 @@ import PropTypes from 'prop-types';
 import Avatar from '../../Avatar/Avatar';
 import { NavLink } from 'react-router-dom';
 import { UserEdit, Chart, Headphone, Messages, Login } from 'iconsax-react';
+import useAuth from '../../../hooks/useAuth';
 
 export default function SettingsMenu({ isVisible }) {
+  const {
+    signOut,
+    user: { user_metadata },
+  } = useAuth();
+
   const listItems = [
     { id: 1, title: 'Edit Profile', icon: <UserEdit />, href: '/settings/profile' },
     { id: 2, title: 'Analytics', icon: <Chart />, href: '/settings/analytics' },
@@ -12,14 +18,24 @@ export default function SettingsMenu({ isVisible }) {
     { id: 4, title: 'FAQ', icon: <Messages />, href: '/settings/FAQ' },
   ];
 
+  const signOutHandler = async () => {
+    try {
+      await signOut();
+    } catch (err) {
+      console.error('An error occured while signing out user. => ', err);
+    }
+  };
+
   return (
     <div
       className={`bg-primary-800/60 absolute right-0 z-10 flex w-[230px] flex-col gap-6 rounded-[20px] border p-5 backdrop-blur-sm transition-all duration-300 ${isVisible ? 'visible top-[130%] opacity-100' : 'invisible top-[170%] opacity-0'}`}
     >
       <div className="px-2">
         <div className="flex items-center justify-center gap-3 border-b pb-6">
-          <Avatar size="sm" />
-          <p className="truncate">Olivia Rhye</p>
+          <Avatar size="sm" profilePic={user_metadata.avatar_url} />
+          <p className="truncate" title={user_metadata.full_name}>
+            {user_metadata.full_name}
+          </p>
         </div>
       </div>
       <ul className="flex flex-col gap-4">
@@ -27,11 +43,10 @@ export default function SettingsMenu({ isVisible }) {
           <ListItem key={item.id} {...item} />
         ))}
 
-        {/* add Logout handler function */}
         <li className="text-primary-50 hover:text-primary-200 transition-colors">
-          <button className="flex items-center gap-2 text-base">
+          <button className="flex items-center gap-2 text-base" onClick={signOutHandler}>
             <Login />
-            Log Out
+            Sign Out
           </button>
         </li>
       </ul>
