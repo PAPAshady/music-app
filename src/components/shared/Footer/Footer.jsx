@@ -2,17 +2,28 @@ import Logo from '../../Logo/Logo';
 import TextField from '../../Inputs/TextField/TextField';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import { Link } from 'react-router-dom';
-import useInput from '../../../hooks/useInput';
 import PropTypes from 'prop-types';
 import { Sms } from 'iconsax-react';
 import instagramImg from '../../../assets/images/socials/instagram.png';
 import twitterImg from '../../../assets/images/socials/twitter.png';
 import facebookImg from '../../../assets/images/socials/facebook.png';
 import useMediaQuery from '../../../hooks/useMediaQuery';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const formSchema = z.object({
+  email: z.string().email({ message: 'Please provide an valid email' }),
+});
 
 export default function Footer() {
-  const letterBoxInput = useInput();
   const isDesktop = useMediaQuery('(min-width:1024px)');
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({ defaultValues: { email: '' }, resolver: zodResolver(formSchema) });
 
   const headerLinks = [
     {
@@ -46,6 +57,8 @@ export default function Footer() {
     },
   ];
 
+  const submitHandler = async (data) => console.log(data);
+
   return (
     <>
       <footer className="bg-primary-50/10 border-primary-200 w-full rounded-4xl border px-3 py-6 min-[420px]:p-6 lg:p-6">
@@ -74,13 +87,30 @@ export default function Footer() {
           </div>
           <div className="mt-10 items-end justify-between sm:flex sm:gap-4">
             <div className="mb-6 grow-[0.5] sm:m-0">
-              <p className="text-primary-200 mb-4 text-sm">
+              <p className="text-primary-200 mb-6 text-sm">
                 Enter your email to receive the latest news.
               </p>
-              <div className="flex items-center gap-3 pt-4">
-                <TextField type="email" icon={<Sms />} placeholder="Email" {...letterBoxInput} />
-                <MainButton title="Subscribe" size="sm" variant="secondary" />
-              </div>
+              <form
+                className="flex flex-col items-center gap-3 pt-4 min-[480px]:flex-row"
+                onSubmit={handleSubmit(submitHandler)}
+              >
+                <TextField
+                  type="email"
+                  icon={<Sms />}
+                  placeholder="Email"
+                  value={watch('email')}
+                  isInvalid={!!errors.email}
+                  errorMsg={errors.email?.message}
+                  {...register('email')}
+                />
+                <div className="w-full min-[480px]:w-auto">
+                  <MainButton
+                    title={isSubmitting ? 'Submitting...' : 'Subscribe'}
+                    size="sm"
+                    variant="secondary"
+                  />
+                </div>
+              </form>
             </div>
             <div className="flex items-center justify-center gap-6 sm:gap-4">
               <span className="text-primary-200 text-sm font-bold sm:text-base">Follow Us</span>
