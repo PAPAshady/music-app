@@ -9,7 +9,6 @@ import DesktopNavbar from '../../DesktopNavbar/DesktopNavbar';
 import HamburgerMenu from '../../HamburgerMenu/HamburgerMenu';
 import Player from '../../Player/Player';
 import Footer from '../../Footer/Footer';
-import Snackbar from '../../Snackbar/Snackbar';
 import Logo from '../../../Logo/Logo';
 import { useLocation, Outlet, Link } from 'react-router-dom';
 
@@ -75,7 +74,6 @@ export default function MainLayout() {
         </div>
       </main>
       <HamburgerMenu />
-      <Snackbar/>
     </div>
   );
 }
