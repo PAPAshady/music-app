@@ -1,28 +1,47 @@
 import { useState, createContext } from 'react';
+import Snackbar from '../components/shared/Snackbar/Snackbar';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 
 const SnackbarContext = createContext();
 
 export function SnackbarProvider({ children }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('info'); // should be on of the followings : [error, success, warning]
-  const [hideDuration, setHideDuration] = useState(3000); // in milliseconds
+  const [snackbars, setSnackbars] = useState([]);
+
+  const addSnackbar = (message, type, hideDuration = 3000) => {
+    const newSnackbar = {
+      id: Date.now(),
+      message,
+      type,
+    };
+
+    setSnackbars((prev) => [...prev, newSnackbar]);
+
+    setTimeout(() => {
+      setSnackbars((prev) => prev.filter((snackbar) => snackbar.id !== newSnackbar.id));
+    }, hideDuration);
+  };
+
+  const closeAllSnackbars = () => setSnackbars([]);
 
   return (
-    <SnackbarContext.Provider
-      value={{
-        isOpen,
-        setIsOpen,
-        message,
-        setMessage,
-        messageType,
-        setMessageType,
-        hideDuration,
-        setHideDuration,
-      }}
-    >
+    <SnackbarContext.Provider value={{ addSnackbar, closeAllSnackbars }}>
       {children}
+      <div className="fixed top-4 left-2 z-50 space-y-2">
+        <AnimatePresence>
+          {snackbars.map((snackbar) => (
+            <motion.div
+              key={snackbar.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Snackbar {...snackbar} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
     </SnackbarContext.Provider>
   );
 }
