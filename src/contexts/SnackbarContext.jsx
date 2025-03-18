@@ -8,7 +8,7 @@ const SnackbarContext = createContext();
 export function SnackbarProvider({ children }) {
   const [snackbars, setSnackbars] = useState([]);
 
-  const addSnackbar = (message, type, hideDuration = 3000) => {
+  const showNewSnackbar = (message, type, hideDuration = 3000) => {
     const newSnackbar = {
       id: Date.now(),
       message,
@@ -25,9 +25,9 @@ export function SnackbarProvider({ children }) {
   const closeAllSnackbars = () => setSnackbars([]);
 
   return (
-    <SnackbarContext.Provider value={{ addSnackbar, closeAllSnackbars }}>
+    <SnackbarContext.Provider value={{ showNewSnackbar, closeAllSnackbars }}>
       {children}
-      <div className="fixed top-4 left-2 z-50 space-y-2">
+      <div className="fixed top-4 left-2 z-50 space-y-2 sm:left-5 lg:left-6">
         <AnimatePresence>
           {snackbars.map((snackbar) => (
             <motion.div

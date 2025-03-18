@@ -12,13 +12,13 @@ const queryClinet = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClinet}>
-      <AuthProvider>
-        <SnackbarProvider>
+      <SnackbarProvider>
+        <AuthProvider>
           <HamburgerMenuProvider>
             <RouterProvider router={router} />
           </HamburgerMenuProvider>
-        </SnackbarProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </SnackbarProvider>
     </QueryClientProvider>
   );
 }
