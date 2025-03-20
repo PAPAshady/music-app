@@ -25,3 +25,13 @@ export const addUser = async (user) => {
   if (error) throw error;
   return data;
 };
+
+export const updateUser = async (userAuthId, newUserInfos) => {
+  const { data, error } = await supabase
+    .from('users')
+    .update(newUserInfos)
+    .eq('auth_id', userAuthId)
+    .select();
+  if (error) throw error;
+  return data;
+};
