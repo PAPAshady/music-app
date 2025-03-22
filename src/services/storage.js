@@ -25,7 +25,7 @@ export async function deleteFolderContents(bucket, folder) {
 
   if (filesListError) {
     console.error('Error listing files in folder: ', filesListError);
-    return;
+    return { success: false, error: filesListError };
   }
 
   // no files found, folder may already be empty.
@@ -39,13 +39,13 @@ export async function deleteFolderContents(bucket, folder) {
 
   if (deleteError) {
     console.error('Error deleting files in folder: ', deleteError);
-    return;
+    return { success: false, error: deleteError };
   }
 
   return { success: true, message: 'All files deleted successfully.' };
 }
 
-export async function getFileUrl(bucket, path) {
+export function getFileUrl(bucket, path) {
   const result = supabase.storage.from(bucket).getPublicUrl(path);
-  return result;
+  return result.data.publicUrl;
 }

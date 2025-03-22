@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Avatar from '../../components/Avatar/Avatar';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import EmailInput from '../../components/Inputs/EmailInput/EmailInput';
@@ -10,7 +10,8 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAuth from '../../hooks/useAuth';
 import supabase from '../../services/supabaseClient';
-import { updateUser } from '../../services/users';
+import { updateUser, getUser } from '../../services/users';
+import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/storage';
 import useSnackbar from '../../hooks/useSnackbar';
 
 const formSchema = z.object({
@@ -24,7 +25,8 @@ const formSchema = z.object({
 export default function Profile() {
   const { user } = useAuth();
   const { avatar_url, user_name, full_name, bio } = user.user_metadata;
-  const [avatar, setAvatar] = useState(avatar_url);
+  const [avatar, setAvatar] = useState(null);
+  const initialUserAvatar = useRef(null);
   const { showNewSnackbar } = useSnackbar();
   const isTablet = useMediaQuery('(min-width: 640px)');
   const {
@@ -45,6 +47,22 @@ export default function Profile() {
     },
     resolver: zodResolver(formSchema),
   });
+
+  // Retrieves the user's avatar from the database and updates the state.
+  // If userAvatar is null, the avatar_url from the user object is used.
+  useEffect(() => {
+    const setUserAvatar = async () => {
+      try {
+        const { avatar_url: userAvatar } = await getUser(user.id);
+        setAvatar(userAvatar || avatar_url);
+        initialUserAvatar.current = userAvatar || avatar_url;
+      } catch (err) {
+        console.error('Error getting user data from database : ', err);
+      }
+    };
+
+    setUserAvatar();
+  }, [user, avatar_url]);
 
   const textInputs = [
     { id: 1, placeholder: 'Fullname', name: 'full_name' },
@@ -71,8 +89,9 @@ export default function Profile() {
     }
   };
 
-  const submitHandler = async ({ full_name, user_name, email, bio }) => {
+  const submitHandler = async ({ full_name, user_name, email, bio, avatar }) => {
     try {
+      // update user info in supabase authentication
       const {
         error,
         data: { user },
@@ -85,14 +104,36 @@ export default function Profile() {
         },
       });
       if (error) throw error;
-      // update the user in database as well.
+
+      // update user avatar
+      if (avatar) {
+        const { success, error } = await deleteFolderContents('avatars', user.id);
+
+        if (success) {
+          const { error } = await uploadFile('avatars', `${user.id}/avatar`, avatar);
+          if (error) {
+            console.error('Error uploading avatar: ', error);
+            showNewSnackbar('Unexpected error occurred while updating avatar.', 'error');
+          }
+        } else {
+          console.error('Error deleting avatars folder: ', error);
+          showNewSnackbar('Unexpected error occurred while updating avatar.', 'error');
+        }
+      }
+
+      // update the user in database.
       try {
-        await updateUser(user.id, {
-          full_name,
-          user_name,
-          email,
-          bio,
-        });
+        const newUserInfos = { full_name, user_name, email, bio };
+
+        if (avatar) {
+          const newUserAvatar = getFileUrl(
+            'avatars',
+            `${user.id}/avatar.${avatar.name.split('.').pop()}`
+          );
+          newUserInfos.avatar_url = newUserAvatar;
+        }
+
+        await updateUser(user.id, newUserInfos);
       } catch (err) {
         console.error('An error occurred while updating user in database => ', err);
         setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
@@ -104,6 +145,9 @@ export default function Profile() {
           setError('email', {
             message: 'The email address provided is invalid or inactive. Please use a valid email.',
           });
+          break;
+        case 'email_exists':
+          setError('email', { message: 'This email already taken.' });
           break;
         default:
           setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
@@ -118,7 +162,7 @@ export default function Profile() {
 
   const cancelHandler = (e) => {
     e.preventDefault();
-    setAvatar(avatar_url);
+    setAvatar(initialUserAvatar.current);
     reset();
   };
 
