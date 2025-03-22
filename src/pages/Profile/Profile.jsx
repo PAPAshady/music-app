@@ -140,6 +140,10 @@ export default function Profile() {
       }
       showNewSnackbar('Your profile has been updated successfully!', 'success');
     } catch (err) {
+      if (err.message === 'NetworkError when attempting to fetch resource.') {
+        setError('root', { message: 'Network error, please check your connection.' });
+        return;
+      }
       switch (err.code) {
         case 'email_address_invalid':
           setError('email', {
@@ -210,6 +214,7 @@ export default function Profile() {
           placeholder="Email"
           isInvalid={!!errors.email}
           errorMsg={errors.email?.message}
+          disabled
           {...register('email')}
         />
         <TextArea
