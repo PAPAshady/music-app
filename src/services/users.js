@@ -35,3 +35,20 @@ export const updateUser = async (userAuthId, newUserInfos) => {
   if (error) throw error;
   return data;
 };
+
+export const getUserAvatarUrl = async (userAuthId) => {
+  try {
+    const {
+      data: { avatar_url },
+      error,
+    } = await supabase.from('users').select('avatar_url').eq('auth_id', userAuthId).single();
+    if (error) throw error;
+    return avatar_url;
+  } catch (err) {
+    if (err.code === 'PGRST116') {
+      return null;
+    } else {
+      console.error('Error fetching user avatar: ', err);
+    }
+  }
+};
