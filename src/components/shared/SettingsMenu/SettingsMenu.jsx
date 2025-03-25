@@ -8,6 +8,7 @@ import useAuth from '../../../hooks/useAuth';
 export default function SettingsMenu({ isVisible }) {
   const {
     signOut,
+    avatar,
     user: { user_metadata },
   } = useAuth();
 
@@ -32,7 +33,7 @@ export default function SettingsMenu({ isVisible }) {
     >
       <div className="px-2">
         <div className="flex items-center justify-center gap-3 border-b pb-6">
-          <Avatar size="sm" profilePic={user_metadata.avatar_url} />
+          <Avatar size="sm" profilePic={avatar} />
           <p className="truncate" title={user_metadata.full_name}>
             {user_metadata.full_name}
           </p>
