@@ -1,15 +1,25 @@
 import { createContext, useState, useEffect } from 'react';
 import supabase from '../services/supabaseClient';
 import PropTypes from 'prop-types';
-import { addUser, getUser } from '../services/users';
+import { addUser, getUser, getUserAvatarUrl } from '../services/users';
 import useSnackbar from '../hooks/useSnackbar';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [avatar, setAvatar] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { showNewSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    const fetchUserAvatar = async () => {
+      const userAvatar = await getUserAvatarUrl(user.id);
+      setAvatar(userAvatar);
+    };
+
+    user && fetchUserAvatar();
+  }, [user]);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
@@ -80,6 +90,7 @@ export function AuthProvider({ children }) {
 
   const authContextValues = {
     user,
+    avatar,
     isLoading,
     signUp,
     signIn,

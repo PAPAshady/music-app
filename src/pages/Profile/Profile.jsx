@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Avatar from '../../components/Avatar/Avatar';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import EmailInput from '../../components/Inputs/EmailInput/EmailInput';
@@ -10,7 +10,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAuth from '../../hooks/useAuth';
 import supabase from '../../services/supabaseClient';
-import { updateUser, getUser } from '../../services/users';
+import { updateUser } from '../../services/users';
 import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/storage';
 import useSnackbar from '../../hooks/useSnackbar';
 
@@ -23,10 +23,9 @@ const formSchema = z.object({
 });
 
 export default function Profile() {
-  const { user } = useAuth();
-  const { avatar_url, user_name, full_name, bio } = user.user_metadata;
+  const { user, avatar: userAvatar } = useAuth();
+  const { user_name, full_name, bio } = user.user_metadata;
   const [avatar, setAvatar] = useState(null);
-  const initialUserAvatar = useRef(null);
   const { showNewSnackbar } = useSnackbar();
   const isTablet = useMediaQuery('(min-width: 640px)');
   const {
@@ -48,21 +47,8 @@ export default function Profile() {
     resolver: zodResolver(formSchema),
   });
 
-  // Retrieves the user's avatar from the database and updates the state.
-  // If userAvatar is null, the avatar_url from the user object is used.
-  useEffect(() => {
-    const setUserAvatar = async () => {
-      try {
-        const { avatar_url: userAvatar } = await getUser(user.id);
-        setAvatar(userAvatar || avatar_url);
-        initialUserAvatar.current = userAvatar || avatar_url;
-      } catch (err) {
-        console.error('Error getting user data from database : ', err);
-      }
-    };
-
-    setUserAvatar();
-  }, [user, avatar_url]);
+  // update avatar after it is fetched in authProvider
+  useEffect(() => setAvatar(userAvatar), [userAvatar]);
 
   const textInputs = [
     { id: 1, placeholder: 'Fullname', name: 'full_name' },
@@ -166,7 +152,7 @@ export default function Profile() {
 
   const cancelHandler = (e) => {
     e.preventDefault();
-    setAvatar(initialUserAvatar.current);
+    setAvatar(userAvatar);
     reset();
   };
 

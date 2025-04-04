@@ -13,7 +13,7 @@ import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
 import useAuth from '../../../hooks/useAuth';
 
 export default memo(function Header() {
-  const { user } = useAuth();
+  const { avatar } = useAuth();
   const { setIsShowHamburgerMenu } = useHamburgerMenu();
   const searchInput = useInput();
   const notificationMenu = useCloseOnClickOutside();
@@ -66,7 +66,7 @@ export default memo(function Header() {
             <SettingsMenu isVisible={settingsMenu.isVisible} />
           </div>
           <button>
-            <Avatar size="xs" profilePic={user.user_metadata.avatar_url} />
+            <Avatar size="xs" profilePic={avatar} />
           </button>
         </div>
       </div>
