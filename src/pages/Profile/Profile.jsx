@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Avatar from '../../components/Avatar/Avatar';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import EmailInput from '../../components/Inputs/EmailInput/EmailInput';
@@ -8,11 +8,6 @@ import MainButton from '../../components/Buttons/MainButton/MainButton';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useAuth from '../../hooks/useAuth';
-import supabase from '../../services/supabaseClient';
-import { updateUser } from '../../services/users';
-import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/storage';
-import useSnackbar from '../../hooks/useSnackbar';
 
 const formSchema = z.object({
   avatar: z.any().optional(),
@@ -23,10 +18,7 @@ const formSchema = z.object({
 });
 
 export default function Profile() {
-  const { user, avatar: userAvatar } = useAuth();
-  const { user_name, full_name, bio } = user.user_metadata;
   const [avatar, setAvatar] = useState(null);
-  const { showNewSnackbar } = useSnackbar();
   const isTablet = useMediaQuery('(min-width: 640px)');
   const {
     register,
@@ -39,16 +31,13 @@ export default function Profile() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      full_name,
-      user_name,
-      email: user.email,
-      bio: bio || '',
+      full_name: '',
+      user_name: '',
+      email: '',
+      bio: '',
     },
     resolver: zodResolver(formSchema),
   });
-
-  // update avatar after it is fetched in authProvider
-  useEffect(() => setAvatar(userAvatar), [userAvatar]);
 
   const textInputs = [
     { id: 1, placeholder: 'Fullname', name: 'full_name' },
@@ -75,84 +64,13 @@ export default function Profile() {
     }
   };
 
-  const submitHandler = async ({ full_name, user_name, email, bio, avatar }) => {
-    try {
-      // update user info in supabase authentication
-      const {
-        error,
-        data: { user },
-      } = await supabase.auth.updateUser({
-        email,
-        data: {
-          full_name,
-          user_name,
-          bio,
-        },
-      });
-      if (error) throw error;
-
-      // update user avatar
-      if (avatar) {
-        const { success, error } = await deleteFolderContents('avatars', user.id);
-
-        if (success) {
-          const { error } = await uploadFile('avatars', `${user.id}/avatar`, avatar);
-          if (error) {
-            console.error('Error uploading avatar: ', error);
-            showNewSnackbar('Unexpected error occurred while updating avatar.', 'error');
-          }
-        } else {
-          console.error('Error deleting avatars folder: ', error);
-          showNewSnackbar('Unexpected error occurred while updating avatar.', 'error');
-        }
-      }
-
-      // update the user in database.
-      try {
-        const newUserInfos = { full_name, user_name, email, bio };
-
-        if (avatar) {
-          const newUserAvatar = getFileUrl(
-            'avatars',
-            `${user.id}/avatar.${avatar.name.split('.').pop()}`
-          );
-          newUserInfos.avatar_url = newUserAvatar;
-        }
-
-        await updateUser(user.id, newUserInfos);
-      } catch (err) {
-        console.error('An error occurred while updating user in database => ', err);
-        setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
-      }
-      showNewSnackbar('Your profile has been updated successfully!', 'success');
-    } catch (err) {
-      if (err.message === 'NetworkError when attempting to fetch resource.') {
-        setError('root', { message: 'Network error, please check your connection.' });
-        return;
-      }
-      switch (err.code) {
-        case 'email_address_invalid':
-          setError('email', {
-            message: 'The email address provided is invalid or inactive. Please use a valid email.',
-          });
-          break;
-        case 'email_exists':
-          setError('email', { message: 'This email already taken.' });
-          break;
-        default:
-          setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
-          console.error(
-            'An error occurred while updating user in supabase authentication => ',
-            err
-          );
-          break;
-      }
-    }
+  const submitHandler = async (formData) => {
+    console.log('update success : ', formData);
   };
 
   const cancelHandler = (e) => {
     e.preventDefault();
-    setAvatar(userAvatar);
+    setAvatar(null);
     reset();
   };
 
@@ -178,9 +96,9 @@ export default function Profile() {
         <div className="text-center md:text-start">
           <p className="text-red mb-3 text-center text-sm md:hidden">{errors.avatar?.message}</p>
           <p className="text-primary-50 font-semibold sm:text-lg md:mb-2 md:text-2xl">
-            {full_name}
+            Nima Zamani
           </p>
-          <span className="text-primary-100 text-sm sm:text-base md:text-xl">@{user_name}</span>
+          <span className="text-primary-100 text-sm sm:text-base md:text-xl">@papapshady</span>
         </div>
       </div>
       <div className="container flex !max-w-[720px] flex-col gap-6">

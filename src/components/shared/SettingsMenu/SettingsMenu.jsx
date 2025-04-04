@@ -3,15 +3,8 @@ import PropTypes from 'prop-types';
 import Avatar from '../../Avatar/Avatar';
 import { NavLink } from 'react-router-dom';
 import { UserEdit, Chart, Headphone, Messages, Login } from 'iconsax-react';
-import useAuth from '../../../hooks/useAuth';
 
 export default function SettingsMenu({ isVisible }) {
-  const {
-    signOut,
-    avatar,
-    user: { user_metadata },
-  } = useAuth();
-
   const listItems = [
     { id: 1, title: 'Edit Profile', icon: <UserEdit />, href: '/settings/profile' },
     { id: 2, title: 'Analytics', icon: <Chart />, href: '/settings/analytics' },
@@ -20,11 +13,7 @@ export default function SettingsMenu({ isVisible }) {
   ];
 
   const signOutHandler = async () => {
-    try {
-      await signOut();
-    } catch (err) {
-      console.error('An error occured while signing out user. => ', err);
-    }
+    console.log('sign out successfull!!!');
   };
 
   return (
@@ -33,9 +22,9 @@ export default function SettingsMenu({ isVisible }) {
     >
       <div className="px-2">
         <div className="flex items-center justify-center gap-3 border-b pb-6">
-          <Avatar size="sm" profilePic={avatar} />
-          <p className="truncate" title={user_metadata.full_name}>
-            {user_metadata.full_name}
+          <Avatar size="sm" />
+          <p className="truncate" title={'Nima zamani'}>
+            Nima zamani
           </p>
         </div>
       </div>

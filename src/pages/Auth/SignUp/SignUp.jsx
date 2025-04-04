@@ -2,13 +2,11 @@ import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSignUpButton';
 import { User, Sms, Lock } from 'iconsax-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useAuth from '../../../hooks/useAuth';
 import { z } from 'zod';
-import useSnackbar from '../../../hooks/useSnackbar';
 
 const formSchema = z.object({
   first_name: z.string().min(1, { message: 'Firstname is required' }),
@@ -22,9 +20,6 @@ const formSchema = z.object({
 });
 
 export default function SignUp() {
-  const { showNewSnackbar } = useSnackbar();
-  const navigate = useNavigate();
-  const { signUp } = useAuth();
   const {
     handleSubmit,
     register,
@@ -43,23 +38,7 @@ export default function SignUp() {
   });
 
   const submitHandler = async (formData) => {
-    try {
-      await signUp(formData);
-      showNewSnackbar('Welcome to VioTune!', 'success');
-      navigate('/');
-    } catch (err) {
-      switch (err.code) {
-        case 'user_already_exists':
-          setError('email', { message: 'This email already exists. Please login.' });
-          break;
-        case 'over_request_rate_limit':
-          setError('root', 'Too many attempts. Please wait and try again later.');
-          break;
-        default:
-          setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
-          break;
-      }
-    }
+    console.log('sign up success => ', formData);
   };
 
   const formInputs = [

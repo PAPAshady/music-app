@@ -4,7 +4,6 @@ import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import supabase from '../../../services/supabaseClient';
 import { z } from 'zod';
 
 const formSchema = z.object({
@@ -16,7 +15,6 @@ export default function ForgotPassword() {
     handleSubmit,
     watch,
     register,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: { email: '' },
@@ -25,21 +23,9 @@ export default function ForgotPassword() {
 
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); // check if the success message is visible or not.
 
-  const sendCodeHandler = async ({ email }) => {
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'http://localhost:5173/auth/reset-pass',
-      });
-      if (error) throw error;
-      setShowSuccessMessage(true);
-    } catch (err) {
-      if (err.code === 'over_request_rate_limit') {
-        setError('root', { message: 'Too many attempts. Please wait and try again later.' });
-      } else {
-        setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
-        console.error('An error occured while sending password reset link => ', err);
-      }
-    }
+  const sendCodeHandler = async (data) => {
+    console.log('success!!! => ', data);
+    setShowSuccessMessage(true);
   };
 
   return (

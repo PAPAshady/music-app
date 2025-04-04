@@ -1,16 +1,9 @@
 import PropTypes from 'prop-types';
-import useAuth from '../../hooks/useAuth';
 
 export default function SocialSignUpButton({ imageSrc, provider, onError }) {
-  const { signInWithOAuth } = useAuth();
-
-  const handleOAuth = async (provider) => {
-    try {
-      await signInWithOAuth(provider);
-    } catch (err) {
-      onError?.(err);
-      console.error(`${provider} auth error:`, err);
-    }
+  const handleOAuth = async () => {
+    console.log('signup/signIn with oauth completed', provider);
+    onError?.();
   };
 
   return (
