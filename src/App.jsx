@@ -6,7 +6,13 @@ import routes from './Router';
 import './App.css';
 
 const router = createBrowserRouter(routes);
-const queryClinet = new QueryClient();
+const queryClinet = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function App() {
   return (
