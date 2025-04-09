@@ -10,7 +10,7 @@ export function MusicPlayerProvider({ children }) {
   const currentSongIndex = useRef(0);
 
   useEffect(() => {
-    music.src = playlist[currentSongIndex.current].musicFile;
+    music.src = playlist[currentSongIndex.current]?.musicFile;
   }, [playlist]);
 
   function play() {
@@ -29,7 +29,7 @@ export function MusicPlayerProvider({ children }) {
     } else {
       currentSongIndex.current++;
     }
-    music.src = playlist[currentSongIndex.current].musicFile;
+    music.src = playlist[currentSongIndex.current]?.musicFile;
     play();
   };
 
@@ -39,7 +39,7 @@ export function MusicPlayerProvider({ children }) {
     } else {
       currentSongIndex.current--;
     }
-    music.src = playlist[currentSongIndex.current].musicFile;
+    music.src = playlist[currentSongIndex.current]?.musicFile;
     play();
   };
 
