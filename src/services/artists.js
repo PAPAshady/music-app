@@ -1,6 +1,6 @@
-import api from './axiosInstance';
+import api from './api';
 
 export const getArtists = async () => {
-  const artistsInfos = await api.get('/artist/artists/');
-  return artistsInfos.data;
+  const { data } = await api.get('/artist/artists/');
+  return data;
 };

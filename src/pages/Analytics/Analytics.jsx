@@ -1,7 +1,7 @@
 import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import SettingsPagesSectionHeader from '../../components/SettingsPagesSectionHeader/SettingsPagesSectionHeader';
-import { songs, artists, usageChartData } from '../../data';
+import { songs, usageChartData } from '../../data';
 import {
   LineChart,
   Legend,
@@ -30,7 +30,7 @@ export default function Analytics() {
       </div>
       <div>
         <SettingsPagesSectionHeader title="Singers who were very popular with you" />
-        <ArtistsSlider artists={artists} />
+        <ArtistsSlider />
       </div>
       <div>
         <SettingsPagesSectionHeader title="Your Usage VioTune Rate" />
