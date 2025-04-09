@@ -1,4 +1,5 @@
 import { useState, createContext, useEffect, useRef } from 'react';
+import { BASE_URL } from '../services/api';
 import PropTypes from 'prop-types';
 
 const MusicPlayerContext = createContext();
@@ -7,11 +8,34 @@ const music = new Audio();
 export function MusicPlayerProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playlist, setPlaylist] = useState([]);
-  const currentSongIndex = useRef(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [durations, setDurations] = useState({ rawDuration: 0, formatedDuration: '0:00' });
+  const prevSongIndex = useRef(0);
 
+  // get song's full duration
   useEffect(() => {
-    music.src = playlist[currentSongIndex.current]?.musicFile;
-  }, [playlist]);
+    function formatSongDuration() {
+      const seconds = Math.floor(music.duration % 60);
+      const mins = Math.floor(music.duration / 60);
+      const formatedDuration = `${mins}:${seconds < 10 ? `0${seconds}` : seconds}`;
+      setDurations({ rawDuration: music.duration, formatedDuration });
+    }
+
+    music.addEventListener('loadedmetadata', formatSongDuration);
+
+    return () => music.removeEventListener('loadedmetadata', formatSongDuration);
+  }, []);
+
+  // update music src everytime currentSongIndex changes
+  useEffect(() => {
+    music.src = `${BASE_URL}${playlist[currentSongIndex]?.musicfile}`;
+
+    // make sure to play the song only if user went for the next/prev song and not on the first render.
+    if (prevSongIndex.current !== currentSongIndex) {
+      prevSongIndex.current = currentSongIndex;
+      play();
+    }
+  }, [currentSongIndex, playlist]);
 
   function play() {
     music.play();
@@ -24,27 +48,43 @@ export function MusicPlayerProvider({ children }) {
   }
 
   const next = () => {
-    if (currentSongIndex.current === playlist.length - 1) {
-      currentSongIndex.current = 0;
+    if (currentSongIndex === playlist.length - 1) {
+      setCurrentSongIndex(0);
     } else {
-      currentSongIndex.current++;
+      setCurrentSongIndex((prev) => ++prev);
     }
-    music.src = playlist[currentSongIndex.current]?.musicFile;
-    play();
   };
 
   const prev = () => {
-    if (currentSongIndex.current === 0) {
-      currentSongIndex.current = playlist.length - 1;
+    if (currentSongIndex === 0) {
+      setCurrentSongIndex(playlist.length - 1);
     } else {
-      currentSongIndex.current--;
+      setCurrentSongIndex((prev) => --prev);
     }
-    music.src = playlist[currentSongIndex.current]?.musicFile;
-    play();
+  };
+
+  // calculate current time of song and return it in a readable format
+  const getCurrentTime = () => {
+    const seconds = Math.round(music.currentTime % 60);
+    const mins = Math.round(music.currentTime / 60);
+    return `${mins}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
   return (
-    <MusicPlayerContext.Provider value={{ music, play, pause, isPlaying, next, prev }}>
+    <MusicPlayerContext.Provider
+      value={{
+        music,
+        play,
+        pause,
+        isPlaying,
+        next,
+        prev,
+        setPlaylist,
+        currentMusic: playlist[currentSongIndex],
+        durations,
+        getCurrentTime,
+      }}
+    >
       {children}
     </MusicPlayerContext.Provider>
   );

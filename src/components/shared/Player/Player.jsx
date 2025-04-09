@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
 import {
   Pause,
+  Play,
   Next,
   Previous,
   RepeateOne,
@@ -14,11 +15,33 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Range } from 'react-range';
 import PropTypes from 'prop-types';
+import useMusicPlayer from '../../../hooks/useMusicPlayer';
+import { BASE_URL } from '../../../services/api';
+
+const musicDefaultVolume = 70; // min: 0, max: 100
 
 export default function Player({ classNames, isPlayerPage }) {
-  const [volume, setVolume] = useState([70]);
-  const [musicProgress, setMusicProgress] = useState([50]);
+  const [volume, setVolume] = useState([musicDefaultVolume]);
+  const [musicProgress, setMusicProgress] = useState([0]);
+  const [currentTime, setCurrentTime] = useState('0:00');
   const verticalVolumeSlider = useCloseOnClickOutside();
+  const { music, play, pause, isPlaying, next, prev, currentMusic, getCurrentTime, durations } =
+    useMusicPlayer();
+
+  useEffect(() => {
+    const updateCurrentTime = () => {
+      setMusicProgress([Math.floor((music.currentTime / music.duration) * 100)]);
+      setCurrentTime(getCurrentTime());
+    };
+    music.addEventListener('timeupdate', updateCurrentTime);
+    music.volume = musicDefaultVolume / 100;
+    return () => music.removeEventListener('timeupdate', updateCurrentTime);
+  }, [music, getCurrentTime]);
+
+  const changeVolumeHandler = ([volume]) => {
+    music.volume = volume / 100;
+    setVolume([volume]);
+  };
 
   return (
     <div
@@ -26,16 +49,24 @@ export default function Player({ classNames, isPlayerPage }) {
     >
       <div className="flex items-center gap-4">
         <div className="relative size-12 overflow-hidden rounded-lg min-[400px]:size-15 sm:size-20 md:size-16">
-          <img className="size-full object-cover" src={noCoverImg} alt="" />
+          <img
+            className="size-full object-cover"
+            src={currentMusic?.musiccover ? `${BASE_URL}${currentMusic.musiccover}` : noCoverImg}
+            alt=""
+          />
           <div className="absolute top-0 flex size-full items-center justify-center bg-black/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
             <button>
               <Heart size={28} />
             </button>
           </div>
         </div>
-        <div className="hidden w-[170px] truncate md:block xl:w-[200px]">
-          <p className="text-white-50 truncate font-semibold">Ma Meilleure Ennemie</p>
-          <p className="text-primary-100 truncate text-sm">Eminem</p>
+        <div className="hidden w-[170px] truncate md:block">
+          <p className="text-white-50 truncate font-semibold">
+            {currentMusic?.title || 'No Music'}
+          </p>
+          <p className="text-primary-100 truncate text-sm">
+            {currentMusic?.artists.map((artist) => `${artist.name} `) || 'No Artists'}
+          </p>
         </div>
       </div>
 
@@ -44,27 +75,37 @@ export default function Player({ classNames, isPlayerPage }) {
           <div className="flex items-center justify-between">
             <div className="md:hidden">
               <p className="text-primary-50 xs:text-sm pb-1 text-xs min-[480px]:text-base sm:text-lg">
-                Ma Meilleure Ennemie
+                {currentMusic?.title || 'No Music'}
               </p>
-              <p className="text-primary-100 hidden sm:block">Eminem</p>
+              <p className="text-primary-100 hidden sm:block">
+                {currentMusic?.artists.map((artist) => `${artist.name} `) || 'No Artists'}
+              </p>
             </div>
-            <span className="text-primary-100 hidden text-sm md:block">01:29</span>
+            <span className="text-primary-100 hidden w-[42px] text-sm md:block">{currentTime}</span>
             <div className="xs:gap-5 flex items-center gap-4 min-[400px]:gap-6 sm:gap-10 md:gap-12">
-              <button className="xs:size-[18px] size-4 min-[480px]:size-5 sm:size-6">
+              <button className="xs:size-[18px] size-4 min-[480px]:size-5 sm:size-6" onClick={prev}>
                 <Previous size="100%" />
               </button>
-              <button className="xs:size-[18px] size-4 min-[480px]:size-5 sm:size-6">
-                <Pause size="100%" />
+              <button
+                className="xs:size-[18px] size-4 min-[480px]:size-5 sm:size-6"
+                onClick={isPlaying ? pause : play}
+              >
+                {isPlaying ? <Pause size="100%" /> : <Play size="100%" />}
               </button>
-              <button className="xs:size-[18px] size-4 min-[480px]:size-5 sm:size-6">
+              <button className="xs:size-[18px] size-4 min-[480px]:size-5 sm:size-6" onClick={next}>
                 <Next size="100%" />
               </button>
             </div>
-            <span className="text-primary-100 hidden text-sm md:block">02:28</span>
+            <span className="text-primary-100 hidden w-[42px] text-end text-sm md:block">
+              {durations.formatedDuration}
+            </span>
           </div>
           <Range
             values={musicProgress}
-            onChange={(values) => setMusicProgress(values)}
+            onChange={(values) => {
+              music.currentTime = (values[0] / 100) * music.duration;
+              setMusicProgress(values);
+            }}
             min={0}
             max={100}
             renderTrack={({ props, children }) => (
@@ -106,7 +147,7 @@ export default function Player({ classNames, isPlayerPage }) {
             {/* Horizantal volume slider */}
             <Range
               values={volume}
-              onChange={(values) => setVolume(values)}
+              onChange={changeVolumeHandler}
               min={0}
               max={100}
               renderTrack={({ props, children }) => (
@@ -142,7 +183,7 @@ export default function Player({ classNames, isPlayerPage }) {
             >
               <Range
                 values={volume}
-                onChange={(values) => setVolume(values)}
+                onChange={changeVolumeHandler}
                 min={0}
                 max={100}
                 direction="to top"
