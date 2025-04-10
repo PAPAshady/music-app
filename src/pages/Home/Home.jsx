@@ -8,7 +8,7 @@ import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsS
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import { songs, genres, playlists, albums, artists } from '../../data';
+import { songs, genres, playlists, albums } from '../../data';
 import { chunkArray, shuffleArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode, Mousewheel, Scrollbar } from 'swiper/modules';
@@ -63,7 +63,7 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="More Artists You'll Love" />
-          <ArtistsSlider artists={shuffleArray(artists)} />
+          <ArtistsSlider />
         </div>
         <div className="-mt-8">
           <SectionHeader title="Trending Now" />

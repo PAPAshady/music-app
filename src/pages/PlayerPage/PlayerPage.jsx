@@ -49,7 +49,7 @@ export default function PlayerPage() {
           )}
           <div>
             <div
-              className={`border-primary-300 flex animate-[rotate_20s_linear_infinite] items-center justify-center rounded-full border bg-cover bg-center bg-no-repeat ${CD_Sizes}`}
+              className={`border-primary-300 flex animate-[rotate_20s_linear_infinite] items-center justify-center rounded-full border-2 bg-cover bg-center bg-no-repeat ${CD_Sizes}`}
               style={{
                 backgroundImage: `url(${musicCover}`,
                 mask: 'radial-gradient(circle, transparent 18%, black 18%)',
