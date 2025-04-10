@@ -3,6 +3,7 @@ import Header from '../../components/shared/Header/Header';
 import HamburgerMenu from '../../components/shared/HamburgerMenu/HamburgerMenu';
 import Player from '../../components/shared/Player/Player';
 import MusicPlayerCard from '../../components/MusicCards/MusicPlayerCard/MusicPlayerCard';
+import MusicPlayerCardSkeleton from '../../components/MusicCards/MusicPlayerCard/MusicPlayerCardSkeleton';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel } from 'swiper/modules';
@@ -61,16 +62,24 @@ export default function PlayerPage() {
                 mousewheel={{ forceToAxis: true }}
                 className="max-h-[380px]"
               >
-                {playlist.map((music) => (
-                  <SwiperSlide key={music.id}>
-                    <MusicPlayerCard
-                      isPlaying={music.id === currentMusic?.id}
-                      time={durations.formatedDuration}
-                      onClick={playerCardClickHandler}
-                      {...music}
-                    />
-                  </SwiperSlide>
-                ))}
+                {playlist.length
+                  ? playlist.map((music) => (
+                      <SwiperSlide key={music.id}>
+                        <MusicPlayerCard
+                          isPlaying={music.id === currentMusic?.id}
+                          time={durations.formatedDuration}
+                          onClick={playerCardClickHandler}
+                          {...music}
+                        />
+                      </SwiperSlide>
+                    ))
+                  : Array(6)
+                      .fill(0)
+                      .map((_, index) => (
+                        <SwiperSlide key={index}>
+                          <MusicPlayerCardSkeleton />
+                        </SwiperSlide>
+                      ))}
               </Swiper>
             </div>
           )}
