@@ -83,6 +83,7 @@ export function MusicPlayerProvider({ children }) {
         currentMusic: playlist[currentSongIndex],
         durations,
         getCurrentTime,
+        playlist,
       }}
     >
       {children}
