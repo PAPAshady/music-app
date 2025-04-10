@@ -1,3 +1,4 @@
+import { useEffect, useState, useCallback } from 'react';
 import Header from '../../components/shared/Header/Header';
 import HamburgerMenu from '../../components/shared/HamburgerMenu/HamburgerMenu';
 import Player from '../../components/shared/Player/Player';
@@ -5,17 +6,38 @@ import MusicPlayerCard from '../../components/MusicCards/MusicPlayerCard/MusicPl
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel } from 'swiper/modules';
-import { songs, lyrics } from '../../data';
+import { lyrics } from '../../data';
 import backgroundImage from '../../assets/images/backgrounds/player-and-settings-page.png';
-import musicCover from '../../assets/images/covers/no-cover.jpg';
+import noMusicCover from '../../assets/images/covers/no-cover.jpg';
+import useMusicPlayer from '../../hooks/useMusicPlayer';
+import { BASE_URL } from '../../services/api';
 import 'swiper/css';
 import './PlayerPage.css';
 
 export default function PlayerPage() {
+  const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const { playlist, currentMusic, durations, setCurrentSongIndex } = useMusicPlayer();
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = currentMusic?.musiccover ? `${BASE_URL}${currentMusic?.musiccover}` : noMusicCover;
+    img.addEventListener('load', () => {
+      setMusicCover(img.src);
+    });
+  }, [currentMusic]);
 
   const CD_Sizes =
     'size-[220px] xs:size-[260px] min-[480px]:size-[350px] sm:size-[380px] md:size-[450px] lg:size-[300px] min-[1150px]:!size-[370px]';
+
+  // play the song when user clicks on it
+  const playerCardClickHandler = useCallback(
+    (musicId) => {
+      setCurrentSongIndex(musicId - 1);
+    },
+    [setCurrentSongIndex]
+  );
+
   return (
     <div
       className="pb- relative min-h-[100dvh] overflow-y-auto bg-cover bg-center bg-no-repeat"
@@ -39,9 +61,14 @@ export default function PlayerPage() {
                 mousewheel={{ forceToAxis: true }}
                 className="max-h-[380px]"
               >
-                {songs.map((song) => (
-                  <SwiperSlide key={song.id}>
-                    <MusicPlayerCard {...song} />
+                {playlist.map((music) => (
+                  <SwiperSlide key={music.id}>
+                    <MusicPlayerCard
+                      isPlaying={music.id === currentMusic?.id}
+                      time={durations.formatedDuration}
+                      onClick={playerCardClickHandler}
+                      {...music}
+                    />
                   </SwiperSlide>
                 ))}
               </Swiper>
@@ -51,7 +78,7 @@ export default function PlayerPage() {
             <div
               className={`border-primary-300 flex animate-[rotate_20s_linear_infinite] items-center justify-center rounded-full border-2 bg-cover bg-center bg-no-repeat ${CD_Sizes}`}
               style={{
-                backgroundImage: `url(${musicCover}`,
+                backgroundImage: `url(${musicCover})`,
                 mask: 'radial-gradient(circle, transparent 18%, black 18%)',
                 WebkitMask: 'radial-gradient(circle, transparent 18%, black 18%)',
               }}
