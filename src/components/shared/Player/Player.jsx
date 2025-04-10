@@ -37,6 +37,9 @@ export default function Player({ classNames, isPlayerPage }) {
     durations,
     playlist,
   } = useMusicPlayer();
+  const [disabled, setDisabled] = useState(!playlist.length);
+
+  useEffect(() => setDisabled(!playlist.length), [playlist]);
 
   useEffect(() => {
     const updateCurrentTime = () => {
@@ -61,7 +64,7 @@ export default function Player({ classNames, isPlayerPage }) {
 
   return (
     <div
-      className={`border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-10 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-sm min-[400px]:items-center min-[480px]:p-4 min-[1330px]:!w-[64dvw] sm:items-center sm:gap-4 md:sticky md:bottom-2 md:justify-between md:gap-8 md:rounded-lg md:border xl:w-[62.6dvw] xl:gap-4 2xl:!w-full ${classNames}`}
+      className={`border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-10 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-sm transition-all duration-300 min-[400px]:items-center min-[480px]:p-4 min-[1330px]:!w-[64dvw] sm:items-center sm:gap-4 md:sticky md:bottom-2 md:justify-between md:gap-8 md:rounded-lg md:border xl:w-[62.6dvw] xl:gap-4 2xl:!w-full ${disabled ? 'translate-y-full opacity-0 md:translate-y-[calc(100%+8px)]' : 'translate-y-0 opacity-100'} ${classNames}`}
     >
       <div className="flex items-center gap-4">
         <div className="relative size-12 overflow-hidden rounded-lg min-[400px]:size-15 sm:size-20 md:size-16">
@@ -71,7 +74,7 @@ export default function Player({ classNames, isPlayerPage }) {
             alt=""
           />
           <div
-            className={`absolute top-0 flex size-full items-center justify-center bg-black/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${!playlist.length && 'hidden'}`}
+            className={`absolute top-0 flex size-full items-center justify-center bg-black/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${disabled && 'hidden'}`}
           >
             <button>
               <Heart size={28} />
@@ -102,7 +105,7 @@ export default function Player({ classNames, isPlayerPage }) {
             <span className="text-primary-100 hidden w-[42px] text-sm md:block">{currentTime}</span>
             <div className="xs:gap-5 flex items-center gap-4 min-[400px]:gap-6 sm:gap-10 md:gap-12 2xl:!gap-16">
               {playButtons.map((button) => (
-                <PlayButton key={button.id} {...button} disabled={!playlist.length} />
+                <PlayButton key={button.id} {...button} disabled={disabled} />
               ))}
             </div>
             <span className="text-primary-100 hidden w-[42px] text-end text-sm md:block">
@@ -111,7 +114,7 @@ export default function Player({ classNames, isPlayerPage }) {
           </div>
           <Range
             values={musicProgress}
-            disabled={!playlist.length}
+            disabled={disabled}
             onChange={(values) => {
               music.currentTime = (values[0] / 100) * music.duration;
               setMusicProgress(values);
@@ -121,10 +124,10 @@ export default function Player({ classNames, isPlayerPage }) {
             renderTrack={({ props, children }) => (
               <div
                 {...props}
-                className={`flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${!playlist.length ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
+                className={`flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${disabled ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
               >
                 <div
-                  className={`relative h-1.5 rounded-3xl border sm:h-2 ${!playlist.length ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
+                  className={`relative h-1.5 rounded-3xl border sm:h-2 ${disabled ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
                   style={{ width: `${musicProgress[0]}%` }}
                 ></div>
                 {children}
@@ -132,7 +135,7 @@ export default function Player({ classNames, isPlayerPage }) {
             )}
             renderThumb={({ props }) => (
               <div
-                className={`bg-primary-300 top-0 size-3 rounded-full outline-none sm:size-4 ${!playlist.length ? 'hidden' : ''}`}
+                className={`bg-primary-300 top-0 size-3 rounded-full outline-none sm:size-4 ${disabled ? 'hidden' : ''}`}
                 {...props}
                 key={1}
               ></div>
