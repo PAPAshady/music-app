@@ -11,7 +11,7 @@ export default function MusicPlayerCardSkeleton() {
           <p className="bg-secondary-400/50 h-2.5 w-[40%] rounded-full"></p>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-primary-100 bg-secondary-400/50 h-2.5 w-[20%] rounded-full"></span>
+          <span className="bg-secondary-400/50 h-2.5 w-[20%] rounded-full"></span>
           <span className="bg-secondary-400/50 rounded-md p-1 sm:size-6"></span>
         </div>
       </div>
