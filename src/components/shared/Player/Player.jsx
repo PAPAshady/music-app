@@ -5,7 +5,9 @@ import {
   Play,
   Next,
   Previous,
-  RepeateOne,
+  RepeateOne as RepeatOne,
+  RepeateMusic,
+  Shuffle,
   MusicFilter,
   Heart,
   VolumeHigh,
@@ -36,6 +38,8 @@ export default function Player({ classNames, isPlayerPage }) {
     getCurrentTime,
     durations,
     playlist,
+    playState,
+    togglePlayStates,
   } = useMusicPlayer();
   const [disabled, setDisabled] = useState(!playlist.length);
 
@@ -143,10 +147,21 @@ export default function Player({ classNames, isPlayerPage }) {
           />
         </div>
         <div className="ms-4 hidden items-center gap-4 md:flex">
-          <IconButton
-            icon={<RepeateOne />}
-            classNames={`hidden ${isPlayerPage ? 'md:flex' : 'xl:flex'} `}
-          />
+          <div title={playState}>
+            <IconButton
+              onClick={togglePlayStates}
+              icon={
+                playState === 'shuffle' ? (
+                  <Shuffle />
+                ) : playState === 'repeat_one' ? (
+                  <RepeatOne />
+                ) : (
+                  <RepeateMusic />
+                )
+              }
+              classNames={`hidden ${isPlayerPage ? 'md:flex' : 'xl:flex'} `}
+            />
+          </div>
           <IconButton icon={<MusicFilter />} classNames={isPlayerPage ? 'hidden' : 'xl:hidden'} />
           <div
             className="relative hidden items-center gap-2 md:flex"
