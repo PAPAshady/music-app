@@ -7,11 +7,14 @@ import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { registerUser } from '../../../services/auth';
+import { useNavigate } from 'react-router-dom';
+import useSnackbar from '../../../hooks/useSnackbar';
 
 const formSchema = z.object({
   first_name: z.string().min(1, { message: 'Firstname is required' }),
   last_name: z.string().min(1, { message: 'Lastname is required' }),
-  user_name: z.string().min(1, { message: 'Username is required' }),
+  username: z.string().min(1, { message: 'Username is required' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z
     .string()
@@ -20,6 +23,8 @@ const formSchema = z.object({
 });
 
 export default function SignUp() {
+  const navigate = useNavigate();
+  const { showNewSnackbar } = useSnackbar();
   const {
     handleSubmit,
     register,
@@ -30,15 +35,31 @@ export default function SignUp() {
     defaultValues: {
       first_name: '',
       last_name: '',
-      user_name: '',
+      username: '',
       email: '',
       password: '',
     },
     resolver: zodResolver(formSchema),
   });
 
-  const submitHandler = async (formData) => {
-    console.log('sign up success => ', formData);
+  const submitHandler = async (userInfo) => {
+    try {
+      const response = await registerUser(userInfo);
+      console.log(response);
+      showNewSnackbar('Welcome to VioTune', 'success');
+      setTimeout(() => navigate('/'), 3000); // navigate user to home page after 3 seconds
+    } catch (err) {
+      console.log(err);
+      if (err.code === 'ERR_NETWORK') {
+        setError('root', {
+          message: 'Network error. Please check your connection and try again.',
+        });
+      } else {
+        setError('root', {
+          message: 'An unexpected error occurred. Please try again.',
+        });
+      }
+    }
   };
 
   const formInputs = [
@@ -59,7 +80,7 @@ export default function SignUp() {
     {
       id: 3,
       type: 'text',
-      name: 'user_name',
+      name: 'username',
       placeholder: 'Username',
       icon: <User />,
     },
@@ -86,7 +107,7 @@ export default function SignUp() {
         <p className="text-lg">Welcome To VioTune</p>
       </div>
       <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
-        <p className="text-red mb-2 text-lg font-semibold">{errors.root?.message}</p>
+        <p className="text-red mt-5 mb-8 text-lg font-semibold">{errors.root?.message}</p>
         <div className="mb-4 flex flex-col gap-9">
           <div className="flex flex-col gap-4 sm:flex-row">
             {formInputs.slice(0, 2).map((input) => (
