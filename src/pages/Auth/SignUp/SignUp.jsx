@@ -7,9 +7,9 @@ import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { registerUser } from '../../../services/auth';
 import { useNavigate } from 'react-router-dom';
 import useSnackbar from '../../../hooks/useSnackbar';
+import useAuth from '../../../hooks/useAuth';
 
 const formSchema = z.object({
   first_name: z.string().min(1, { message: 'Firstname is required' }),
@@ -25,6 +25,7 @@ const formSchema = z.object({
 export default function SignUp() {
   const navigate = useNavigate();
   const { showNewSnackbar } = useSnackbar();
+  const { register: registerUser } = useAuth();
   const {
     handleSubmit,
     register,
@@ -44,9 +45,8 @@ export default function SignUp() {
 
   const submitHandler = async (userInfo) => {
     try {
-      const response = await registerUser(userInfo);
-      console.log(response);
-      showNewSnackbar('Welcome to VioTune', 'success');
+      await registerUser(userInfo);
+      showNewSnackbar('Welcome to VioTune!', 'success');
       setTimeout(() => navigate('/'), 3000); // navigate user to home page after 3 seconds
     } catch (err) {
       console.log(err);

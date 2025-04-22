@@ -3,6 +3,7 @@ import { HamburgerMenuProvider } from './contexts/HamburgerMenuContext';
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { MusicPlayerProvider } from './contexts/MusicPlayerContext';
+import { AuthContextProvider } from './contexts/AuthContext';
 import routes from './Router';
 import './App.css';
 
@@ -18,13 +19,15 @@ const queryClinet = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClinet}>
-      <MusicPlayerProvider>
-        <SnackbarProvider>
-          <HamburgerMenuProvider>
-            <RouterProvider router={router} />
-          </HamburgerMenuProvider>
-        </SnackbarProvider>
-      </MusicPlayerProvider>
+      <AuthContextProvider>
+        <MusicPlayerProvider>
+          <SnackbarProvider>
+            <HamburgerMenuProvider>
+              <RouterProvider router={router} />
+            </HamburgerMenuProvider>
+          </SnackbarProvider>
+        </MusicPlayerProvider>
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 }

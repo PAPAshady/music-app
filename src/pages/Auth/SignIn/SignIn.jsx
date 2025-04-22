@@ -7,6 +7,9 @@ import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import useAuth from '../../../hooks/useAuth';
+import useSnackbar from '../../../hooks/useSnackbar';
+import { useNavigate } from 'react-router-dom';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -17,11 +20,14 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
+  const { login } = useAuth();
+  const { showNewSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
     watch,
-
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(formSchema),
@@ -36,8 +42,23 @@ export default function SignIn() {
     { id: 2, type: 'password', name: 'password', placeholder: 'Password', icon: <Lock /> },
   ];
 
-  const submitHandler = async (formData) => {
-    console.log('Sign in success => ', formData);
+  const submitHandler = async (userInfo) => {
+    try {
+      await login(userInfo);
+      showNewSnackbar('Welcome back to VioTune!', 'success');
+      setTimeout(() => navigate('/'), 3000); // navigate user to home page after 3 seconds
+    } catch (err) {
+      console.log(err);
+      if (err.code === 'ERR_NETWORK') {
+        setError('root', {
+          message: 'Network error. Please check your connection and try again.',
+        });
+      } else {
+        setError('root', {
+          message: 'An unexpected error occurred. Please try again.',
+        });
+      }
+    }
   };
 
   return (
