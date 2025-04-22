@@ -1,6 +1,7 @@
 import { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import api, { BASE_URL } from '../services/api';
+import { setAccessToken, setRefreshToken } from '../utils/storageUtils';
 
 const AuthContext = createContext();
 
@@ -18,6 +19,8 @@ export function AuthContextProvider({ children }) {
     });
     setUser(data);
     setIsLoggedIn(true);
+    setAccessToken(data.access);
+    setRefreshToken(data.refresh);
   };
 
   const login = async (userData) => {
@@ -30,6 +33,8 @@ export function AuthContextProvider({ children }) {
     });
     setUser(data);
     setIsLoggedIn(true);
+    setAccessToken(data.access);
+    setRefreshToken(data.refresh);
   };
 
   return (
