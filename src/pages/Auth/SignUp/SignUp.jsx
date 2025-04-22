@@ -49,15 +49,21 @@ export default function SignUp() {
       showNewSnackbar('Welcome to VioTune!', 'success');
       setTimeout(() => navigate('/'), 3000); // navigate user to home page after 3 seconds
     } catch (err) {
-      console.log(err);
+      const res = err.response.data;
       if (err.code === 'ERR_NETWORK') {
         setError('root', {
           message: 'Network error. Please check your connection and try again.',
         });
+      } else if (res.status === 302) {
+        // email or username already exists
+        res.msg.includes('email')
+          ? setError('email', { message: res.msg })
+          : setError('username', { message: res.msg });
       } else {
         setError('root', {
           message: 'An unexpected error occurred. Please try again.',
         });
+        console.log('error in register user => ', err);
       }
     }
   };

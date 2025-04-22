@@ -48,16 +48,19 @@ export default function SignIn() {
       showNewSnackbar('Welcome back to VioTune!', 'success');
       setTimeout(() => navigate('/'), 3000); // navigate user to home page after 3 seconds
     } catch (err) {
-      console.log(err);
+      const { status } = err.response;
+      let errorMsg = '';
+
       if (err.code === 'ERR_NETWORK') {
-        setError('root', {
-          message: 'Network error. Please check your connection and try again.',
-        });
+        errorMsg = 'Network error. Please check your connection and try again.';
+      } else if (status === 404) {
+        errorMsg = 'Incorrect email or password. Please try again.';
       } else {
-        setError('root', {
-          message: 'An unexpected error occurred. Please try again.',
-        });
+        errorMsg = 'An unexpected error occurred. Please try again.';
+        console.log('error in login user => ', err);
       }
+
+      setError('root', { message: errorMsg });
     }
   };
 
