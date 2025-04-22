@@ -114,6 +114,8 @@ export function MusicPlayerProvider({ children }) {
         getCurrentTime,
         playlist,
         setCurrentSongIndex,
+        currentSongIndex,
+        prevSongIndex: prevSongIndex.current,
         playState,
         togglePlayStates,
       }}

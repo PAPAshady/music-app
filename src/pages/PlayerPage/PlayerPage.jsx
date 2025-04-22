@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Header from '../../components/shared/Header/Header';
 import HamburgerMenu from '../../components/shared/HamburgerMenu/HamburgerMenu';
 import Player from '../../components/shared/Player/Player';
@@ -16,9 +16,17 @@ import 'swiper/css';
 import './PlayerPage.css';
 
 export default function PlayerPage() {
+  const swiperRef = useRef(null);
   const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const { playlist, currentMusic, durations, setCurrentSongIndex } = useMusicPlayer();
+  const {
+    playlist,
+    currentMusic,
+    durations,
+    setCurrentSongIndex,
+    currentSongIndex,
+    prevSongIndex,
+  } = useMusicPlayer();
 
   useEffect(() => {
     const img = new Image();
@@ -27,6 +35,20 @@ export default function PlayerPage() {
       setMusicCover(img.src);
     });
   }, [currentMusic]);
+
+  useEffect(() => {
+    const isCurrentSlideVisible =
+      swiperRef.current.slides[currentSongIndex].classList.contains('swiper-slide-visible');
+    // slide to current song if its not visible in slider
+    if (!isCurrentSlideVisible) {
+      // slide one by one instead of all at once
+      if (prevSongIndex < currentSongIndex) {
+        swiperRef.current.slideTo(currentSongIndex - 2);
+      } else {
+        swiperRef.current.slideTo(currentSongIndex);
+      }
+    }
+  }, [currentSongIndex, prevSongIndex]);
 
   const CD_Sizes =
     'size-[220px] xs:size-[260px] min-[480px]:size-[350px] sm:size-[380px] md:size-[450px] lg:size-[300px] min-[1150px]:!size-[370px]';
@@ -55,6 +77,8 @@ export default function PlayerPage() {
           {isDesktop && (
             <div className="mx-auto w-full grow">
               <Swiper
+                onSwiper={(swiper) => (swiperRef.current = swiper)}
+                watchSlidesProgress
                 slidesPerView={3}
                 spaceBetween={16}
                 direction="vertical"
