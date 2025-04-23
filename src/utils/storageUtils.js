@@ -6,10 +6,12 @@ export const removeFromLocalStorage = (key) => localStorage.removeItem(key);
 
 export const clearLocalStorage = () => localStorage.clear();
 
-export const getAccessToken = () => getFromLocalStorage('accessToken');
-
-export const getRefreshToken = () => getFromLocalStorage('refreshToken');
-
-export const setAccessToken = (accessToken) => setToLocalStorage('accessToken', accessToken);
-
-export const setRefreshToken = (refreshToken) => setToLocalStorage('refreshToken', refreshToken);
+export const getCookies = () => {
+  const cookies = document.cookie;
+  if (!cookies) return {};
+  return cookies.split('; ').reduce((acc, cookie) => {
+    const [key, value] = cookie.split('=');
+    acc[key] = value;
+    return acc;
+  }, {});
+};
