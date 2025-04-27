@@ -8,7 +8,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 export default function ArtistsSlider() {
-  const { data, isLoading } = useQuery({
+  const { data: artists, isLoading } = useQuery({
     queryKey: ['artists'],
     queryFn: getArtists,
     staleTime: Infinity,
@@ -44,7 +44,7 @@ export default function ArtistsSlider() {
                   <ArtistCardSkeleton />
                 </SwiperSlide>
               ))
-          : data?.artists.map((artist) => (
+          : artists?.data.map((artist) => (
               <SwiperSlide key={artist.id} className="pb-11">
                 <ArtistCard {...artist} />
               </SwiperSlide>

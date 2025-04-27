@@ -46,14 +46,14 @@ export default function SignIn() {
     try {
       await login(userInfo);
       showNewSnackbar('Welcome back to VioTune!', 'success');
-      setTimeout(() => navigate('/'), 3000); // navigate user to home page after 3 seconds
+      setTimeout(() => navigate('/'), 2000); // navigate user to home page after 3 seconds
     } catch (err) {
       const { status } = err.response;
       let errorMsg = '';
 
       if (err.code === 'ERR_NETWORK') {
         errorMsg = 'Network error. Please check your connection and try again.';
-      } else if (status === 404) {
+      } else if (status === 404 || status === 400) {
         errorMsg = 'Incorrect email or password. Please try again.';
       } else {
         errorMsg = 'An unexpected error occurred. Please try again.';
