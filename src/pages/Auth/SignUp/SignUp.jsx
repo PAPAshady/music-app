@@ -59,7 +59,24 @@ export default function SignUp() {
         res.msg.includes('email')
           ? setError('email', { message: res.msg })
           : setError('username', { message: res.msg });
+      } else if (res.status === 400) {
+        // invalid fields
+        const errors = res.error;
+        if (res.msg.includes('Email')) {
+          setError('email', { message: res.msg });
+        }
+        if (errors?.username?.[0]) {
+          setError('username', {
+            message:
+              'Invalid username. It may contain only letters, numbers, and @/./+/-/_ characters.',
+          });
+        }
+        if (errors?.password?.[0]) {
+          setError('password', { message: errors.password[0] });
+        }
+        console.log(res);
       } else {
+        // default error
         setError('root', {
           message: 'An unexpected error occurred. Please try again.',
         });

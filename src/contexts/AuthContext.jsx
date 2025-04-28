@@ -10,14 +10,17 @@ export function AuthContextProvider({ children }) {
 
   const register = async (userData) => {
     const {
+      status,
       data: { data },
     } = await api.post(`${BASE_URL}/api/auth/register/`, userData, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    setUser(data);
-    setIsLoggedIn(true);
+    if (status === 201) {
+      setUser(data);
+      setIsLoggedIn(true);
+    }
   };
 
   const login = async (userData) => {
