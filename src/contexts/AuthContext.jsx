@@ -12,38 +12,34 @@ export function AuthContextProvider({ children }) {
   const { showNewSnackbar } = useSnackbar();
 
   useEffect(() => {
-    const getUserData = async () => {
-      setIsLoading(true);
-      try {
-        const res = await getMe();
-        if (res.status === 200) {
-          const { data: user } = res;
-          setUser(user.data);
-          setIsLoading(false);
-          setIsLoggedIn(true);
-        }
-      } catch (err) {
-        if (err.status === 401) {
-          // user must login/register. user will be re-directed to signin/signup page using protected route
-          setIsLoading(false);
-        } else if (err.code === 'ERR_NETWORK') {
-          showNewSnackbar(
-            'Network error. Please check your connection and try again.',
-            'error',
-            4000
-          );
-        } else {
-          showNewSnackbar('Error while getting user data. Please try again later.', 'error');
-          console.log(err);
-        }
-      }
-    };
-    getUserData();
-  }, [isLoggedIn]);
+    getMe();
+  }, []);
 
   async function getMe() {
-    const res = await api.get(`${BASE_URL}/api/auth/getme/`);
-    return res;
+    setIsLoading(true);
+    try {
+      const res = await api.get(`${BASE_URL}/api/auth/getme/`);
+      if (res.status === 200) {
+        const { data: user } = res;
+        setUser(user.data);
+        setIsLoading(false);
+        setIsLoggedIn(true);
+      }
+    } catch (err) {
+      if (err.status === 401) {
+        // user must login/register. user will be re-directed to signin/signup page using protected route
+        setIsLoading(false);
+      } else if (err.code === 'ERR_NETWORK') {
+        showNewSnackbar(
+          'Network error. Please check your connection and try again.',
+          'error',
+          4000
+        );
+      } else {
+        showNewSnackbar('Error while getting user data. Please try again later.', 'error');
+        console.log(err);
+      }
+    }
   }
 
   const register = async (userData) => {
@@ -52,7 +48,7 @@ export function AuthContextProvider({ children }) {
         'Content-Type': 'application/json',
       },
     });
-    status === 201 && setIsLoggedIn(true);
+    status === 201 && getMe();
   };
 
   const login = async (userData) => {
@@ -61,7 +57,7 @@ export function AuthContextProvider({ children }) {
         'Content-Type': 'application/json',
       },
     });
-    status === 200 && setIsLoggedIn(true);
+    status === 200 && getMe();
   };
 
   return (
