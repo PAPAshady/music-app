@@ -46,7 +46,7 @@ export default function SignIn() {
     try {
       await login(userInfo);
       showNewSnackbar('Welcome back to VioTune!', 'success');
-      setTimeout(() => navigate('/'), 2000); // navigate user to home page after 3 seconds
+      navigate('/');
     } catch (err) {
       const { status } = err.response;
       let errorMsg = '';
