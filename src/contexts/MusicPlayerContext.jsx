@@ -14,15 +14,29 @@ export function MusicPlayerProvider({ children }) {
   const [playState, setPlayState] = useState(playStateOptions[0]);
   const prevSongIndex = useRef(0);
 
+  // if playlist has only one song, play it again in case user clicks on prev/next buttons
+  const handleSingleSongPlaylist = useCallback(() => {
+    if (playlist.length === 1) {
+      music.currentTime = 0;
+      play();
+      return true;
+    }
+    return false;
+  }, [playlist]);
+
   const next = useCallback(() => {
+    if (handleSingleSongPlaylist()) return;
+
     if (currentSongIndex === playlist.length - 1) {
       setCurrentSongIndex(0);
     } else {
       setCurrentSongIndex((prev) => ++prev);
     }
-  }, [currentSongIndex, playlist]);
+  }, [currentSongIndex, playlist, handleSingleSongPlaylist]);
 
   const prev = () => {
+    if (handleSingleSongPlaylist()) return;
+
     if (currentSongIndex === 0) {
       setCurrentSongIndex(playlist.length - 1);
     } else {
@@ -39,7 +53,8 @@ export function MusicPlayerProvider({ children }) {
     };
 
     const playStateHandler = () => {
-      if (playState === 'repeat_one') {
+      if (playState === 'repeat_one' || playlist.length === 1) {
+        // replay the current song if playlist has only one song or if it is on 'reoeat_one'.
         play();
       } else if (playState === 'shuffle') {
         // get a random index other than the current song
