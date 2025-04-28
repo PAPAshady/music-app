@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import api, { BASE_URL } from '../services/api';
 import useSnackbar from '../hooks/useSnackbar';
@@ -11,11 +11,7 @@ export function AuthContextProvider({ children }) {
   const [user, setUser] = useState({});
   const { showNewSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    getMe();
-  }, []);
-
-  async function getMe() {
+  const getMe = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await api.get(`${BASE_URL}/api/auth/getme/`);
@@ -40,7 +36,11 @@ export function AuthContextProvider({ children }) {
         console.log(err);
       }
     }
-  }
+  }, [showNewSnackbar]);
+
+  useEffect(() => {
+    getMe();
+  }, [getMe]);
 
   const register = async (userData) => {
     const { status } = await api.post(`${BASE_URL}/api/auth/register/`, userData, {
