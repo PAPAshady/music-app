@@ -74,7 +74,9 @@ export default function Player({ classNames, isPlayerPage }) {
         <div className="relative size-12 overflow-hidden rounded-lg min-[400px]:size-15 sm:size-20 md:size-16">
           <img
             className="size-full object-cover"
-            src={currentMusic?.musiccover ? `${BASE_URL}${currentMusic.musiccover}` : noCoverImg}
+            src={
+              currentMusic?.musiccover ? `${BASE_URL}/media/${currentMusic.musiccover}` : noCoverImg
+            }
             alt=""
           />
           <div

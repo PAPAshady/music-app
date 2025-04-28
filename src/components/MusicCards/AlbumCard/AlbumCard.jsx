@@ -5,7 +5,17 @@ import { Heart, Music, Share } from 'iconsax-react';
 import { BASE_URL } from '../../../services/api';
 
 const AlbumCard = memo(
-  ({ size, title, artists, totaltracks, albumcover = noCoverImg, isFavorite, classNames }) => {
+  ({
+    size,
+    title,
+    artists,
+    totaltracks,
+    albumcover = noCoverImg,
+    isFavorite,
+    onClick,
+    musics,
+    classNames,
+  }) => {
     return (
       <div
         className={`lg:bg-secondary-700/40 lg:hover:border-secondary-300 lg:hover:bg-secondary-600/48 inset-shadow-secondary-400/70 group relative w-full overflow-hidden rounded-lg border border-transparent bg-black/80 shadow-[1px_1px_12px_rgba(0,0,0,.7)] transition-all duration-300 hover:border-white lg:inset-shadow-[1px_1px_7px] ${size === 'md' ? 'lg:max-w-[328px]' : ''} ${classNames}`}
@@ -16,6 +26,7 @@ const AlbumCard = memo(
               className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
               src={`${BASE_URL}/${albumcover}`}
               alt={title}
+              onClick={() => onClick(musics)}
             />
             <div
               className="group-hover:animate-infinite-rotate absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60"
@@ -33,6 +44,7 @@ const AlbumCard = memo(
               <p
                 className={`text-white-50 cursor-pointer truncate text-base ${size === 'lg' ? 'lg:text-lg' : ''}`}
                 title={title}
+                onClick={() => onClick(musics)}
               >
                 {title}
               </p>
@@ -84,6 +96,8 @@ AlbumCard.propTypes = {
   totaltracks: PropTypes.number.isRequired,
   albumcover: PropTypes.string,
   isFavorite: PropTypes.bool,
+  onClick: PropTypes.func.isRequired,
+  musics: PropTypes.array,
   classNames: PropTypes.string,
 };
 
