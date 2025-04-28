@@ -19,15 +19,15 @@ const queryClinet = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClinet}>
-      <AuthContextProvider>
-        <MusicPlayerProvider>
-          <SnackbarProvider>
+      <SnackbarProvider>
+        <AuthContextProvider>
+          <MusicPlayerProvider>
             <HamburgerMenuProvider>
               <RouterProvider router={router} />
             </HamburgerMenuProvider>
-          </SnackbarProvider>
-        </MusicPlayerProvider>
-      </AuthContextProvider>
+          </MusicPlayerProvider>
+        </AuthContextProvider>
+      </SnackbarProvider>
     </QueryClientProvider>
   );
 }
