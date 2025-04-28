@@ -65,12 +65,8 @@ export function MusicPlayerProvider({ children }) {
   // update music src everytime currentSongIndex changes
   useEffect(() => {
     music.src = `${BASE_URL}/media/${playlist[currentSongIndex]?.musicfile}`;
-
-    // make sure to play the song ONLY if user went for the next/prev song and NOT on the first render.
-    if (prevSongIndex.current !== currentSongIndex) {
-      prevSongIndex.current = currentSongIndex;
-      play();
-    }
+    prevSongIndex.current = currentSongIndex;
+    play();
   }, [currentSongIndex, playlist]);
 
   function play() {
