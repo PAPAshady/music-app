@@ -8,7 +8,7 @@ import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsS
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import { songs, genres, playlists, albums } from '../../data';
+import { songs, genres, playlists } from '../../data';
 import { chunkArray, shuffleArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode, Mousewheel, Scrollbar } from 'swiper/modules';
@@ -38,7 +38,7 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="Updates from Followed Artists" />
-          <AlbumsSlider albums={albums} />
+          <AlbumsSlider />
         </div>
         <div className="-mt-11">
           <SectionHeader title="Daily Picks" />
@@ -55,7 +55,7 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="Albums You Were Listening To" />
-          <AlbumsSlider albums={[...albums].reverse()} />
+          <AlbumsSlider />
         </div>
         <div>
           <SectionHeader title="Genres You Interested In" />

@@ -2,9 +2,10 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Music, Share } from 'iconsax-react';
+import { BASE_URL } from '../../../services/api';
 
 const AlbumCard = memo(
-  ({ size, name, singer, tracks, image = noCoverImg, isFavorite, classNames }) => {
+  ({ size, title, artists, totaltracks, albumcover = noCoverImg, isFavorite, classNames }) => {
     return (
       <div
         className={`lg:bg-secondary-700/40 lg:hover:border-secondary-300 lg:hover:bg-secondary-600/48 inset-shadow-secondary-400/70 group relative w-full overflow-hidden rounded-lg border border-transparent bg-black/80 shadow-[1px_1px_12px_rgba(0,0,0,.7)] transition-all duration-300 hover:border-white lg:inset-shadow-[1px_1px_7px] ${size === 'md' ? 'lg:max-w-[328px]' : ''} ${classNames}`}
@@ -13,13 +14,13 @@ const AlbumCard = memo(
           <div className="relative flex items-center justify-center lg:pe-10">
             <img
               className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
-              src={image}
-              alt={name}
+              src={`${BASE_URL}/${albumcover}`}
+              alt={title}
             />
             <div
               className="group-hover:animate-infinite-rotate absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60"
               style={{
-                backgroundImage: `url(${image})`,
+                backgroundImage: `url(${BASE_URL}/${albumcover})`,
                 mask: 'radial-gradient(circle, transparent 8px, black 8px)',
                 WebkitMask: 'radial-gradient(circle, transparent 8px, black 8px)',
               }}
@@ -31,19 +32,21 @@ const AlbumCard = memo(
             <div className="overflow-hidden">
               <p
                 className={`text-white-50 cursor-pointer truncate text-base ${size === 'lg' ? 'lg:text-lg' : ''}`}
-                title={name}
+                title={title}
               >
-                {name}
+                {title}
               </p>
-              <span title={singer} className="block truncate text-sm text-white">
-                {singer}
+              <span title={artists[0].name} className="block truncate text-sm text-white">
+                {artists[0].name}
               </span>
             </div>
             {size === 'md' && (
               <div className="mt-3 hidden items-center justify-between gap-4 text-sm lg:flex">
                 <p className="flex items-center gap-1">
                   <Music size={18} className="text-primary-50" />
-                  <span className="text-xs text-white">{tracks} Tracks</span>
+                  <span className="text-xs text-white">
+                    {totaltracks} Track{totaltracks > 1 && 's'}
+                  </span>
                 </p>
                 <div className="text-primary-50 flex items-center gap-2">
                   <button className="hover:scale-110">
@@ -76,10 +79,10 @@ AlbumCard.displayName = 'AlbumCard';
 
 AlbumCard.propTypes = {
   size: PropTypes.oneOf(['md', 'lg']).isRequired,
-  name: PropTypes.string.isRequired,
-  singer: PropTypes.string.isRequired,
-  tracks: PropTypes.number.isRequired,
-  image: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  artists: PropTypes.array.isRequired,
+  totaltracks: PropTypes.number.isRequired,
+  albumcover: PropTypes.string,
   isFavorite: PropTypes.bool,
   classNames: PropTypes.string,
 };
