@@ -12,6 +12,8 @@ export default function ArtistsSlider() {
     queryKey: ['artists'],
     queryFn: getArtists,
     staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
   });
 
   return (
