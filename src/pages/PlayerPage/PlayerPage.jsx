@@ -86,8 +86,8 @@ export default function PlayerPage() {
                 mousewheel={{ forceToAxis: true }}
                 className="max-h-[380px]"
               >
-                {playlist.length
-                  ? playlist.map((music) => (
+                {playlist.musics?.length
+                  ? playlist.musics?.map((music) => (
                       <SwiperSlide key={music.id}>
                         <MusicPlayerCard
                           isPlaying={music.id === currentMusic?.id}

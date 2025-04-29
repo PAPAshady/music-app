@@ -8,7 +8,7 @@ const playStateOptions = ['repeat_all', 'repeat_one', 'shuffle'];
 
 export function MusicPlayerProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [playlist, setPlaylist] = useState([]);
+  const [playlist, setPlaylist] = useState({});
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [durations, setDurations] = useState({ rawDuration: 0, formatedDuration: '0:00' });
   const [playState, setPlayState] = useState(playStateOptions[0]);
@@ -16,7 +16,7 @@ export function MusicPlayerProvider({ children }) {
 
   // if playlist has only one song, play it again in case user clicks on prev/next buttons
   const handleSingleSongPlaylist = useCallback(() => {
-    if (playlist.length === 1) {
+    if (playlist.musics?.length === 1) {
       music.currentTime = 0;
       play();
       return true;
@@ -27,7 +27,7 @@ export function MusicPlayerProvider({ children }) {
   const next = useCallback(() => {
     if (handleSingleSongPlaylist()) return;
 
-    if (currentSongIndex === playlist.length - 1) {
+    if (currentSongIndex === playlist.musics?.length - 1) {
       setCurrentSongIndex(0);
     } else {
       setCurrentSongIndex((prev) => ++prev);
@@ -38,7 +38,7 @@ export function MusicPlayerProvider({ children }) {
     if (handleSingleSongPlaylist()) return;
 
     if (currentSongIndex === 0) {
-      setCurrentSongIndex(playlist.length - 1);
+      setCurrentSongIndex(playlist.musics?.length - 1);
     } else {
       setCurrentSongIndex((prev) => --prev);
     }
@@ -53,14 +53,14 @@ export function MusicPlayerProvider({ children }) {
     };
 
     const playStateHandler = () => {
-      if (playState === 'repeat_one' || playlist.length === 1) {
+      if (playState === 'repeat_one' || playlist.musics?.length === 1) {
         // replay the current song if playlist has only one song or if it is on 'reoeat_one'.
         play();
       } else if (playState === 'shuffle') {
         // get a random index other than the current song
         let randomIndex = null;
         do {
-          randomIndex = Math.floor(Math.random() * playlist.length);
+          randomIndex = Math.floor(Math.random() * playlist.musics?.length);
         } while (randomIndex === currentSongIndex);
         setCurrentSongIndex(randomIndex);
       } else {
@@ -79,9 +79,9 @@ export function MusicPlayerProvider({ children }) {
 
   // update music src everytime currentSongIndex changes
   useEffect(() => {
-    music.src = `${BASE_URL}/media/${playlist[currentSongIndex]?.musicfile}`;
+    music.src = `${BASE_URL}/media/${playlist.musics?.[currentSongIndex]?.musicfile}`;
     prevSongIndex.current = currentSongIndex;
-    playlist.length && play(); // dont try to play music onMount
+    playlist.musics?.length && play(); // dont try to play music onMount
   }, [currentSongIndex, playlist]);
 
   function play() {
@@ -120,7 +120,7 @@ export function MusicPlayerProvider({ children }) {
         next,
         prev,
         setPlaylist,
-        currentMusic: playlist[currentSongIndex],
+        currentMusic: playlist.musics?.[currentSongIndex],
         durations,
         getCurrentTime,
         playlist,

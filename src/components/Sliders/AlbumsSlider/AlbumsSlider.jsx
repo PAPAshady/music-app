@@ -61,8 +61,8 @@ export default function AlbumsSlider({ albumCardSize = 'lg', albumCardStyles }) 
                       key={album.id}
                       size={albumCardSize}
                       classNames={albumCardStyles}
-                      onClick={playAlbum}
-                      {...album}
+                      playAlbumHandler={playAlbum}
+                      album={album}
                     />
                   ))}
                 </div>
