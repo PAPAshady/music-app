@@ -13,7 +13,7 @@ import useMusicPlayer from '../../../hooks/useMusicPlayer';
 
 export default function AlbumsSlider({ albumCardSize = 'lg', albumCardStyles }) {
   const { setPlaylist } = useMusicPlayer();
-  const { data, isLoading } = useQuery({
+  const { data: albums, isLoading } = useQuery({
     queryKey: ['albums'],
     queryFn: getAllAlbums,
     staleTime: Infinity,
@@ -53,7 +53,7 @@ export default function AlbumsSlider({ albumCardSize = 'lg', albumCardStyles }) 
                 </div>
               </SwiperSlide>
             ))
-          : chunkArray(data?.albums ?? [], 3).map((albumsArray, index) => (
+          : chunkArray(albums?.data ?? [], 3).map((albumsArray, index) => (
               <SwiperSlide key={index} className="p-[1px] pb-11">
                 <div className="flex flex-col gap-4">
                   {albumsArray.map((album) => (
