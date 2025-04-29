@@ -10,7 +10,7 @@ import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard'
 import MainButton from '../../components/Buttons/MainButton/MainButton';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import sectionBgImage from '../../assets/images/backgrounds/section-bg-2.jpg';
-import { songs, playlists, artists, genres, albums } from '../../data';
+import { songs, playlists, genres } from '../../data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -32,7 +32,7 @@ export default function Browse() {
         <DiscoverPlaylistsSlider playlists={playlists} />
         <div>
           <SectionTitle title="People's Favorite Artists" />
-          <ArtistsSlider artists={artists} />
+          <ArtistsSlider />
         </div>
         <div>
           <SectionTitle title="Trending Genres" />
@@ -40,7 +40,7 @@ export default function Browse() {
         </div>
         <div>
           <SectionTitle title="Trending Albums" />
-          <AlbumsSlider albums={albums} albumCardSize="md" albumCardStyles="!max-w-none" />
+          <AlbumsSlider albumCardSize="md" albumCardStyles="!max-w-none" />
         </div>
         <div>
           <SectionTitle title="Let's Party" />
@@ -114,11 +114,11 @@ export default function Browse() {
         </div>
         <div>
           <SectionTitle title="Best Albums Of 2024" />
-          <AlbumsSlider albums={albums} albumCardSize="md" albumCardStyles="!max-w-none" />
+          <AlbumsSlider albumCardSize="md" albumCardStyles="!max-w-none" />
         </div>
         <div>
           <SectionTitle title="Meet the Top New Singers of 2024" />
-          <ArtistsSlider artists={artists} />
+          <ArtistsSlider />
         </div>
       </div>
       <SidebarPlaylist playList={songs} />

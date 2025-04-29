@@ -1,7 +1,7 @@
 import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import { Sms, Lock } from 'iconsax-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSignUpButton';
 import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import useAuth from '../../../hooks/useAuth';
 import useSnackbar from '../../../hooks/useSnackbar';
+import { useNavigate } from 'react-router-dom';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -19,8 +20,8 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
+  const { login } = useAuth();
   const { showNewSnackbar } = useSnackbar();
-  const { signIn } = useAuth();
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -41,23 +42,25 @@ export default function SignIn() {
     { id: 2, type: 'password', name: 'password', placeholder: 'Password', icon: <Lock /> },
   ];
 
-  const submitHandler = async (formData) => {
+  const submitHandler = async (userInfo) => {
     try {
-      await signIn(formData);
-      showNewSnackbar('Welcome Back To VioTune!', 'success');
+      await login(userInfo);
+      showNewSnackbar('Welcome back to VioTune!', 'success');
       navigate('/');
     } catch (err) {
-      switch (err.code) {
-        case 'invalid_credentials':
-          setError('root', { message: 'The email or password is incorrect. Please try again.' });
-          break;
-        case 'over_request_rate_limit':
-          setError('root', { message: 'Too many attempts. Please wait and try again later.' });
-          break;
-        default:
-          setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
-          break;
+      const { status } = err.response;
+      let errorMsg = '';
+
+      if (err.code === 'ERR_NETWORK') {
+        errorMsg = 'Network error. Please check your connection and try again.';
+      } else if (status === 404 || status === 400) {
+        errorMsg = 'Incorrect email or password. Please try again.';
+      } else {
+        errorMsg = 'An unexpected error occurred. Please try again.';
+        console.log('error in login user => ', err);
       }
+
+      setError('root', { message: errorMsg });
     }
   };
 

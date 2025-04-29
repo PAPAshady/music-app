@@ -4,15 +4,14 @@ import SectionHeader from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
-import ArtistCard from '../../components/MusicCards/ArtistCard/ArtistCard';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import { songs, genres, playlists, albums, artists } from '../../data';
+import { songs, genres, playlists } from '../../data';
 import { chunkArray, shuffleArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, FreeMode, Mousewheel, Scrollbar, Autoplay } from 'swiper/modules';
+import { Pagination, FreeMode, Mousewheel, Scrollbar } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
@@ -20,7 +19,7 @@ import PropTypes from 'prop-types';
 
 export default function Home() {
   return (
-    <div className="flex items-start gap-6 w-full">
+    <div className="flex w-full items-start gap-6">
       <div className="flex grow flex-col gap-8 lg:gap-10">
         <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
           {genres.slice(0, 3).map((track) => (
@@ -39,7 +38,7 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="Updates from Followed Artists" />
-          <AlbumsSlider albums={albums} />
+          <AlbumsSlider />
         </div>
         <div className="-mt-11">
           <SectionHeader title="Daily Picks" />
@@ -47,34 +46,7 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="Artists You Follow" />
-          <div className="mx-auto w-[97%] max-w-[940px]">
-            <Swiper
-              slidesPerView={2.3}
-              spaceBetween={15}
-              modules={[Pagination, Autoplay, FreeMode]}
-              pagination={{ enabled: false, clickable: true }}
-              autoplay={{ delay: 2500, enabled: false }}
-              freeMode
-              breakpoints={{
-                360: { slidesPerView: 2.4 },
-                420: { slidesPerView: 3, spaceBetween: 10 },
-                480: { slidesPerView: 3.4 },
-                590: { slidesPerView: 4 },
-                640: { slidesPerView: 4.5 },
-                768: { slidesPerView: 5 },
-                850: { slidesPerView: 5.5 },
-                1024: { slidesPerView: 4.5, freeMode: false },
-                1440: { slidesPerView: 5, pagination: { enabled: true }, freeMode: false },
-              }}
-              className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
-            >
-              {artists.map((artist) => (
-                <SwiperSlide key={artist.id} className="pb-11">
-                  <ArtistCard {...artist} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+          <ArtistsSlider />
         </div>
         <DiscoverPlaylistsSlider playlists={playlists} />
         <div>
@@ -83,7 +55,7 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="Albums You Were Listening To" />
-          <AlbumsSlider albums={[...albums].reverse()} />
+          <AlbumsSlider />
         </div>
         <div>
           <SectionHeader title="Genres You Interested In" />
@@ -91,7 +63,7 @@ export default function Home() {
         </div>
         <div>
           <SectionHeader title="More Artists You'll Love" />
-          <ArtistsSlider artists={shuffleArray(artists)} />
+          <ArtistsSlider />
         </div>
         <div className="-mt-8">
           <SectionHeader title="Trending Now" />

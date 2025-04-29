@@ -14,7 +14,7 @@ import PlayerPage from './pages/PlayerPage/PlayerPage';
 import Permium from './pages/Permium/Permium';
 import SettingsLayout from './components/shared/Layouts/SettingsLayout/SettingsLayout';
 import Profile from './pages/Profile/Profile';
-import Analytics from './pages/Auth/Analytics/Analytics';
+import Analytics from './pages/Analytics/Analytics';
 import ContactUs from './pages/ContactUs/ContactUs';
 import FAQ from './pages/FAQ/FAQ';
 

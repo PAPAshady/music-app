@@ -6,3 +6,12 @@ export const removeFromLocalStorage = (key) => localStorage.removeItem(key);
 
 export const clearLocalStorage = () => localStorage.clear();
 
+export const getCookies = () => {
+  const cookies = document.cookie;
+  if (!cookies) return {};
+  return cookies.split('; ').reduce((acc, cookie) => {
+    const [key, value] = cookie.split('=');
+    acc[key] = value;
+    return acc;
+  }, {});
+};

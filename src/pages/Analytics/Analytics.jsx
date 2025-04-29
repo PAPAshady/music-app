@@ -1,9 +1,17 @@
-import TracksSlider from '../../../components/Sliders/TracksSlider/TracksSlider';
-import ArtistsSlider from '../../../components/Sliders/ArtistsSlider/ArtistsSlider';
-import SettingsPagesSectionHeader from '../../../components/SettingsPagesSectionHeader/SettingsPagesSectionHeader';
-import { songs, artists, usageChartData } from '../../../data';
-import { LineChart, Legend, Tooltip, Line, XAxis, ResponsiveContainer, CartesianGrid } from 'recharts';
-import useMediaQuery from '../../../hooks/useMediaQuery';
+import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
+import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
+import SettingsPagesSectionHeader from '../../components/SettingsPagesSectionHeader/SettingsPagesSectionHeader';
+import { songs, usageChartData } from '../../data';
+import {
+  LineChart,
+  Legend,
+  Tooltip,
+  Line,
+  XAxis,
+  ResponsiveContainer,
+  CartesianGrid,
+} from 'recharts';
+import useMediaQuery from '../../hooks/useMediaQuery';
 
 export default function Analytics() {
   const isTablet = useMediaQuery('(min-width: 640px)');
@@ -22,7 +30,7 @@ export default function Analytics() {
       </div>
       <div>
         <SettingsPagesSectionHeader title="Singers who were very popular with you" />
-        <ArtistsSlider artists={artists} />
+        <ArtistsSlider />
       </div>
       <div>
         <SettingsPagesSectionHeader title="Your Usage VioTune Rate" />
@@ -30,7 +38,7 @@ export default function Analytics() {
           <LineChart data={usageChartData}>
             <Legend verticalAlign="top" height={45} />
             <Tooltip />
-            <XAxis dataKey="month" stroke='#f9f9f9' />
+            <XAxis dataKey="month" stroke="#f9f9f9" />
             <CartesianGrid vertical={false} />
             <Line type="monotone" name="Music" dataKey="music" stroke="#ab3030" strokeWidth={2} />
             <Line

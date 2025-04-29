@@ -10,10 +10,8 @@ import NotificationMenu from '../NotificationMenu/NotificationMenu';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import SettingsMenu from '../SettingsMenu/SettingsMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
-import useAuth from '../../../hooks/useAuth';
 
 export default memo(function Header() {
-  const { avatar } = useAuth();
   const { setIsShowHamburgerMenu } = useHamburgerMenu();
   const searchInput = useInput();
   const notificationMenu = useCloseOnClickOutside();
@@ -66,7 +64,7 @@ export default memo(function Header() {
             <SettingsMenu isVisible={settingsMenu.isVisible} />
           </div>
           <button>
-            <Avatar size="xs" profilePic={avatar} />
+            <Avatar size="xs"  />
           </button>
         </div>
       </div>

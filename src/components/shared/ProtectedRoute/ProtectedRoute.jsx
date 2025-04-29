@@ -1,16 +1,28 @@
+import PropTypes from 'prop-types';
 import useAuth from '../../../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import useMediaQuery from '../../../hooks/useMediaQuery';
+import Logo from '../../Logo/Logo';
 
 export default function ProtectedRoute({ children }) {
-  const { user, isLoading } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="relative">
+        <div
+          className={`fixed inset-0 z-20 grid h-[100dvh] w-full place-content-center backdrop-blur-md transition-all duration-300`}
+        >
+          <Logo size={isDesktop ? 'xl' : 'lg'} isLoading />
+        </div>
+        {children}
+      </div>
+    );
   }
 
-  if (!user) {
-    return <Navigate to="/auth/sign-up" replace />;
+  if (!isLoggedIn) {
+    return <Navigate to="/auth" replace />;
   }
 
   return children;
