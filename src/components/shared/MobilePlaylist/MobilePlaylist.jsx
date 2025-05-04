@@ -5,9 +5,14 @@ import { ArrowLeft, Menu, Play, Shuffle, Additem, ArrowCircleDown2 } from 'icons
 import MainButton from '../../Buttons/MainButton/MainButton';
 import PropTypes from 'prop-types';
 import IconButton from '../../Buttons/IconButton/IconButton';
+import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
+import { BASE_URL } from '../../../services/api';
+import useMusicPlayer from '../../../hooks/useMusicPlayer';
 
 export default function MobilePlaylist({ isOpen, onClose }) {
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
+  const { selectedPlaylist: playlist } = useMobilePlaylist();
+  const { setPlaylist } = useMusicPlayer();
 
   // remove scrollbar for the body when mobile playlist is open
   useEffect(() => {
@@ -54,7 +59,7 @@ export default function MobilePlaylist({ isOpen, onClose }) {
             <p
               className={`transition-opacity duration-300 ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
             >
-              Album name
+              {playlist.title}
             </p>
           </div>
           <button className="">
@@ -63,11 +68,14 @@ export default function MobilePlaylist({ isOpen, onClose }) {
         </div>
         <div>
           <div className="flex flex-col items-center justify-center gap-4 pt-10 text-center">
-            <img src={BgImage} className="size-46 rounded-md" alt="" />
-            <p className="text-2xl font-semibold text-white">Album Name</p>
+            <img
+              src={`${BASE_URL}/${playlist.albumcover}`}
+              className="size-46 rounded-md"
+              alt={playlist.title}
+            />
+            <p className="text-2xl font-semibold text-white">{playlist.title}</p>
             <p className="line-clamp-2 text-sm">
-              Some random description about this shitty playlist which i am developing it&apos;s
-              UI/UX.
+              {playlist.description || 'No Description for this playlist.'}
             </p>
             <div className="mt-3 flex w-full items-center justify-between gap-2">
               <div className="flex items-center gap-3.5">
@@ -83,6 +91,7 @@ export default function MobilePlaylist({ isOpen, onClose }) {
                 <MainButton
                   classNames="size-12 !rounded-full flex justify-center items-center"
                   title={<Play size={24} />}
+                  onClick={() => setPlaylist(playlist)}
                 />
               </div>
             </div>

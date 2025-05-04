@@ -3,21 +3,30 @@ import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Music, Share } from 'iconsax-react';
 import { BASE_URL } from '../../../services/api';
+import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
 
-const AlbumCard = memo(({ size, isFavorite, playAlbumHandler, album, classNames }) => {
+const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const { albumcover = noCoverImg, totaltracks, artists, title } = album;
+  const { setSelectedPlaylist, openMobilePlaylist } = useMobilePlaylist();
+
+  const openMobilePlaylistHandler = () => {
+    setSelectedPlaylist(album);
+    openMobilePlaylist();
+  };
 
   return (
     <div
       className={`lg:bg-secondary-700/40 lg:hover:border-secondary-300 lg:hover:bg-secondary-600/48 inset-shadow-secondary-400/70 group relative w-full overflow-hidden rounded-lg border border-transparent bg-black/80 shadow-[1px_1px_12px_rgba(0,0,0,.7)] transition-all duration-300 hover:border-white lg:inset-shadow-[1px_1px_7px] ${size === 'md' ? 'lg:max-w-[328px]' : ''} ${classNames}`}
     >
       <div className="flex items-center lg:p-3">
-        <div className="relative flex items-center justify-center lg:pe-10">
+        <div
+          className="relative flex items-center justify-center lg:pe-10"
+          onClick={openMobilePlaylistHandler}
+        >
           <img
             className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
             src={`${BASE_URL}/${albumcover}`}
             alt={title}
-            onClick={() => playAlbumHandler(album)}
           />
           <div
             className="group-hover:animate-infinite-rotate absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60"
@@ -35,7 +44,7 @@ const AlbumCard = memo(({ size, isFavorite, playAlbumHandler, album, classNames 
             <p
               className={`text-white-50 cursor-pointer truncate text-base ${size === 'lg' ? 'lg:text-lg' : ''}`}
               title={title}
-              onClick={() => playAlbumHandler(album)}
+              onClick={openMobilePlaylistHandler}
             >
               {title}
             </p>
@@ -82,7 +91,6 @@ AlbumCard.displayName = 'AlbumCard';
 AlbumCard.propTypes = {
   size: PropTypes.oneOf(['md', 'lg']).isRequired,
   isFavorite: PropTypes.bool,
-  playAlbumHandler: PropTypes.func.isRequired,
   album: PropTypes.object.isRequired,
   classNames: PropTypes.string,
 };

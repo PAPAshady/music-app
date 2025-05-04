@@ -19,7 +19,7 @@ export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
-  const { isMobilePlaylistOpen, openMobilePlaylist, closeMobilePlaylist } = useMobilePlaylist();
+  const { isMobilePlaylistOpen, closeMobilePlaylist } = useMobilePlaylist();
 
   useEffect(() => {
     function handleScroll() {
@@ -74,7 +74,7 @@ export default function MainLayout() {
         </div>
         <div className="flex grow flex-col items-start gap-12 pt-6 pb-32 lg:pb-10">
           <Outlet />
-          <Player onMobilePlaylistOpen={openMobilePlaylist} />
+          <Player />
           <Footer />
         </div>
       </main>

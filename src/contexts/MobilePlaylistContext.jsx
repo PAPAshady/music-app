@@ -5,6 +5,7 @@ const MobilePlaylistContext = createContext();
 
 export function MobilePlaylistProvider({ children }) {
   const [isMobilePlaylistOpen, setIsMobilePlaylistOpen] = useState(false);
+  const [selectedPlaylist, setSelectedPlaylist] = useState({});
 
   useEffect(() => {
     const handlePopState = () => {
@@ -29,7 +30,13 @@ export function MobilePlaylistProvider({ children }) {
 
   return (
     <MobilePlaylistContext.Provider
-      value={{ isMobilePlaylistOpen, openMobilePlaylist, closeMobilePlaylist }}
+      value={{
+        isMobilePlaylistOpen,
+        openMobilePlaylist,
+        closeMobilePlaylist,
+        selectedPlaylist,
+        setSelectedPlaylist,
+      }}
     >
       {children}
     </MobilePlaylistContext.Provider>
