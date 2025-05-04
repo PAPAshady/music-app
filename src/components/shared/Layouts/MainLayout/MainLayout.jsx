@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import homePageBgImg from '../../../../assets/images/backgrounds/home-page.jpg';
 import favoritesPageBgImg from '../../../../assets/images/backgrounds/favorites-page.jpg';
 import playlistAndSubscriptionPageBgImg from '../../../../assets/images/backgrounds/playlist and-subscription-page.jpg';
@@ -13,12 +13,13 @@ import Logo from '../../../Logo/Logo';
 import MobilePlaylist from '../../MobilePlaylist/MobilePlaylist';
 import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { useLocation, Outlet, Link } from 'react-router-dom';
+import useMobilePlaylist from '../../../../hooks/useMobilePlaylist';
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
-  const [isMobilePlaylistOpen, setIsMobilePlaylistOpen] = useState(false);
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
+  const { isMobilePlaylistOpen, openMobilePlaylist, closeMobilePlaylist } = useMobilePlaylist();
 
   useEffect(() => {
     function handleScroll() {
@@ -31,27 +32,6 @@ export default function MainLayout() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   });
-
-  useEffect(() => {
-    const handlePopState = () => {
-      if (isMobilePlaylistOpen) {
-        setIsMobilePlaylistOpen(false);
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [isMobilePlaylistOpen]);
-
-  const openMobilePlaylist = useCallback(() => {
-    setIsMobilePlaylistOpen(true);
-    // if user clicks on back button of their device, mobilePlaylist will close
-    !isMobilePlaylistOpen && window.history.pushState({ mobilePlaylist: true }, '');
-  }, [isMobilePlaylistOpen]);
-
-  const closeMobilePlaylist = useCallback(() => {
-    window.history.back();
-    setIsMobilePlaylistOpen(false);
-  }, []);
 
   const pagesBackgrounds = {
     '/': homePageBgImg,

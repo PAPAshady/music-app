@@ -4,6 +4,7 @@ import { SnackbarProvider } from './contexts/SnackbarContext';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { MusicPlayerProvider } from './contexts/MusicPlayerContext';
 import { AuthContextProvider } from './contexts/AuthContext';
+import { MobilePlaylistProvider } from './contexts/MobilePlaylistContext';
 import routes from './Router';
 import './App.css';
 
@@ -22,9 +23,11 @@ function App() {
       <SnackbarProvider>
         <AuthContextProvider>
           <MusicPlayerProvider>
-            <HamburgerMenuProvider>
-              <RouterProvider router={router} />
-            </HamburgerMenuProvider>
+            <MobilePlaylistProvider>
+              <HamburgerMenuProvider>
+                <RouterProvider router={router} />
+              </HamburgerMenuProvider>
+            </MobilePlaylistProvider>
           </MusicPlayerProvider>
         </AuthContextProvider>
       </SnackbarProvider>
