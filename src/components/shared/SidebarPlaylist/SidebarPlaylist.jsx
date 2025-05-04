@@ -1,10 +1,10 @@
 import { cloneElement, useState } from 'react';
 import { Music, Timer, User, Edit2, Trash, Share } from 'iconsax-react';
 import PropTypes from 'prop-types';
-import playlistImg from '../../assets/images/backgrounds/login-signup-page.jpg';
-import PlayBar from '../MusicCards/PlayBar/PlayBar';
-import DropDownList from '../DropDownList/DropDownList';
-import PlaylistInfosModal from '../PlaylistInfosModal/PlaylistInfosModal';
+import playlistImg from '../../../assets/images/backgrounds/login-signup-page.jpg';
+import PlayBar from '../../MusicCards/PlayBar/PlayBar';
+import DropDownList from '../../DropDownList/DropDownList';
+import PlaylistInfosModal from '../../PlaylistInfosModal/PlaylistInfosModal';
 
 export default function SidebarPlaylist({ playList }) {
   const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(false);
@@ -70,7 +70,7 @@ export default function SidebarPlaylist({ playList }) {
         setIsOpen={setShowEditPlaylistModal}
         playlistImg={playlistImg}
         playlistName="Sad playlist"
-        modalTitle='Edit playlist'
+        modalTitle="Edit playlist"
       />
     </>
   );

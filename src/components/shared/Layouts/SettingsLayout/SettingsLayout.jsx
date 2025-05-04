@@ -1,4 +1,4 @@
-import SidebarPlaylist from '../../../SidebarPlaylist/SidebarPlaylist';
+import SidebarPlaylist from '../../SidebarPlaylist/SidebarPlaylist';
 import { Outlet, NavLink } from 'react-router-dom';
 import { songs } from '../../../../data';
 
