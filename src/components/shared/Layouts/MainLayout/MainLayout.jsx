@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import homePageBgImg from '../../../../assets/images/backgrounds/home-page.jpg';
 import favoritesPageBgImg from '../../../../assets/images/backgrounds/favorites-page.jpg';
 import playlistAndSubscriptionPageBgImg from '../../../../assets/images/backgrounds/playlist and-subscription-page.jpg';
@@ -10,11 +10,15 @@ import HamburgerMenu from '../../HamburgerMenu/HamburgerMenu';
 import Player from '../../Player/Player';
 import Footer from '../../Footer/Footer';
 import Logo from '../../../Logo/Logo';
+import MobilePlaylist from '../../MobilePlaylist/MobilePlaylist';
+import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { useLocation, Outlet, Link } from 'react-router-dom';
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
+  const [isMobilePlaylistOpen, setIsMobilePlaylistOpen] = useState(false);
   const currentPage = useLocation().pathname;
+  const isDesktop = useMediaQuery('(max-width: 1280px)');
 
   useEffect(() => {
     function handleScroll() {
@@ -27,6 +31,27 @@ export default function MainLayout() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   });
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (isMobilePlaylistOpen) {
+        setIsMobilePlaylistOpen(false);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isMobilePlaylistOpen]);
+
+  const openMobilePlaylist = useCallback(() => {
+    window.history.pushState({ mobilePlaylist: true }, '');
+    setIsMobilePlaylistOpen(true);
+  }, []);
+
+  const closeMobilePlaylist = useCallback(() => {
+    // if user clicks on back button of their device, mobilePlaylist will close
+    window.history.back();
+    setIsMobilePlaylistOpen(false);
+  }, []);
 
   const pagesBackgrounds = {
     '/': homePageBgImg,
@@ -69,11 +94,12 @@ export default function MainLayout() {
         </div>
         <div className="flex grow flex-col items-start gap-12 pt-6 pb-32 lg:pb-10">
           <Outlet />
-          <Player />
+          <Player onMobilePlaylistOpen={openMobilePlaylist} />
           <Footer />
         </div>
       </main>
       <HamburgerMenu />
+      {isDesktop && <MobilePlaylist isOpen={isMobilePlaylistOpen} onClose={closeMobilePlaylist} />}
     </div>
   );
 }
