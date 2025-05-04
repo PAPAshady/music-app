@@ -1,4 +1,4 @@
-import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
+import SidebarPlaylist from '../../components/shared/SidebarPlaylist/SidebarPlaylist';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';

@@ -1,4 +1,4 @@
-import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
+import SidebarPlaylist from '../../components/shared/SidebarPlaylist/SidebarPlaylist';
 import PermiumCard from '../../components/PermiumCard/PermiumCard';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { Swiper, SwiperSlide } from 'swiper/react';

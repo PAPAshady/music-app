@@ -1,5 +1,5 @@
 import useMediaQuery from '../../hooks/useMediaQuery';
-import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
+import SidebarPlaylist from '../../components/shared/SidebarPlaylist/SidebarPlaylist';
 import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';

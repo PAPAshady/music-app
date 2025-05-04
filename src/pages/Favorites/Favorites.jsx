@@ -1,5 +1,5 @@
 import bannerBg from '../../assets/images/backgrounds/player-and-settings-page.png';
-import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
+import SidebarPlaylist from '../../components/shared/SidebarPlaylist/SidebarPlaylist';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
