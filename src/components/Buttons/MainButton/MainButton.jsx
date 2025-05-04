@@ -53,7 +53,7 @@ export default function MainButton({
 }
 
 MainButton.propTypes = {
-  size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']).isRequired,
+  size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']),
   title: PropTypes.string.isRequired,
   type: PropTypes.oneOf(['fill', 'outline', 'text']),
   variant: PropTypes.oneOf(['primary', 'secondary', 'neutral']),
