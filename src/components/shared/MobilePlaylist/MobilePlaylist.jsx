@@ -1,8 +1,10 @@
 import { createPortal } from 'react-dom';
 import { useState, useEffect } from 'react';
 import BgImage from '../../../assets/images/backgrounds/login-signup-page.jpg';
-import { ArrowLeft, Menu } from 'iconsax-react';
+import { ArrowLeft, Menu, Play, Shuffle, Additem, ArrowCircleDown2 } from 'iconsax-react';
+import MainButton from '../../Buttons/MainButton/MainButton';
 import PropTypes from 'prop-types';
+
 export default function MobilePlaylist({ isOpen, onClose }) {
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
 
@@ -27,7 +29,7 @@ export default function MobilePlaylist({ isOpen, onClose }) {
       className={`bg-primary-800 fixed inset-0 z-10 h-full min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div
-        className="absolute size-full bg-cover bg-center bg-no-repeat opacity-20 blur-md"
+        className="absolute size-full bg-cover bg-center bg-no-repeat opacity-15 blur-md"
         style={{ backgroundImage: `url(${BgImage})` }}
       ></div>
 
@@ -52,7 +54,41 @@ export default function MobilePlaylist({ isOpen, onClose }) {
             <Menu size={24} />
           </button>
         </div>
-        <div></div>
+        <div>
+          <div className="flex flex-col items-center justify-center gap-4 pt-10 text-center">
+            <img src={BgImage} className="size-46 rounded-md" alt="" />
+            <p className="text-2xl font-semibold text-white">Album Name</p>
+            <p className="line-clamp-2 text-sm">
+              Some random description about this shitty playlist which i am developing it&apos;s
+              UI/UX.
+            </p>
+            <div className="mt-3 flex w-full items-center justify-between gap-2">
+              <div className="flex items-center gap-5">
+                <button className="border-primary-200 h-10 w-8 rounded-sm border p-[2px]">
+                  <img src={BgImage} className="size-full rounded-sm" />
+                </button>
+                <button>
+                  <ArrowCircleDown2 />
+                </button>
+                <button>
+                  <Additem />
+                </button>
+                <button>
+                  <Menu />
+                </button>
+              </div>
+              <div className="flex items-center gap-5">
+                <button>
+                  <Shuffle />
+                </button>
+                <MainButton
+                  classNames="size-10 !rounded-full flex justify-center items-center"
+                  title={<Play size={22} />}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>,
     document.getElementById('mobilePlaylist')

@@ -43,12 +43,12 @@ export default function MainLayout() {
   }, [isMobilePlaylistOpen]);
 
   const openMobilePlaylist = useCallback(() => {
-    window.history.pushState({ mobilePlaylist: true }, '');
     setIsMobilePlaylistOpen(true);
-  }, []);
+    // if user clicks on back button of their device, mobilePlaylist will close
+    !isMobilePlaylistOpen && window.history.pushState({ mobilePlaylist: true }, '');
+  }, [isMobilePlaylistOpen]);
 
   const closeMobilePlaylist = useCallback(() => {
-    // if user clicks on back button of their device, mobilePlaylist will close
     window.history.back();
     setIsMobilePlaylistOpen(false);
   }, []);
