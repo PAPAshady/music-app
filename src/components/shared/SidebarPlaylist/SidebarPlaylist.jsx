@@ -6,23 +6,22 @@ import DropDownList from '../../DropDownList/DropDownList';
 import PlaylistInfosModal from '../../PlaylistInfosModal/PlaylistInfosModal';
 import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
 import { BASE_URL } from '../../../services/api';
+import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 
 export default function SidebarPlaylist() {
   const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(false);
   // we use useMobilePlaylist only to have access to the selected album/playlist data.
   const { selectedPlaylist: playlist } = useMobilePlaylist();
-  const playlistCover = `${BASE_URL}/${playlist.albumcover}`;
-
-  console.log(playlist);
+  const playlistCover = playlist.albumcover ? `${BASE_URL}/${playlist.albumcover}` : defaultCover;
 
   const playlistInfosArray = [
     {
       id: 1,
-      title: `${playlist.musics.length} Track${playlist.musics.length > 1 ? 's' : ''}`,
+      title: `${playlist.musics?.length ?? 'No'} Track${playlist.musics?.length > 1 ? 's' : ''}`,
       icon: <Music />,
     },
     { id: 2, title: '01:11:58', icon: <Timer /> },
-    { id: 3, title: playlist.artists?.[0].name, icon: <User /> },
+    { id: 3, title: playlist.artists?.[0].name ?? 'No Artist', icon: <User /> },
   ];
 
   const playlistDropDownListItems = [
@@ -41,8 +40,11 @@ export default function SidebarPlaylist() {
       <div className="sticky top-10 hidden xl:block">
         <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
           <div className="flex items-center justify-between gap-1">
-            <p className="text-white-50 subheading-3 truncate" title={playlist.title}>
-              {playlist.title}
+            <p
+              className="text-white-50 subheading-3 truncate"
+              title={playlist.title || 'Select a playlist'}
+            >
+              {playlist.title || 'Select a playlist'}
             </p>
             <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
           </div>
@@ -51,7 +53,7 @@ export default function SidebarPlaylist() {
             <div className="group relative overflow-hidden rounded-[10px]">
               <img
                 src={playlistCover}
-                alt={playlist.title}
+                alt={playlist.title || 'Select a playlist'}
                 className="size-32 object-cover xl:size-[140px]"
               />
               <button
