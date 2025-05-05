@@ -74,7 +74,7 @@ export default function Home() {
           <PlaylistsSlider playlists={shuffleArray(playlists)} />
         </div>
       </div>
-      <SidebarPlaylist playList={songs} />
+      <SidebarPlaylist />
     </div>
   );
 }

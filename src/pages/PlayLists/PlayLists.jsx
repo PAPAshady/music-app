@@ -66,7 +66,7 @@ export default function PlayLists() {
           <PlaylistsContainer numberOfPlayLists={5} />
         </div>
       </div>
-      <SidebarPlaylist playList={songs} />
+      <SidebarPlaylist />
     </div>
   );
 }
