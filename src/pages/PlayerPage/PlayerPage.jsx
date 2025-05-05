@@ -139,7 +139,7 @@ export default function PlayerPage() {
         <Player classNames="lg:!bottom-4 lg:!w-full" isPlayerPage />
       </main>
       <HamburgerMenu />
-      {isDesktop && <MobilePlaylist />}
+      {!isDesktop && <MobilePlaylist />}
     </div>
   );
 }
