@@ -72,56 +72,50 @@ export default function MobilePlaylist() {
             </p>
           </div>
         </div>
-        <div>
-          <div className="flex flex-col items-center justify-center gap-4 py-10 text-center min-[360px]:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
-            <img
-              src={`${BASE_URL}/${playlist.albumcover}`}
-              className="size-46 rounded-md sm:size-56 md:size-64 lg:size-80"
-              alt={playlist.title}
-            />
-            <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
-              {playlist.title}
-            </p>
-            <p className="line-clamp-2 w-[90%] text-sm sm:text-base lg:text-lg">
-              {playlist.description || 'No Description for this playlist.'}
-            </p>
-            <div className="mt-3 flex w-full items-center justify-between gap-2 lg:px-8">
-              <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
-                <button className="border-primary-200 h-10 w-8 rounded-sm border p-[2px] sm:h-12 sm:w-9">
-                  <img src={BgImage} className="size-full rounded-sm" />
-                </button>
-                {playButtons.map((button) => (
-                  <IconButton
-                    icon={button.icon}
-                    key={button.id}
-                    classNames="sm:size-9 md:size-10"
-                  />
-                ))}
-              </div>
-              <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
-                <IconButton icon={<Shuffle />} classNames="sm:size-9 md:size-10" />
-                <MainButton
-                  classNames="size-12 sm:size-14 md:size-20 !rounded-full flex justify-center items-center"
-                  title={<Play size={isTablet ? 32 : 24} />}
-                  onClick={() => setPlaylist(playlist)}
-                />
-              </div>
-            </div>
-            <div className="mt-8 flex w-full flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-              {playlist.musics.map((song) => (
-                <PlayBar
-                  key={songs.id}
-                  size={isLargeMobile ? 'lg' : 'md'}
-                  classNames="!w-full text-start !max-w-none"
-                  {...song}
-                />
+        <div className="flex h-full flex-col items-center justify-center gap-4 py-10 text-center min-[360px]:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
+          <img
+            src={`${BASE_URL}/${playlist.albumcover}`}
+            className="size-46 rounded-md sm:size-56 md:size-64 lg:size-80"
+            alt={playlist.title}
+          />
+          <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
+            {playlist.title}
+          </p>
+          <p className="line-clamp-2 w-[90%] text-sm sm:text-base lg:text-lg">
+            {playlist.description || 'No Description for this playlist.'}
+          </p>
+          <div className="mt-3 flex w-full items-center justify-between gap-2 lg:px-8">
+            <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
+              <button className="border-primary-200 h-10 w-8 rounded-sm border p-[2px] sm:h-12 sm:w-9">
+                <img src={BgImage} className="size-full rounded-sm" />
+              </button>
+              {playButtons.map((button) => (
+                <IconButton icon={button.icon} key={button.id} classNames="sm:size-9 md:size-10" />
               ))}
             </div>
-            {/*
+            <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
+              <IconButton icon={<Shuffle />} classNames="sm:size-9 md:size-10" />
+              <MainButton
+                classNames="size-12 sm:size-14 md:size-20 !rounded-full flex justify-center items-center"
+                title={<Play size={isTablet ? 32 : 24} />}
+                onClick={() => setPlaylist(playlist)}
+              />
+            </div>
+          </div>
+          <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
+            {playlist.musics?.map((song) => (
+              <PlayBar
+                key={songs.id}
+                size={isLargeMobile ? 'lg' : 'md'}
+                classNames="!w-full text-start !max-w-none"
+                {...song}
+              />
+            ))}
+          </div>
+          {/*
               conditionally rendering the <Player> component based on `isMobilePlaylistOpen` improves performance by preventing unnecessary re-renders when MobilePlaylist is closed and is not visible by user.
             */}
-            {isMobilePlaylistOpen && <Player classNames="text-start" />}
-          </div>
+          {isMobilePlaylistOpen && <Player classNames="text-start" />}
         </div>
       </div>
     </div>,
