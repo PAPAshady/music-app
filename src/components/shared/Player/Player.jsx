@@ -29,7 +29,7 @@ export default function Player({ classNames, isPlayerPage }) {
   const [musicProgress, setMusicProgress] = useState([0]);
   const [currentTime, setCurrentTime] = useState('0:00');
   const verticalVolumeSlider = useCloseOnClickOutside();
-  const { closeMobilePlaylist, isMobilePlaylistOpen, openMobilePlaylist } = useMobilePlaylist();
+  const { closeMobilePlaylist, toggleMobilePlaylist, isMobilePlaylistOpen } = useMobilePlaylist();
   const navigate = useNavigate();
   const {
     music,
@@ -69,7 +69,7 @@ export default function Player({ classNames, isPlayerPage }) {
   // Otherwise, close the mobile playlist if it's open, and navigate to /player.
   const onPlayerCoverClick = () => {
     if (isPlayerPage) {
-      isMobilePlaylistOpen ? closeMobilePlaylist() : openMobilePlaylist();
+      toggleMobilePlaylist();
     } else {
       isMobilePlaylistOpen && closeMobilePlaylist();
       navigate('/player');
@@ -84,7 +84,7 @@ export default function Player({ classNames, isPlayerPage }) {
 
   return (
     <div
-      className={`border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-20 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-sm transition-all duration-300 min-[400px]:items-center min-[480px]:p-4 min-[1330px]:!w-[64dvw] sm:items-center sm:gap-4 md:sticky md:bottom-2 md:justify-between md:gap-8 md:rounded-lg md:border xl:w-[62.6dvw] xl:gap-4 2xl:!w-full ${disabled && !isPlayerPage ? 'translate-y-full opacity-0 md:translate-y-[calc(100%+8px)]' : 'translate-y-0 opacity-100'} ${classNames}`}
+      className={`border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-10 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-sm transition-all duration-300 min-[400px]:items-center min-[480px]:p-4 min-[1330px]:!w-[64dvw] sm:items-center sm:gap-4 md:sticky md:bottom-2 md:justify-between md:gap-8 md:rounded-lg md:border xl:w-[62.6dvw] xl:gap-4 2xl:!w-full ${disabled && !isPlayerPage ? 'translate-y-full opacity-0 md:translate-y-[calc(100%+8px)]' : 'translate-y-0 opacity-100'} ${classNames}`}
     >
       <div className="flex items-center gap-4">
         <div
@@ -183,7 +183,11 @@ export default function Player({ classNames, isPlayerPage }) {
               classNames={`hidden ${isPlayerPage ? 'md:flex' : 'xl:flex'} `}
             />
           </div>
-          <IconButton icon={<MusicFilter />} classNames={isPlayerPage ? 'hidden' : 'xl:hidden'} />
+          <IconButton
+            icon={<MusicFilter />}
+            classNames={isPlayerPage ? 'hidden' : 'xl:hidden'}
+            onClick={toggleMobilePlaylist}
+          />
           <div
             className="relative hidden items-center gap-2 md:flex"
             ref={verticalVolumeSlider.ref}

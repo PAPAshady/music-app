@@ -28,6 +28,10 @@ export function MobilePlaylistProvider({ children }) {
     setIsMobilePlaylistOpen(false);
   }, []);
 
+  const toggleMobilePlaylist = useCallback(() => {
+    isMobilePlaylistOpen ? closeMobilePlaylist() : openMobilePlaylist();
+  }, [isMobilePlaylistOpen, closeMobilePlaylist, openMobilePlaylist]);
+
   return (
     <MobilePlaylistContext.Provider
       value={{
@@ -36,6 +40,7 @@ export function MobilePlaylistProvider({ children }) {
         closeMobilePlaylist,
         selectedPlaylist,
         setSelectedPlaylist,
+        toggleMobilePlaylist,
       }}
     >
       {children}
