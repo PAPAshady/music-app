@@ -7,7 +7,6 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
 import { BASE_URL } from '../../../services/api';
 import useMusicPlayer from '../../../hooks/useMusicPlayer';
-import { songs } from '../../../data';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import Player from '../Player/Player';
@@ -103,19 +102,19 @@ export default function MobilePlaylist() {
             </div>
           </div>
           <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-            {playlist.musics?.map((song) => (
+            {playlist.musics?.map((music) => (
               <PlayBar
-                key={songs.id}
+                key={music.id}
                 size={isLargeMobile ? 'lg' : 'md'}
                 classNames="!w-full text-start !max-w-none"
-                {...song}
+                {...music}
               />
             ))}
           </div>
           {/*
               conditionally rendering the <Player> component based on `isMobilePlaylistOpen` improves performance by preventing unnecessary re-renders when MobilePlaylist is closed and is not visible by user.
             */}
-          {isMobilePlaylistOpen && <Player classNames="text-start" />}
+          {isMobilePlaylistOpen && <Player classNames="text-start !w-full" />}
         </div>
       </div>
     </div>,
