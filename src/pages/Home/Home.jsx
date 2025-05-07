@@ -1,4 +1,3 @@
-import SidebarPlaylist from '../../components/shared/SidebarPlaylist/SidebarPlaylist';
 import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionHeader from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
@@ -19,62 +18,59 @@ import PropTypes from 'prop-types';
 
 export default function Home() {
   return (
-    <div className="flex w-full items-start gap-6">
-      <div className="flex grow flex-col gap-8 lg:gap-10">
-        <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
-          {genres.slice(0, 3).map((track) => (
-            <div key={track.id} className="flex w-full justify-center">
-              <TracksCard {...track} />
-            </div>
-          ))}
-        </div>
-        <div>
-          <SectionHeader title="Playlists Tailored for You" />
-          <PlaylistsSlider playlists={playlists.slice(0, 5)} />
-        </div>
-        <div>
-          <SectionHeader title="Your Personal Music Space" />
-          <PlaylistsSlider playlists={playlists.slice(5, 10)} />
-        </div>
-        <div>
-          <SectionHeader title="Updates from Followed Artists" />
-          <AlbumsSlider />
-        </div>
-        <div className="-mt-11">
-          <SectionHeader title="Daily Picks" />
-          <PlayBarSlider songs={songs} />
-        </div>
-        <div>
-          <SectionHeader title="Artists You Follow" />
-          <ArtistsSlider />
-        </div>
-        <DiscoverPlaylistsSlider playlists={playlists} />
-        <div>
-          <SectionHeader title="Since You Enjoy Eminem" />
-          <PlaylistsSlider playlists={[...playlists.slice(2, 7)].reverse()} />
-        </div>
-        <div>
-          <SectionHeader title="Albums You Were Listening To" />
-          <AlbumsSlider />
-        </div>
-        <div>
-          <SectionHeader title="Genres You Interested In" />
-          <GenresSlider genres={genres} />
-        </div>
-        <div>
-          <SectionHeader title="More Artists You'll Love" />
-          <ArtistsSlider />
-        </div>
-        <div className="-mt-8">
-          <SectionHeader title="Trending Now" />
-          <PlayBarSlider songs={shuffleArray(songs)} />
-        </div>
-        <div>
-          <SectionHeader title="Recently Seen" />
-          <PlaylistsSlider playlists={shuffleArray(playlists)} />
-        </div>
+    <div className="flex grow flex-col gap-8 lg:gap-10">
+      <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
+        {genres.slice(0, 3).map((track) => (
+          <div key={track.id} className="flex w-full justify-center">
+            <TracksCard {...track} />
+          </div>
+        ))}
       </div>
-      <SidebarPlaylist />
+      <div>
+        <SectionHeader title="Playlists Tailored for You" />
+        <PlaylistsSlider playlists={playlists.slice(0, 5)} />
+      </div>
+      <div>
+        <SectionHeader title="Your Personal Music Space" />
+        <PlaylistsSlider playlists={playlists.slice(5, 10)} />
+      </div>
+      <div>
+        <SectionHeader title="Updates from Followed Artists" />
+        <AlbumsSlider />
+      </div>
+      <div className="-mt-11">
+        <SectionHeader title="Daily Picks" />
+        <PlayBarSlider songs={songs} />
+      </div>
+      <div>
+        <SectionHeader title="Artists You Follow" />
+        <ArtistsSlider />
+      </div>
+      <DiscoverPlaylistsSlider playlists={playlists} />
+      <div>
+        <SectionHeader title="Since You Enjoy Eminem" />
+        <PlaylistsSlider playlists={[...playlists.slice(2, 7)].reverse()} />
+      </div>
+      <div>
+        <SectionHeader title="Albums You Were Listening To" />
+        <AlbumsSlider />
+      </div>
+      <div>
+        <SectionHeader title="Genres You Interested In" />
+        <GenresSlider genres={genres} />
+      </div>
+      <div>
+        <SectionHeader title="More Artists You'll Love" />
+        <ArtistsSlider />
+      </div>
+      <div className="-mt-8">
+        <SectionHeader title="Trending Now" />
+        <PlayBarSlider songs={shuffleArray(songs)} />
+      </div>
+      <div>
+        <SectionHeader title="Recently Seen" />
+        <PlaylistsSlider playlists={shuffleArray(playlists)} />
+      </div>
     </div>
   );
 }

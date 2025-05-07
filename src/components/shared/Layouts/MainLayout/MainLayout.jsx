@@ -13,6 +13,7 @@ import Logo from '../../../Logo/Logo';
 import MobilePlaylist from '../../MobilePlaylist/MobilePlaylist';
 import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { useLocation, Outlet, Link } from 'react-router-dom';
+import SidebarPlaylist from '../../SidebarPlaylist/SidebarPlaylist';
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
@@ -71,7 +72,10 @@ export default function MainLayout() {
           </div>
         </div>
         <div className="flex grow flex-col items-start gap-12 pt-6 pb-32 lg:pb-10">
-          <Outlet />
+          <div className="flex w-full items-start gap-6">
+            <Outlet />
+            <SidebarPlaylist />
+          </div>
           <Player />
           <Footer />
         </div>
