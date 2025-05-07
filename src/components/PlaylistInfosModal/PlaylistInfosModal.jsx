@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { Image, Trash, Edit2 } from 'iconsax-react';
-import useInput from '../../hooks/useInput';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
@@ -8,6 +7,14 @@ import DropDownList from '../DropDownList/DropDownList';
 import defaultImage from '../../assets/images/covers/no-cover.jpg';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import PropTypes from 'prop-types';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const schema = z.object({
+  description: z.string().optional(),
+  title: z.string().min(1, { message: 'Title is required' }),
+});
 
 export default function PlaylistInfosModal({
   isOpen,
@@ -17,10 +24,15 @@ export default function PlaylistInfosModal({
   playlistDescription,
   modalTitle,
 }) {
-  const playlistNameInput = useInput(playlistName);
-  const playlistDescriptionInput = useInput(playlistDescription);
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
+  const { register, watch } = useForm({
+    defaultValues: {
+      description: playlistDescription,
+      title: playlistName,
+    },
+    resolver: zodResolver(schema),
+  });
 
   const modalDropDownListItems = [
     {
@@ -62,12 +74,13 @@ export default function PlaylistInfosModal({
           </label>
         </div>
         <div className="flex w-full grow flex-col gap-2">
-          <InputField placeholder="Name" {...playlistNameInput} classNames="!text-sm" />
+          <InputField placeholder="Name" classNames="!text-sm" {...register('title')} />
           <TextArea
             placeholder="Description"
             maxLength={100}
             classNames="!min-w-full !min-h-[90px] !h-[105px] text-sm"
-            {...playlistDescriptionInput}
+            value={watch('description')}
+            {...register('description')}
           />
         </div>
       </div>
