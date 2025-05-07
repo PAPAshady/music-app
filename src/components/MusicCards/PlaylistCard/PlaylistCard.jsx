@@ -1,36 +1,34 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
 import { Heart, Play, AddCircle } from 'iconsax-react';
-import PlaylistInfosModal from '../../PlaylistInfosModal/PlaylistInfosModal';
+import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
 
 const PlaylistCard = memo(
   ({ isAddPlaylistButton, title, numberOfTracks, image = noCoverImg, isFavorite, classNames }) => {
-    const [showAddNewPlaylistModal, setShowAddNewPlaylistModal] = useState(false);
+    const { setIsOpen, setModalTitle } = usePlaylistInfosModal();
+
+    const openEditPlaylistModal = () => {
+      setModalTitle('Add new playlist');
+      setIsOpen(true);
+    };
 
     // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.
     if (isAddPlaylistButton) {
       return (
-        <>
-          <button
-            onClick={() => setShowAddNewPlaylistModal(true)}
-            className={`h-36 w-full overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[0_8px_16px_2px] shadow-[black]/25 lg:h-48 ${classNames}`}
-            style={{ backgroundImage: `url(${addPlaylistImg})` }}
-          >
-            <div className="flex size-full flex-col items-center justify-center gap-2 bg-[black]/35 p-2 lg:gap-3">
-              <span className="size-12 lg:size-15">
-                <AddCircle size="100%" />
-              </span>
-              <p className="text-primary-50 text-lg font-semibold lg:text-xl">Add New Playlist</p>
-            </div>
-          </button>
-          <PlaylistInfosModal
-            isOpen={showAddNewPlaylistModal}
-            setIsOpen={setShowAddNewPlaylistModal}
-            modalTitle="Create new playlist"
-          />
-        </>
+        <button
+          onClick={openEditPlaylistModal}
+          className={`h-36 w-full overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[0_8px_16px_2px] shadow-[black]/25 lg:h-48 ${classNames}`}
+          style={{ backgroundImage: `url(${addPlaylistImg})` }}
+        >
+          <div className="flex size-full flex-col items-center justify-center gap-2 bg-[black]/35 p-2 lg:gap-3">
+            <span className="size-12 lg:size-15">
+              <AddCircle size="100%" />
+            </span>
+            <p className="text-primary-50 text-lg font-semibold lg:text-xl">Add New Playlist</p>
+          </div>
+        </button>
       );
     }
 

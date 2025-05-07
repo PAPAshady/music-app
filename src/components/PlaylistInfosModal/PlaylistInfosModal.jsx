@@ -4,28 +4,27 @@ import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
 import DropDownList from '../DropDownList/DropDownList';
-import defaultImage from '../../assets/images/covers/no-cover.jpg';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import usePlaylistInfosModal from '../../hooks/usePlaylistInfosModal';
+import useMusicPlayer from '../../hooks/useMusicPlayer';
+import { BASE_URL } from '../../services/api';
+import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 
 const schema = z.object({
   description: z.string().optional(),
   title: z.string().min(1, { message: 'Title is required' }),
 });
 
-export default function PlaylistInfosModal({
-  isOpen,
-  setIsOpen,
-  playlistImg = defaultImage,
-  playlistName,
-  playlistDescription,
-  modalTitle,
-}) {
+export default function PlaylistInfosModal() {
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
+  const {
+    selectedPlaylist: { title, description = '', albumcover },
+  } = useMusicPlayer();
+  const { isOpen, setIsOpen, modalTitle } = usePlaylistInfosModal();
   const {
     register,
     watch,
@@ -33,8 +32,8 @@ export default function PlaylistInfosModal({
     formState: { errors },
   } = useForm({
     defaultValues: {
-      description: playlistDescription,
-      title: playlistName,
+      description,
+      title,
     },
     resolver: zodResolver(schema),
   });
@@ -63,7 +62,11 @@ export default function PlaylistInfosModal({
     >
       <div className="flex flex-col items-center gap-3 sm:flex-row">
         <div className="group xs:w-[140px] relative size-[120px] overflow-hidden rounded-xl min-[420px]:size-[150px] sm:size-[190px] sm:min-w-[190px]">
-          <img className="size-full object-cover" src={playlistImg} alt={playlistName} />
+          <img
+            className="size-full object-cover"
+            src={albumcover ? BASE_URL + albumcover : playlistDefaultCover}
+            alt={title}
+          />
           <label
             className="absolute inset-0 size-full bg-black/30 sm:bg-transparent"
             htmlFor="choose-playlist-img"
@@ -108,12 +111,3 @@ export default function PlaylistInfosModal({
     </Modal>
   );
 }
-
-PlaylistInfosModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  setIsOpen: PropTypes.func.isRequired,
-  playlistImg: PropTypes.string,
-  playlistName: PropTypes.string,
-  playlistDescription: PropTypes.string,
-  modalTitle: PropTypes.string.isRequired,
-};

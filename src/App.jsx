@@ -5,6 +5,7 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { MusicPlayerProvider } from './contexts/MusicPlayerContext';
 import { AuthContextProvider } from './contexts/AuthContext';
 import { MobilePlaylistProvider } from './contexts/MobilePlaylistContext';
+import { PlaylistInfosModalProvider } from './contexts/PlaylistInfosModalContext';
 import routes from './Router';
 import './App.css';
 
@@ -25,7 +26,9 @@ function App() {
           <MusicPlayerProvider>
             <MobilePlaylistProvider>
               <HamburgerMenuProvider>
-                <RouterProvider router={router} />
+                <PlaylistInfosModalProvider>
+                  <RouterProvider router={router} />
+                </PlaylistInfosModalProvider>
               </HamburgerMenuProvider>
             </MobilePlaylistProvider>
           </MusicPlayerProvider>
