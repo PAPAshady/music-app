@@ -27,14 +27,10 @@ export default function MobilePlaylist() {
   const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(false);
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const isTablet = useMediaQuery('(min-width: 768px)');
-  const {
-    selectedPlaylist: playlist,
-    isMobilePlaylistOpen,
-    closeMobilePlaylist,
-  } = useMobilePlaylist();
-  const { setPlaylist, playState, togglePlayStates } = useMusicPlayer();
-  const playlistCover = playlist.albumcover
-    ? `${BASE_URL}/${playlist.albumcover}`
+  const { isMobilePlaylistOpen, closeMobilePlaylist } = useMobilePlaylist();
+  const { setPlaylist, playState, togglePlayStates, selectedPlaylist } = useMusicPlayer();
+  const playlistCover = selectedPlaylist.albumcover
+    ? `${BASE_URL}/${selectedPlaylist.albumcover}`
     : playlistDefaultCover;
 
   // remove scrollbar for the body when mobile playlist is open
@@ -83,7 +79,7 @@ export default function MobilePlaylist() {
               <p
                 className={`transition-opacity duration-300 lg:text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
               >
-                {playlist.title}
+                {selectedPlaylist.title}
               </p>
             </div>
           </div>
@@ -91,13 +87,13 @@ export default function MobilePlaylist() {
             <img
               src={playlistCover}
               className="size-46 rounded-md sm:size-56 md:size-64 lg:size-80"
-              alt={playlist.title}
+              alt={selectedPlaylist.title}
             />
             <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
-              {playlist.title}
+              {selectedPlaylist.title}
             </p>
             <p className="line-clamp-2 min-h-[45px] w-[90%] text-sm sm:text-base lg:text-lg">
-              {playlist.description || 'No Description for this playlist.'}
+              {selectedPlaylist.description || 'No Description for this playlist.'}
             </p>
             <div className="mt-3 flex w-full items-center justify-between gap-2 lg:px-8">
               <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
@@ -125,12 +121,12 @@ export default function MobilePlaylist() {
                 <MainButton
                   classNames="size-12 sm:size-14 md:size-20 !rounded-full flex justify-center items-center"
                   title={<Play size={isTablet ? 32 : 24} />}
-                  onClick={() => setPlaylist(playlist)}
+                  onClick={() => setPlaylist(selectedPlaylist)}
                 />
               </div>
             </div>
             <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-              {playlist.musics?.map((music) => (
+              {selectedPlaylist.musics?.map((music) => (
                 <PlayBar
                   key={music.id}
                   size={isLargeMobile ? 'lg' : 'md'}
@@ -151,8 +147,8 @@ export default function MobilePlaylist() {
           isOpen={showEditPlaylistModal}
           setIsOpen={setShowEditPlaylistModal}
           playlistImg={playlistCover}
-          playlistName={playlist.title}
-          playlistDescription={playlist.description ?? ''}
+          playlistName={selectedPlaylist.title}
+          playlistDescription={selectedPlaylist.description ?? ''}
           modalTitle="Edit playlist"
         />
       )}

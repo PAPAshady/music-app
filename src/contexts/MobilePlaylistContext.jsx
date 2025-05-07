@@ -1,11 +1,12 @@
 import { createContext, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import useMusicPlayer from '../hooks/useMusicPlayer';
 
 const MobilePlaylistContext = createContext();
 
 export function MobilePlaylistProvider({ children }) {
   const [isMobilePlaylistOpen, setIsMobilePlaylistOpen] = useState(false);
-  const [selectedPlaylist, setSelectedPlaylist] = useState({});
+  const { setSelectedPlaylist, playlist } = useMusicPlayer();
 
   useEffect(() => {
     const handlePopState = () => {
@@ -26,7 +27,12 @@ export function MobilePlaylistProvider({ children }) {
   const closeMobilePlaylist = useCallback(() => {
     window.history.back();
     setIsMobilePlaylistOpen(false);
-  }, []);
+    
+    // After viewing a different playlist's details, reset selectedPlaylist to the currently playing one.
+    // This ensures that the next time the user opens the mobile playlist, it shows the correct (current) playlist info.
+    setSelectedPlaylist(playlist);
+  }, [playlist, setSelectedPlaylist]);
+  
 
   const toggleMobilePlaylist = useCallback(() => {
     isMobilePlaylistOpen ? closeMobilePlaylist() : openMobilePlaylist();
@@ -38,7 +44,6 @@ export function MobilePlaylistProvider({ children }) {
         isMobilePlaylistOpen,
         openMobilePlaylist,
         closeMobilePlaylist,
-        selectedPlaylist,
         setSelectedPlaylist,
         toggleMobilePlaylist,
       }}

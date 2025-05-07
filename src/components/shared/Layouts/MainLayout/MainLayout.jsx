@@ -21,7 +21,7 @@ export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
-  const { playlist } = useMusicPlayer();
+  const { selectedPlaylist } = useMusicPlayer();
 
   useEffect(() => {
     function handleScroll() {
@@ -77,7 +77,7 @@ export default function MainLayout() {
         <div className="flex grow flex-col items-start gap-12 pt-6 pb-32 lg:pb-10">
           <div className="flex w-full items-start gap-6">
             <Outlet />
-            {playlist.musics?.length ? <SidebarPlaylist /> : <SidebarWelcomePanel />}
+            {selectedPlaylist.musics?.length ? <SidebarPlaylist /> : <SidebarWelcomePanel />}
           </div>
           <Player />
           <Footer />

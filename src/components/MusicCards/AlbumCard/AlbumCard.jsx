@@ -4,10 +4,12 @@ import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Music, Share } from 'iconsax-react';
 import { BASE_URL } from '../../../services/api';
 import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
+import useMusicPlayer from '../../../hooks/useMusicPlayer';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const { albumcover = noCoverImg, totaltracks, artists, title } = album;
-  const { setSelectedPlaylist, openMobilePlaylist } = useMobilePlaylist();
+  const { openMobilePlaylist } = useMobilePlaylist();
+  const { setSelectedPlaylist } = useMusicPlayer();
 
   const openMobilePlaylistHandler = () => {
     setSelectedPlaylist(album);

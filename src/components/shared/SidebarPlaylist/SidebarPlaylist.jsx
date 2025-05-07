@@ -4,14 +4,13 @@ import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import DropDownList from '../../DropDownList/DropDownList';
 import PlaylistInfosModal from '../../PlaylistInfosModal/PlaylistInfosModal';
-import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
 import { BASE_URL } from '../../../services/api';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
+import useMusicPlayer from '../../../hooks/useMusicPlayer';
 
 export default function SidebarPlaylist() {
   const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(false);
-  // we use useMobilePlaylist only to have access to the selected album/playlist data.
-  const { selectedPlaylist: playlist } = useMobilePlaylist();
+  const { selectedPlaylist: playlist } = useMusicPlayer();
   const playlistCover = playlist.albumcover ? `${BASE_URL}/${playlist.albumcover}` : defaultCover;
 
   const playlistInfosArray = [

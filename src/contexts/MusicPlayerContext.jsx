@@ -8,7 +8,8 @@ const playStateOptions = ['repeat_all', 'repeat_one', 'shuffle'];
 
 export function MusicPlayerProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [playlist, setPlaylist] = useState({});
+  const [selectedPlaylist, setSelectedPlaylist] = useState({}); // playlist which is selected by user and wants to see its info in MobilePlaylist/SidebarPlaylist (not playing yet)
+  const [playlist, setPlaylist] = useState({}); // playlist which is currently playing
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [durations, setDurations] = useState({ rawDuration: 0, formatedDuration: '0:00' });
   const [playState, setPlayState] = useState(playStateOptions[0]);
@@ -132,6 +133,8 @@ export function MusicPlayerProvider({ children }) {
         prevSongIndex: prevSongIndex.current,
         playState,
         togglePlayStates,
+        selectedPlaylist,
+        setSelectedPlaylist,
       }}
     >
       {children}
