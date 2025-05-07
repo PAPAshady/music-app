@@ -45,9 +45,7 @@ export default function Player({ classNames, isPlayerPage }) {
     playState,
     togglePlayStates,
   } = useMusicPlayer();
-  const [disabled, setDisabled] = useState(!playlist.musics?.length);
-
-  useEffect(() => setDisabled(!playlist.musics?.length), [playlist]);
+  const disabled = !playlist.musics?.length;
 
   useEffect(() => {
     const updateCurrentTime = () => {
