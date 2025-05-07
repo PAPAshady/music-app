@@ -12,7 +12,7 @@ export default function SearchInput({ value, onChange, disabled, reset, classNam
       <input
         type="text"
         disabled={disabled}
-        className="placeholder:text-secondary-300 text-secondary-50 grow-[1] text-[14px] outline-0 lg:text-base"
+        className="placeholder:text-secondary-300 text-secondary-50 grow-[1] text-[14px] outline-0 w-full lg:text-base"
         placeholder={disabled ? '' : 'Search'}
         onChange={(e) => onChange(e)}
         value={value}
