@@ -4,12 +4,13 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
 import PropTypes from 'prop-types';
+import { BASE_URL } from '../../../services/api';
 
 const PlayBar = memo(
   ({
     size,
     title,
-    cover = noCoverImg,
+    musiccover,
     artist = 'Unknown artist',
     time,
     album = 'Unknown album',
@@ -47,7 +48,11 @@ const PlayBar = memo(
             className="relative size-14 min-h-14 min-w-14 overflow-hidden rounded-md"
             onClick={clickHandler}
           >
-            <img src={cover} className="size-full object-cover" alt={title} />
+            <img
+              src={musiccover ? `${BASE_URL}/media/${musiccover}` : noCoverImg}
+              className="size-full object-cover"
+              alt={title}
+            />
             <span
               className={`absolute top-1/2 left-1/2 flex size-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition-all duration-300 group-hover:bg-black/60 group-hover:opacity-100`}
             >
@@ -137,7 +142,7 @@ function DropDownMenuItem({ icon, title, onClick }) {
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
   title: PropTypes.string.isRequired,
-  cover: PropTypes.string,
+  musiccover: PropTypes.string,
   artist: PropTypes.string,
   time: PropTypes.string.isRequired,
   album: PropTypes.string,

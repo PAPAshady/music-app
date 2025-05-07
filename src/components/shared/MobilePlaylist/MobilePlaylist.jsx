@@ -93,7 +93,7 @@ export default function MobilePlaylist() {
             <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
               {playlist.title}
             </p>
-            <p className="line-clamp-2 w-[90%] text-sm sm:text-base lg:text-lg min-h-[45px]">
+            <p className="line-clamp-2 min-h-[45px] w-[90%] text-sm sm:text-base lg:text-lg">
               {playlist.description || 'No Description for this playlist.'}
             </p>
             <div className="mt-3 flex w-full items-center justify-between gap-2 lg:px-8">
