@@ -26,7 +26,12 @@ export default function PlaylistInfosModal({
 }) {
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
-  const { register, watch } = useForm({
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       description: playlistDescription,
       title: playlistName,
@@ -44,8 +49,18 @@ export default function PlaylistInfosModal({
     { id: 2, icon: <Trash />, title: 'Remove photo' },
   ];
 
+  const submitHandler = (data) => {
+    console.log('playlist updated => ', data);
+  };
+
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen} title={modalTitle} confirmButton>
+    <Modal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      title={modalTitle}
+      onConfirm={handleSubmit(submitHandler)}
+      confirmButton
+    >
       <div className="flex flex-col items-center gap-3 sm:flex-row">
         <div className="group xs:w-[140px] relative size-[120px] overflow-hidden rounded-xl min-[420px]:size-[150px] sm:size-[190px] sm:min-w-[190px]">
           <img className="size-full object-cover" src={playlistImg} alt={playlistName} />
@@ -74,7 +89,13 @@ export default function PlaylistInfosModal({
           </label>
         </div>
         <div className="flex w-full grow flex-col gap-2">
-          <InputField placeholder="Name" classNames="!text-sm" {...register('title')} />
+          <InputField
+            placeholder="Title"
+            classNames="!text-sm"
+            isInvalid={!!errors.title}
+            errorMsg={errors.title?.message}
+            {...register('title')}
+          />
           <TextArea
             placeholder="Description"
             maxLength={100}
