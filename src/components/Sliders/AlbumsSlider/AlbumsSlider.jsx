@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import AlbumCard from '../../MusicCards/AlbumCard/AlbumCard';
 import AlbumCardSkeleton from '../../MusicCards/AlbumCard/AlbumCardSkeleton';
 import { chunkArray } from '../../../utils/arrayUtils';
@@ -9,10 +8,8 @@ import 'swiper/css/pagination';
 import PropTypes from 'prop-types';
 import { useQuery } from '@tanstack/react-query';
 import { getAllAlbums } from '../../../services/albums';
-import useMusicPlayer from '../../../hooks/useMusicPlayer';
 
 export default function AlbumsSlider({ albumCardSize = 'lg', albumCardStyles }) {
-  const { setPlaylist } = useMusicPlayer();
   const { data: albums, isLoading } = useQuery({
     queryKey: ['albums'],
     queryFn: getAllAlbums,
@@ -20,8 +17,6 @@ export default function AlbumsSlider({ albumCardSize = 'lg', albumCardStyles }) 
     retryDelay: 5000,
     retry: true,
   });
-
-  const playAlbum = useCallback((albumSongs) => setPlaylist(albumSongs), [setPlaylist]);
 
   return (
     <div className="mx-auto w-[95%] xl:max-w-[940px]">
@@ -61,7 +56,6 @@ export default function AlbumsSlider({ albumCardSize = 'lg', albumCardStyles }) 
                       key={album.id}
                       size={albumCardSize}
                       classNames={albumCardStyles}
-                      playAlbumHandler={playAlbum}
                       album={album}
                     />
                   ))}

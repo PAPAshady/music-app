@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { Image, Trash, Edit2 } from 'iconsax-react';
-import useInput from '../../hooks/useInput';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
@@ -8,6 +7,14 @@ import DropDownList from '../DropDownList/DropDownList';
 import defaultImage from '../../assets/images/covers/no-cover.jpg';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import PropTypes from 'prop-types';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const schema = z.object({
+  description: z.string().optional(),
+  title: z.string().min(1, { message: 'Title is required' }),
+});
 
 export default function PlaylistInfosModal({
   isOpen,
@@ -17,10 +24,20 @@ export default function PlaylistInfosModal({
   playlistDescription,
   modalTitle,
 }) {
-  const playlistNameInput = useInput(playlistName);
-  const playlistDescriptionInput = useInput(playlistDescription);
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      description: playlistDescription,
+      title: playlistName,
+    },
+    resolver: zodResolver(schema),
+  });
 
   const modalDropDownListItems = [
     {
@@ -32,8 +49,18 @@ export default function PlaylistInfosModal({
     { id: 2, icon: <Trash />, title: 'Remove photo' },
   ];
 
+  const submitHandler = (data) => {
+    console.log('playlist updated => ', data);
+  };
+
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen} title={modalTitle} confirmButton>
+    <Modal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      title={modalTitle}
+      onConfirm={handleSubmit(submitHandler)}
+      confirmButton
+    >
       <div className="flex flex-col items-center gap-3 sm:flex-row">
         <div className="group xs:w-[140px] relative size-[120px] overflow-hidden rounded-xl min-[420px]:size-[150px] sm:size-[190px] sm:min-w-[190px]">
           <img className="size-full object-cover" src={playlistImg} alt={playlistName} />
@@ -62,12 +89,19 @@ export default function PlaylistInfosModal({
           </label>
         </div>
         <div className="flex w-full grow flex-col gap-2">
-          <InputField placeholder="Name" {...playlistNameInput} classNames="!text-sm" />
+          <InputField
+            placeholder="Title"
+            classNames="!text-sm"
+            isInvalid={!!errors.title}
+            errorMsg={errors.title?.message}
+            {...register('title')}
+          />
           <TextArea
             placeholder="Description"
             maxLength={100}
             classNames="!min-w-full !min-h-[90px] !h-[105px] text-sm"
-            {...playlistDescriptionInput}
+            value={watch('description')}
+            {...register('description')}
           />
         </div>
       </div>

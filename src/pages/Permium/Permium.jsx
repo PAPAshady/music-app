@@ -3,7 +3,6 @@ import PermiumCard from '../../components/PermiumCard/PermiumCard';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode } from 'swiper/modules';
-import { songs } from '../../data';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
@@ -55,7 +54,7 @@ export default function Permium() {
           </Swiper>
         )}
       </div>
-      <SidebarPlaylist playList={songs} />
+      <SidebarPlaylist />
     </div>
   );
 }

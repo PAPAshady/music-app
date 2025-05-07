@@ -10,11 +10,14 @@ import HamburgerMenu from '../../HamburgerMenu/HamburgerMenu';
 import Player from '../../Player/Player';
 import Footer from '../../Footer/Footer';
 import Logo from '../../../Logo/Logo';
+import MobilePlaylist from '../../MobilePlaylist/MobilePlaylist';
+import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { useLocation, Outlet, Link } from 'react-router-dom';
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
+  const isDesktop = useMediaQuery('(max-width: 1280px)');
 
   useEffect(() => {
     function handleScroll() {
@@ -74,6 +77,7 @@ export default function MainLayout() {
         </div>
       </main>
       <HamburgerMenu />
+      {isDesktop && <MobilePlaylist />}
     </div>
   );
 }

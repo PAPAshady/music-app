@@ -12,6 +12,7 @@ import backgroundImage from '../../assets/images/backgrounds/player-and-settings
 import noMusicCover from '../../assets/images/covers/no-cover.jpg';
 import useMusicPlayer from '../../hooks/useMusicPlayer';
 import { BASE_URL } from '../../services/api';
+import MobilePlaylist from '../../components/shared/MobilePlaylist/MobilePlaylist';
 import 'swiper/css';
 import './PlayerPage.css';
 
@@ -37,15 +38,17 @@ export default function PlayerPage() {
   }, [currentMusic]);
 
   useEffect(() => {
-    const isCurrentSlideVisible =
-      swiperRef.current.slides[currentSongIndex].classList.contains('swiper-slide-visible');
-    // slide to current song if its not visible in slider
-    if (!isCurrentSlideVisible) {
-      // slide one by one instead of all at once
-      if (prevSongIndex < currentSongIndex) {
-        swiperRef.current.slideTo(currentSongIndex - 2);
-      } else {
-        swiperRef.current.slideTo(currentSongIndex);
+    if (swiperRef.current) {
+      const isCurrentSlideVisible =
+        swiperRef.current.slides[currentSongIndex].classList.contains('swiper-slide-visible');
+      // slide to current song if its not visible in slider
+      if (!isCurrentSlideVisible) {
+        // slide one by one instead of all at once
+        if (prevSongIndex < currentSongIndex) {
+          swiperRef.current.slideTo(currentSongIndex - 2);
+        } else {
+          swiperRef.current.slideTo(currentSongIndex);
+        }
       }
     }
   }, [currentSongIndex, prevSongIndex]);
@@ -136,6 +139,7 @@ export default function PlayerPage() {
         <Player classNames="lg:!bottom-4 lg:!w-full" isPlayerPage />
       </main>
       <HamburgerMenu />
+      {!isDesktop && <MobilePlaylist />}
     </div>
   );
 }

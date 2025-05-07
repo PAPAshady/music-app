@@ -121,7 +121,7 @@ export default function Browse() {
           <ArtistsSlider />
         </div>
       </div>
-      <SidebarPlaylist playList={songs} />
+      <SidebarPlaylist />
     </div>
   );
 }

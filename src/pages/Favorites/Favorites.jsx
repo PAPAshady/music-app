@@ -48,7 +48,7 @@ export default function Favorites() {
           <AlbumsSlider albumCardSize="md" albumCardStyles="!max-w-none" />
         </div>
       </div>
-      <SidebarPlaylist playList={songs} />
+      <SidebarPlaylist />
     </div>
   );
 }

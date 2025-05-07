@@ -19,6 +19,8 @@ import { Range } from 'react-range';
 import PropTypes from 'prop-types';
 import useMusicPlayer from '../../../hooks/useMusicPlayer';
 import { BASE_URL } from '../../../services/api';
+import { useNavigate } from 'react-router-dom';
+import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
 
 const musicDefaultVolume = 70; // min: 0, max: 100
 
@@ -27,6 +29,8 @@ export default function Player({ classNames, isPlayerPage }) {
   const [musicProgress, setMusicProgress] = useState([0]);
   const [currentTime, setCurrentTime] = useState('0:00');
   const verticalVolumeSlider = useCloseOnClickOutside();
+  const { closeMobilePlaylist, toggleMobilePlaylist, isMobilePlaylistOpen } = useMobilePlaylist();
+  const navigate = useNavigate();
   const {
     music,
     play,
@@ -60,6 +64,18 @@ export default function Player({ classNames, isPlayerPage }) {
     setVolume([volume]);
   };
 
+  // Handles clicks on the music cover image in the player.
+  // If the user is already on the /player page, toggle the mobile playlist.
+  // Otherwise, close the mobile playlist if it's open, and navigate to /player.
+  const onPlayerCoverClick = () => {
+    if (isPlayerPage) {
+      toggleMobilePlaylist();
+    } else {
+      isMobilePlaylistOpen && closeMobilePlaylist();
+      navigate('/player');
+    }
+  };
+
   const playButtons = [
     { id: 1, icon: <Previous />, onClick: prev },
     { id: 2, icon: isPlaying ? <Pause /> : <Play />, onClick: isPlaying ? pause : play },
@@ -71,13 +87,16 @@ export default function Player({ classNames, isPlayerPage }) {
       className={`border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-10 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-sm transition-all duration-300 min-[400px]:items-center min-[480px]:p-4 min-[1330px]:!w-[64dvw] sm:items-center sm:gap-4 md:sticky md:bottom-2 md:justify-between md:gap-8 md:rounded-lg md:border xl:w-[62.6dvw] xl:gap-4 2xl:!w-full ${disabled && !isPlayerPage ? 'translate-y-full opacity-0 md:translate-y-[calc(100%+8px)]' : 'translate-y-0 opacity-100'} ${classNames}`}
     >
       <div className="flex items-center gap-4">
-        <div className="relative size-12 overflow-hidden rounded-lg min-[400px]:size-15 sm:size-20 md:size-16">
+        <div
+          className="relative size-12 overflow-hidden rounded-lg min-[400px]:size-15 sm:size-20 md:size-16"
+          onClick={onPlayerCoverClick}
+        >
           <img
             className="size-full object-cover"
             src={
               currentMusic?.musiccover ? `${BASE_URL}/media/${currentMusic.musiccover}` : noCoverImg
             }
-            alt=""
+            alt={currentMusic?.title}
           />
           <div
             className={`absolute top-0 flex size-full items-center justify-center bg-black/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${disabled && 'hidden'}`}
@@ -164,7 +183,11 @@ export default function Player({ classNames, isPlayerPage }) {
               classNames={`hidden ${isPlayerPage ? 'md:flex' : 'xl:flex'} `}
             />
           </div>
-          <IconButton icon={<MusicFilter />} classNames={isPlayerPage ? 'hidden' : 'xl:hidden'} />
+          <IconButton
+            icon={<MusicFilter />}
+            classNames={isPlayerPage ? 'hidden' : 'xl:hidden'}
+            onClick={toggleMobilePlaylist}
+          />
           <div
             className="relative hidden items-center gap-2 md:flex"
             ref={verticalVolumeSlider.ref}
