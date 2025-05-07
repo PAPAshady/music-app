@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom';
 import { useState, useEffect } from 'react';
 import BgImage from '../../../assets/images/backgrounds/login-signup-page.jpg';
+import playlistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
 import {
   ArrowLeft,
   Menu,
@@ -32,7 +33,9 @@ export default function MobilePlaylist() {
     closeMobilePlaylist,
   } = useMobilePlaylist();
   const { setPlaylist, playState, togglePlayStates } = useMusicPlayer();
-  const playlistCover = `${BASE_URL}/${playlist.albumcover}`;
+  const playlistCover = playlist.albumcover
+    ? `${BASE_URL}/${playlist.albumcover}`
+    : playlistDefaultCover;
 
   // remove scrollbar for the body when mobile playlist is open
   useEffect(() => {

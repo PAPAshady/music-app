@@ -79,9 +79,12 @@ export function MusicPlayerProvider({ children }) {
 
   // update music src everytime currentSongIndex changes
   useEffect(() => {
-    music.src = `${BASE_URL}/media/${playlist.musics?.[currentSongIndex]?.musicfile}`;
-    prevSongIndex.current = currentSongIndex;
-    playlist.musics?.length && play(); // dont try to play music onMount
+    // dont try to play music onMount (because there is no music on Mount) to avoid errors.
+    if (playlist.musics?.length) {
+      music.src = `${BASE_URL}/media/${playlist.musics?.[currentSongIndex]?.musicfile}`;
+      prevSongIndex.current = currentSongIndex;
+      play();
+    }
   }, [currentSongIndex, playlist]);
 
   function play() {
