@@ -1,5 +1,5 @@
 import { cloneElement } from 'react';
-import { Music, Timer, User, Edit2, Trash, Share } from 'iconsax-react';
+import { Music, Timer, User, Edit2, Trash, Share, Play, Pause } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import DropDownList from '../../DropDownList/DropDownList';
@@ -9,18 +9,22 @@ import useMusicPlayer from '../../../hooks/useMusicPlayer';
 import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
 
 export default function SidebarPlaylist() {
-  const { selectedPlaylist: playlist } = useMusicPlayer();
+  const { selectedPlaylist, setPlaylist, playlist, isPlaying, play, pause } = useMusicPlayer();
   const { openPlaylistModal } = usePlaylistInfosModal();
-  const playlistCover = playlist.albumcover ? `${BASE_URL}/${playlist.albumcover}` : defaultCover;
+  const playlistCover = selectedPlaylist.albumcover
+    ? `${BASE_URL}/${selectedPlaylist.albumcover}`
+    : defaultCover;
+  const isPlayingPlaylistSelected =
+    playlist.id === selectedPlaylist.id && playlist.title === selectedPlaylist.title;
 
   const playlistInfosArray = [
     {
       id: 1,
-      title: `${playlist.musics?.length ?? 'No'} Track${playlist.musics?.length > 1 ? 's' : ''}`,
+      title: `${selectedPlaylist.musics?.length ?? 'No'} Track${selectedPlaylist.musics?.length > 1 ? 's' : ''}`,
       icon: <Music />,
     },
     { id: 2, title: '01:11:58', icon: <Timer /> },
-    { id: 3, title: playlist.artists?.[0].name ?? 'No Artist', icon: <User /> },
+    { id: 3, title: selectedPlaylist.artists?.[0].name ?? 'No Artist', icon: <User /> },
   ];
 
   const playlistDropDownListItems = [
@@ -28,11 +32,19 @@ export default function SidebarPlaylist() {
       id: 1,
       icon: <Edit2 />,
       title: 'Edit playlist',
-      onClick: () => openPlaylistModal(`Edit ${playlist.title}`),
+      onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`),
     },
     { id: 2, icon: <Trash />, title: 'Delete playlist' },
     { id: 3, icon: <Share />, title: 'Share' },
   ];
+
+  const playPauseButtonHandler = () => {
+    if (!isPlayingPlaylistSelected) {
+      setPlaylist(selectedPlaylist);
+      return;
+    }
+    isPlaying ? pause() : play();
+  };
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -40,9 +52,9 @@ export default function SidebarPlaylist() {
         <div className="flex items-center justify-between gap-1">
           <p
             className="text-white-50 subheading-3 truncate"
-            title={playlist.title || 'Select a playlist'}
+            title={selectedPlaylist.title || 'Select a playlist'}
           >
-            {playlist.title || 'Select a playlist'}
+            {selectedPlaylist.title || 'Select a playlist'}
           </p>
           <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
         </div>
@@ -51,18 +63,25 @@ export default function SidebarPlaylist() {
           <div className="group relative overflow-hidden rounded-[10px]">
             <img
               src={playlistCover}
-              alt={playlist.title || 'Select a playlist'}
+              alt={selectedPlaylist.title || 'Select a playlist'}
               className="size-32 object-cover xl:size-[140px]"
             />
-            <button
-              onClick={() => openPlaylistModal(`Edit ${playlist.title}`)}
-              className="absolute top-0 flex size-full flex-col items-center justify-center gap-3 bg-[black]/40 p-3 opacity-0 transition-opacity group-hover:opacity-100"
+            <div
+              className={`absolute inset-0 flex size-full items-center justify-center p-3 transition-opacity duration-300 ${!isPlayingPlaylistSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'}`}
             >
-              <span className="size-9">
-                <Edit2 size="100%" />
-              </span>
-              <p className="font-semibold">Edit Playlist</p>
-            </button>
+              <button
+                className="bg-primary-500/80 flex size-15 items-center justify-center rounded-full border"
+                onClick={playPauseButtonHandler}
+              >
+                <span className="text-secondary-50 block size-7">
+                  {isPlaying && isPlayingPlaylistSelected ? (
+                    <Pause size="100%" />
+                  ) : (
+                    <Play size="100%" />
+                  )}
+                </span>
+              </button>
+            </div>
           </div>
           <div className="flex flex-col">
             {playlistInfosArray.map((info) => (
@@ -72,7 +91,7 @@ export default function SidebarPlaylist() {
         </div>
 
         <div id="playlist-songs-wrapper" className="flex grow flex-col gap-2 overflow-y-auto pe-2">
-          {playlist.musics?.map((song) => (
+          {selectedPlaylist.musics?.map((song) => (
             <PlayBar key={song.id} size="sm" {...song} />
           ))}
         </div>
