@@ -1,9 +1,11 @@
 import MainButton from '../../Buttons/MainButton/MainButton';
 import Logo from '../../Logo/Logo';
 import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
+import { useNavigate } from 'react-router-dom';
 
 export default function SidebarWelcomePanel() {
   const { openPlaylistModal } = usePlaylistInfosModal();
+  const navigate = useNavigate()
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -21,11 +23,12 @@ export default function SidebarWelcomePanel() {
             onClick={() => openPlaylistModal('Create new playlist.')}
           />
           <MainButton
-            title="Search"
+            title="Browse"
             size="md"
             type="outline"
             variant="neutral"
             classNames="w-full"
+            onClick={() => navigate('/browse')}
           />
         </div>
       </div>
