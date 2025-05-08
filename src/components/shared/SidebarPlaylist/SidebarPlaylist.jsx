@@ -7,6 +7,7 @@ import { BASE_URL } from '../../../services/api';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import useMusicPlayer from '../../../hooks/useMusicPlayer';
 import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function SidebarPlaylist() {
   const { selectedPlaylist, setPlaylist, playlist, isPlaying, play, pause } = useMusicPlayer();
@@ -46,55 +47,97 @@ export default function SidebarPlaylist() {
     isPlaying ? pause() : play();
   };
 
+  const headerVariants = {
+    initial: { opacity: 0, y: 15 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 15 },
+    transition: { duration: 0.2 },
+  };
+
+  const listVariants = {
+    show: {
+      transition: {
+        delayChildren: 0.1,
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
     <div className="sticky top-10 hidden xl:block">
       <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
-        <div className="flex items-center justify-between gap-1">
-          <p
-            className="text-white-50 subheading-3 truncate"
-            title={selectedPlaylist.title || 'Select a playlist'}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`playlist-header-${selectedPlaylist.id}`}
+            variants={headerVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.2 }}
           >
-            {selectedPlaylist.title || 'Select a playlist'}
-          </p>
-          <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
-        </div>
-
-        <div className="my-6 flex gap-2">
-          <div className="group relative overflow-hidden rounded-[10px]">
-            <img
-              src={playlistCover}
-              alt={selectedPlaylist.title || 'Select a playlist'}
-              className="size-32 object-cover xl:size-[140px]"
-            />
-            <div
-              className={`absolute inset-0 flex size-full items-center justify-center p-3 transition-opacity duration-300 ${!isPlayingPlaylistSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'}`}
-            >
-              <button
-                className="bg-primary-500/80 flex size-15 items-center justify-center rounded-full border"
-                onClick={playPauseButtonHandler}
+            <div className="flex items-center justify-between gap-1">
+              <p
+                className="text-white-50 subheading-3 truncate"
+                title={selectedPlaylist.title || 'Select a playlist'}
               >
-                <span className="text-secondary-50 block size-7">
-                  {isPlaying && isPlayingPlaylistSelected ? (
-                    <Pause size="100%" />
-                  ) : (
-                    <Play size="100%" />
-                  )}
-                </span>
-              </button>
+                {selectedPlaylist.title || 'Select a playlist'}
+              </p>
+              <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
             </div>
-          </div>
-          <div className="flex flex-col">
-            {playlistInfosArray.map((info) => (
-              <PlaylistInfo key={info.id} {...info} />
-            ))}
-          </div>
-        </div>
 
-        <div id="playlist-songs-wrapper" className="flex grow flex-col gap-2 overflow-y-auto pe-2">
-          {selectedPlaylist.musics?.map((song) => (
-            <PlayBar key={song.id} size="sm" {...song} />
-          ))}
-        </div>
+            <div className="my-6 flex gap-2">
+              <div className="group relative overflow-hidden rounded-[10px]">
+                <img
+                  src={playlistCover}
+                  alt={selectedPlaylist.title || 'Select a playlist'}
+                  className="size-32 object-cover xl:size-[140px]"
+                />
+                <div
+                  className={`absolute inset-0 flex size-full items-center justify-center p-3 transition-opacity duration-300 ${
+                    !isPlayingPlaylistSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'
+                  }`}
+                >
+                  <button
+                    className="bg-primary-500/80 flex size-15 items-center justify-center rounded-full border"
+                    onClick={playPauseButtonHandler}
+                  >
+                    <span className="text-secondary-50 block size-7">
+                      {isPlaying && isPlayingPlaylistSelected ? (
+                        <Pause size="100%" />
+                      ) : (
+                        <Play size="100%" />
+                      )}
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                {playlistInfosArray.map((info) => (
+                  <PlaylistInfo key={info.id} {...info} />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+          <motion.div
+            key={selectedPlaylist.id}
+            variants={listVariants}
+            initial="hidden"
+            animate="show"
+            exit="hidden"
+            className="flex grow flex-col gap-2 overflow-y-auto pe-2 pt-[2px]"
+          >
+            {selectedPlaylist.musics?.map((song) => (
+              <motion.div key={song.id} variants={itemVariants}>
+                <PlayBar size="sm" {...song} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
