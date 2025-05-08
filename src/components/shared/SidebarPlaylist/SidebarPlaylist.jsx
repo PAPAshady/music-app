@@ -10,7 +10,7 @@ import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
 
 export default function SidebarPlaylist() {
   const { selectedPlaylist: playlist } = useMusicPlayer();
-  const { setIsOpen, setModalTitle } = usePlaylistInfosModal();
+  const { openPlaylistModal } = usePlaylistInfosModal();
   const playlistCover = playlist.albumcover ? `${BASE_URL}/${playlist.albumcover}` : defaultCover;
 
   const playlistInfosArray = [
@@ -23,17 +23,12 @@ export default function SidebarPlaylist() {
     { id: 3, title: playlist.artists?.[0].name ?? 'No Artist', icon: <User /> },
   ];
 
-  const openEditPlaylistModal = () => {
-    setModalTitle(`Edit ${playlist.title} infos.`);
-    setIsOpen(true);
-  };
-
   const playlistDropDownListItems = [
     {
       id: 1,
       icon: <Edit2 />,
       title: 'Edit playlist',
-      onClick: openEditPlaylistModal,
+      onClick: () => openPlaylistModal(`Edit ${playlist.title}`),
     },
     { id: 2, icon: <Trash />, title: 'Delete playlist' },
     { id: 3, icon: <Share />, title: 'Share' },
@@ -60,7 +55,7 @@ export default function SidebarPlaylist() {
               className="size-32 object-cover xl:size-[140px]"
             />
             <button
-              onClick={openEditPlaylistModal}
+              onClick={() => openPlaylistModal(`Edit ${playlist.title}`)}
               className="absolute top-0 flex size-full flex-col items-center justify-center gap-3 bg-[black]/40 p-3 opacity-0 transition-opacity group-hover:opacity-100"
             >
               <span className="size-9">

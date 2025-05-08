@@ -7,18 +7,13 @@ import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
 
 const PlaylistCard = memo(
   ({ isAddPlaylistButton, title, numberOfTracks, image = noCoverImg, isFavorite, classNames }) => {
-    const { setIsOpen, setModalTitle } = usePlaylistInfosModal();
-
-    const openEditPlaylistModal = () => {
-      setModalTitle('Add new playlist');
-      setIsOpen(true);
-    };
+    const { openPlaylistModal } = usePlaylistInfosModal();
 
     // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.
     if (isAddPlaylistButton) {
       return (
         <button
-          onClick={openEditPlaylistModal}
+          onClick={() => openPlaylistModal('Create new playlist.')}
           className={`h-36 w-full overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[0_8px_16px_2px] shadow-[black]/25 lg:h-48 ${classNames}`}
           style={{ backgroundImage: `url(${addPlaylistImg})` }}
         >

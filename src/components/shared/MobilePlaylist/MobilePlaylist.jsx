@@ -28,7 +28,7 @@ export default function MobilePlaylist() {
   const isTablet = useMediaQuery('(min-width: 768px)');
   const { isMobilePlaylistOpen, closeMobilePlaylist } = useMobilePlaylist();
   const { setPlaylist, playState, togglePlayStates, selectedPlaylist } = useMusicPlayer();
-  const { setIsOpen, setModalTitle } = usePlaylistInfosModal();
+  const { openPlaylistModal } = usePlaylistInfosModal();
   const playlistCover = selectedPlaylist.albumcover
     ? `${BASE_URL}/${selectedPlaylist.albumcover}`
     : playlistDefaultCover;
@@ -49,13 +49,8 @@ export default function MobilePlaylist() {
     }
   };
 
-  const openEditPlaylistModal = () => {
-    setModalTitle(`Edit ${selectedPlaylist.title} infos.`);
-    setIsOpen(true);
-  };
-
   const playButtons = [
-    { id: 1, icon: <Edit />, onClick: openEditPlaylistModal },
+    { id: 1, icon: <Edit />, onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`) },
     { id: 2, icon: <Additem /> },
     { id: 3, icon: <Menu /> },
   ];

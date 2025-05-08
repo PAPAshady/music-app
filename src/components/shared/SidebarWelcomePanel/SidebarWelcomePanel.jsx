@@ -3,12 +3,7 @@ import Logo from '../../Logo/Logo';
 import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
 
 export default function SidebarWelcomePanel() {
-  const { setIsOpen, setModalTitle } = usePlaylistInfosModal();
-
-  const openEditPlaylistModal = () => {
-    setModalTitle('Create new playlist');
-    setIsOpen(true);
-  };
+  const { openPlaylistModal } = usePlaylistInfosModal();
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -23,7 +18,7 @@ export default function SidebarWelcomePanel() {
             type="outline"
             variant="neutral"
             classNames="w-full"
-            onClick={openEditPlaylistModal}
+            onClick={() => openPlaylistModal('Create new playlist.')}
           />
           <MainButton
             title="Search"
