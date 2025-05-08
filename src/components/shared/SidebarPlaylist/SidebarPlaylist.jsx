@@ -129,13 +129,24 @@ export default function SidebarPlaylist() {
             initial="hidden"
             animate="show"
             exit="hidden"
-            className="flex grow flex-col gap-2 overflow-y-auto pe-2 pt-[2px]"
+            className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${selectedPlaylist.musics.length ? 'overflow-y-auto' : 'overflow-visible'}`}
           >
-            {selectedPlaylist.musics?.map((song) => (
-              <motion.div key={song.id} variants={itemVariants}>
-                <PlayBar size="sm" {...song} />
+            {selectedPlaylist.musics?.length ? (
+              selectedPlaylist.musics.map((song) => (
+                <motion.div key={song.id} variants={itemVariants}>
+                  <PlayBar size="sm" {...song} />
+                </motion.div>
+              ))
+            ) : (
+              <motion.div
+                variants={itemVariants}
+                className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center"
+              >
+                <Music size={68} className="text-secondary-300" />
+                <p className="mt-2 text-xl font-semibold text-white">This playlist is empty</p>
+                <p>Let the music begin...</p>
               </motion.div>
-            ))}
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
