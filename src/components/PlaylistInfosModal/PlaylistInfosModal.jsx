@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Image, Trash, Edit2 } from 'iconsax-react';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
@@ -22,13 +22,14 @@ export default function PlaylistInfosModal() {
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const {
-    selectedPlaylist: { title, description = '', albumcover },
+    selectedPlaylist: { title, description, albumcover },
   } = useMusicPlayer();
   const { isOpen, setIsOpen, modalTitle } = usePlaylistInfosModal();
   const {
     register,
     watch,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -37,6 +38,14 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
+
+  /*
+    since useForm hook only sets defaultValues once on the initial render and wont update them ever again,
+    we have to update them manually. (in case user selected another playlist/album)
+  */
+  useEffect(() => {
+    reset({ description: description ?? '', title: title ?? '' });
+  }, [reset, description, title]);
 
   const modalDropDownListItems = [
     {
