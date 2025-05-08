@@ -150,7 +150,7 @@ export default function Player({ classNames, isPlayerPage }) {
                 className={`flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${disabled ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
               >
                 <div
-                  className={`relative h-1.5 rounded-3xl border sm:h-2 ${disabled ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
+                  className={`relative h-1.5 rounded-3xl border transition sm:h-2 ${disabled ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
                   style={{ width: `${musicProgress[0]}%` }}
                 ></div>
                 {children}
@@ -158,7 +158,7 @@ export default function Player({ classNames, isPlayerPage }) {
             )}
             renderThumb={({ props }) => (
               <div
-                className={`bg-primary-300 top-0 size-3 rounded-full outline-none sm:size-4 ${disabled ? 'hidden' : ''}`}
+                className={`bg-primary-300 top-0 size-3 rounded-full transition outline-none sm:size-4 ${disabled ? 'hidden' : ''}`}
                 {...props}
                 key={1}
               ></div>
