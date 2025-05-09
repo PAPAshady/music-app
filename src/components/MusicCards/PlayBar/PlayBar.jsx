@@ -10,8 +10,8 @@ const PlayBar = memo(
   ({
     size,
     title,
-    musiccover,
-    artist = 'Unknown artist',
+    cover,
+    artist: artists = 'Unknown artist',
     time,
     album = 'Unknown album',
     isFavorite,
@@ -49,7 +49,7 @@ const PlayBar = memo(
             onClick={clickHandler}
           >
             <img
-              src={musiccover ? `${BASE_URL}/media/${musiccover}` : noCoverImg}
+              src={cover ? BASE_URL + cover : noCoverImg}
               className="size-full object-cover"
               alt={title}
             />
@@ -69,8 +69,8 @@ const PlayBar = memo(
             >
               {title}
             </button>
-            <span className="text-secondary-200 grow truncate text-[13px]" title={artist}>
-              {artist}
+            <span className="text-secondary-200 grow truncate text-[13px]" title={artists[0].name}>
+              {artists[0].name}
             </span>
           </div>
         </div>
@@ -142,8 +142,8 @@ function DropDownMenuItem({ icon, title, onClick }) {
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
   title: PropTypes.string.isRequired,
-  musiccover: PropTypes.string,
-  artist: PropTypes.string,
+  cover: PropTypes.string,
+  artist: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   time: PropTypes.string.isRequired,
   album: PropTypes.string,
   clickHandler: PropTypes.func,

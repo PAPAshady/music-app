@@ -1,13 +1,3 @@
-import songCover1 from './assets/images/covers/song-cover-1.jpg';
-import songCover2 from './assets/images/covers/song-cover-2.jpg';
-import songCover3 from './assets/images/covers/song-cover-3.jpg';
-import songCover4 from './assets/images/covers/song-cover-4.jpg';
-import songCover5 from './assets/images/covers/song-cover-5.jpg';
-import songCover6 from './assets/images/covers/song-cover-6.jpg';
-import songCover7 from './assets/images/covers/song-cover-7.jpg';
-import songCover8 from './assets/images/covers/song-cover-8.jpg';
-import songCover9 from './assets/images/covers/song-cover-9.jpg';
-import songCover10 from './assets/images/covers/song-cover-10.jpg';
 import trackCardImg1 from './assets/images/covers/track-cover-1.jpg';
 import trackCardImg2 from './assets/images/covers/track-cover-2.jpg';
 import trackCardImg3 from './assets/images/covers/track-cover-3.jpg';
@@ -68,7 +58,6 @@ export const songs = [
     artist: 'NF',
     album: 'The Search',
     time: '2:11',
-    cover: songCover1,
     isFavorite: true,
     isPlaying: true,
   },
@@ -78,7 +67,6 @@ export const songs = [
     artist: 'DVRST',
     album: 'Memories Of Childhood',
     time: '3:19',
-    cover: songCover2,
   },
   {
     id: 3,
@@ -86,7 +74,6 @@ export const songs = [
     artist: 'Linkin Park',
     album: 'Minutes To Midnight',
     time: '1:09',
-    cover: songCover3,
     isFavorite: true,
   },
   {
@@ -95,7 +82,6 @@ export const songs = [
     artist: 'Radiohead',
     album: 'A Moon Shaped Pool',
     time: '2:17',
-    cover: songCover4,
   },
   {
     id: 5,
@@ -103,7 +89,6 @@ export const songs = [
     artist: 'The Weeknd',
     album: 'After Hours',
     time: '4:06',
-    cover: songCover5,
     isFavorite: true,
   },
   {
@@ -112,7 +97,6 @@ export const songs = [
     artist: 'G-Easy & Halsey',
     album: 'The Beautiful & Damned',
     time: '4:01',
-    cover: songCover6,
   },
   {
     id: 7,
@@ -120,7 +104,6 @@ export const songs = [
     artist: 'Ed Sheeran',
     album: 'Single',
     time: '1:11',
-    cover: songCover7,
     isFavorite: true,
   },
   {
@@ -129,7 +112,6 @@ export const songs = [
     artist: 'GHOSTEMANE',
     album: 'ANTI-ICON',
     time: '2:14',
-    cover: songCover8,
   },
   {
     id: 9,
@@ -137,7 +119,6 @@ export const songs = [
     artist: 'Aaron Smith ft. Luvli',
     album: "Dancin' (Remixes)",
     time: '2:35',
-    cover: songCover9,
     isFavorite: true,
   },
   {
@@ -146,7 +127,6 @@ export const songs = [
     artist: 'Surf Curse',
     album: 'Buds',
     time: '2:28',
-    cover: songCover10,
   },
 ];
 
