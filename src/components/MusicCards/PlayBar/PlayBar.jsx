@@ -12,7 +12,7 @@ const PlayBar = memo(
     title,
     cover,
     artist: artists = 'Unknown artist',
-    time,
+    duration,
     album = 'Unknown album',
     isFavorite,
     clickHandler,
@@ -84,7 +84,7 @@ const PlayBar = memo(
               <span
                 className={`text-secondary-200 pe-3 text-xs lg:p-0 ${size === 'lg' ? 'lg:text-sm' : 'hidden lg:block'}`}
               >
-                {time}
+                {duration}
               </span>
             </>
           )}
@@ -144,7 +144,7 @@ PlayBar.propTypes = {
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
   artist: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  time: PropTypes.string.isRequired,
+  duration: PropTypes.string.isRequired,
   album: PropTypes.string,
   clickHandler: PropTypes.func,
   isFavorite: PropTypes.bool,
