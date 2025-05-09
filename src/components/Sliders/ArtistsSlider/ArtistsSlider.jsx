@@ -2,19 +2,13 @@ import ArtistCard from '../../MusicCards/ArtistCard/ArtistCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, FreeMode } from 'swiper/modules';
 import { useQuery } from '@tanstack/react-query';
-import { getArtists } from '../../../services/artists';
 import ArtistCardSkeleton from '../../MusicCards/ArtistCard/ArtistCardSkeleton';
+import { artistsQueryOptions } from '../../../queries/artists';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
 export default function ArtistsSlider() {
-  const { data: artists, isLoading } = useQuery({
-    queryKey: ['artists'],
-    queryFn: getArtists,
-    staleTime: Infinity,
-    retry: true,
-    retryDelay: 5000,
-  });
+  const { data: artists, isLoading } = useQuery(artistsQueryOptions());
 
   return (
     <div className="mx-auto w-[97%] max-w-[940px]">

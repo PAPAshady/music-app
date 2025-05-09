@@ -7,16 +7,10 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import PropTypes from 'prop-types';
 import { useQuery } from '@tanstack/react-query';
-import { getAllAlbums } from '../../../services/albums';
+import { albumsQueryOptions } from '../../../queries/albums';
 
 export default function AlbumsSlider({ albumCardSize = 'lg', albumCardStyles }) {
-  const { data: albums, isLoading } = useQuery({
-    queryKey: ['albums'],
-    queryFn: getAllAlbums,
-    staleTime: Infinity,
-    retryDelay: 5000,
-    retry: true,
-  });
+  const { data: albums, isLoading } = useQuery(albumsQueryOptions());
 
   return (
     <div className="mx-auto w-[95%] xl:max-w-[940px]">
