@@ -79,7 +79,7 @@ export default function MainLayout() {
           <div className="flex grow flex-col items-start gap-12 pt-6 pb-32 lg:pb-10">
             <div className="flex w-full items-start gap-6">
               <Outlet />
-              {selectedPlaylist.musics?.length ? <SidebarPlaylist /> : <SidebarWelcomePanel />}
+              {Object.keys(selectedPlaylist).length ? <SidebarPlaylist /> : <SidebarWelcomePanel />}
             </div>
             <Player />
             <Footer />

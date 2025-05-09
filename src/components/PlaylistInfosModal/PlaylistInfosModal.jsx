@@ -22,7 +22,7 @@ export default function PlaylistInfosModal() {
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const {
-    selectedPlaylist: { title, description, albumcover },
+    selectedPlaylist: { title, description, cover },
   } = useMusicPlayer();
   const { isOpen, setIsOpen, modalTitle } = usePlaylistInfosModal();
   const {
@@ -73,7 +73,7 @@ export default function PlaylistInfosModal() {
         <div className="group xs:w-[140px] relative size-[120px] overflow-hidden rounded-xl min-[420px]:size-[150px] sm:size-[190px] sm:min-w-[190px]">
           <img
             className="size-full object-cover"
-            src={albumcover ? BASE_URL + albumcover : playlistDefaultCover}
+            src={cover ? BASE_URL + cover : playlistDefaultCover}
             alt={title}
           />
           <label

@@ -12,8 +12,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 export default function SidebarPlaylist() {
   const { selectedPlaylist, setPlaylist, playlist, isPlaying, play, pause } = useMusicPlayer();
   const { openPlaylistModal } = usePlaylistInfosModal();
-  const playlistCover = selectedPlaylist.albumcover
-    ? `${BASE_URL}/${selectedPlaylist.albumcover}`
+  const playlistCover = selectedPlaylist.cover
+    ? `${BASE_URL}/${selectedPlaylist.cover}`
     : defaultCover;
   const isPlayingPlaylistSelected =
     playlist.id === selectedPlaylist.id && playlist.title === selectedPlaylist.title;

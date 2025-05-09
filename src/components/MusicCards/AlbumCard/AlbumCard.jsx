@@ -7,7 +7,7 @@ import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
 import useMusicPlayer from '../../../hooks/useMusicPlayer';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
-  const { albumcover = noCoverImg, totaltracks, artists, title } = album;
+  const { cover = noCoverImg, totaltracks, artists, title } = album;
   const { openMobilePlaylist } = useMobilePlaylist();
   const { setSelectedPlaylist } = useMusicPlayer();
 
@@ -27,13 +27,13 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
         >
           <img
             className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
-            src={`${BASE_URL}/${albumcover}`}
+            src={`${BASE_URL}/${cover}`}
             alt={title}
           />
           <div
             className="group-hover:animate-infinite-rotate absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60"
             style={{
-              backgroundImage: `url(${BASE_URL}/${albumcover})`,
+              backgroundImage: `url(${BASE_URL}/${cover})`,
               mask: 'radial-gradient(circle, transparent 8px, black 8px)',
               WebkitMask: 'radial-gradient(circle, transparent 8px, black 8px)',
             }}
