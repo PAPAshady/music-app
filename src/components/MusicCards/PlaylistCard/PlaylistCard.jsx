@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
 import { Heart, Play, AddCircle } from 'iconsax-react';
-import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
+import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
+import useSafeContext from '../../../hooks/useSafeContext';
 
 const PlaylistCard = memo(
   ({ isAddPlaylistButton, title, numberOfTracks, image = noCoverImg, isFavorite, classNames }) => {
-    const { openPlaylistModal } = usePlaylistInfosModal();
+    const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
 
     // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.
     if (isAddPlaylistButton) {

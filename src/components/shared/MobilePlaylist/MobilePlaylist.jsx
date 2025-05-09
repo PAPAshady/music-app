@@ -14,21 +14,23 @@ import {
 } from 'iconsax-react';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import IconButton from '../../Buttons/IconButton/IconButton';
-import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
+import MobilePlaylistContext from '../../../contexts/MobilePlaylistContext';
+import useSafeContext from '../../../hooks/useSafeContext';
 import { BASE_URL } from '../../../services/api';
-import useMusicPlayer from '../../../hooks/useMusicPlayer';
+import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import Player from '../Player/Player';
-import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
+import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
 
 export default function MobilePlaylist() {
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const isTablet = useMediaQuery('(min-width: 768px)');
-  const { isMobilePlaylistOpen, closeMobilePlaylist } = useMobilePlaylist();
-  const { setPlaylist, playState, togglePlayStates, selectedPlaylist } = useMusicPlayer();
-  const { openPlaylistModal } = usePlaylistInfosModal();
+  const { isMobilePlaylistOpen, closeMobilePlaylist } = useSafeContext(MobilePlaylistContext);
+  const { setPlaylist, playState, togglePlayStates, selectedPlaylist } =
+    useSafeContext(MusicPlayerContext);
+  const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
   const playlistCover = selectedPlaylist.albumcover
     ? `${BASE_URL}/${selectedPlaylist.albumcover}`
     : playlistDefaultCover;

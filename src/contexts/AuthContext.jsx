@@ -1,15 +1,18 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import api, { BASE_URL } from '../services/api';
-import useSnackbar from '../hooks/useSnackbar';
+import SnackbarContext from './SnackbarContext';
+import useSafeContext from '../hooks/useSafeContext';
 
 const AuthContext = createContext();
+AuthContext._providerName = 'AuthContextProvider';
+AuthContext._hookName = 'useAuth';
 
 export function AuthContextProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState({});
-  const { showNewSnackbar } = useSnackbar();
+  const { showNewSnackbar } = useSafeContext(SnackbarContext);
 
   const getMe = useCallback(async () => {
     setIsLoading(true);

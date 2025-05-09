@@ -1,7 +1,8 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
-import useHamburgerMenu from '../../../hooks/useHamburgerMenu';
+import HamburgerMenuContext from '../../../contexts/HamburgerMenuContext';
+import useSafeContext from '../../../hooks/useSafeContext';
 import useInput from '../../../hooks/useInput';
 import Logo from '../../Logo/Logo';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
@@ -12,7 +13,7 @@ import SettingsMenu from '../SettingsMenu/SettingsMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
 
 export default memo(function Header() {
-  const { setIsShowHamburgerMenu } = useHamburgerMenu();
+  const { setIsShowHamburgerMenu } = useSafeContext(HamburgerMenuContext);
   const searchInput = useInput();
   const notificationMenu = useCloseOnClickOutside();
   const mobileSearchBox = useCloseOnClickOutside();
@@ -64,7 +65,7 @@ export default memo(function Header() {
             <SettingsMenu isVisible={settingsMenu.isVisible} />
           </div>
           <button>
-            <Avatar size="xs"  />
+            <Avatar size="xs" />
           </button>
         </div>
       </div>

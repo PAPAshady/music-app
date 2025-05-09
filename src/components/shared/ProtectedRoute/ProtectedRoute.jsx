@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import useAuth from '../../../hooks/useAuth';
+import AuthContext from '../../../contexts/AuthContext';
+import useSafeContext from '../../../hooks/useSafeContext';
 import { Navigate } from 'react-router-dom';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import Logo from '../../Logo/Logo';
 
 export default function ProtectedRoute({ children }) {
-  const { isLoggedIn, isLoading } = useAuth();
+  const { isLoggedIn, isLoading } = useSafeContext(AuthContext);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   if (isLoading) {

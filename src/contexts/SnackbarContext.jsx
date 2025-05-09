@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 
 const SnackbarContext = createContext();
+SnackbarContext._providerName = 'SnackbarProvider';
+SnackbarContext._hookName = 'useSnackbar';
 
 export function SnackbarProvider({ children }) {
   const [snackbars, setSnackbars] = useState([]);

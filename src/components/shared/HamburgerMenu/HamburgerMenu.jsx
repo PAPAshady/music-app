@@ -1,6 +1,7 @@
 import { cloneElement, memo } from 'react';
 import { createPortal } from 'react-dom';
-import useHamburgerMenu from '../../../hooks/useHamburgerMenu';
+import HamburgerMenuContext from '../../../contexts/HamburgerMenuContext';
+import useSafeContext from '../../../hooks/useSafeContext';
 import Avatar from '../../Avatar/Avatar';
 import {
   Heart,
@@ -15,7 +16,7 @@ import { NavLink, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const HamburgerMenu = memo(() => {
-  const { isShowHamburgerMenu, setIsShowHamburgerMenu } = useHamburgerMenu();
+  const { isShowHamburgerMenu, setIsShowHamburgerMenu } = useSafeContext(HamburgerMenuContext);
   const closeHamburgerMenu = () => setIsShowHamburgerMenu(false);
   const mobileNavLinks = [
     { id: 1, title: 'Home', icon: <Home2 />, href: '/' },

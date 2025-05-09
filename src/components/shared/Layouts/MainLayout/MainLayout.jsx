@@ -14,7 +14,8 @@ import MobilePlaylist from '../../MobilePlaylist/MobilePlaylist';
 import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { useLocation, Outlet, Link } from 'react-router-dom';
 import SidebarPlaylist from '../../SidebarPlaylist/SidebarPlaylist';
-import useMusicPlayer from '../../../../hooks/useMusicPlayer';
+import MusicPlayerContext from '../../../../contexts/MusicPlayerContext';
+import useSafeContext from '../../../../hooks/useSafeContext';
 import SidebarWelcomePanel from '../../SidebarWelcomePanel/SidebarWelcomePanel';
 import PlaylistInfosModal from '../../../PlaylistInfosModal/PlaylistInfosModal';
 
@@ -22,7 +23,7 @@ export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
-  const { selectedPlaylist } = useMusicPlayer();
+  const { selectedPlaylist } = useSafeContext(MusicPlayerContext);
 
   useEffect(() => {
     function handleScroll() {

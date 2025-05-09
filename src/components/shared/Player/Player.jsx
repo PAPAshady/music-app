@@ -17,10 +17,11 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Range } from 'react-range';
 import PropTypes from 'prop-types';
-import useMusicPlayer from '../../../hooks/useMusicPlayer';
+import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import { BASE_URL } from '../../../services/api';
 import { useNavigate } from 'react-router-dom';
-import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
+import MobilePlaylistContext from '../../../contexts/MobilePlaylistContext';
+import useSafeContext from '../../../hooks/useSafeContext';
 
 const musicDefaultVolume = 70; // min: 0, max: 100
 
@@ -29,7 +30,8 @@ export default function Player({ classNames, isPlayerPage }) {
   const [musicProgress, setMusicProgress] = useState([0]);
   const [currentTime, setCurrentTime] = useState('0:00');
   const verticalVolumeSlider = useCloseOnClickOutside();
-  const { closeMobilePlaylist, toggleMobilePlaylist, isMobilePlaylistOpen } = useMobilePlaylist();
+  const { closeMobilePlaylist, toggleMobilePlaylist, isMobilePlaylistOpen } =
+    useSafeContext(MobilePlaylistContext);
   const navigate = useNavigate();
   const {
     music,
@@ -44,7 +46,7 @@ export default function Player({ classNames, isPlayerPage }) {
     playlist,
     playState,
     togglePlayStates,
-  } = useMusicPlayer();
+  } = useSafeContext(MusicPlayerContext);
   const disabled = !playlist.musics?.length;
 
   useEffect(() => {

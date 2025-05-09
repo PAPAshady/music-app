@@ -5,13 +5,15 @@ import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import DropDownList from '../../DropDownList/DropDownList';
 import { BASE_URL } from '../../../services/api';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
-import useMusicPlayer from '../../../hooks/useMusicPlayer';
-import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
+import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
+import useSafeContext from '../../../hooks/useSafeContext';
+import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export default function SidebarPlaylist() {
-  const { selectedPlaylist, setPlaylist, playlist, isPlaying, play, pause } = useMusicPlayer();
-  const { openPlaylistModal } = usePlaylistInfosModal();
+  const { selectedPlaylist, setPlaylist, playlist, isPlaying, play, pause } =
+    useSafeContext(MusicPlayerContext);
+  const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
   const playlistCover = selectedPlaylist.cover
     ? `${BASE_URL}/${selectedPlaylist.cover}`
     : defaultCover;

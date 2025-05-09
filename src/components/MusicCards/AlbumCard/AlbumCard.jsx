@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Music, Share } from 'iconsax-react';
 import { BASE_URL } from '../../../services/api';
-import useMobilePlaylist from '../../../hooks/useMobilePlaylist';
-import useMusicPlayer from '../../../hooks/useMusicPlayer';
+import MobilePlaylistContext from '../../../contexts/MobilePlaylistContext';
+import useSafeContext from '../../../hooks/useSafeContext';
+import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const { cover = noCoverImg, totaltracks, artists, title } = album;
-  const { openMobilePlaylist } = useMobilePlaylist();
-  const { setSelectedPlaylist } = useMusicPlayer();
+  const { openMobilePlaylist } = useSafeContext(MobilePlaylistContext);
+  const { setSelectedPlaylist } = useSafeContext(MusicPlayerContext);
 
   const openMobilePlaylistHandler = () => {
     setSelectedPlaylist(album);

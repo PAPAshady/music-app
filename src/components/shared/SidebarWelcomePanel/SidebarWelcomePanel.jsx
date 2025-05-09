@@ -1,10 +1,11 @@
 import MainButton from '../../Buttons/MainButton/MainButton';
 import Logo from '../../Logo/Logo';
-import usePlaylistInfosModal from '../../../hooks/usePlaylistInfosModal';
+import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
+import useSafeContext from '../../../hooks/useSafeContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function SidebarWelcomePanel() {
-  const { openPlaylistModal } = usePlaylistInfosModal();
+  const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
   const navigate = useNavigate();
 
   return (

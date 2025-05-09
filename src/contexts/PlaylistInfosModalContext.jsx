@@ -2,6 +2,8 @@ import { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const PlaylistInfosModalContext = createContext();
+PlaylistInfosModalContext._providerName = 'PlaylistInfosModalProvider';
+PlaylistInfosModalContext._hookName = 'usePlaylistInfosModal';
 
 export function PlaylistInfosModalProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);

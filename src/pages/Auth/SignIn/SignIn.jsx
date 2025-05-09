@@ -7,8 +7,9 @@ import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import useAuth from '../../../hooks/useAuth';
-import useSnackbar from '../../../hooks/useSnackbar';
+import AuthContext from '../../../contexts/AuthContext';
+import useSafeContext from '../../../hooks/useSafeContext';
+import SnackbarContext from '../../../contexts/SnackbarContext';
 import { useNavigate } from 'react-router-dom';
 
 const formSchema = z.object({
@@ -20,8 +21,8 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
-  const { login } = useAuth();
-  const { showNewSnackbar } = useSnackbar();
+  const { login } = useSafeContext(AuthContext);
+  const { showNewSnackbar } = useSafeContext(SnackbarContext);
   const navigate = useNavigate();
   const {
     handleSubmit,

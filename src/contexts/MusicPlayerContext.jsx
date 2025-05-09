@@ -3,6 +3,9 @@ import { BASE_URL } from '../services/api';
 import PropTypes from 'prop-types';
 
 const MusicPlayerContext = createContext();
+MusicPlayerContext._providerName = 'MusicPlayerProvider';
+MusicPlayerContext._hookName = 'useMusicPlayer';
+
 const music = new Audio();
 const playStateOptions = ['repeat_all', 'repeat_one', 'shuffle'];
 

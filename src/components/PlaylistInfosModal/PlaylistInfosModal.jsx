@@ -8,8 +8,9 @@ import useMediaQuery from '../../hooks/useMediaQuery';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import usePlaylistInfosModal from '../../hooks/usePlaylistInfosModal';
-import useMusicPlayer from '../../hooks/useMusicPlayer';
+import PlaylistInfosModalContext from '../../contexts/PlaylistInfosModalContext';
+import MusicPlayerContext from '../../contexts/MusicPlayerContext';
+import useSafeContext from '../../hooks/useSafeContext';
 import { BASE_URL } from '../../services/api';
 import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 
@@ -23,8 +24,8 @@ export default function PlaylistInfosModal() {
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const {
     selectedPlaylist: { title, description = '', cover },
-  } = useMusicPlayer();
-  const { isOpen, setIsOpen, modalTitle } = usePlaylistInfosModal();
+  } = useSafeContext(MusicPlayerContext);
+  const { isOpen, setIsOpen, modalTitle } = useSafeContext(PlaylistInfosModalContext);
   const {
     register,
     watch,

@@ -10,7 +10,8 @@ import { Mousewheel } from 'swiper/modules';
 import { lyrics } from '../../data';
 import backgroundImage from '../../assets/images/backgrounds/player-and-settings-page.png';
 import noMusicCover from '../../assets/images/covers/no-cover.jpg';
-import useMusicPlayer from '../../hooks/useMusicPlayer';
+import MusicPlayerContext from '../../contexts/MusicPlayerContext';
+import useSafeContext from '../../hooks/useSafeContext';
 import { BASE_URL } from '../../services/api';
 import MobilePlaylist from '../../components/shared/MobilePlaylist/MobilePlaylist';
 import 'swiper/css';
@@ -27,7 +28,7 @@ export default function PlayerPage() {
     setCurrentSongIndex,
     currentSongIndex,
     prevSongIndex,
-  } = useMusicPlayer();
+  } = useSafeContext(MusicPlayerContext);
 
   useEffect(() => {
     const img = new Image();
