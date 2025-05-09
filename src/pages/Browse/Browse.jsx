@@ -9,12 +9,15 @@ import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard'
 import MainButton from '../../components/Buttons/MainButton/MainButton';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import sectionBgImage from '../../assets/images/backgrounds/section-bg-2.jpg';
+import { useQuery } from '@tanstack/react-query';
+import { albumsQueryOptions } from '../../queries/albums';
 import { songs, playlists, genres } from '../../data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 
 export default function Browse() {
+  const albums = useQuery(albumsQueryOptions());
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   return (
@@ -38,7 +41,12 @@ export default function Browse() {
       </div>
       <div>
         <SectionTitle title="Trending Albums" />
-        <AlbumsSlider albumCardSize="md" albumCardStyles="!max-w-none" />
+        <AlbumsSlider
+          albums={albums.data}
+          isLoading={albums.isLoading}
+          albumCardSize="md"
+          albumCardStyles="!max-w-none"
+        />
       </div>
       <div>
         <SectionTitle title="Let's Party" />
@@ -112,7 +120,12 @@ export default function Browse() {
       </div>
       <div>
         <SectionTitle title="Best Albums Of 2024" />
-        <AlbumsSlider albumCardSize="md" albumCardStyles="!max-w-none" />
+        <AlbumsSlider
+          albums={albums.data}
+          isLoading={albums.isLoading}
+          albumCardSize="md"
+          albumCardStyles="!max-w-none"
+        />
       </div>
       <div>
         <SectionTitle title="Meet the Top New Singers of 2024" />

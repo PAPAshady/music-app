@@ -6,12 +6,8 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import PropTypes from 'prop-types';
-import { useQuery } from '@tanstack/react-query';
-import { albumsQueryOptions } from '../../../queries/albums';
 
-export default function AlbumsSlider({ albumCardSize = 'lg', albumCardStyles }) {
-  const { data: albums, isLoading } = useQuery(albumsQueryOptions());
-
+export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', albumCardStyles }) {
   return (
     <div className="mx-auto w-[95%] xl:max-w-[940px]">
       <Swiper
@@ -62,6 +58,8 @@ export default function AlbumsSlider({ albumCardSize = 'lg', albumCardStyles }) 
 }
 
 AlbumsSlider.propTypes = {
+  albums: PropTypes.array,
+  isLoading: PropTypes.bool.isRequired,
   albumCardSize: PropTypes.oneOf(['md', 'lg']),
   albumCardStyles: PropTypes.string,
 };

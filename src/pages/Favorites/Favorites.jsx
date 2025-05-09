@@ -5,10 +5,13 @@ import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { songs } from '../../data';
+import { useQuery } from '@tanstack/react-query';
+import { albumsQueryOptions } from '../../queries/albums';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
 export default function Favorites() {
+  const albums = useQuery(albumsQueryOptions());
   const isTablet = useMediaQuery('(min-width: 480px)');
 
   return (
@@ -37,7 +40,12 @@ export default function Favorites() {
       </div>
       <div className="-mt-8">
         <SectionTitle title="You Might Also Like" />
-        <AlbumsSlider albumCardSize="md" albumCardStyles="!max-w-none" />
+        <AlbumsSlider
+          albums={albums.data}
+          isLoading={albums.isLoading}
+          albumCardSize="md"
+          albumCardStyles="!max-w-none"
+        />
       </div>
     </div>
   );

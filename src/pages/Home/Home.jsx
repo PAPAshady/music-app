@@ -11,12 +11,16 @@ import { songs, genres, playlists } from '../../data';
 import { chunkArray, shuffleArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode, Mousewheel, Scrollbar } from 'swiper/modules';
+import { useQuery } from '@tanstack/react-query';
+import { albumsQueryOptions } from '../../queries/albums';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import PropTypes from 'prop-types';
 
 export default function Home() {
+  const albums = useQuery(albumsQueryOptions());
+
   return (
     <div className="flex grow flex-col gap-8 lg:gap-10">
       <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
@@ -36,7 +40,7 @@ export default function Home() {
       </div>
       <div>
         <SectionHeader title="Updates from Followed Artists" />
-        <AlbumsSlider />
+        <AlbumsSlider albums={albums.data} isLoading={albums.isLoading} />
       </div>
       <div className="-mt-11">
         <SectionHeader title="Daily Picks" />
@@ -53,7 +57,7 @@ export default function Home() {
       </div>
       <div>
         <SectionHeader title="Albums You Were Listening To" />
-        <AlbumsSlider />
+        <AlbumsSlider albums={albums.data} isLoading={albums.isLoading} />
       </div>
       <div>
         <SectionHeader title="Genres You Interested In" />
