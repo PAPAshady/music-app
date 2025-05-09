@@ -91,9 +91,7 @@ export default function Player({ classNames, isPlayerPage }) {
         >
           <img
             className="size-full object-cover"
-            src={
-              currentMusic?.musiccover ? `${BASE_URL}/media/${currentMusic.musiccover}` : noCoverImg
-            }
+            src={currentMusic?.cover ? BASE_URL + currentMusic.cover : noCoverImg}
             alt={currentMusic?.title}
           />
           <div
