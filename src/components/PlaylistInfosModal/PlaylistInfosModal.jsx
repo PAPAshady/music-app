@@ -22,7 +22,7 @@ export default function PlaylistInfosModal() {
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const {
-    selectedPlaylist: { title, description, cover },
+    selectedPlaylist: { title, description = '', cover },
   } = useMusicPlayer();
   const { isOpen, setIsOpen, modalTitle } = usePlaylistInfosModal();
   const {
