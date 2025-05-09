@@ -123,6 +123,8 @@ export default function SidebarPlaylist() {
               </div>
             </div>
           </motion.div>
+        </AnimatePresence>
+        <AnimatePresence mode="wait">
           <motion.div
             key={selectedPlaylist.id}
             variants={listVariants}
