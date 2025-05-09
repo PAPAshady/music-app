@@ -3,6 +3,7 @@ import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
+import { artistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
@@ -18,6 +19,7 @@ import 'swiper/css';
 
 export default function Browse() {
   const albums = useQuery(albumsQueryOptions());
+  const artists = useQuery(artistsQueryOptions());
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   return (
@@ -33,7 +35,7 @@ export default function Browse() {
       <DiscoverPlaylistsSlider playlists={playlists} />
       <div>
         <SectionTitle title="People's Favorite Artists" />
-        <ArtistsSlider />
+        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
       </div>
       <div>
         <SectionTitle title="Trending Genres" />
@@ -129,7 +131,7 @@ export default function Browse() {
       </div>
       <div>
         <SectionTitle title="Meet the Top New Singers of 2024" />
-        <ArtistsSlider />
+        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
+import { artistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { songs, genres, playlists } from '../../data';
@@ -20,6 +21,7 @@ import PropTypes from 'prop-types';
 
 export default function Home() {
   const albums = useQuery(albumsQueryOptions());
+  const artists = useQuery(artistsQueryOptions());
 
   return (
     <div className="flex grow flex-col gap-8 lg:gap-10">
@@ -48,7 +50,7 @@ export default function Home() {
       </div>
       <div>
         <SectionHeader title="Artists You Follow" />
-        <ArtistsSlider />
+        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
       </div>
       <DiscoverPlaylistsSlider playlists={playlists} />
       <div>
@@ -65,7 +67,7 @@ export default function Home() {
       </div>
       <div>
         <SectionHeader title="More Artists You'll Love" />
-        <ArtistsSlider />
+        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
       </div>
       <div className="-mt-8">
         <SectionHeader title="Trending Now" />

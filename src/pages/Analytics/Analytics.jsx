@@ -2,6 +2,8 @@ import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import SettingsPagesSectionHeader from '../../components/SettingsPagesSectionHeader/SettingsPagesSectionHeader';
 import { songs, usageChartData } from '../../data';
+import { artistsQueryOptions } from '../../queries/artists';
+import { useQuery } from '@tanstack/react-query';
 import {
   LineChart,
   Legend,
@@ -14,6 +16,7 @@ import {
 import useMediaQuery from '../../hooks/useMediaQuery';
 
 export default function Analytics() {
+  const artists = useQuery(artistsQueryOptions());
   const isTablet = useMediaQuery('(min-width: 640px)');
 
   return (
@@ -30,7 +33,7 @@ export default function Analytics() {
       </div>
       <div>
         <SettingsPagesSectionHeader title="Singers who were very popular with you" />
-        <ArtistsSlider />
+        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
       </div>
       <div>
         <SettingsPagesSectionHeader title="Your Usage VioTune Rate" />
