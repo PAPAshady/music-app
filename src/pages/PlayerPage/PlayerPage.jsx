@@ -21,21 +21,13 @@ export default function PlayerPage() {
   const swiperRef = useRef(null);
   const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const {
-    playlist,
-    currentMusic,
-    durations,
-    setCurrentSongIndex,
-    currentSongIndex,
-    prevSongIndex,
-  } = useSafeContext(MusicPlayerContext);
+  const { playlist, currentMusic, setCurrentSongIndex, currentSongIndex, prevSongIndex } =
+    useSafeContext(MusicPlayerContext);
 
   useEffect(() => {
     const img = new Image();
-    img.src = currentMusic?.musiccover ? `${BASE_URL}${currentMusic?.musiccover}` : noMusicCover;
-    img.addEventListener('load', () => {
-      setMusicCover(img.src);
-    });
+    img.src = currentMusic?.cover ? BASE_URL + currentMusic?.cover : noMusicCover;
+    img.addEventListener('load', () => setMusicCover(img.src));
   }, [currentMusic]);
 
   useEffect(() => {
@@ -92,10 +84,9 @@ export default function PlayerPage() {
               >
                 {playlist.musics?.length
                   ? playlist.musics?.map((music) => (
-                      <SwiperSlide key={music.id}>
+                      <SwiperSlide key={music.id} className="!h-auto">
                         <MusicPlayerCard
                           isPlaying={music.id === currentMusic?.id}
-                          time={durations.formatedDuration}
                           onClick={playerCardClickHandler}
                           {...music}
                         />
@@ -116,11 +107,11 @@ export default function PlayerPage() {
               className={`border-primary-300 flex animate-[rotate_20s_linear_infinite] items-center justify-center rounded-full border-2 bg-cover bg-center bg-no-repeat ${CD_Sizes}`}
               style={{
                 backgroundImage: `url(${musicCover})`,
-                mask: 'radial-gradient(circle, transparent 18%, black 18%)',
-                WebkitMask: 'radial-gradient(circle, transparent 18%, black 18%)',
+                mask: 'radial-gradient(circle, transparent 15%, black 15%)',
+                WebkitMask: 'radial-gradient(circle, transparent 15%, black 15%)',
               }}
             >
-              <div className="border-primary-300 size-[27%] rounded-full border-2"></div>
+              <div className="border-primary-300 size-[22.5%] rounded-full border-2"></div>
             </div>
           </div>
           <div

@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
 
 export default function MusicPlayerCard({
   title,
-  artists = [{ name: 'Unkown artist' }],
-  time,
+  artist = [{ name: 'Unkown artist' }],
+  duration,
   isFavorite,
-  musiccover = noCoverImg,
+  cover = noCoverImg,
   isPlaying,
   onClick,
   classNames,
@@ -21,7 +21,7 @@ export default function MusicPlayerCard({
     >
       <img
         onClick={() => onClick(id)}
-        src={musiccover ? `${BASE_URL}${musiccover}` : musiccover}
+        src={cover ? `${BASE_URL}${cover}` : cover}
         alt={title}
         className={`size-24 cursor-pointer rounded-md border-2 border-transparent object-cover transition-colors duration-300 ${!isPlaying ? 'hover:border-secondary-300' : ''}`}
       />
@@ -36,12 +36,12 @@ export default function MusicPlayerCard({
           >
             {title}
           </h3>
-          <p className="text-primary-100 truncate text-sm" title={artists[0].name}>
-            {artists[0].name}
+          <p className="text-primary-100 truncate text-sm" title={artist[0].name}>
+            {artist[0].name}
           </p>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-primary-100 text-sm">{time}</span>
+          <span className="text-primary-100 text-sm">{duration}</span>
           <IconButton icon={<Heart className={isFavorite ? 'fill-red text-red' : ''} />} />
         </div>
       </div>
@@ -51,10 +51,10 @@ export default function MusicPlayerCard({
 
 MusicPlayerCard.propTypes = {
   title: PropTypes.string.isRequired,
-  artists: PropTypes.array,
-  time: PropTypes.string.isRequired,
+  artist: PropTypes.array,
+  duration: PropTypes.string.isRequired,
   isFavorite: PropTypes.bool,
-  musiccover: PropTypes.string,
+  cover: PropTypes.string,
   isPlaying: PropTypes.bool,
   onClick: PropTypes.func,
   classNames: PropTypes.string,
