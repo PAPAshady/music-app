@@ -1,4 +1,4 @@
-import { cloneElement } from 'react';
+import { cloneElement, memo } from 'react';
 import { Music, Timer, User, Edit2, Trash, Share, Play, Pause } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
@@ -10,7 +10,7 @@ import useSafeContext from '../../../hooks/useSafeContext';
 import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export default function SidebarPlaylist() {
+const SidebarPlaylist = memo(() => {
   const { selectedPlaylist, setPlaylist, playlist, isPlaying, play, pause } =
     useSafeContext(MusicPlayerContext);
   const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
@@ -156,7 +156,7 @@ export default function SidebarPlaylist() {
       </div>
     </div>
   );
-}
+});
 
 function PlaylistInfo({ title, icon }) {
   const styledIcon = cloneElement(icon, { size: 18 });
@@ -168,7 +168,11 @@ function PlaylistInfo({ title, icon }) {
   );
 }
 
+SidebarPlaylist.displayName = 'SidebarPlaylist';
+
 PlaylistInfo.propTypes = {
   title: PropTypes.string.isRequired,
   icon: PropTypes.element.isRequired,
 };
+
+export default SidebarPlaylist;
