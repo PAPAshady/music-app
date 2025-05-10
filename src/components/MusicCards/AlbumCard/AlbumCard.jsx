@@ -10,7 +10,8 @@ import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const { cover = noCoverImg, totaltracks, artists, title } = album;
   const { openMobilePlaylist } = useSafeContext(MobilePlaylistContext);
-  const { setSelectedPlaylist } = useSafeContext(MusicPlayerContext);
+  const { setSelectedPlaylist, playlist } = useSafeContext(MusicPlayerContext);
+  const isCurrentAlbumPlaying = album.title === playlist.title && album.id === playlist.id;
 
   const openMobilePlaylistHandler = () => {
     setSelectedPlaylist(album);
@@ -32,7 +33,7 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
             alt={title}
           />
           <div
-            className="group-hover:animate-infinite-rotate absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60"
+            className={`absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60 ${isCurrentAlbumPlaying ? 'animate-infinite-rotate' : 'group-hover:animate-infinite-rotate'}`}
             style={{
               backgroundImage: `url(${BASE_URL}/${cover})`,
               mask: 'radial-gradient(circle, transparent 8px, black 8px)',
