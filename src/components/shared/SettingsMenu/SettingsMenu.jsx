@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 import Avatar from '../../Avatar/Avatar';
 import { NavLink } from 'react-router-dom';
 import { UserEdit, Chart, Headphone, Messages, Login } from 'iconsax-react';
+import AuthContext from '../../../contexts/AuthContext';
+import useSafeContext from '../../../hooks/useSafeContext';
 
 export default function SettingsMenu({ isVisible }) {
+  const { logOut, user } = useSafeContext(AuthContext);
+
   const listItems = [
     { id: 1, title: 'Edit Profile', icon: <UserEdit />, href: '/settings/profile' },
     { id: 2, title: 'Analytics', icon: <Chart />, href: '/settings/analytics' },
     { id: 3, title: 'Contact Us', icon: <Headphone />, href: '/settings/contact-us' },
     { id: 4, title: 'FAQ', icon: <Messages />, href: '/settings/FAQ' },
   ];
-
-  const signOutHandler = async () => {
-    console.log('sign out successfull!!!');
-  };
 
   return (
     <div
@@ -23,8 +23,8 @@ export default function SettingsMenu({ isVisible }) {
       <div className="px-2">
         <div className="flex items-center justify-center gap-3 border-b pb-6">
           <Avatar size="sm" />
-          <p className="truncate" title={'Nima zamani'}>
-            Nima zamani
+          <p className="truncate" title={`${user.first_name} ${user.last_name}`}>
+            {user.first_name} {user.last_name}
           </p>
         </div>
       </div>
@@ -34,7 +34,7 @@ export default function SettingsMenu({ isVisible }) {
         ))}
 
         <li className="text-primary-50 hover:text-primary-200 transition-colors">
-          <button className="flex items-center gap-2 text-base" onClick={signOutHandler}>
+          <button className="flex items-center gap-2 text-base" onClick={logOut}>
             <Login />
             Sign Out
           </button>
@@ -63,6 +63,7 @@ function ListItem({ title, href = '#', icon }) {
 
 SettingsMenu.propTypes = {
   isVisible: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 ListItem.propTypes = {

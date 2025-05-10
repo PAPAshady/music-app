@@ -63,6 +63,17 @@ export function AuthContextProvider({ children }) {
     status === 200 && getMe();
   };
 
+  const logOut = async () => {
+    const res = await api.post(`${BASE_URL}/api/auth/logout/`);
+    if (res.status === 204) {
+      setIsLoggedIn(false);
+      setUser({});
+      showNewSnackbar('You have been logged out successfully.', 'success');
+    }else {
+      showNewSnackbar('Error while logging out. Please try again later.', 'error');
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -72,6 +83,7 @@ export function AuthContextProvider({ children }) {
         setIsLoggedIn,
         register,
         login,
+        logOut,
         getMe,
         isLoading,
       }}
