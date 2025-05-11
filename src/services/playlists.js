@@ -1,0 +1,17 @@
+import api from './api';
+
+export const addPlaylist = async (playlistData) => {
+  const playlist = new FormData();
+  for (let prop in playlistData) {
+    if (prop === 'music_id') {
+      playlistData[prop].map((musicId) => playlist.append(prop, musicId));
+    } else {
+      playlist.append(prop, playlistData[prop]);
+    }
+  }
+
+  console.log(playlist);
+
+  const { data } = await api.post('/playlist/add/', playlist);
+  return data;
+};
