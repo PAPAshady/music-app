@@ -9,9 +9,6 @@ export const addPlaylist = async (playlistData) => {
       playlist.append(prop, playlistData[prop]);
     }
   }
-
-  console.log(playlist);
-
   const { data } = await api.post('/playlist/add/', playlist);
   return data;
 };
