@@ -59,7 +59,7 @@ export default function MobilePlaylist() {
 
   return createPortal(
     <div
-      className={`bg-primary-800 fixed inset-0 z-10 h-full min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isMobilePlaylistOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+      className={`bg-primary-800 fixed inset-0 z-10 h-ful min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isMobilePlaylistOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div
         className="absolute size-full bg-cover bg-center bg-no-repeat opacity-15 blur-md"
@@ -84,7 +84,7 @@ export default function MobilePlaylist() {
             </p>
           </div>
         </div>
-        <div className="flex h-full flex-col items-center justify-center gap-4 py-10 text-center min-[360px]:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
+        <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center min-[360px]:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
           <img
             src={playlistCover}
             className="size-46 rounded-md sm:size-56 md:size-64 lg:size-80"
