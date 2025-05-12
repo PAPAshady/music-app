@@ -31,8 +31,8 @@ export default function MobilePlaylist() {
   const { setPlaylist, playState, togglePlayStates, selectedPlaylist } =
     useSafeContext(MusicPlayerContext);
   const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
-  const playlistCover = selectedPlaylist.albumcover
-    ? `${BASE_URL}/${selectedPlaylist.albumcover}`
+  const playlistCover = selectedPlaylist.cover
+    ? `${BASE_URL}/${selectedPlaylist.cover}`
     : playlistDefaultCover;
 
   // remove scrollbar for the body when mobile playlist is open
