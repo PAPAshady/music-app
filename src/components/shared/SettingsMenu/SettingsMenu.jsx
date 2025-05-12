@@ -61,10 +61,7 @@ function ListItem({ title, href = '#', icon }) {
   );
 }
 
-SettingsMenu.propTypes = {
-  isVisible: PropTypes.bool.isRequired,
-  user: PropTypes.object.isRequired,
-};
+SettingsMenu.propTypes = { isVisible: PropTypes.bool.isRequired };
 
 ListItem.propTypes = {
   title: PropTypes.string.isRequired,
