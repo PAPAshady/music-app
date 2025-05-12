@@ -4,7 +4,6 @@ import BgImage from '../../../assets/images/backgrounds/login-signup-page.jpg';
 import playlistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
 import {
   ArrowLeft,
-  Menu,
   Play,
   Shuffle,
   Additem,
@@ -12,6 +11,7 @@ import {
   RepeateOne,
   RepeateMusic,
   AddCircle,
+  Trash,
 } from 'iconsax-react';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import IconButton from '../../Buttons/IconButton/IconButton';
@@ -25,6 +25,7 @@ import Player from '../Player/Player';
 import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import useInput from '../../../hooks/useInput';
+import DropDownList from '../../DropDownList/DropDownList';
 import { songs } from '../../../data';
 import PropTypes from 'prop-types';
 
@@ -67,7 +68,19 @@ export default function MobilePlaylist() {
   const playButtons = [
     { id: 1, icon: <Edit />, onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`) },
     { id: 2, icon: <Additem />, onClick: () => setIsAddMenuOpen(true) },
-    { id: 3, icon: <Menu /> },
+  ];
+
+  const playlistDropDownListItems = [
+    {
+      id: 1,
+      icon: <Edit />,
+      title: 'Edit playlist',
+    },
+    {
+      id: 2,
+      icon: <Trash />,
+      title: 'Delete playlist',
+    },
   ];
 
   return createPortal(
@@ -117,6 +130,10 @@ export default function MobilePlaylist() {
               {playButtons.map((button) => (
                 <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
               ))}
+              <DropDownList
+                menuItems={playlistDropDownListItems}
+                dropDownPlacement="bottom start"
+              />
             </div>
             <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
               <IconButton
