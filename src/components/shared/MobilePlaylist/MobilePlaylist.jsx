@@ -11,6 +11,7 @@ import {
   Edit,
   RepeateOne,
   RepeateMusic,
+  AddCircle,
 } from 'iconsax-react';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import IconButton from '../../Buttons/IconButton/IconButton';
@@ -22,9 +23,15 @@ import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import Player from '../Player/Player';
 import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
+import SearchInput from '../../Inputs/SearchInput/SearchInput';
+import useInput from '../../../hooks/useInput';
+import { songs } from '../../../data';
+import PropTypes from 'prop-types';
 
 export default function MobilePlaylist() {
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
+  const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+  const searchInput = useInput();
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const isTablet = useMediaQuery('(min-width: 768px)');
   const { isMobilePlaylistOpen, closeMobilePlaylist } = useSafeContext(MobilePlaylistContext);
@@ -53,13 +60,13 @@ export default function MobilePlaylist() {
 
   const playButtons = [
     { id: 1, icon: <Edit />, onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`) },
-    { id: 2, icon: <Additem /> },
+    { id: 2, icon: <Additem />, onClick: () => setIsAddMenuOpen(true) },
     { id: 3, icon: <Menu /> },
   ];
 
   return createPortal(
     <div
-      className={`bg-primary-800 fixed inset-0 z-10 h-ful min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isMobilePlaylistOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+      className={`bg-primary-800 h-ful fixed inset-0 z-10 min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isMobilePlaylistOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div
         className="absolute size-full bg-cover bg-center bg-no-repeat opacity-15 blur-md"
@@ -142,7 +149,74 @@ export default function MobilePlaylist() {
           {isMobilePlaylistOpen && <Player classNames="text-start !w-full" />}
         </div>
       </div>
+      {isMobilePlaylistOpen && (
+        <div
+          className={`text-secondary-50 bg-primary-800 absolute inset-0 z-[10] size-full pb-4 transition-all duration-300 ${isAddMenuOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+        >
+          <div className="container flex h-full flex-col gap-4">
+            <div className="flex items-center justify-between pt-4">
+              <button onClick={() => setIsAddMenuOpen(false)}>
+                <ArrowLeft size={28} />
+              </button>
+              <p className="font-semibold sm:text-lg">Add to this playlist</p>
+            </div>
+            <div>
+              <SearchInput {...searchInput} />
+            </div>
+            <div className="bg-primary-700 flex grow flex-col gap-5 overflow-y-scroll rounded-md min-[480px]:gap-7">
+              <div className="px-4 pt-4 min-[480px]:px-6 min-[480px]:pt-6">
+                <p className="text-xl font-semibold text-white min-[480px]:text-2xl">Suggested</p>
+                <p className="mt-1 text-sm min-[480px]:mt-3 min-[480px]:text-lg">
+                  Based on tracks you&apos;ve added.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
+                {songs.map((song) => (
+                  <SuggestedSong key={song.id} {...song} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>,
     document.getElementById('mobilePlaylist')
   );
 }
+
+function SuggestedSong({ title, cover, artist = 'Unknown artist' }) {
+  return (
+    <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm md:border">
+      <div className="flex grow items-center gap-2 overflow-hidden">
+        <div className="relative h-15 w-15 min-w-[60px] overflow-hidden rounded-sm sm:h-[70px] sm:w-[70px] sm:min-w-[70px]">
+          <img
+            src={cover ? `${BASE_URL}/${cover}` : playlistDefaultCover}
+            alt={title}
+            className="size-full object-cover"
+          />
+          <button className="absolute inset-0 flex items-center justify-center bg-black/50">
+            <Play className="fill-white" />
+          </button>
+        </div>
+        <div className="flex grow flex-col gap-1.5 overflow-hidden">
+          <p className="truncate text-[0.9rem] min-[480px]:text-base" title={title}>
+            {title}
+          </p>
+          <p className="text-secondary-200 truncate text-xs min-[480px]:text-sm" title={artist}>
+            {artist}
+          </p>
+        </div>
+      </div>
+      <IconButton
+        icon={<AddCircle />}
+        classNames="min-w-8.5 min-h-8.5 sm:min-w-10 sm:min-h-10 md:me-1"
+      />
+    </div>
+  );
+}
+
+SuggestedSong.propTypes = {
+  title: PropTypes.string.isRequired,
+  cover: PropTypes.string,
+  artist: PropTypes.array,
+};
