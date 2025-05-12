@@ -47,7 +47,13 @@ export default function MobilePlaylist() {
     if (isMobilePlaylistOpen) {
       document.body.classList.add('overflow-hidden');
     }
-    return () => document.body.classList.remove('overflow-hidden');
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+
+      // Ensure the add menu is closed when the MobilePlaylist is dismissed.
+      // This prevents the add menu from remaining open the next time the playlist is opened.
+      setIsAddMenuOpen(false);
+    };
   }, [isMobilePlaylistOpen]);
 
   const handleScroll = (e) => {
