@@ -140,17 +140,19 @@ export default function PlaylistInfosModal() {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="border-secondary-500 text-secondary-200 flex items-center gap-2 border-b">
-            <button className="border-secondary-100 border-b-2 px-8 py-2.5 text-white">
+          <div className="border-secondary-500 text-secondary-200 flex items-center justify-center gap-2 border-b">
+            <button className="border-secondary-100 grow border-b-2 py-2.5 text-sm text-white">
               Add Songs
             </button>
-            <button className="border-b-2 border-transparent px-8 py-2.5">View Songs</button>
+            <button className="grow border-b-2 border-transparent py-2.5 text-sm">
+              View Songs
+            </button>
           </div>
           <SearchInput {...searchInput} />
           <div className="text-secondary-50">
             <p className="mb-4 font-semibold">Recommended</p>
-            <div className="dir-rtl max-h-[200px] overflow-y-auto px-2">
-              <div className="dir-ltr grid grid-cols-2 gap-3">
+            <div className="dir-rtl max-h-[260px] overflow-y-auto pe-2">
+              <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
                 {playlistSongs.map((song) => (
                   <PlaylistSong key={song.id} {...song} />
                 ))}
@@ -165,9 +167,9 @@ export default function PlaylistInfosModal() {
 
 function PlaylistSong({ title, cover, artist }) {
   return (
-    <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border">
+    <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
       <div className="flex grow items-center gap-2 overflow-hidden">
-        <div className="relative h-[55px] w-[55px] min-w-[55px] overflow-hidden rounded-sm">
+        <div className="relative h-[45px] w-[45px] min-w-[45px] overflow-hidden rounded-sm">
           <img
             src={cover ? `${BASE_URL}/${cover}` : playlistDefaultCover}
             className="size-full object-cover"
