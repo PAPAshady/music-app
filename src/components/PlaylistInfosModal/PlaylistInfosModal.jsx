@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Image, Trash, Edit2, AddCircle, Play } from 'iconsax-react';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
@@ -27,6 +27,7 @@ export default function PlaylistInfosModal() {
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
+  const [selectedTab, setSelectedTab] = useState('add'); // could be on of the following:  [add, view]
   const {
     selectedPlaylist: { title, description = '', cover },
   } = useSafeContext(MusicPlayerContext);
@@ -76,6 +77,11 @@ export default function PlaylistInfosModal() {
     { id: 11, title: 'Options', artist: 'NF' },
     { id: 12, title: 'Thinking', artist: 'NF' },
     { id: 13, title: 'WHY', artist: 'NF' },
+  ];
+
+  const tabButtons = [
+    { id: 1, title: 'Add Songs', tabName: 'add' },
+    { id: 2, title: 'View Songs', tabName: 'view' },
   ];
 
   const submitHandler = (data) => {
@@ -140,13 +146,15 @@ export default function PlaylistInfosModal() {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="border-secondary-500 text-secondary-200 flex items-center justify-center gap-2 border-b">
-            <button className="border-secondary-100 grow border-b-2 py-2.5 text-sm text-white">
-              Add Songs
-            </button>
-            <button className="grow border-b-2 border-transparent py-2.5 text-sm">
-              View Songs
-            </button>
+          <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
+            {tabButtons.map((button) => (
+              <TabButton
+                key={button.id}
+                isActive={button.title.toLowerCase().includes(selectedTab)}
+                onClick={setSelectedTab}
+                {...button}
+              />
+            ))}
           </div>
           <SearchInput {...searchInput} />
           <div className="text-secondary-50">
@@ -188,8 +196,26 @@ function PlaylistSong({ title, cover, artist }) {
   );
 }
 
+function TabButton({ title, isActive, tabName, onClick }) {
+  return (
+    <button
+      onClick={() => onClick(tabName)}
+      className={`grow border-b-2 py-2.5 text-sm transition-colors hover:text-white ${isActive ? 'border-secondary-100 text-white' : 'text-secondary-200 border-transparent'}`}
+    >
+      {title}
+    </button>
+  );
+}
+
 PlaylistSong.propTypes = {
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
   artist: PropTypes.string.isRequired,
+};
+
+TabButton.propTypes = {
+  title: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  tabName: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
