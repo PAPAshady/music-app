@@ -145,6 +145,7 @@ export default function Profile() {
           isInvalid={!!errors['username']}
           errorMsg={errors['username']?.message}
           {...register('username')}
+          disabled
         />
         <EmailInput
           placeholder="Email"
