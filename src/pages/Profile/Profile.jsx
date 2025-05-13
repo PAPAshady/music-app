@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useSafeContext from '../../hooks/useSafeContext';
 import AuthContext from '../../contexts/AuthContext';
+import SnackbarContext from '../../contexts/SnackbarContext';
 
 const formSchema = z.object({
   avatar: z.any().optional(),
@@ -23,8 +24,10 @@ const formSchema = z.object({
 export default function Profile() {
   const [avatar, setAvatar] = useState(null);
   const isTablet = useMediaQuery('(min-width: 640px)');
+  const { showNewSnackbar } = useSafeContext(SnackbarContext);
   const {
     user: { first_name, last_name, username, email },
+    updateUser,
   } = useSafeContext(AuthContext);
   const {
     register,
@@ -71,8 +74,24 @@ export default function Profile() {
     }
   };
 
-  const submitHandler = async (formData) => {
-    console.log('update success : ', formData);
+  const submitHandler = async ({ avatar, first_name, last_name }) => {
+    const newUserInfo = { first_name, last_name };
+    avatar && (newUserInfo.profile = avatar);
+    const res = await updateUser(newUserInfo);
+
+    switch (res.status) {
+      case 200:
+        showNewSnackbar('Your profile updated successfully', 'success');
+        break;
+      case 400:
+        setError('avatar', { message: 'The avatar must be an Image' });
+        break;
+      default:
+        setError('root', {
+          message: 'An unexpected error occured while updating your data. Please try again.',
+        });
+        break;
+    }
   };
 
   const cancelHandler = (e) => {

@@ -69,9 +69,19 @@ export function AuthContextProvider({ children }) {
       setIsLoggedIn(false);
       setUser({});
       showNewSnackbar('You have been logged out successfully.', 'success');
-    }else {
+    } else {
       showNewSnackbar('Error while logging out. Please try again later.', 'error');
     }
+  };
+
+  const updateUser = async (userInfos) => {
+    const user = new FormData();
+    for (const prop in userInfos) {
+      user.append(prop, userInfos[prop]);
+    }
+    const res = await api.put(`${BASE_URL}/api/auth/user/update/`, user);
+    res.status === 200 && getMe();
+    return res;
   };
 
   return (
@@ -84,6 +94,7 @@ export function AuthContextProvider({ children }) {
         register,
         login,
         logOut,
+        updateUser,
         getMe,
         isLoading,
       }}
