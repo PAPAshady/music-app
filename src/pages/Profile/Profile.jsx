@@ -8,11 +8,14 @@ import MainButton from '../../components/Buttons/MainButton/MainButton';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import useSafeContext from '../../hooks/useSafeContext';
+import AuthContext from '../../contexts/AuthContext';
 
 const formSchema = z.object({
   avatar: z.any().optional(),
-  full_name: z.string().min(1, { message: 'Fullname is required' }),
-  user_name: z.string().min(1, { message: 'Username is required' }),
+  first_name: z.string().min(1, { message: 'First name is required' }),
+  last_name: z.string().min(1, { message: 'Last name is required' }),
+  username: z.string().min(1, { message: 'Username is required' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   bio: z.string(),
 });
@@ -20,6 +23,9 @@ const formSchema = z.object({
 export default function Profile() {
   const [avatar, setAvatar] = useState(null);
   const isTablet = useMediaQuery('(min-width: 640px)');
+  const {
+    user: { first_name, last_name, username, email },
+  } = useSafeContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -31,17 +37,18 @@ export default function Profile() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      full_name: '',
-      user_name: '',
-      email: '',
+      first_name,
+      last_name,
+      username,
+      email,
       bio: '',
     },
     resolver: zodResolver(formSchema),
   });
 
-  const textInputs = [
-    { id: 1, placeholder: 'Fullname', name: 'full_name' },
-    { id: 2, placeholder: 'Username', name: 'user_name' },
+  const inputFields = [
+    { id: 1, name: 'first_name', placeholder: 'Firstname' },
+    { id: 2, name: 'last_name', placeholder: 'Lastname' },
   ];
 
   // handle validation and preview for the selected avatar
@@ -96,24 +103,30 @@ export default function Profile() {
         <div className="text-center md:text-start">
           <p className="text-red mb-3 text-center text-sm md:hidden">{errors.avatar?.message}</p>
           <p className="text-primary-50 font-semibold sm:text-lg md:mb-2 md:text-2xl">
-            Nima Zamani
+            {first_name} {last_name}
           </p>
-          <span className="text-primary-100 text-sm sm:text-base md:text-xl">@papapshady</span>
+          <span className="text-primary-100 text-sm sm:text-base md:text-xl">@{username}</span>
         </div>
       </div>
       <div className="container flex !max-w-[720px] flex-col gap-6">
         <p className="text-red mb-2 text-lg font-semibold">{errors.root?.message}</p>
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-4">
-          {textInputs.map((input) => (
+          {inputFields.map(({ name, placeholder, id }) => (
             <InputField
-              key={input.id}
-              isInvalid={!!errors[input.name]}
-              errorMsg={errors[input.name]?.message}
-              {...register(input.name)}
-              {...input}
+              key={id}
+              placeholder={placeholder}
+              isInvalid={!!errors[name]}
+              errorMsg={errors[name]?.message}
+              {...register(name)}
             />
           ))}
         </div>
+        <InputField
+          placeholder="Username"
+          isInvalid={!!errors['username']}
+          errorMsg={errors['username']?.message}
+          {...register('username')}
+        />
         <EmailInput
           placeholder="Email"
           isInvalid={!!errors.email}
