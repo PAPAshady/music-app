@@ -149,8 +149,8 @@ export default function PlaylistInfosModal() {
           <SearchInput {...searchInput} />
           <div className="text-secondary-50">
             <p className="mb-4 font-semibold">Recommended</p>
-            <div className="max-h-[200px] overflow-y-auto px-2" style={{ direction: 'rtl' }}>
-              <div className="grid grid-cols-2 gap-3" style={{ direction: 'ltr' }}>
+            <div className="dir-rtl max-h-[200px] overflow-y-auto px-2">
+              <div className="dir-ltr grid grid-cols-2 gap-3">
                 {playlistSongs.map((song) => (
                   <PlaylistSong key={song.id} {...song} />
                 ))}

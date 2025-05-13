@@ -120,6 +120,14 @@
   @apply mx-auto w-[95%] max-w-[1440px];
 }
 
+@utility dir-ltr {
+  direction: ltr;
+}
+
+@utility dir-rtl {
+  direction: rtl;
+}
+
 @theme {
   /* Primary color */
   --color-primary: #3a5fcd;
