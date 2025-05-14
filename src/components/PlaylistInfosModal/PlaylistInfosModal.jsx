@@ -28,8 +28,22 @@ export default function PlaylistInfosModal() {
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('add'); // could be on of the following:  [add, view]
+  const [sugestedSongs, setSugestedSongs] = useState([
+    { id: 1, title: 'When I Grow Up' },
+    { id: 2, title: 'Hate My Self' },
+    { id: 3, title: 'Like This' },
+    { id: 4, title: 'Options' },
+    { id: 6, title: 'Thinking' },
+    { id: 7, title: 'WHY' },
+    { id: 8, title: 'When I Grow Up' },
+    { id: 9, title: 'Hate My Self' },
+    { id: 10, title: 'Like This' },
+    { id: 11, title: 'Options' },
+    { id: 12, title: 'Thinking' },
+    { id: 13, title: 'WHY' },
+  ]);
   const {
-    selectedPlaylist: { title, description = '', cover },
+    selectedPlaylist: { title, description = '', cover, musics },
   } = useSafeContext(MusicPlayerContext);
   const { isOpen, setIsOpen, modalTitle } = useSafeContext(PlaylistInfosModalContext);
   const {
@@ -45,6 +59,7 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
+  const songsToRender = selectedTab === 'add' ? sugestedSongs : musics;
 
   /*
     since useForm hook only sets defaultValues once on the initial render and wont update them ever again,
@@ -62,21 +77,6 @@ export default function PlaylistInfosModal() {
       onClick: () => fileInputRef.current.click(), // trigger the file input when the user clicks the “Change photo” dropdown item.
     },
     { id: 2, icon: <Trash />, title: 'Remove photo' },
-  ];
-
-  const playlistSongs = [
-    { id: 1, title: 'When I Grow Up', artist: 'NF' },
-    { id: 2, title: 'Hate My Self', artist: 'NF' },
-    { id: 3, title: 'Like This', artist: 'NF' },
-    { id: 4, title: 'Options', artist: 'NF' },
-    { id: 6, title: 'Thinking', artist: 'NF' },
-    { id: 7, title: 'WHY', artist: 'NF' },
-    { id: 8, title: 'When I Grow Up', artist: 'NF' },
-    { id: 9, title: 'Hate My Self', artist: 'NF' },
-    { id: 10, title: 'Like This', artist: 'NF' },
-    { id: 11, title: 'Options', artist: 'NF' },
-    { id: 12, title: 'Thinking', artist: 'NF' },
-    { id: 13, title: 'WHY', artist: 'NF' },
   ];
 
   const tabButtons = [
@@ -158,19 +158,24 @@ export default function PlaylistInfosModal() {
           </div>
           <SearchInput {...searchInput} />
           <div className="text-secondary-50">
-            {playlistSongs.length && <p className="mb-4 font-semibold">Recommended</p>}
-            <div className="dir-rtl max-h-[260px] overflow-y-auto pe-2">
-              {playlistSongs.length ? (
+            <p className="mb-4 font-semibold">
+              {selectedTab === 'add'
+                ? 'Recommended songs to add.'
+                : `You have ${songsToRender.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
+            </p>
+
+            <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
+              {songsToRender.length ? (
                 <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
-                  {playlistSongs.map((song) => (
+                  {songsToRender.map((song) => (
                     <PlaylistSong key={song.id} {...song} />
                   ))}
                 </div>
               ) : (
                 <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed text-center">
                   <Music size={62} />
-                  <p className="text-xl font-semibold">Your playlist is feeling a little lonely!</p>
-                  <p className="text-sm">Start searching and add some tunes!</p>
+                  <p className="text-xl font-semibold">No songs found</p>
+                  <p className="text-sm">Start searching for your tunes!</p>
                 </div>
               )}
             </div>
@@ -181,7 +186,7 @@ export default function PlaylistInfosModal() {
   );
 }
 
-function PlaylistSong({ title, cover, artist }) {
+function PlaylistSong({ title, cover, artist = [{ name: 'Unknown artist' }] }) {
   return (
     <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
       <div className="flex grow items-center gap-2 overflow-hidden">
@@ -196,7 +201,7 @@ function PlaylistSong({ title, cover, artist }) {
         </div>
         <div className="flex grow flex-col gap-1 overflow-hidden">
           <p className="truncate text-sm">{title}</p>
-          <p className="text-secondary-200 truncate text-sm">{artist}</p>
+          <p className="text-secondary-200 truncate text-sm">{artist[0].name}</p>
         </div>
       </div>
       <IconButton icon={<AddCircle />} classNames="min-w-8 min-h-8 me-1" />
@@ -218,7 +223,7 @@ function TabButton({ title, isActive, tabName, onClick }) {
 PlaylistSong.propTypes = {
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
-  artist: PropTypes.string.isRequired,
+  artist: PropTypes.array,
 };
 
 TabButton.propTypes = {
