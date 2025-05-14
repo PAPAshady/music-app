@@ -42,8 +42,9 @@ export default function PlaylistInfosModal() {
     { id: 12, title: 'Thinking' },
     { id: 13, title: 'WHY' },
   ]);
+  const [playlistSongs, setPlaylistSongs] = useState([]);
   const {
-    selectedPlaylist: { title, description = '', cover, musics },
+    selectedPlaylist: { title, description = '', cover },
   } = useSafeContext(MusicPlayerContext);
   const { isOpen, setIsOpen, modalTitle } = useSafeContext(PlaylistInfosModalContext);
   const {
@@ -59,7 +60,7 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
-  const songsToRender = selectedTab === 'add' ? sugestedSongs : musics;
+  const songsToRender = selectedTab === 'add' ? sugestedSongs : playlistSongs;
 
   /*
     since useForm hook only sets defaultValues once on the initial render and wont update them ever again,
@@ -80,12 +81,29 @@ export default function PlaylistInfosModal() {
   ];
 
   const tabButtons = [
-    { id: 1, title: 'Add Songs', tabName: 'add' },
-    { id: 2, title: 'View Songs', tabName: 'view' },
+    { id: 1, title: 'View Songs', tabName: 'view' },
+    { id: 2, title: 'Add Songs', tabName: 'add' },
   ];
+
+  const changeTabHandler = (tabName) => {
+    searchInput.reset();
+    setSelectedTab(tabName);
+  };
 
   const submitHandler = (data) => {
     console.log('playlist updated => ', data);
+  };
+
+  const addSongHandler = (songId) => {
+    const isAlreadyAdded = playlistSongs.some((song) => song.id === songId);
+    if (isAlreadyAdded) return;
+    const selectedSong = sugestedSongs.find((song) => song.id === songId);
+    setPlaylistSongs((prev) => [...prev, selectedSong]);
+  };
+
+  const removeSongHandler = (songId) => {
+    const newPlaylistSongs = playlistSongs.filter((song) => song.id !== songId);
+    setPlaylistSongs(newPlaylistSongs);
   };
 
   return (
@@ -151,7 +169,7 @@ export default function PlaylistInfosModal() {
               <TabButton
                 key={button.id}
                 isActive={button.title.toLowerCase().includes(selectedTab)}
-                onClick={setSelectedTab}
+                onClick={changeTabHandler}
                 {...button}
               />
             ))}
@@ -167,9 +185,27 @@ export default function PlaylistInfosModal() {
             <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
               {songsToRender.length ? (
                 <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
-                  {songsToRender.map((song) => (
-                    <PlaylistSong key={song.id} {...song} />
-                  ))}
+                  {searchInput.value.trim()
+                    ? songsToRender
+                        .filter((song) =>
+                          song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim())
+                        )
+                        .map((song) => (
+                          <PlaylistSong
+                            key={song.id}
+                            buttonState={selectedTab}
+                            onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
+                            {...song}
+                          />
+                        ))
+                    : songsToRender.map((song) => (
+                        <PlaylistSong
+                          key={song.id}
+                          buttonState={selectedTab}
+                          onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
+                          {...song}
+                        />
+                      ))}
                 </div>
               ) : (
                 <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed text-center">
@@ -186,7 +222,14 @@ export default function PlaylistInfosModal() {
   );
 }
 
-function PlaylistSong({ title, cover, artist = [{ name: 'Unknown artist' }] }) {
+function PlaylistSong({
+  title,
+  cover,
+  artist = [{ name: 'Unknown artist' }],
+  buttonState,
+  onClick,
+  id,
+}) {
   return (
     <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
       <div className="flex grow items-center gap-2 overflow-hidden">
@@ -204,7 +247,11 @@ function PlaylistSong({ title, cover, artist = [{ name: 'Unknown artist' }] }) {
           <p className="text-secondary-200 truncate text-sm">{artist[0].name}</p>
         </div>
       </div>
-      <IconButton icon={<AddCircle />} classNames="min-w-8 min-h-8 me-1" />
+      <IconButton
+        icon={buttonState === 'add' ? <AddCircle /> : <Trash />}
+        onClick={() => onClick(id)}
+        classNames="min-w-8 min-h-8 me-1"
+      />
     </div>
   );
 }
@@ -224,6 +271,9 @@ PlaylistSong.propTypes = {
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
   artist: PropTypes.array,
+  buttonState: PropTypes.oneOf(['add', 'view']),
+  onClick: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
 };
 
 TabButton.propTypes = {
