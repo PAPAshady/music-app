@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { Image, Trash, Edit2, AddCircle, Play } from 'iconsax-react';
+import { Image, Trash, Edit2, AddCircle, Play, Music } from 'iconsax-react';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
@@ -158,13 +158,21 @@ export default function PlaylistInfosModal() {
           </div>
           <SearchInput {...searchInput} />
           <div className="text-secondary-50">
-            <p className="mb-4 font-semibold">Recommended</p>
+            {playlistSongs.length && <p className="mb-4 font-semibold">Recommended</p>}
             <div className="dir-rtl max-h-[260px] overflow-y-auto pe-2">
-              <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
-                {playlistSongs.map((song) => (
-                  <PlaylistSong key={song.id} {...song} />
-                ))}
-              </div>
+              {playlistSongs.length ? (
+                <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
+                  {playlistSongs.map((song) => (
+                    <PlaylistSong key={song.id} {...song} />
+                  ))}
+                </div>
+              ) : (
+                <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed text-center">
+                  <Music size={62} />
+                  <p className="text-xl font-semibold">Your playlist is feeling a little lonely!</p>
+                  <p className="text-sm">Start searching and add some tunes!</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
