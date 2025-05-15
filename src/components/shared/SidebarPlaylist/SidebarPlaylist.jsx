@@ -1,5 +1,5 @@
 import { cloneElement, memo } from 'react';
-import { Music, Timer, User, Edit2, Trash, Share, Play, Pause } from 'iconsax-react';
+import { Music, Timer, User, Edit2, Trash, Heart, Play, Pause, AddCircle } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import DropDownList from '../../DropDownList/DropDownList';
@@ -20,33 +20,16 @@ const SidebarPlaylist = memo(() => {
   const isPlayingPlaylistSelected =
     playlist.id === selectedPlaylist.id && playlist.title === selectedPlaylist.title;
 
-  const playlistInfosArray = [
-    {
-      id: 1,
-      title: `${selectedPlaylist.musics?.length ?? 'No'} Track${selectedPlaylist.musics?.length > 1 ? 's' : ''}`,
-      icon: <Music />,
-    },
-    { id: 2, title: '01:11:58', icon: <Timer /> },
-    { id: 3, title: selectedPlaylist.artists?.[0].name ?? 'No Artist', icon: <User /> },
-  ];
-
-  const playlistDropDownListItems = [
-    {
-      id: 1,
-      icon: <Edit2 />,
-      title: 'Edit playlist',
-      onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`),
-    },
-    { id: 2, icon: <Trash />, title: 'Delete playlist' },
-    { id: 3, icon: <Share />, title: 'Share' },
-  ];
-
   const playPauseButtonHandler = () => {
     if (!isPlayingPlaylistSelected) {
       setPlaylist(selectedPlaylist);
       return;
     }
     isPlaying ? pause() : play();
+  };
+
+  const onUpdatePlaylist = (data) => {
+    console.log('Your playlist updated successfully => ', data);
   };
 
   const headerVariants = {
@@ -69,6 +52,37 @@ const SidebarPlaylist = memo(() => {
     hidden: { opacity: 0, y: 15 },
     show: { opacity: 1, y: 0 },
   };
+
+  const playlistInfosArray = [
+    {
+      id: 1,
+      title: `${selectedPlaylist.musics?.length ?? 'No'} Track${selectedPlaylist.musics?.length > 1 ? 's' : ''}`,
+      icon: <Music />,
+    },
+    { id: 2, title: '01:11:58', icon: <Timer /> },
+    { id: 3, title: selectedPlaylist.artists?.[0].name ?? 'No Artist', icon: <User /> },
+  ];
+
+  const playlistDropDownListItems =
+    selectedPlaylist.public_playlist === 'private'
+      ? [
+          {
+            id: 1,
+            icon: <Edit2 />,
+            title: 'Edit playlist',
+            onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`, onUpdatePlaylist),
+          },
+          { id: 2, icon: <Trash />, title: 'Delete playlist' },
+          { id: 3, icon: <Heart />, title: 'Add to favorite playlists' },
+        ]
+      : [
+          {
+            id: 1,
+            icon: <AddCircle />,
+            title: 'Add to library',
+          },
+          { id: 2, icon: <Heart />, title: 'Add to favorite playlists' },
+        ];
 
   return (
     <div className="sticky top-10 hidden xl:block">
