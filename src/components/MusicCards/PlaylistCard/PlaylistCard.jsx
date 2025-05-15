@@ -12,9 +12,13 @@ const PlaylistCard = memo(
 
     // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.
     if (isAddPlaylistButton) {
+      const onCreatePlaylist = (data) => {
+        console.log('Your playlist created successfully => ', data);
+      };
+
       return (
         <button
-          onClick={() => openPlaylistModal('Create new playlist.')}
+          onClick={() => openPlaylistModal('Create new playlist.', onCreatePlaylist)}
           className={`h-36 w-full overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[0_8px_16px_2px] shadow-[black]/25 lg:h-48 ${classNames}`}
           style={{ backgroundImage: `url(${addPlaylistImg})` }}
         >
