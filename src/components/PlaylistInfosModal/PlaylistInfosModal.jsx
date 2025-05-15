@@ -60,7 +60,9 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
-  const songsToRender = selectedTab === 'add' ? sugestedSongs : playlistSongs;
+  const songsToRender = (selectedTab === 'add' ? sugestedSongs : playlistSongs).filter((song) =>
+    song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim())
+  );
 
   /*
     since useForm hook only sets defaultValues once on the initial render and wont update them ever again,
@@ -176,31 +178,39 @@ export default function PlaylistInfosModal() {
           </div>
           <SearchInput {...searchInput} />
           <div className="text-secondary-50">
-            <p className="mb-4 font-semibold">
-              {selectedTab === 'add'
-                ? 'Recommended songs to add.'
-                : `You have ${songsToRender.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
-            </p>
+            {!!songsToRender.length && (
+              <p className="mb-4 font-semibold">
+                {selectedTab === 'add'
+                  ? 'Recommended songs to add.'
+                  : `You have ${playlistSongs.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
+              </p>
+            )}
 
             <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
               {songsToRender.length ? (
                 <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
-                  {songsToRender
-                    .filter((song) => song.title.toLowerCase().includes(searchInput.value.trim()))
-                    .map((song) => (
-                      <PlaylistSong
-                        key={song.id}
-                        buttonState={selectedTab}
-                        onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
-                        {...song}
-                      />
-                    ))}
+                  {songsToRender.map((song) => (
+                    <PlaylistSong
+                      key={song.id}
+                      buttonState={selectedTab}
+                      onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
+                      {...song}
+                    />
+                  ))}
                 </div>
               ) : (
-                <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed text-center">
+                <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
                   <Music size={62} />
-                  <p className="text-xl font-semibold">No songs found</p>
-                  <p className="text-sm">Start searching for your tunes!</p>
+                  <p className="text-xl font-semibold">
+                    {searchInput.value.trim().length
+                      ? 'No songs found'
+                      : 'This playlist is empty :('}
+                  </p>
+                  <p className="text-sm">
+                    {searchInput.value.trim().length
+                      ? "Oops! Couldn't find any songs with that keyword. Try searching for something else."
+                      : 'Switch to "Add Songs" tab and start searching for your tunes!'}
+                  </p>
                 </div>
               )}
             </div>
