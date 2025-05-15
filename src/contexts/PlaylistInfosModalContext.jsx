@@ -8,26 +8,36 @@ PlaylistInfosModalContext._hookName = 'usePlaylistInfosModal';
 export function PlaylistInfosModalProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
+  const [onConfirm, setOnConfirm] = useState(null);
 
-  const openPlaylistModal = (modalTitle) => {
+  const openPlaylistModal = (modalTitle, onConfirmHandler) => {
     if (!modalTitle) {
-      throw new Error('Playlist infos modal must have a title');
+      throw new Error('modalTitle is required');
     }
+
+    if (!onConfirmHandler || typeof onConfirmHandler !== 'function') {
+      throw new Error('onConfirm must be a function');
+    }
+
     setModalTitle(modalTitle);
+    setOnConfirm(() => onConfirmHandler);
     setIsOpen(true);
   };
 
-  const closePlaylistModal = () => setIsOpen(false);
+  const closePlaylistModal = () => {
+    setOnConfirm(null);
+    setIsOpen(false);
+  };
 
   return (
     <PlaylistInfosModalContext.Provider
       value={{
         isOpen,
-        setIsOpen,
         modalTitle,
         setModalTitle,
         openPlaylistModal,
         closePlaylistModal,
+        onConfirm,
       }}
     >
       {children}

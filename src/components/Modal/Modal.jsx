@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 
 export default function Modal({
   isOpen,
-  setIsOpen,
   title,
   children,
   onClose,
@@ -14,13 +13,8 @@ export default function Modal({
   cancelButton,
   confirmButtonTitle = 'Confirm',
 }) {
-  const closeHandler = () => {
-    onClose?.();
-    setIsOpen(false);
-  };
-
   return (
-    <Dialog open={isOpen} onClose={closeHandler} className="relative z-50">
+    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <DialogBackdrop
         className={`fixed inset-0 bg-black/30 backdrop-blur-xs transition ${isOpen ? 'opacity-100' : 'opacity-0'}`}
       />
@@ -31,7 +25,7 @@ export default function Modal({
         >
           <div className="mb-2 flex items-center justify-between">
             <DialogTitle className="text-primary-50 text-xl font-semibold">{title}</DialogTitle>
-            <button className="text-white-400 size-6" onClick={closeHandler}>
+            <button className="text-white-400 size-6" onClick={onClose}>
               <CloseCircle size="100%" />
             </button>
           </div>
@@ -43,7 +37,7 @@ export default function Modal({
                 size="sm"
                 type="outline"
                 variant="secondary"
-                onClick={closeHandler}
+                onClick={onClose}
               />
             )}
             {confirmButton && (
@@ -63,7 +57,6 @@ export default function Modal({
 
 Modal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  setIsOpen: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
   onClose: PropTypes.func,

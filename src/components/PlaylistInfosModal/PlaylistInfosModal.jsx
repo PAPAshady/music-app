@@ -50,7 +50,8 @@ export default function PlaylistInfosModal() {
   const [playlistCover, setPlaylistCover] = useState(
     cover ? BASE_URL + cover : playlistDefaultCover
   );
-  const { isOpen, setIsOpen, modalTitle } = useSafeContext(PlaylistInfosModalContext);
+  const { isOpen, closePlaylistModal, modalTitle, onConfirm } =
+    useSafeContext(PlaylistInfosModalContext);
   const {
     register,
     watch,
@@ -85,8 +86,9 @@ export default function PlaylistInfosModal() {
   };
 
   const submitHandler = (data) => {
-    if (!data.cover) delete data.cover; // dont send any image to backend if user removed the cover of their playlist
-    console.log('playlist updated => ', data);
+    // dont send any image to backend if user removed the cover of their playlist
+    if (!data.cover) delete data.cover;
+    onConfirm?.(data);
   };
 
   const addSongHandler = useCallback(
@@ -155,7 +157,7 @@ export default function PlaylistInfosModal() {
   return (
     <Modal
       isOpen={isOpen}
-      setIsOpen={setIsOpen}
+      onClose={closePlaylistModal}
       title={modalTitle}
       onConfirm={handleSubmit(submitHandler)}
       confirmButton
