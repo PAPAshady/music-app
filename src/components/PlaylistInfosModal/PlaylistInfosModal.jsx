@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 const schema = z.object({
   description: z.string().optional(),
   title: z.string().min(1, { message: 'Title is required' }),
+  cover: z.any().optional(),
 });
 
 export default function PlaylistInfosModal() {
@@ -46,12 +47,18 @@ export default function PlaylistInfosModal() {
   const {
     selectedPlaylist: { title, description = '', cover },
   } = useSafeContext(MusicPlayerContext);
+  const [playlistCover, setPlaylistCover] = useState(
+    cover ? BASE_URL + cover : playlistDefaultCover
+  );
   const { isOpen, setIsOpen, modalTitle } = useSafeContext(PlaylistInfosModalContext);
   const {
     register,
     watch,
     handleSubmit,
     reset,
+    clearErrors,
+    setError,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -72,27 +79,13 @@ export default function PlaylistInfosModal() {
     reset({ description: description ?? '', title: title ?? '' });
   }, [reset, description, title]);
 
-  const modalDropDownListItems = [
-    {
-      id: 1,
-      icon: <Image />,
-      title: 'Change photo',
-      onClick: () => fileInputRef.current.click(), // trigger the file input when the user clicks the “Change photo” dropdown item.
-    },
-    { id: 2, icon: <Trash />, title: 'Remove photo' },
-  ];
-
-  const tabButtons = [
-    { id: 1, title: 'View Songs', tabName: 'view' },
-    { id: 2, title: 'Add Songs', tabName: 'add' },
-  ];
-
   const changeTabHandler = (tabName) => {
     searchInput.reset();
     setSelectedTab(tabName);
   };
 
   const submitHandler = (data) => {
+    if (!data.cover) delete data.cover; // dont send any image to backend if user removed the cover of their playlist
     console.log('playlist updated => ', data);
   };
 
@@ -114,6 +107,51 @@ export default function PlaylistInfosModal() {
     [playlistSongs]
   );
 
+  const validateFileInput = (e) => {
+    const selectedImage = e.target.files[0];
+    clearErrors('cover');
+    if (selectedImage) {
+      if (!selectedImage.type.includes('image/')) {
+        setError('cover', { message: 'Playlist cover must be an image.' });
+        return;
+      }
+
+      if (selectedImage.size / 1024 ** 2 > 2) {
+        setError('cover', { message: 'Playlist cover must be less than 2MB' });
+        return;
+      }
+
+      setValue('cover', selectedImage);
+      setPlaylistCover(URL.createObjectURL(selectedImage));
+    }
+  };
+
+  const removePlaylistCover = () => {
+    fileInputRef.current.value = null;
+    setPlaylistCover(playlistDefaultCover);
+    setValue('cover', null);
+  };
+
+  const modalDropDownListItems = [
+    {
+      id: 1,
+      icon: <Image />,
+      title: 'Change photo',
+      onClick: () => fileInputRef.current.click(), // trigger the file input when the user clicks the “Change photo” dropdown item.
+    },
+    {
+      id: 2,
+      icon: <Trash />,
+      title: 'Remove photo',
+      onClick: removePlaylistCover,
+    },
+  ];
+
+  const tabButtons = [
+    { id: 1, title: 'View Songs', tabName: 'view' },
+    { id: 2, title: 'Add Songs', tabName: 'add' },
+  ];
+
   return (
     <Modal
       isOpen={isOpen}
@@ -123,36 +161,43 @@ export default function PlaylistInfosModal() {
       confirmButton
     >
       <div>
-        <div className="flex flex-col items-center gap-3 sm:flex-row">
-          <div className="group xs:w-[140px] relative size-[120px] overflow-hidden rounded-xl min-[420px]:size-[150px] sm:size-[190px] sm:min-w-[190px]">
-            <img
-              className="size-full object-cover"
-              src={cover ? BASE_URL + cover : playlistDefaultCover}
-              alt={title}
-            />
-            <label
-              className="absolute inset-0 size-full bg-black/30 sm:bg-transparent"
-              htmlFor="choose-playlist-img"
+        <div className="items-cente flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-1">
+            <div
+              className={`group xs:w-[140px] relative mt-6 size-[120px] overflow-hidden rounded-xl border transition-colors duration-200 min-[420px]:size-[150px] sm:size-[190px] sm:min-w-[190px] ${errors.cover ? 'border-red' : 'border-transparent'}`}
             >
-              <input
-                ref={fileInputRef}
-                type="file"
-                className="absolute hidden"
-                id="choose-playlist-img"
-              />
-              <div className="text-primary-50 flex size-full flex-col items-center justify-center gap-3 rounded-xl bg-black/50 opacity-0 backdrop-blur-xs transition-all duration-200 group-hover:opacity-100">
-                <span className="size-9 text-center">
-                  <Edit2 size="100%" />
-                </span>
-                <span className="text-sm sm:text-base">Choose picture</span>
-              </div>
-              <div className="absolute top-2 right-2">
-                <DropDownList
-                  menuItems={modalDropDownListItems}
-                  dropDownPlacement={isMobileSmall ? 'bottom start' : 'bottom'}
+              <img className="size-full object-cover" src={playlistCover} alt={title} />
+              <label
+                className="absolute inset-0 size-full bg-black/30 sm:bg-transparent"
+                htmlFor="choose-playlist-img"
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="invisible absolute"
+                  id="choose-playlist-img"
+                  accept="image/*"
+                  onChange={validateFileInput}
                 />
-              </div>
-            </label>
+                <div className="text-primary-50 flex size-full flex-col items-center justify-center gap-3 rounded-xl bg-black/50 opacity-0 backdrop-blur-xs transition-all duration-200 group-hover:opacity-100">
+                  <span className="size-9 text-center">
+                    <Edit2 size="100%" />
+                  </span>
+                  <span className="text-sm sm:text-base">Choose picture</span>
+                </div>
+                <div className="absolute top-2 right-2">
+                  <DropDownList
+                    menuItems={modalDropDownListItems}
+                    dropDownPlacement={isMobileSmall ? 'bottom start' : 'bottom'}
+                  />
+                </div>
+              </label>
+            </div>
+            <span
+              className={`text-red mb-1 text-sm transition-opacity duration-200 ${errors.cover ? 'opacity-100' : 'opacity-0'}`}
+            >
+              {errors.cover?.message}
+            </span>
           </div>
           <div className="flex w-full grow flex-col gap-2">
             <InputField
