@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, memo, useCallback } from 'react';
 import { Image, Trash, Edit2, AddCircle, Play, Music } from 'iconsax-react';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
@@ -96,17 +96,23 @@ export default function PlaylistInfosModal() {
     console.log('playlist updated => ', data);
   };
 
-  const addSongHandler = (songId) => {
-    const isAlreadyAdded = playlistSongs.some((song) => song.id === songId);
-    if (isAlreadyAdded) return;
-    const selectedSong = sugestedSongs.find((song) => song.id === songId);
-    setPlaylistSongs((prev) => [...prev, selectedSong]);
-  };
+  const addSongHandler = useCallback(
+    (songId) => {
+      const isAlreadyAdded = playlistSongs.some((song) => song.id === songId);
+      if (isAlreadyAdded) return;
+      const selectedSong = sugestedSongs.find((song) => song.id === songId);
+      setPlaylistSongs((prev) => [...prev, selectedSong]);
+    },
+    [playlistSongs, sugestedSongs]
+  );
 
-  const removeSongHandler = (songId) => {
-    const newPlaylistSongs = playlistSongs.filter((song) => song.id !== songId);
-    setPlaylistSongs(newPlaylistSongs);
-  };
+  const removeSongHandler = useCallback(
+    (songId) => {
+      const newPlaylistSongs = playlistSongs.filter((song) => song.id !== songId);
+      setPlaylistSongs(newPlaylistSongs);
+    },
+    [playlistSongs]
+  );
 
   return (
     <Modal
@@ -221,39 +227,34 @@ export default function PlaylistInfosModal() {
   );
 }
 
-function PlaylistSong({
-  title,
-  cover,
-  artist = [{ name: 'Unknown artist' }],
-  buttonState,
-  onClick,
-  id,
-}) {
-  return (
-    <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
-      <div className="flex grow items-center gap-2 overflow-hidden">
-        <div className="relative h-[45px] w-[45px] min-w-[45px] overflow-hidden rounded-sm">
-          <img
-            src={cover ? `${BASE_URL}/${cover}` : playlistDefaultCover}
-            className="size-full object-cover"
-          />
-          <button className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <Play size={18} className="fill-white" />
-          </button>
+const PlaylistSong = memo(
+  ({ title, cover, artist = [{ name: 'Unknown artist' }], buttonState, onClick, id }) => {
+    return (
+      <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
+        <div className="flex grow items-center gap-2 overflow-hidden">
+          <div className="relative h-[45px] w-[45px] min-w-[45px] overflow-hidden rounded-sm">
+            <img
+              src={cover ? `${BASE_URL}/${cover}` : playlistDefaultCover}
+              className="size-full object-cover"
+            />
+            <button className="absolute inset-0 flex items-center justify-center bg-black/50">
+              <Play size={18} className="fill-white" />
+            </button>
+          </div>
+          <div className="flex grow flex-col gap-1 overflow-hidden">
+            <p className="truncate text-sm">{title}</p>
+            <p className="text-secondary-200 truncate text-sm">{artist[0].name}</p>
+          </div>
         </div>
-        <div className="flex grow flex-col gap-1 overflow-hidden">
-          <p className="truncate text-sm">{title}</p>
-          <p className="text-secondary-200 truncate text-sm">{artist[0].name}</p>
-        </div>
+        <IconButton
+          icon={buttonState === 'add' ? <AddCircle /> : <Trash />}
+          onClick={() => onClick(id)}
+          classNames="min-w-8 min-h-8 me-1"
+        />
       </div>
-      <IconButton
-        icon={buttonState === 'add' ? <AddCircle /> : <Trash />}
-        onClick={() => onClick(id)}
-        classNames="min-w-8 min-h-8 me-1"
-      />
-    </div>
-  );
-}
+    );
+  }
+);
 
 function TabButton({ title, isActive, tabName, onClick }) {
   return (
@@ -266,6 +267,7 @@ function TabButton({ title, isActive, tabName, onClick }) {
   );
 }
 
+PlaylistSong.displayName = 'PlaylistSong';
 PlaylistSong.propTypes = {
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
