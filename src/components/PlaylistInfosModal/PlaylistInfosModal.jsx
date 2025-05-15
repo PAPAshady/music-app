@@ -27,7 +27,7 @@ export default function PlaylistInfosModal() {
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
-  const [selectedTab, setSelectedTab] = useState('add'); // could be on of the following:  [add, view]
+  const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const [sugestedSongs, setSugestedSongs] = useState([
     { id: 1, title: 'When I Grow Up' },
     { id: 2, title: 'Hate My Self' },
@@ -185,27 +185,16 @@ export default function PlaylistInfosModal() {
             <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
               {songsToRender.length ? (
                 <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
-                  {searchInput.value.trim()
-                    ? songsToRender
-                        .filter((song) =>
-                          song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim())
-                        )
-                        .map((song) => (
-                          <PlaylistSong
-                            key={song.id}
-                            buttonState={selectedTab}
-                            onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
-                            {...song}
-                          />
-                        ))
-                    : songsToRender.map((song) => (
-                        <PlaylistSong
-                          key={song.id}
-                          buttonState={selectedTab}
-                          onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
-                          {...song}
-                        />
-                      ))}
+                  {songsToRender
+                    .filter((song) => song.title.toLowerCase().includes(searchInput.value.trim()))
+                    .map((song) => (
+                      <PlaylistSong
+                        key={song.id}
+                        buttonState={selectedTab}
+                        onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
+                        {...song}
+                      />
+                    ))}
                 </div>
               ) : (
                 <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed text-center">
