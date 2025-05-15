@@ -134,6 +134,13 @@ export default function PlaylistInfosModal() {
     setValue('cover', null);
   };
 
+  const onClose = () => {
+    reset({ title: '', description: '', cover: null });
+    setPlaylistCover(playlistDefaultCover);
+    fileInputRef.current.value = null;
+    closePlaylistModal();
+  };
+
   const modalDropDownListItems = [
     {
       id: 1,
@@ -157,7 +164,7 @@ export default function PlaylistInfosModal() {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={closePlaylistModal}
+      onClose={onClose}
       title={modalTitle}
       onConfirm={handleSubmit(submitHandler)}
       confirmButton
