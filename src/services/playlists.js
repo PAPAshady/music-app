@@ -12,3 +12,7 @@ export const addPlaylist = async (playlistData) => {
   const { data } = await api.post('/playlist/add/', playlist);
   return data;
 };
+
+export const getUserPlaylists = async () => {
+  return await api.get('/playlist/playlists/');
+};
