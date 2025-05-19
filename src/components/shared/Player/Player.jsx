@@ -109,7 +109,7 @@ export default function Player({ classNames, isPlayerPage }) {
             {currentMusic?.title || 'No music is playing'}
           </p>
           <p className="text-primary-100 truncate text-sm">
-            {currentMusic?.artists?.map((artist) => `${artist.name} `) || 'No Artists'}
+            {currentMusic?.artist?.map((artist) => `${artist.name} `) || 'No Artists'}
           </p>
         </div>
       </div>
