@@ -5,10 +5,12 @@ import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
 import { Heart, Play, AddCircle } from 'iconsax-react';
 import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
 import useSafeContext from '../../../hooks/useSafeContext';
+import { BASE_URL } from '../../../services/api';
 
 const PlaylistCard = memo(
-  ({ isAddPlaylistButton, title, numberOfTracks, image = noCoverImg, isFavorite, classNames }) => {
+  ({ isAddPlaylistButton, title, totaltracks, cover, isFavorite, classNames }) => {
     const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
+    const playlistCover = cover ? BASE_URL + cover : noCoverImg;
 
     // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.
     if (isAddPlaylistButton) {
@@ -34,8 +36,9 @@ const PlaylistCard = memo(
 
     return (
       <div
-        className={`group relative flex h-36 min-w-36 items-center justify-center overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[2px_2px_15px_rgba(0,0,0,0.5)] outline outline-transparent transition-all duration-300 hover:outline-white lg:h-48 lg:min-w-[152px] lg:outline-none xl:min-w-[140px] ${classNames}`}
-        style={{ backgroundImage: `url(${image})` }}
+        className={`group relative flex h-36 min-w-36 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[2px_2px_15px_rgba(0,0,0,0.5)] outline outline-transparent transition-all duration-300 hover:outline-white lg:h-48 lg:min-w-[152px] lg:outline-none xl:min-w-[140px] ${classNames}`}
+        style={{ backgroundImage: `url(${playlistCover})` }}
+        title={title}
       >
         <div className="flex size-full flex-col justify-between bg-gradient-to-t from-[rgba(0,0,0,.7)] to-transparent p-2">
           <div className="p-1 text-end">
@@ -55,7 +58,9 @@ const PlaylistCard = memo(
 
           <div>
             <h3 className="text-white-50 mb-1 cursor-pointer truncate text-base">{title}</h3>
-            <p className="text-sm text-white">{numberOfTracks} Tracks</p>
+            <p className="text-sm text-white">
+              {totaltracks} {totaltracks > 1 ? 'tracks' : 'track'}
+            </p>
           </div>
         </div>
       </div>
@@ -65,8 +70,8 @@ const PlaylistCard = memo(
 PlaylistCard.propTypes = {
   isAddPlaylistButton: PropTypes.bool,
   title: PropTypes.string,
-  numberOfTracks: PropTypes.number,
-  image: PropTypes.string,
+  totaltracks: PropTypes.number,
+  cover: PropTypes.string,
   isFavorite: PropTypes.bool,
   classNames: PropTypes.string,
 };
