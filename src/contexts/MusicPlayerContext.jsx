@@ -85,7 +85,7 @@ export function MusicPlayerProvider({ children }) {
   useEffect(() => {
     // dont try to play music onMount (because there is no music on Mount) to avoid errors.
     if (playlist.musics?.length) {
-      music.src = BASE_URL + playlist.musics?.[currentSongIndex]?.musicfile;
+      music.src = BASE_URL + playlist.musics?.[currentSongIndex]?.file;
       prevSongIndex.current = currentSongIndex;
       play();
     }
