@@ -16,6 +16,8 @@ import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import IconButton from '../Buttons/IconButton/IconButton';
+import { useQuery } from '@tanstack/react-query';
+import { getAllMusicsQueryOptions } from '../../queries/musics';
 import PropTypes from 'prop-types';
 
 const schema = z.object({
@@ -29,20 +31,9 @@ export default function PlaylistInfosModal() {
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
-  const [sugestedSongs, setSugestedSongs] = useState([
-    { id: 1, title: 'When I Grow Up' },
-    { id: 2, title: 'Hate My Self' },
-    { id: 3, title: 'Like This' },
-    { id: 4, title: 'Options' },
-    { id: 6, title: 'Thinking' },
-    { id: 7, title: 'WHY' },
-    { id: 8, title: 'When I Grow Up' },
-    { id: 9, title: 'Hate My Self' },
-    { id: 10, title: 'Like This' },
-    { id: 11, title: 'Options' },
-    { id: 12, title: 'Thinking' },
-    { id: 13, title: 'WHY' },
-  ]);
+  const {
+    data: { data: suggestedSongs },
+  } = useQuery(getAllMusicsQueryOptions());
   const [playlistSongs, setPlaylistSongs] = useState([]);
   const {
     selectedPlaylist: { title, description = '', cover },
@@ -68,7 +59,8 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
-  const songsToRender = (selectedTab === 'add' ? sugestedSongs : playlistSongs).filter((song) =>
+  console.log(suggestedSongs);
+  const songsToRender = (selectedTab === 'add' ? suggestedSongs : playlistSongs).filter((song) =>
     song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim())
   );
 
@@ -95,10 +87,10 @@ export default function PlaylistInfosModal() {
     (songId) => {
       const isAlreadyAdded = playlistSongs.some((song) => song.id === songId);
       if (isAlreadyAdded) return;
-      const selectedSong = sugestedSongs.find((song) => song.id === songId);
+      const selectedSong = suggestedSongs.find((song) => song.id === songId);
       setPlaylistSongs((prev) => [...prev, selectedSong]);
     },
-    [playlistSongs, sugestedSongs]
+    [playlistSongs, suggestedSongs]
   );
 
   const removeSongHandler = useCallback(
@@ -282,7 +274,7 @@ export default function PlaylistInfosModal() {
 }
 
 const PlaylistSong = memo(
-  ({ title, cover, artist = [{ name: 'Unknown artist' }], buttonState, onClick, id }) => {
+  ({ title, cover, artists = [{ name: 'Unknown artist' }], buttonState, onClick, id }) => {
     return (
       <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
         <div className="flex grow items-center gap-2 overflow-hidden">
@@ -297,7 +289,7 @@ const PlaylistSong = memo(
           </div>
           <div className="flex grow flex-col gap-1 overflow-hidden">
             <p className="truncate text-sm">{title}</p>
-            <p className="text-secondary-200 truncate text-sm">{artist[0].name}</p>
+            <p className="text-secondary-200 truncate text-sm">{artists[0].name}</p>
           </div>
         </div>
         <IconButton
@@ -325,7 +317,7 @@ PlaylistSong.displayName = 'PlaylistSong';
 PlaylistSong.propTypes = {
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
-  artist: PropTypes.array,
+  artists: PropTypes.array,
   buttonState: PropTypes.oneOf(['add', 'view']),
   onClick: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,

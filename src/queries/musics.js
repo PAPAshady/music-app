@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getAllMusics } from '../services/musics';
 
-export const getAllMusicsQueries = () => {
+export const getAllMusicsQueryOptions = () => {
   return queryOptions({
     queryKey: ['musics'],
     queryFn: getAllMusics,
