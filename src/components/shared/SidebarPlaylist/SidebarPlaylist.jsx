@@ -64,7 +64,7 @@ const SidebarPlaylist = memo(() => {
   ];
 
   const playlistDropDownListItems =
-    selectedPlaylist.public_playlist === 'private'
+    selectedPlaylist.playlist_public === 'private'
       ? [
           {
             id: 1,
