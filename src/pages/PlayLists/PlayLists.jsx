@@ -4,18 +4,37 @@ import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
-import { shuffleArray } from '../../utils/arrayUtils';
-import { songs, genres, playlists as allPlaylists } from '../../data';
+import { songs, genres, playlists } from '../../data';
+import { useQuery } from '@tanstack/react-query';
+import { getUserPlaylistsQueryOptions } from '../../queries/playlists';
 import PropTypes from 'prop-types';
 
 export default function PlayLists() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const userPlaylists = useQuery(getUserPlaylistsQueryOptions());
+  const privatePlaylists = userPlaylists.data?.playlist
+    ? [{ id: 0, isAddPlaylistButton: true }, ...userPlaylists.data.playlist]
+    : [{ id: 0, isAddPlaylistButton: true }];
 
   const playlistsSections = [
-    // { id: 1, title: 'Your Playlists', numberOfPlayLists: 8 },
-    { id: 1, title: 'Updated Playlists', numberOfPlayLists: 2 },
-    { id: 2, title: 'Subscribed playlists' },
-    { id: 3, title: 'Popular playlists based on you', numberOfPlayLists: 5 },
+    {
+      id: 1,
+      title: 'Updated Playlists',
+      playlists: userPlaylists.data?.playlist,
+      isLoading: userPlaylists.isLoading,
+    },
+    {
+      id: 2,
+      title: 'Subscribed playlists',
+      playlists: userPlaylists.data?.playlist,
+      isLoading: userPlaylists.isLoading,
+    },
+    {
+      id: 3,
+      title: 'Popular playlists based on you',
+      playlists,
+      numberOfPlayLists: 5,
+    },
   ];
 
   return (
@@ -32,21 +51,22 @@ export default function PlayLists() {
         {/* Render the "Add New Playlist" button as the first item in the playlists list. */}
         {isDesktop ? (
           <div className="flex flex-wrap gap-6">
-            {[{ id: 0, isAddPlaylistButton: true }, ...allPlaylists].slice(0, 8).map((playList) => (
+            {privatePlaylists.slice(0, 8).map((playList) => (
               <PlaylistCard key={playList.id} {...playList} classNames="grow !max-w-[170px]" />
             ))}
           </div>
         ) : (
-          <PlaylistsSlider
-            playlists={[{ id: 0, isAddPlaylistButton: true }, ...allPlaylists]}
-            numberOfPlaylists={8}
-          />
+          <PlaylistsSlider playlists={privatePlaylists} isLoading={userPlaylists.isLoading} />
         )}
       </div>
-      {playlistsSections.map(({ id, title, numberOfPlayLists }) => (
+      {playlistsSections.map(({ id, title, playlists, numberOfPlayLists, isLoading }) => (
         <div key={id}>
           <SectionTitle title={title} />
-          <PlaylistsContainer numberOfPlayLists={numberOfPlayLists} />
+          <PlaylistsContainer
+            playlists={playlists}
+            isLoading={isLoading}
+            numberOfPlayLists={numberOfPlayLists}
+          />
         </div>
       ))}
       <div>
@@ -66,29 +86,34 @@ export default function PlayLists() {
 }
 
 function PlaylistsContainer({
-  playlists = allPlaylists,
-  numberOfPlayLists = playlists.length,
+  playlists = [],
+  numberOfPlayLists = playlists?.length,
   classNames = 'grow !max-w-[170px]',
+  isLoading,
 }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const shuffledPlaylists = shuffleArray(playlists);
   return (
     <>
       {isDesktop ? (
         <div className="flex flex-wrap gap-6">
-          {shuffledPlaylists.slice(0, numberOfPlayLists).map((playList) => (
+          {playlists.slice(0, numberOfPlayLists).map((playList) => (
             <PlaylistCard key={playList.id} {...playList} classNames={classNames} />
           ))}
         </div>
       ) : (
-        <PlaylistsSlider playlists={shuffledPlaylists} numberOfPlaylists={numberOfPlayLists} />
+        <PlaylistsSlider
+          isLoading={isLoading}
+          playlists={playlists}
+          numberOfPlaylists={numberOfPlayLists}
+        />
       )}
     </>
   );
 }
 
 PlaylistsContainer.propTypes = {
-  playlists: PropTypes.array,
+  playlists: PropTypes.array.isRequired,
   numberOfPlayLists: PropTypes.number,
+  isLoading: PropTypes.bool.isRequired,
   classNames: PropTypes.string,
 };
