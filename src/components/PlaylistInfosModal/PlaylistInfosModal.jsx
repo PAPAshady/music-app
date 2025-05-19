@@ -31,9 +31,7 @@ export default function PlaylistInfosModal() {
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
-  const {
-    data: { data: suggestedSongs },
-  } = useQuery(getAllMusicsQueryOptions());
+  const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
   const [playlistSongs, setPlaylistSongs] = useState([]);
   const {
     selectedPlaylist: { title, description = '', cover },
@@ -59,9 +57,8 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
-  console.log(suggestedSongs);
-  const songsToRender = (selectedTab === 'add' ? suggestedSongs : playlistSongs).filter((song) =>
-    song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim())
+  const songsToRender = (selectedTab === 'add' ? suggestedSongs?.data || [] : playlistSongs).filter(
+    (song) => song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim())
   );
 
   /*
@@ -87,7 +84,7 @@ export default function PlaylistInfosModal() {
     (songId) => {
       const isAlreadyAdded = playlistSongs.some((song) => song.id === songId);
       if (isAlreadyAdded) return;
-      const selectedSong = suggestedSongs.find((song) => song.id === songId);
+      const selectedSong = suggestedSongs?.data.find((song) => song.id === songId);
       setPlaylistSongs((prev) => [...prev, selectedSong]);
     },
     [playlistSongs, suggestedSongs]
