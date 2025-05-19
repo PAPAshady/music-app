@@ -79,7 +79,11 @@ export default function PlayLists() {
       </div>
       <div>
         <SectionTitle title="Playlists You Recently Seen" />
-        <PlaylistsContainer numberOfPlayLists={5} />
+        <PlaylistsContainer
+          playlists={userPlaylists.data?.playlist}
+          isLoading={userPlaylists.isLoading}
+          numberOfPlayLists={5}
+        />
       </div>
     </div>
   );
