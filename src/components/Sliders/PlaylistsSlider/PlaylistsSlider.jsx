@@ -8,7 +8,7 @@ import 'swiper/css';
 export default function PlaylistsSlider({
   playlists,
   isLoading,
-  numberOfPlaylists = playlists.length,
+  numberOfPlaylists = playlists?.length,
 }) {
   return (
     <div className="mx-auto w-[95%] max-w-[940px]">
@@ -41,7 +41,8 @@ export default function PlaylistsSlider({
                   <PlaylistCardSkeleton />
                 </SwiperSlide>
               ))
-          : playlists.slice(0, numberOfPlaylists).map((playlist) => (
+          : playlists &&
+            playlists.slice(0, numberOfPlaylists).map((playlist) => (
               <SwiperSlide
                 key={playlist.id}
                 className="xs:max-w-[295px] p-[1px] min-[480px]:max-w-[226px] sm:max-w-[190px] md:max-w-[205px] lg:p-0 xl:max-w-[190px]"
