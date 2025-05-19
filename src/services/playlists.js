@@ -14,5 +14,6 @@ export const addPlaylist = async (playlistData) => {
 };
 
 export const getUserPlaylists = async () => {
-  return await api.get('/playlist/playlists/');
+  const { data } = await api.get('/playlist/playlists/');
+  return data;
 };
