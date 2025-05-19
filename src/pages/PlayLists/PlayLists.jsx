@@ -11,8 +11,9 @@ import { getUserPlaylistsQueryOptions } from '../../queries/playlists';
 import PropTypes from 'prop-types';
 
 export default function PlayLists() {
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
   const userPlaylists = useQuery(getUserPlaylistsQueryOptions());
+
+  // Render the "Add New Playlist" button as the first item in the playlists list.
   const privatePlaylists = userPlaylists.data?.playlist
     ? [{ id: 0, isAddPlaylistButton: true }, ...userPlaylists.data.playlist]
     : [{ id: 0, isAddPlaylistButton: true }];
@@ -20,18 +21,24 @@ export default function PlayLists() {
   const playlistsSections = [
     {
       id: 1,
+      title: 'Your Playtlists',
+      playlists: privatePlaylists,
+      isLoading: userPlaylists.isLoading,
+    },
+    {
+      id: 2,
       title: 'Updated Playlists',
       playlists: userPlaylists.data?.playlist,
       isLoading: userPlaylists.isLoading,
     },
     {
-      id: 2,
+      id: 3,
       title: 'Subscribed playlists',
       playlists: userPlaylists.data?.playlist,
       isLoading: userPlaylists.isLoading,
     },
     {
-      id: 3,
+      id: 4,
       title: 'Popular playlists based on you',
       playlists,
       numberOfPlayLists: 5,
@@ -46,19 +53,6 @@ export default function PlayLists() {
             <TracksCard {...track} />
           </div>
         ))}
-      </div>
-      <div>
-        <SectionTitle title="Your Playlists" />
-        {/* Render the "Add New Playlist" button as the first item in the playlists list. */}
-        {isDesktop ? (
-          <div className="flex flex-wrap gap-6">
-            {privatePlaylists.slice(0, 8).map((playList) => (
-              <PlaylistCard key={playList.id} {...playList} classNames="grow !max-w-[170px]" />
-            ))}
-          </div>
-        ) : (
-          <PlaylistsSlider playlists={privatePlaylists} isLoading={userPlaylists.isLoading} />
-        )}
       </div>
       {playlistsSections.map(({ id, title, playlists, numberOfPlayLists, isLoading }) => (
         <div key={id}>
@@ -105,7 +99,7 @@ function PlaylistsContainer({
             ? Array(7)
                 .fill()
                 .map((_, index) => (
-                  <div key={index} className='w-[170px] max-w-[170px]'>
+                  <div key={index} className="w-[170px] max-w-[170px]">
                     <PlaylistCardSkeleton />
                   </div>
                 ))
