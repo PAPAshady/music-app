@@ -3,6 +3,7 @@ import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
+import PlaylistCardSkeleton from '../../components/MusicCards/PlaylistCard/PlaylistCardSkeleton';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import { songs, genres, playlists } from '../../data';
 import { useQuery } from '@tanstack/react-query';
@@ -100,9 +101,19 @@ function PlaylistsContainer({
     <>
       {isDesktop ? (
         <div className="flex flex-wrap gap-6">
-          {playlists.slice(0, numberOfPlayLists).map((playList) => (
-            <PlaylistCard key={playList.id} {...playList} classNames={classNames} />
-          ))}
+          {isLoading
+            ? Array(7)
+                .fill()
+                .map((_, index) => (
+                  <div key={index} className='w-[170px] max-w-[170px]'>
+                    <PlaylistCardSkeleton />
+                  </div>
+                ))
+            : playlists
+                .slice(0, numberOfPlayLists)
+                .map((playList) => (
+                  <PlaylistCard key={playList.id} {...playList} classNames={classNames} />
+                ))}
         </div>
       ) : (
         <PlaylistsSlider
