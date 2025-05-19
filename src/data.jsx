@@ -13,16 +13,6 @@ import trackCardImg12 from './assets/images/covers/track-cover-12.jpg';
 import trackCardImg13 from './assets/images/covers/track-cover-13.jpg';
 import trackCardImg14 from './assets/images/covers/track-cover-14.jpg';
 import trackCardImg15 from './assets/images/covers/track-cover-15.jpg';
-import playlistCoverImg1 from './assets/images/covers/playlist-cover-1.jpg';
-import playlistCoverImg2 from './assets/images/covers/playlist-cover-2.jpg';
-import playlistCoverImg3 from './assets/images/covers/playlist-cover-3.jpg';
-import playlistCoverImg4 from './assets/images/covers/playlist-cover-4.jpg';
-import playlistCoverImg5 from './assets/images/covers/playlist-cover-5.png';
-import playlistCoverImg6 from './assets/images/covers/playlist-cover-6.jpg';
-import playlistCoverImg7 from './assets/images/covers/playlist-cover-7.jpg';
-import playlistCoverImg8 from './assets/images/covers/playlist-cover-8.jpg';
-import playlistCoverImg9 from './assets/images/covers/playlist-cover-9.jpg';
-import playlistCoverImg10 from './assets/images/covers/playlist-cover-10.jpg';
 import albumCover1 from './assets/images/covers/album-cover-1.jpg';
 import albumCover2 from './assets/images/covers/album-cover-2.jpg';
 import albumCover3 from './assets/images/covers/album-cover-3.jpg';
@@ -149,22 +139,22 @@ export const genres = [
 ];
 
 export const playlists = [
-  { id: 1, title: 'Arcane', numberOfTracks: 87, image: playlistCoverImg5, isFavorite: true },
-  { id: 2, title: 'Eyes', numberOfTracks: 256, image: playlistCoverImg2 },
-  { id: 3, title: 'No Shame', numberOfTracks: 98, image: playlistCoverImg3, isFavorite: true },
-  { id: 4, title: 'Till Dusk', numberOfTracks: 42, image: playlistCoverImg4 },
-  { id: 5, title: 'V.E.T', numberOfTracks: 86, image: playlistCoverImg1, isFavorite: true },
-  { id: 6, title: 'Pop Hits', numberOfTracks: 86, image: playlistCoverImg6 },
+  { id: 1, title: 'Arcane', totaltracks: 87, cover: 'null', isFavorite: true },
+  { id: 2, title: 'Eyes', totaltracks: 256, cover: 'null' },
+  { id: 3, title: 'No Shame', totaltracks: 98, cover: 'null', isFavorite: true },
+  { id: 4, title: 'Till Dusk', totaltracks: 42, cover: 'null' },
+  { id: 5, title: 'V.E.T', totaltracks: 86, cover: 'null', isFavorite: true },
+  { id: 6, title: 'Pop Hits', totaltracks: 86, cover: 'null' },
   {
     id: 7,
     title: 'Best Of Hip-Hop',
-    numberOfTracks: 256,
-    image: playlistCoverImg7,
+    totaltracks: 256,
+    cover: 'null',
     isFavorite: true,
   },
-  { id: 8, title: 'Rock & Roll', numberOfTracks: 98, image: playlistCoverImg8 },
-  { id: 9, title: 'Electronics', numberOfTracks: 134, image: playlistCoverImg9, isFavorite: true },
-  { id: 10, title: 'Bombs', numberOfTracks: 111, image: playlistCoverImg10 },
+  { id: 8, title: 'Rock & Roll', totaltracks: 98, cover: 'null' },
+  { id: 9, title: 'Electronics', totaltracks: 134, cover: 'null', isFavorite: true },
+  { id: 10, title: 'Bombs', totaltracks: 111, cover: 'null' },
 ];
 
 export const albums = [
