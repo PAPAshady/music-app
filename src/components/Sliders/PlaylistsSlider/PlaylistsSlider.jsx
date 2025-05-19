@@ -2,9 +2,14 @@ import PropTypes from 'prop-types';
 import PlaylistCard from '../../MusicCards/PlaylistCard/PlaylistCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper/modules';
+import PlaylistCardSkeleton from '../../MusicCards/PlaylistCard/PlaylistCardSkeleton';
 import 'swiper/css';
 
-export default function PlaylistsSlider({ playlists, numberOfPlaylists = playlists.length }) {
+export default function PlaylistsSlider({
+  playlists,
+  isLoading,
+  numberOfPlaylists = playlists.length,
+}) {
   return (
     <div className="mx-auto w-[95%] max-w-[940px]">
       <Swiper
@@ -28,14 +33,22 @@ export default function PlaylistsSlider({ playlists, numberOfPlaylists = playlis
         }}
         className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
       >
-        {playlists.slice(0, numberOfPlaylists).map((playlist) => (
-          <SwiperSlide
-            key={playlist.id}
-            className="xs:max-w-[295px] p-[1px] min-[480px]:max-w-[226px] sm:max-w-[190px] md:max-w-[205px] lg:p-0 xl:max-w-[190px]"
-          >
-            <PlaylistCard {...playlist} />
-          </SwiperSlide>
-        ))}
+        {isLoading
+          ? Array(10)
+              .fill()
+              .map((_, index) => (
+                <SwiperSlide key={index}>
+                  <PlaylistCardSkeleton />
+                </SwiperSlide>
+              ))
+          : playlists.slice(0, numberOfPlaylists).map((playlist) => (
+              <SwiperSlide
+                key={playlist.id}
+                className="xs:max-w-[295px] p-[1px] min-[480px]:max-w-[226px] sm:max-w-[190px] md:max-w-[205px] lg:p-0 xl:max-w-[190px]"
+              >
+                <PlaylistCard {...playlist} />
+              </SwiperSlide>
+            ))}
       </Swiper>
     </div>
   );
@@ -43,5 +56,6 @@ export default function PlaylistsSlider({ playlists, numberOfPlaylists = playlis
 
 PlaylistsSlider.propTypes = {
   playlists: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   numberOfPlaylists: PropTypes.number,
 };
