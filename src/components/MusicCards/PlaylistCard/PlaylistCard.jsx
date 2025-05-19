@@ -14,7 +14,7 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
   const { setSelectedPlaylist } = useSafeContext(MusicPlayerContext);
   const { openMobilePlaylist } = useSafeContext(MobilePlaylistContext);
-  const playlistCover = cover ? BASE_URL + cover : noCoverImg;
+  const playlistCover = cover !== 'null' ? BASE_URL + cover : noCoverImg;
 
   const showSelectedPlaylist = () => {
     setSelectedPlaylist(playlist);
