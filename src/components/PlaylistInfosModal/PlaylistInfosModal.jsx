@@ -36,9 +36,7 @@ export default function PlaylistInfosModal() {
   const {
     selectedPlaylist: { title, description = '', cover },
   } = useSafeContext(MusicPlayerContext);
-  const [playlistCover, setPlaylistCover] = useState(
-    cover ? BASE_URL + cover : playlistDefaultCover
-  );
+  const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const { isOpen, closePlaylistModal, modalTitle, onConfirm } =
     useSafeContext(PlaylistInfosModalContext);
   const {
@@ -63,11 +61,13 @@ export default function PlaylistInfosModal() {
 
   /*
     since useForm hook only sets defaultValues once on the initial render and wont update them ever again,
-    we have to update them manually. (in case user selected another playlist/album)
+    we have to update them manually. (in case user selected another playlist/album or they closed and re-opened the modal).
+    we also have to update playlist cover if user selcted another playlist or closed and re-opened the modal
   */
   useEffect(() => {
-    reset({ description: description ?? '', title: title ?? '' });
-  }, [reset, description, title]);
+    reset({ description: description || '', title: title || '' });
+    setPlaylistCover(cover ? BASE_URL + cover : playlistDefaultCover);
+  }, [reset, description, title, cover, isOpen]);
 
   const changeTabHandler = (tabName) => {
     searchInput.reset();
@@ -124,10 +124,14 @@ export default function PlaylistInfosModal() {
   };
 
   const onClose = () => {
-    reset({ title: '', description: '', cover: null });
-    setPlaylistCover(playlistDefaultCover);
-    fileInputRef.current.value = null;
     closePlaylistModal();
+    // To avoid an unpolished visual effect where the playlist title, description, and cover appear empty
+    // during the modal's closing transition, we delay the reset until the transition completes.
+    setTimeout(() => {
+      reset({ title: '', description: '', cover: null });
+      setPlaylistCover(playlistDefaultCover);
+      fileInputRef.current.value = null;
+    }, 150);
   };
 
   const modalDropDownListItems = [
