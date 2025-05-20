@@ -89,7 +89,7 @@ const SidebarPlaylist = memo(() => {
       <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
         <AnimatePresence mode="wait">
           <motion.div
-            key={`playlist-header-${selectedPlaylist.id}`}
+            key={`playlist-header-${selectedPlaylist.title}-${selectedPlaylist.id}`}
             variants={headerVariants}
             initial="initial"
             animate="animate"
@@ -142,7 +142,7 @@ const SidebarPlaylist = memo(() => {
         </AnimatePresence>
         <AnimatePresence mode="wait">
           <motion.div
-            key={selectedPlaylist.id}
+            key={`${selectedPlaylist.title}-${selectedPlaylist.id}`}
             variants={listVariants}
             initial="hidden"
             animate="show"
