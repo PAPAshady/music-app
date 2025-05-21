@@ -167,7 +167,7 @@ export default function PlaylistInfosModal() {
         <div className="items-cente flex flex-col gap-3 sm:flex-row">
           <div className="flex flex-col gap-1">
             <div
-              className={`group xs:w-[140px] relative mt-6 size-[120px] overflow-hidden rounded-xl border transition-colors duration-200 min-[420px]:size-[150px] sm:size-[190px] sm:min-w-[190px] ${errors.cover ? 'border-red' : 'border-transparent'}`}
+              className={`group relative mx-auto mt-6 size-[150px] overflow-hidden rounded-xl border transition-colors duration-200 min-[480px]:size-[180px] sm:size-[190px] sm:min-w-[190px] ${errors.cover ? 'border-red' : 'border-transparent'}`}
             >
               <img className="size-full object-cover" src={playlistCover} alt={title} />
               <label
