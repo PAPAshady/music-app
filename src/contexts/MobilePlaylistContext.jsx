@@ -2,6 +2,7 @@ import { createContext, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import MusicPlayerContext from './MusicPlayerContext';
 import useSafeContext from '../hooks/useSafeContext';
+import useMediaQuery from '../hooks/useMediaQuery';
 
 const MobilePlaylistContext = createContext();
 MobilePlaylistContext._providerName = 'MobilePlaylistProvider';
@@ -10,6 +11,7 @@ MobilePlaylistContext._hookName = 'useMobilePlaylist';
 export function MobilePlaylistProvider({ children }) {
   const [isMobilePlaylistOpen, setIsMobilePlaylistOpen] = useState(false);
   const { setSelectedPlaylist, playlist } = useSafeContext(MusicPlayerContext);
+  const isLargeTablet = useMediaQuery('(max-width: 1280px)');
 
   useEffect(() => {
     const handlePopState = () => {
@@ -17,15 +19,19 @@ export function MobilePlaylistProvider({ children }) {
         setIsMobilePlaylistOpen(false);
       }
     };
+    // if user clicks on back button of their device, mobilePlaylist will close
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, [isMobilePlaylistOpen]);
 
   const openMobilePlaylist = useCallback(() => {
     setIsMobilePlaylistOpen(true);
-    // if user clicks on back button of their device, mobilePlaylist will close
-    !isMobilePlaylistOpen && window.history.pushState({ mobilePlaylist: true }, '');
-  }, [isMobilePlaylistOpen]);
+
+    // do not add a history if user is not using a mobile/tablet device or if mobile playlist is already open
+    if (!isMobilePlaylistOpen && isLargeTablet) {
+      window.history.pushState({ mobilePlaylist: true }, '');
+    }
+  }, [isMobilePlaylistOpen, isLargeTablet]);
 
   const closeMobilePlaylist = useCallback(() => {
     window.history.back();
