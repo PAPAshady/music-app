@@ -65,8 +65,16 @@ export default function MobilePlaylist() {
     }
   };
 
+  const onEditPlaylist = (data) => {
+    console.log('Your playlist updated successfully => ', data);
+  };
+
   const playButtons = [
-    { id: 1, icon: <Edit />, onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`) },
+    {
+      id: 1,
+      icon: <Edit />,
+      onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`, onEditPlaylist),
+    },
     { id: 2, icon: <Additem />, onClick: () => setIsAddMenuOpen(true) },
   ];
 
