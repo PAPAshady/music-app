@@ -221,8 +221,8 @@ export default function PlaylistInfosModal() {
         </div>
 
         {/* 
-          This condtion is wrong because this section will appear to users if they selecte an album with mobile devices.
-          users should not be able to edit an album infos. so currently we must have to wait for the backend to include a flag in albums resoponse to determine if user selected an album or playlist 
+          This condtion is wrong because this section will not appear to users with mobile devices.
+          so currently we must have to wait for the backend to include a flag in albums resoponse to determine if user selected an album or playlist.
         */}
         {!isSmallDesktop && (
           <div className="flex flex-col gap-4">
