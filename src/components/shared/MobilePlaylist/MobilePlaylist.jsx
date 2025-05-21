@@ -121,7 +121,7 @@ export default function MobilePlaylist() {
         <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center min-[360px]:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
           <img
             src={playlistCover}
-            className="size-46 rounded-md sm:size-56 md:size-64 lg:size-80"
+            className="size-46 rounded-md object-cover sm:size-56 md:size-64 lg:size-80"
             alt={selectedPlaylist.title}
           />
           <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
