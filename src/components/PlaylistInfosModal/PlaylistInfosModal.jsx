@@ -35,7 +35,7 @@ export default function PlaylistInfosModal() {
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
   const [playlistSongs, setPlaylistSongs] = useState([]);
   const {
-    selectedPlaylist: { title, description = '', cover, playlist_public },
+    selectedPlaylist: { title, description = '', cover },
   } = useSafeContext(MusicPlayerContext);
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const { isOpen, closePlaylistModal, modalTitle, onConfirm } =
@@ -219,6 +219,11 @@ export default function PlaylistInfosModal() {
             />
           </div>
         </div>
+
+        {/* 
+          This condtion is wrong because this section will appear to users if they selecte an album with mobile devices.
+          users should not be able to edit an album infos. so currently we must have to wait for the backend to include a flag in albums resoponse to determine if user selected an album or playlist 
+        */}
         {!isSmallDesktop && (
           <div className="flex flex-col gap-4">
             <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
