@@ -219,7 +219,7 @@ export default function PlaylistInfosModal() {
             />
           </div>
         </div>
-        {!isSmallDesktop && playlist_public === 'private' && (
+        {!isSmallDesktop && (
           <div className="flex flex-col gap-4">
             <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
               {tabButtons.map((button) => (
