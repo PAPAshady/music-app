@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-export default function ArtistsSlider({ artists, isLoading }) {
+export default function ArtistsSlider({ artist, isLoading }) {
   return (
     <div className="mx-auto w-[97%] max-w-[940px]">
       <Swiper
@@ -37,7 +37,7 @@ export default function ArtistsSlider({ artists, isLoading }) {
                   <ArtistCardSkeleton />
                 </SwiperSlide>
               ))
-          : artists?.data.map((artist) => (
+          : artist?.data.map((artist) => (
               <SwiperSlide key={artist.id} className="pb-11">
                 <ArtistCard {...artist} />
               </SwiperSlide>
@@ -48,6 +48,6 @@ export default function ArtistsSlider({ artists, isLoading }) {
 }
 
 ArtistsSlider.propTypes = {
-  artists: PropTypes.array,
+  artist: PropTypes.object,
   isLoading: PropTypes.bool,
 };
