@@ -29,12 +29,13 @@ const schema = z.object({
 export default function PlaylistInfosModal() {
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
+  const isSmallDesktop = useMediaQuery('(max-width: 1280px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
   const [playlistSongs, setPlaylistSongs] = useState([]);
   const {
-    selectedPlaylist: { title, description = '', cover },
+    selectedPlaylist: { title, description = '', cover, playlist_public },
   } = useSafeContext(MusicPlayerContext);
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const { isOpen, closePlaylistModal, modalTitle, onConfirm } =
@@ -218,57 +219,59 @@ export default function PlaylistInfosModal() {
             />
           </div>
         </div>
-        <div className="flex flex-col gap-4">
-          <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
-            {tabButtons.map((button) => (
-              <TabButton
-                key={button.id}
-                isActive={button.title.toLowerCase().includes(selectedTab)}
-                onClick={changeTabHandler}
-                {...button}
-              />
-            ))}
-          </div>
-          <SearchInput {...searchInput} />
-          <div className="text-secondary-50">
-            {!!songsToRender.length && (
-              <p className="mb-4 font-semibold">
-                {selectedTab === 'add'
-                  ? 'Recommended songs to add.'
-                  : `You have ${playlistSongs.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
-              </p>
-            )}
-
-            <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
-              {songsToRender.length ? (
-                <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
-                  {songsToRender.map((song) => (
-                    <PlaylistSong
-                      key={song.id}
-                      buttonState={selectedTab}
-                      onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
-                      {...song}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
-                  <Music size={62} />
-                  <p className="text-xl font-semibold">
-                    {searchInput.value.trim().length
-                      ? 'No songs found'
-                      : 'This playlist is empty :('}
-                  </p>
-                  <p className="text-sm">
-                    {searchInput.value.trim().length
-                      ? "Oops! Couldn't find any songs with that keyword. Try searching for something else."
-                      : 'Switch to "Add Songs" tab and start searching for your tunes!'}
-                  </p>
-                </div>
+        {!isSmallDesktop && playlist_public === 'private' && (
+          <div className="flex flex-col gap-4">
+            <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
+              {tabButtons.map((button) => (
+                <TabButton
+                  key={button.id}
+                  isActive={button.title.toLowerCase().includes(selectedTab)}
+                  onClick={changeTabHandler}
+                  {...button}
+                />
+              ))}
+            </div>
+            <SearchInput {...searchInput} />
+            <div className="text-secondary-50">
+              {!!songsToRender.length && (
+                <p className="mb-4 font-semibold">
+                  {selectedTab === 'add'
+                    ? 'Recommended songs to add.'
+                    : `You have ${playlistSongs.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
+                </p>
               )}
+
+              <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
+                {songsToRender.length ? (
+                  <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
+                    {songsToRender.map((song) => (
+                      <PlaylistSong
+                        key={song.id}
+                        buttonState={selectedTab}
+                        onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
+                        {...song}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
+                    <Music size={62} />
+                    <p className="text-xl font-semibold">
+                      {searchInput.value.trim().length
+                        ? 'No songs found'
+                        : 'This playlist is empty :('}
+                    </p>
+                    <p className="text-sm">
+                      {searchInput.value.trim().length
+                        ? "Oops! Couldn't find any songs with that keyword. Try searching for something else."
+                        : 'Switch to "Add Songs" tab and start searching for your tunes!'}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </Modal>
   );
