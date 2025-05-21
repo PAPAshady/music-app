@@ -13,14 +13,14 @@ export default function MusicPlayerCard({
   isPlaying,
   onClick,
   classNames,
-  id,
+  musicIndex,
 }) {
   return (
     <div
       className={`border-secondary-300 hover:border-secondary-50 flex items-center gap-2 overflow-hidden rounded-lg border-2 p-2 transition-all duration-300 ${classNames} ${isPlaying ? 'bg-secondary-600/40 backdrop-blur-xs' : '!border-transparent'}`}
     >
       <img
-        onClick={() => onClick(id)}
+        onClick={() => onClick(musicIndex)}
         src={cover ? `${BASE_URL}${cover}` : cover}
         alt={title}
         className={`size-24 cursor-pointer rounded-md border-2 border-transparent object-cover transition-colors duration-300 ${!isPlaying ? 'hover:border-secondary-300' : ''}`}
@@ -30,7 +30,7 @@ export default function MusicPlayerCard({
       >
         <div className="mb-2">
           <h3
-            onClick={() => onClick(id)}
+            onClick={() => onClick(musicIndex)}
             className="text-primary-50 mb-1 cursor-pointer truncate text-base"
             title={title}
           >
@@ -59,4 +59,5 @@ MusicPlayerCard.propTypes = {
   onClick: PropTypes.func,
   classNames: PropTypes.string,
   id: PropTypes.number.isRequired,
+  musicIndex: PropTypes.number.isRequired,
 };

@@ -24,6 +24,8 @@ export default function PlayerPage() {
   const { playlist, currentMusic, setCurrentSongIndex, currentSongIndex, prevSongIndex } =
     useSafeContext(MusicPlayerContext);
 
+  console.log(currentSongIndex);
+
   useEffect(() => {
     const img = new Image();
     img.src = currentMusic?.cover ? BASE_URL + currentMusic?.cover : noMusicCover;
@@ -51,8 +53,8 @@ export default function PlayerPage() {
 
   // play the song when user clicks on it
   const playerCardClickHandler = useCallback(
-    (musicId) => {
-      setCurrentSongIndex(musicId - 1);
+    (index) => {
+      setCurrentSongIndex(index);
     },
     [setCurrentSongIndex]
   );
@@ -83,11 +85,12 @@ export default function PlayerPage() {
                 className="max-h-[380px]"
               >
                 {playlist.musics?.length
-                  ? playlist.musics?.map((music) => (
+                  ? playlist.musics?.map((music, musicIndex) => (
                       <SwiperSlide key={music.id} className="!h-auto">
                         <MusicPlayerCard
                           isPlaying={music.id === currentMusic?.id}
                           onClick={playerCardClickHandler}
+                          musicIndex={musicIndex}
                           {...music}
                         />
                       </SwiperSlide>
