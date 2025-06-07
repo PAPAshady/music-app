@@ -7,7 +7,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import PropTypes from 'prop-types';
 
-export default function AlbumsSlider({ album, isLoading, albumCardSize = 'lg', albumCardStyles }) {
+export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', albumCardStyles }) {
   return (
     <div className="mx-auto w-[95%] xl:max-w-[940px]">
       <Swiper
@@ -38,7 +38,7 @@ export default function AlbumsSlider({ album, isLoading, albumCardSize = 'lg', a
                 </div>
               </SwiperSlide>
             ))
-          : chunkArray(album?.data ?? [], 3).map((albumsArray, index) => (
+          : chunkArray(albums?.data ?? [], 3).map((albumsArray, index) => (
               <SwiperSlide key={index} className="p-[1px] pb-11">
                 <div className="flex flex-col gap-4">
                   {albumsArray.map((album) => (
@@ -58,7 +58,7 @@ export default function AlbumsSlider({ album, isLoading, albumCardSize = 'lg', a
 }
 
 AlbumsSlider.propTypes = {
-  album: PropTypes.object,
+  albums: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
   albumCardSize: PropTypes.oneOf(['md', 'lg']),
   albumCardStyles: PropTypes.string,
