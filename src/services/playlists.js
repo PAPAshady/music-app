@@ -17,3 +17,17 @@ export const getUserPlaylists = async () => {
   const { data } = await api.get('/playlist/playlists/');
   return data;
 };
+
+export const addMusicToPlaylist = async ({ playlistId, musicId }) => {
+  const newMusicInfos = new FormData();
+  newMusicInfos.append('id', playlistId);
+  newMusicInfos.append('music_id', musicId);
+  return await api.patch('/playlist/addmusic/', newMusicInfos);
+};
+
+export const removeMusicFromPlaylist = async ({ playlistId, musicId }) => {
+  const newMusicInfos = new FormData();
+  newMusicInfos.append('id', playlistId);
+  newMusicInfos.append('music_id', musicId);
+  return await api.patch('/playlist/removemusic/', newMusicInfos);
+};

@@ -16,8 +16,9 @@ import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import IconButton from '../Buttons/IconButton/IconButton';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { getAllMusicsQueryOptions } from '../../queries/musics';
+import { addMusicToPlaylist, removeMusicFromPlaylist } from '../../services/playlists';
 import PropTypes from 'prop-types';
 
 const schema = z.object({
@@ -33,9 +34,16 @@ export default function PlaylistInfosModal() {
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
-  const [playlistSongs, setPlaylistSongs] = useState([]);
+  const addMusicMutation = useMutation({
+    mutationKey: ['playlists'],
+    mutationFn: addMusicToPlaylist,
+  });
+  const removeMusicMutation = useMutation({
+    mutationKey: ['playlists'],
+    mutationFn: removeMusicFromPlaylist,
+  });
   const {
-    selectedPlaylist: { title, description = '', cover },
+    selectedPlaylist: { title, description = '', cover, musics, id: playlistId },
   } = useSafeContext(MusicPlayerContext);
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const { isOpen, closePlaylistModal, modalTitle, onConfirm } =
@@ -56,9 +64,9 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
-  const songsToRender = (selectedTab === 'add' ? suggestedSongs?.data || [] : playlistSongs).filter(
-    (song) => song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim())
-  );
+  const songsToRender = (
+    selectedTab === 'add' ? suggestedSongs?.data || [] : (musics ?? [])
+  ).filter((song) => song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim()));
 
   /*
     since useForm hook only sets defaultValues once on the initial render and wont update them ever again,
@@ -82,21 +90,17 @@ export default function PlaylistInfosModal() {
   };
 
   const addSongHandler = useCallback(
-    (songId) => {
-      const isAlreadyAdded = playlistSongs.some((song) => song.id === songId);
-      if (isAlreadyAdded) return;
-      const selectedSong = suggestedSongs?.data.find((song) => song.id === songId);
-      setPlaylistSongs((prev) => [...prev, selectedSong]);
+    (musicId) => {
+      addMusicMutation.mutate({ playlistId, musicId });
     },
-    [playlistSongs, suggestedSongs]
+    [addMusicMutation, playlistId]
   );
 
   const removeSongHandler = useCallback(
-    (songId) => {
-      const newPlaylistSongs = playlistSongs.filter((song) => song.id !== songId);
-      setPlaylistSongs(newPlaylistSongs);
+    (musicId) => {
+      removeMusicMutation.mutate({ playlistId, musicId });
     },
-    [playlistSongs]
+    [playlistId, removeMusicMutation]
   );
 
   const validateFileInput = (e) => {
@@ -242,7 +246,7 @@ export default function PlaylistInfosModal() {
                 <p className="mb-4 font-semibold">
                   {selectedTab === 'add'
                     ? 'Recommended songs to add.'
-                    : `You have ${playlistSongs.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
+                    : `You have ${musics.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
                 </p>
               )}
 
