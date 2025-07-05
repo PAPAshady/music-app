@@ -4,6 +4,7 @@ import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
 import DropDownList from '../DropDownList/DropDownList';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -46,6 +47,7 @@ export default function PlaylistInfosModal() {
     selectedPlaylist: { title, description = '', cover, musics, id: playlistId },
   } = useSafeContext(MusicPlayerContext);
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
+  const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
   const { isOpen, closePlaylistModal, modalTitle, onConfirm } =
     useSafeContext(PlaylistInfosModalContext);
   const {
@@ -91,14 +93,19 @@ export default function PlaylistInfosModal() {
 
   const addSongHandler = useCallback(
     (musicId) => {
-      addMusicMutation.mutate({ playlistId, musicId });
+      setPendingSongId(musicId);
+      addMusicMutation.mutate({ playlistId, musicId }, { onSettled: () => setPendingSongId(null) });
     },
     [addMusicMutation, playlistId]
   );
 
   const removeSongHandler = useCallback(
     (musicId) => {
-      removeMusicMutation.mutate({ playlistId, musicId });
+      setPendingSongId(musicId);
+      removeMusicMutation.mutate(
+        { playlistId, musicId },
+        { onSettled: () => setPendingSongId(null) }
+      );
     },
     [playlistId, removeMusicMutation]
   );
@@ -256,7 +263,7 @@ export default function PlaylistInfosModal() {
                     {songsToRender.map((song) => (
                       <PlaylistSong
                         key={song.id}
-                        buttonState={selectedTab}
+                        buttonState={song.id === pendingSongId ? 'pending' : selectedTab}
                         onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
                         {...song}
                       />
@@ -305,11 +312,15 @@ const PlaylistSong = memo(
             <p className="text-secondary-200 truncate text-sm">{artists[0].name}</p>
           </div>
         </div>
-        <IconButton
-          icon={buttonState === 'add' ? <AddCircle /> : <Trash />}
-          onClick={() => onClick(id)}
-          classNames="min-w-8 min-h-8 me-1"
-        />
+        {buttonState === 'pending' ? (
+          <LoadingSpinner size="xs" classNames="me-2.5" />
+        ) : (
+          <IconButton
+            icon={buttonState === 'add' ? <AddCircle /> : <Trash />}
+            onClick={() => onClick(id)}
+            classNames="min-w-8 min-h-8 me-1"
+          />
+        )}
       </div>
     );
   }
