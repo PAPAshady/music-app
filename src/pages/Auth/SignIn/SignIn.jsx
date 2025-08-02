@@ -8,7 +8,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import useAuth from '../../../hooks/useAuth';
-import useSnackbar from '../../../hooks/useSnackbar';
+import { useDispatch } from 'react-redux';
+import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -19,7 +20,7 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
-  const { showNewSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const {
@@ -44,7 +45,7 @@ export default function SignIn() {
   const submitHandler = async (formData) => {
     try {
       await signIn(formData);
-      showNewSnackbar('Welcome Back To VioTune!', 'success');
+      dispatch(showNewSnackbar({ message: 'Welcome Back To VioTune!', type: 'success' }));
       navigate('/');
     } catch (err) {
       switch (err.code) {

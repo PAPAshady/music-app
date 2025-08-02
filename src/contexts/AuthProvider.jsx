@@ -2,15 +2,15 @@ import { createContext, useState, useEffect } from 'react';
 import supabase from '../services/supabaseClient';
 import PropTypes from 'prop-types';
 import { addUser, getUser, getUserAvatarUrl } from '../services/users';
-import useSnackbar from '../hooks/useSnackbar';
-
+import { useDispatch } from 'react-redux';
+import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { showNewSnackbar } = useSnackbar();
 
   useEffect(() => {
     const fetchUserAvatar = async () => {
@@ -51,7 +51,12 @@ export function AuthProvider({ children }) {
               };
               await addUser(newUserData);
             } catch (err) {
-              showNewSnackbar('An error occured while adding a new user to database', 'error');
+              dispatch(
+                showNewSnackbar({
+                  message: 'An error occured while adding a new user to database',
+                  type: 'error',
+                })
+              );
               console.error('An error occured while adding a new user to database => ', err);
             }
           }
@@ -62,7 +67,7 @@ export function AuthProvider({ children }) {
     });
 
     return () => authListener.subscription.unsubscribe();
-  }, [showNewSnackbar]);
+  }, [dispatch]);
 
   const signUp = async ({ email, password, user_name, first_name, last_name }) => {
     const { error } = await supabase.auth.signUp({

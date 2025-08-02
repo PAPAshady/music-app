@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { HamburgerMenuProvider } from './contexts/HamburgerMenuContext';
 import { AuthProvider } from './contexts/AuthProvider';
-import { SnackbarProvider } from './contexts/SnackbarContext';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 import routes from './Router';
 import './App.css';
 
@@ -11,15 +11,13 @@ const queryClinet = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClinet}>
-      <SnackbarProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClinet}>
         <AuthProvider>
-          <HamburgerMenuProvider>
-            <RouterProvider router={router} />
-          </HamburgerMenuProvider>
+          <RouterProvider router={router} />
         </AuthProvider>
-      </SnackbarProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </Provider>
   );
 }
 

@@ -11,6 +11,7 @@ import Player from '../../Player/Player';
 import Footer from '../../Footer/Footer';
 import Logo from '../../../Logo/Logo';
 import { useLocation, Outlet, Link } from 'react-router-dom';
+import Snackbar from '../../Snackbar/Snackbar';
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
@@ -74,6 +75,7 @@ export default function MainLayout() {
         </div>
       </main>
       <HamburgerMenu />
+      <Snackbar />
     </div>
   );
 }

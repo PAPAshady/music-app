@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
-import useHamburgerMenu from '../../../hooks/useHamburgerMenu';
 import useInput from '../../../hooks/useInput';
 import Logo from '../../Logo/Logo';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
@@ -11,10 +10,12 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import SettingsMenu from '../SettingsMenu/SettingsMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
 import useAuth from '../../../hooks/useAuth';
+import { useDispatch } from 'react-redux';
+import { setIsHamburgerMenuOpen } from '../../../redux/slices/hamburgerMenuSlice';
 
 export default memo(function Header() {
   const { avatar } = useAuth();
-  const { setIsShowHamburgerMenu } = useHamburgerMenu();
+  const dispatch = useDispatch();
   const searchInput = useInput();
   const notificationMenu = useCloseOnClickOutside();
   const mobileSearchBox = useCloseOnClickOutside();
@@ -24,7 +25,10 @@ export default memo(function Header() {
     <header>
       <div className="flex items-center justify-between lg:hidden">
         <div className="flex items-center gap-2">
-          <IconButton onClick={() => setIsShowHamburgerMenu(true)} icon={<HambergerMenu />} />
+          <IconButton
+            onClick={() => dispatch(setIsHamburgerMenuOpen(true))}
+            icon={<HambergerMenu />}
+          />
           <div className="relative" ref={mobileSearchBox.ref}>
             <IconButton
               icon={<SearchNormal1 />}

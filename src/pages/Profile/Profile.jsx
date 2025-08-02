@@ -12,7 +12,8 @@ import useAuth from '../../hooks/useAuth';
 import supabase from '../../services/supabaseClient';
 import { updateUser } from '../../services/users';
 import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/storage';
-import useSnackbar from '../../hooks/useSnackbar';
+import { useDispatch } from 'react-redux';
+import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 
 const formSchema = z.object({
   avatar: z.any().optional(),
@@ -25,8 +26,7 @@ const formSchema = z.object({
 export default function Profile() {
   const { user, avatar: userAvatar } = useAuth();
   const { user_name, full_name, bio } = user.user_metadata;
-  const [avatar, setAvatar] = useState(null);
-  const { showNewSnackbar } = useSnackbar();
+  const [avatar, setAvatar] = useState(null);;
   const isTablet = useMediaQuery('(min-width: 640px)');
   const {
     register,
@@ -46,6 +46,7 @@ export default function Profile() {
     },
     resolver: zodResolver(formSchema),
   });
+  const dispatch = useDispatch();
 
   // update avatar after it is fetched in authProvider
   useEffect(() => setAvatar(userAvatar), [userAvatar]);
@@ -99,11 +100,21 @@ export default function Profile() {
           const { error } = await uploadFile('avatars', `${user.id}/avatar`, avatar);
           if (error) {
             console.error('Error uploading avatar: ', error);
-            showNewSnackbar('Unexpected error occurred while updating avatar.', 'error');
+            dispatch(
+              showNewSnackbar({
+                message: 'Unexpected error occurred while updating avatar.',
+                type: 'error',
+              })
+            );
           }
         } else {
           console.error('Error deleting avatars folder: ', error);
-          showNewSnackbar('Unexpected error occurred while updating avatar.', 'error');
+          dispatch(
+            showNewSnackbar({
+              message: 'Unexpected error occurred while updating avatar.',
+              type: 'error',
+            })
+          );
         }
       }
 
@@ -124,7 +135,9 @@ export default function Profile() {
         console.error('An error occurred while updating user in database => ', err);
         setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
       }
-      showNewSnackbar('Your profile has been updated successfully!', 'success');
+      dispatch(
+        showNewSnackbar({ message: 'Your profile has been updated successfully!', type: 'success' })
+      );
     } catch (err) {
       if (err.message === 'NetworkError when attempting to fetch resource.') {
         setError('root', { message: 'Network error, please check your connection.' });
