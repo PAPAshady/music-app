@@ -8,12 +8,12 @@ import MainButton from '../../components/Buttons/MainButton/MainButton';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useAuth from '../../hooks/useAuth';
 import supabase from '../../services/supabaseClient';
 import { updateUser } from '../../services/users';
 import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/storage';
 import { useDispatch } from 'react-redux';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
+import { useSelector } from 'react-redux';
 
 const formSchema = z.object({
   avatar: z.any().optional(),
@@ -24,9 +24,9 @@ const formSchema = z.object({
 });
 
 export default function Profile() {
-  const { user, avatar: userAvatar } = useAuth();
+  const { user, avatar: userAvatar } = useSelector((state) => state.auth);
   const { user_name, full_name, bio } = user.user_metadata;
-  const [avatar, setAvatar] = useState(null);;
+  const [avatar, setAvatar] = useState(null);
   const isTablet = useMediaQuery('(min-width: 640px)');
   const {
     register,

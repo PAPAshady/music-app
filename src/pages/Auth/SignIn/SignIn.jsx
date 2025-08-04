@@ -7,8 +7,8 @@ import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import useAuth from '../../../hooks/useAuth';
 import { useDispatch } from 'react-redux';
+import { signIn } from '../../../redux/slices/authSlice';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
 const formSchema = z.object({
@@ -21,7 +21,6 @@ const formSchema = z.object({
 
 export default function SignIn() {
   const dispatch = useDispatch();
-  const { signIn } = useAuth();
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -44,7 +43,9 @@ export default function SignIn() {
 
   const submitHandler = async (formData) => {
     try {
-      await signIn(formData);
+      // must have await ???
+      dispatch(signIn(formData));
+
       dispatch(showNewSnackbar({ message: 'Welcome Back To VioTune!', type: 'success' }));
       navigate('/');
     } catch (err) {

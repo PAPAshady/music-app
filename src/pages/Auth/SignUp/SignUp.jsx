@@ -6,10 +6,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useAuth from '../../../hooks/useAuth';
 import { z } from 'zod';
 import { useDispatch } from 'react-redux';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
+import { signUp } from '../../../redux/slices/authSlice';
 
 const formSchema = z.object({
   first_name: z.string().min(1, { message: 'Firstname is required' }),
@@ -25,7 +25,6 @@ const formSchema = z.object({
 export default function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { signUp } = useAuth();
   const {
     handleSubmit,
     register,
@@ -45,7 +44,9 @@ export default function SignUp() {
 
   const submitHandler = async (formData) => {
     try {
-      await signUp(formData);
+      // must have await ???
+      dispatch(signUp(formData));
+
       dispatch(showNewSnackbar({ message: 'Welcome to VioTune!', type: 'success' }));
       navigate('/');
     } catch (err) {

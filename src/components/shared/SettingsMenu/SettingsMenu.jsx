@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 import Avatar from '../../Avatar/Avatar';
 import { NavLink } from 'react-router-dom';
 import { UserEdit, Chart, Headphone, Messages, Login } from 'iconsax-react';
-import useAuth from '../../../hooks/useAuth';
+import { useSelector, useDispatch } from 'react-redux';
+import { signOut } from '../../../redux/slices/authSlice';
 
 export default function SettingsMenu({ isVisible }) {
-  const {
-    signOut,
-    avatar,
-    user: { user_metadata },
-  } = useAuth();
+  const dispatch = useDispatch();
+  const { avatar, user_metadata } = useSelector((state) => ({
+    avatar: state.auth.avatar,
+    user_metadata: state.auth.user.user_metadata,
+  }));
 
   const listItems = [
     { id: 1, title: 'Edit Profile', icon: <UserEdit />, href: '/settings/profile' },
@@ -21,7 +22,7 @@ export default function SettingsMenu({ isVisible }) {
 
   const signOutHandler = async () => {
     try {
-      await signOut();
+      dispatch(signOut());
     } catch (err) {
       console.error('An error occured while signing out user. => ', err);
     }

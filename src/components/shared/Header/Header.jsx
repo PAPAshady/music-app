@@ -9,17 +9,18 @@ import NotificationMenu from '../NotificationMenu/NotificationMenu';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import SettingsMenu from '../SettingsMenu/SettingsMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
-import useAuth from '../../../hooks/useAuth';
+
 import { useDispatch } from 'react-redux';
 import { setIsHamburgerMenuOpen } from '../../../redux/slices/hamburgerMenuSlice';
+import { useSelector } from 'react-redux';
 
 export default memo(function Header() {
-  const { avatar } = useAuth();
   const dispatch = useDispatch();
   const searchInput = useInput();
   const notificationMenu = useCloseOnClickOutside();
   const mobileSearchBox = useCloseOnClickOutside();
   const settingsMenu = useCloseOnClickOutside();
+  const avatar = useSelector((state) => state.auth.avatar);
 
   return (
     <header>

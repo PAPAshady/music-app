@@ -1,9 +1,9 @@
-import useAuth from '../../../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 export default function ProtectedRoute({ children }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading } = useSelector((state) => state.auth);
 
   if (isLoading) {
     return <p>Loading...</p>;
