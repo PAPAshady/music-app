@@ -53,9 +53,13 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getUserAvatar.fulfilled, (state, action) => {
-      state.avatar = action.payload;
-    });
+    builder
+      .addCase(getUserAvatar.fulfilled, (state, action) => {
+        state.avatar = action.payload;
+      })
+      .addCase(signOut.fulfilled, (state) => {
+        state.avatar = null;
+      });
   },
 });
 
