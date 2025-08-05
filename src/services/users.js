@@ -38,12 +38,13 @@ export const updateUser = async (userAuthId, newUserInfos) => {
 
 export const getUserAvatarUrl = async (userAuthId) => {
   try {
-    const {
-      data: { avatar_url },
-      error,
-    } = await supabase.from('users').select('avatar_url').eq('auth_id', userAuthId).single();
+    const { data, error } = await supabase
+      .from('users')
+      .select('avatar_url')
+      .eq('auth_id', userAuthId)
+      .single();
     if (error) throw error;
-    return avatar_url;
+    return data.avatar_url;
   } catch (err) {
     if (err.code === 'PGRST116') {
       return null;
