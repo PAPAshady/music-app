@@ -43,9 +43,7 @@ export default function SignIn() {
 
   const submitHandler = async (formData) => {
     try {
-      // must have await ???
-      dispatch(signIn(formData));
-
+      await dispatch(signIn(formData));
       dispatch(showNewSnackbar({ message: 'Welcome Back To VioTune!', type: 'success' }));
       navigate('/');
     } catch (err) {
