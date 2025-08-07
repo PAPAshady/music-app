@@ -1,12 +1,24 @@
 import { Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import useMediaQuery from '../../../hooks/useMediaQuery';
+import Logo from '../../Logo/Logo';
 
 export default function ProtectedRoute({ children }) {
-  const { user, isLoading } = useSelector((state) => state.auth);
+  const { isLoading, user } = useSelector((state) => state.auth);
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="relative">
+        <div
+          className={`fixed inset-0 z-20 grid h-[100dvh] w-full place-content-center backdrop-blur-md transition-all duration-300`}
+        >
+          <Logo size={isDesktop ? 'xl' : 'lg'} isLoading />
+        </div>
+        {children}
+      </div>
+    );
   }
 
   if (!user) {
