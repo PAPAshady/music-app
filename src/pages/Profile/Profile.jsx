@@ -25,7 +25,6 @@ const formSchema = z.object({
 
 export default function Profile() {
   const { user, avatar: userAvatar } = useSelector((state) => state.auth);
-  const { user_name, full_name, bio } = user.user_metadata;
   const [avatar, setAvatar] = useState(null);
   const isTablet = useMediaQuery('(min-width: 640px)');
   const {
@@ -39,10 +38,10 @@ export default function Profile() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      full_name,
-      user_name,
-      email: user.email,
-      bio: bio || '',
+      full_name: user?.user_metadata.full_name ?? '',
+      user_name: user?.user_metadata.user_name ?? '',
+      email: user?.email ?? '',
+      bio: user?.user_metadata.bio ?? '',
     },
     resolver: zodResolver(formSchema),
   });
@@ -191,9 +190,11 @@ export default function Profile() {
         <div className="text-center md:text-start">
           <p className="text-red mb-3 text-center text-sm md:hidden">{errors.avatar?.message}</p>
           <p className="text-primary-50 font-semibold sm:text-lg md:mb-2 md:text-2xl">
-            {full_name}
+            {user?.user_metadata.full_name}
           </p>
-          <span className="text-primary-100 text-sm sm:text-base md:text-xl">@{user_name}</span>
+          <span className="text-primary-100 text-sm sm:text-base md:text-xl">
+            @{user?.user_metadata.user_name}
+          </span>
         </div>
       </div>
       <div className="container flex !max-w-[720px] flex-col gap-6">
