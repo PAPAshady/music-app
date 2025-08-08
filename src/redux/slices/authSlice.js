@@ -55,7 +55,7 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getUserAvatar.fulfilled, (state, action) => {
-        state.avatar = action.payload;
+        state.avatar = action.payload || state.user.user_metadata.avatar_url;
       })
       .addCase(signOut.fulfilled, (state) => {
         state.avatar = null;
