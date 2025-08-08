@@ -15,7 +15,6 @@ import {
 } from 'iconsax-react';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import IconButton from '../../Buttons/IconButton/IconButton';
-import MobilePlaylistContext from '../../../contexts/MobilePlaylistContext';
 import useSafeContext from '../../../hooks/useSafeContext';
 import { BASE_URL } from '../../../services/api';
 import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
@@ -25,19 +24,21 @@ import Player from '../Player/Player';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import useInput from '../../../hooks/useInput';
 import DropDownList from '../../DropDownList/DropDownList';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { songs } from '../../../data';
+import { setIsMobilePlaylistOpen } from '../../../redux/slices/mobilePlaylistSlice';
 import PropTypes from 'prop-types';
 
 export default function MobilePlaylist() {
+  const { isOpen: isMobilePlaylistOpen } = useSelector((state) => state.mobilePlaylist);
   const dispatch = useDispatch();
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
   const searchInput = useInput();
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const isTablet = useMediaQuery('(min-width: 768px)');
-  const { isMobilePlaylistOpen, closeMobilePlaylist } = useSafeContext(MobilePlaylistContext);
   const { setPlaylist, playState, togglePlayStates, selectedPlaylist } =
     useSafeContext(MusicPlayerContext);
   const playlistCover = selectedPlaylist.cover
@@ -57,6 +58,17 @@ export default function MobilePlaylist() {
       setIsAddMenuOpen(false);
     };
   }, [isMobilePlaylistOpen]);
+
+  // if user clicks on back button of their device, mobilePlaylist will close
+  useEffect(() => {
+    const handlePopState = () => {
+      if (isMobilePlaylistOpen) {
+        dispatch(setIsMobilePlaylistOpen(false));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [dispatch, isMobilePlaylistOpen]);
 
   const handleScroll = (e) => {
     if (e.target.scrollTop <= 30) {
@@ -108,7 +120,7 @@ export default function MobilePlaylist() {
           className={`fixed top-0 left-0 z-[1] flex w-full items-center justify-between border-b-2 px-2 py-3 transition-all duration-300 ${isTopbarVisible ? 'border-neutral-700 bg-neutral-800' : 'border-transparent'}`}
         >
           <div className="flex items-center gap-3 sm:gap-6 sm:px-2 sm:py-1">
-            <button className="size-6 sm:size-8" onClick={closeMobilePlaylist}>
+            <button className="size-6 sm:size-8" onClick={() => dispatch(closeMobilePlaylist())}>
               <ArrowLeft size="100%" />
             </button>
             <p

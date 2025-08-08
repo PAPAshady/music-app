@@ -3,19 +3,20 @@ import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Music, Share } from 'iconsax-react';
 import { BASE_URL } from '../../../services/api';
-import MobilePlaylistContext from '../../../contexts/MobilePlaylistContext';
 import useSafeContext from '../../../hooks/useSafeContext';
 import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
+import { useDispatch } from 'react-redux';
+import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const { cover = noCoverImg, totaltracks, artists, title } = album;
-  const { openMobilePlaylist } = useSafeContext(MobilePlaylistContext);
+  const dispatch = useDispatch();
   const { setSelectedPlaylist, playlist } = useSafeContext(MusicPlayerContext);
   const isCurrentAlbumPlaying = album.title === playlist.title && album.id === playlist.id;
 
   const openMobilePlaylistHandler = () => {
     setSelectedPlaylist(album);
-    openMobilePlaylist();
+    dispatch(openMobilePlaylist());
   };
 
   return (

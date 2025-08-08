@@ -5,20 +5,20 @@ import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
 import { Heart, Play, AddCircle } from 'iconsax-react';
 import useSafeContext from '../../../hooks/useSafeContext';
 import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
-import MobilePlaylistContext from '../../../contexts/MobilePlaylistContext';
 import { BASE_URL } from '../../../services/api';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
+import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
+
 const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const dispatch = useDispatch();
   const { title, totaltracks, cover, isFavorite, classNames } = playlist;
   const { setSelectedPlaylist } = useSafeContext(MusicPlayerContext);
-  const { openMobilePlaylist } = useSafeContext(MobilePlaylistContext);
   const playlistCover = cover !== 'null' ? BASE_URL + cover : noCoverImg;
 
   const showSelectedPlaylist = () => {
     setSelectedPlaylist(playlist);
-    openMobilePlaylist();
+    dispatch(openMobilePlaylist());
   };
 
   // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.

@@ -20,18 +20,22 @@ import PropTypes from 'prop-types';
 import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import { BASE_URL } from '../../../services/api';
 import { useNavigate } from 'react-router-dom';
-import MobilePlaylistContext from '../../../contexts/MobilePlaylistContext';
 import useSafeContext from '../../../hooks/useSafeContext';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  closeMobilePlaylist,
+  toggleMobilePlaylist,
+} from '../../../redux/slices/mobilePlaylistSlice';
 
 const musicDefaultVolume = 70; // min: 0, max: 100
 
 export default function Player({ classNames, isPlayerPage }) {
+  const dispatch = useDispatch();
+  const { isOpen: isMobilePlaylistOpen } = useSelector((state) => state.mobilePlaylist);
   const [volume, setVolume] = useState([musicDefaultVolume]);
   const [musicProgress, setMusicProgress] = useState([0]);
   const [currentTime, setCurrentTime] = useState('0:00');
   const verticalVolumeSlider = useCloseOnClickOutside();
-  const { closeMobilePlaylist, toggleMobilePlaylist, isMobilePlaylistOpen } =
-    useSafeContext(MobilePlaylistContext);
   const navigate = useNavigate();
   const {
     music,
@@ -69,9 +73,9 @@ export default function Player({ classNames, isPlayerPage }) {
   // Otherwise, close the mobile playlist if it's open, and navigate to /player.
   const onPlayerCoverClick = () => {
     if (isPlayerPage) {
-      toggleMobilePlaylist();
+      dispatch(toggleMobilePlaylist());
     } else {
-      isMobilePlaylistOpen && closeMobilePlaylist();
+      isMobilePlaylistOpen && dispatch(closeMobilePlaylist());
       navigate('/player');
     }
   };
@@ -184,7 +188,7 @@ export default function Player({ classNames, isPlayerPage }) {
           <IconButton
             icon={<MusicFilter />}
             classNames={isPlayerPage ? 'hidden' : 'xl:hidden'}
-            onClick={toggleMobilePlaylist}
+            onClick={() => dispatch(toggleMobilePlaylist())}
           />
           <div
             className="relative hidden items-center gap-2 md:flex"
