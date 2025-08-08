@@ -1,7 +1,7 @@
 import { cloneElement, memo } from 'react';
 import { createPortal } from 'react-dom';
-import HamburgerMenuContext from '../../../contexts/HamburgerMenuContext';
-import useSafeContext from '../../../hooks/useSafeContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsHamburgerMenuOpen } from '../../../redux/slices/hamburgerMenuSlice';
 import Avatar from '../../Avatar/Avatar';
 import {
   Heart,
@@ -16,8 +16,8 @@ import { NavLink, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const HamburgerMenu = memo(() => {
-  const { isShowHamburgerMenu, setIsShowHamburgerMenu } = useSafeContext(HamburgerMenuContext);
-  const closeHamburgerMenu = () => setIsShowHamburgerMenu(false);
+  const isHamburgerMenuOpen = useSelector((state) => state.hamburgerMenu.isOpen);
+  const dispatch = useDispatch();
   const mobileNavLinks = [
     { id: 1, title: 'Home', icon: <Home2 />, href: '/' },
     { id: 2, title: 'Favorites', icon: <Heart />, href: '/favorites' },
@@ -29,12 +29,12 @@ const HamburgerMenu = memo(() => {
 
   return createPortal(
     <div
-      className={`fixed top-0 h-[100dvh] w-full bg-black/50 transition-[backdrop-filter,z-index] ${isShowHamburgerMenu ? 'z-30 backdrop-blur-xs' : 'z-[-1] backdrop-blur-[0]'}`}
+      className={`fixed top-0 h-[100dvh] w-full bg-black/50 transition-[backdrop-filter,z-index] ${isHamburgerMenuOpen ? 'z-30 backdrop-blur-xs' : 'z-[-1] backdrop-blur-[0]'}`}
       // close the menu if use clicks outside of menu box
-      onClick={(e) => e.target === e.currentTarget && setIsShowHamburgerMenu(false)}
+      onClick={(e) => e.target === e.currentTarget && dispatch(setIsHamburgerMenuOpen(false))}
     >
       <div
-        className={`bg-secondary-400/40 fixed h-full w-[250px] overflow-y-auto p-4 transition-transform ${isShowHamburgerMenu ? 'translate-0' : '-translate-x-full'}`}
+        className={`bg-secondary-400/40 fixed h-full w-[250px] overflow-y-auto p-4 transition-transform ${isHamburgerMenuOpen ? 'translate-0' : '-translate-x-full'}`}
       >
         <div className="">
           <div className="text-primary-300 mb-6 flex items-center justify-between">
@@ -50,12 +50,20 @@ const HamburgerMenu = memo(() => {
           <div className="my-9 flex flex-col gap-10">
             <div className="flex flex-col gap-7">
               {mobileNavLinks.slice(0, 4).map((link) => (
-                <MobileNavLink key={link.id} {...link} onClick={closeHamburgerMenu} />
+                <MobileNavLink
+                  key={link.id}
+                  onClick={() => dispatch(setIsHamburgerMenuOpen(false))}
+                  {...link}
+                />
               ))}
             </div>
             <div className="border-secondary-400/53 flex flex-col gap-7 border-t py-8">
               {mobileNavLinks.slice(4, 6).map((link) => (
-                <MobileNavLink key={link.id} {...link} onClick={closeHamburgerMenu} />
+                <MobileNavLink
+                  key={link.id}
+                  onClick={() => dispatch(setIsHamburgerMenuOpen(false))}
+                  {...link}
+                />
               ))}
             </div>
           </div>

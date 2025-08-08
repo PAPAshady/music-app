@@ -7,10 +7,10 @@ import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import AuthContext from '../../../contexts/AuthContext';
-import useSafeContext from '../../../hooks/useSafeContext';
-import SnackbarContext from '../../../contexts/SnackbarContext';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { signIn } from '../../../redux/slices/authSlice';
+import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -21,8 +21,7 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
-  const { login } = useSafeContext(AuthContext);
-  const { showNewSnackbar } = useSafeContext(SnackbarContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -45,8 +44,8 @@ export default function SignIn() {
 
   const submitHandler = async (userInfo) => {
     try {
-      await login(userInfo);
-      showNewSnackbar('Welcome back to VioTune!', 'success');
+      await dispatch(signIn(userInfo));
+      dispatch(showNewSnackbar({ message: 'Welcome back to VioTune!', type: 'success' }));
       navigate('/');
     } catch (err) {
       const { status } = err.response;

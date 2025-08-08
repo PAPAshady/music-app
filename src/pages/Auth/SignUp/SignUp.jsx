@@ -8,9 +8,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
-import SnackbarContext from '../../../contexts/SnackbarContext';
-import AuthContext from '../../../contexts/AuthContext';
-import useSafeContext from '../../../hooks/useSafeContext';
+import { signUp } from '../../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
 const formSchema = z.object({
   first_name: z.string().min(1, { message: 'Firstname is required' }),
@@ -25,8 +25,7 @@ const formSchema = z.object({
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const { showNewSnackbar } = useSafeContext(SnackbarContext);
-  const { register: registerUser } = useSafeContext(AuthContext);
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     register,
@@ -46,8 +45,8 @@ export default function SignUp() {
 
   const submitHandler = async (userInfo) => {
     try {
-      await registerUser(userInfo);
-      showNewSnackbar('Welcome to VioTune!', 'success');
+      await dispatch(signUp(userInfo));
+      dispatch(showNewSnackbar({ message: 'Welcome to VioTune!', type: 'success' }));
       navigate('/');
     } catch (err) {
       const res = err.response.data;

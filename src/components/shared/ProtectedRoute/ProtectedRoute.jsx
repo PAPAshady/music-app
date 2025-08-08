@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
-import AuthContext from '../../../contexts/AuthContext';
-import useSafeContext from '../../../hooks/useSafeContext';
 import { Navigate } from 'react-router-dom';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import Logo from '../../Logo/Logo';
+import { useSelector } from 'react-redux';
 
 export default function ProtectedRoute({ children }) {
-  const { isLoggedIn, isLoading } = useSafeContext(AuthContext);
+  const { user, isLoading } = useSelector((state) => state.auth);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   if (isLoading) {
@@ -22,7 +21,7 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  if (!isLoggedIn) {
+  if (!user) {
     return <Navigate to="/auth" replace />;
   }
 
