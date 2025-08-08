@@ -22,14 +22,16 @@ import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import Player from '../Player/Player';
-import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import useInput from '../../../hooks/useInput';
 import DropDownList from '../../DropDownList/DropDownList';
+import { useDispatch } from 'react-redux';
+import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { songs } from '../../../data';
 import PropTypes from 'prop-types';
 
 export default function MobilePlaylist() {
+  const dispatch = useDispatch();
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
   const searchInput = useInput();
@@ -38,7 +40,6 @@ export default function MobilePlaylist() {
   const { isMobilePlaylistOpen, closeMobilePlaylist } = useSafeContext(MobilePlaylistContext);
   const { setPlaylist, playState, togglePlayStates, selectedPlaylist } =
     useSafeContext(MusicPlayerContext);
-  const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
   const playlistCover = selectedPlaylist.cover
     ? `${BASE_URL}/${selectedPlaylist.cover}`
     : playlistDefaultCover;
@@ -65,15 +66,14 @@ export default function MobilePlaylist() {
     }
   };
 
-  const onEditPlaylist = (data) => {
-    console.log('Your playlist updated successfully => ', data);
-  };
-
   const playButtons = [
     {
       id: 1,
       icon: <Edit />,
-      onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`, onEditPlaylist),
+      onClick: () =>
+        dispatch(
+          openModal({ title: `Edit ${selectedPlaylist.title}`, actionType: 'edit_playlist' })
+        ),
     },
     { id: 2, icon: <Additem />, onClick: () => setIsAddMenuOpen(true) },
   ];

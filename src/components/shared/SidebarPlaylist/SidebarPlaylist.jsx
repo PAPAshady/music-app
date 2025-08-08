@@ -7,13 +7,14 @@ import { BASE_URL } from '../../../services/api';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import useSafeContext from '../../../hooks/useSafeContext';
-import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useDispatch } from 'react-redux';
+import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 
 const SidebarPlaylist = memo(() => {
   const { selectedPlaylist, setPlaylist, playlist, isPlaying, play, pause } =
     useSafeContext(MusicPlayerContext);
-  const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
+  const dispatch = useDispatch();
   const playlistCover = selectedPlaylist.cover
     ? `${BASE_URL}/${selectedPlaylist.cover}`
     : defaultCover;
@@ -26,10 +27,6 @@ const SidebarPlaylist = memo(() => {
       return;
     }
     isPlaying ? pause() : play();
-  };
-
-  const onUpdatePlaylist = (data) => {
-    console.log('Your playlist updated successfully => ', data);
   };
 
   const headerVariants = {
@@ -70,7 +67,10 @@ const SidebarPlaylist = memo(() => {
             id: 1,
             icon: <Edit2 />,
             title: 'Edit playlist',
-            onClick: () => openPlaylistModal(`Edit ${selectedPlaylist.title}`, onUpdatePlaylist),
+            onClick: () =>
+              dispatch(
+                openModal({ title: `Edit ${selectedPlaylist.title}`, actionType: 'edit_playlist' })
+              ),
           },
           { id: 2, icon: <Trash />, title: 'Delete playlist' },
           { id: 3, icon: <Heart />, title: 'Add to favorite playlists' },

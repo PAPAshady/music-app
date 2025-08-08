@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { MusicPlayerProvider } from './MusicPlayerContext';
 import { MobilePlaylistProvider } from './MobilePlaylistContext';
-import { PlaylistInfosModalProvider } from './PlaylistInfosModalContext';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser, setLoading } from '../redux/slices/authSlice';
@@ -76,9 +75,7 @@ export default function Providers() {
     <QueryClientProvider client={queryClinet}>
       <MusicPlayerProvider>
         <MobilePlaylistProvider>
-          <PlaylistInfosModalProvider>
-            <RouterProvider router={router} />
-          </PlaylistInfosModalProvider>
+          <RouterProvider router={router} />
         </MobilePlaylistProvider>
       </MusicPlayerProvider>
     </QueryClientProvider>

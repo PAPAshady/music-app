@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
 import { Heart, Play, AddCircle } from 'iconsax-react';
-import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
 import useSafeContext from '../../../hooks/useSafeContext';
 import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import MobilePlaylistContext from '../../../contexts/MobilePlaylistContext';
 import { BASE_URL } from '../../../services/api';
-
+import { useDispatch } from 'react-redux';
+import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
+  const dispatch = useDispatch();
   const { title, totaltracks, cover, isFavorite, classNames } = playlist;
-  const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
   const { setSelectedPlaylist } = useSafeContext(MusicPlayerContext);
   const { openMobilePlaylist } = useSafeContext(MobilePlaylistContext);
   const playlistCover = cover !== 'null' ? BASE_URL + cover : noCoverImg;
@@ -23,13 +23,11 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
 
   // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.
   if (isAddPlaylistButton) {
-    const onCreatePlaylist = (data) => {
-      console.log('Your playlist created successfully => ', data);
-    };
-
     return (
       <button
-        onClick={() => openPlaylistModal('Create new playlist.', onCreatePlaylist)}
+        onClick={() =>
+          dispatch(openModal({ title: 'Create new playlist.', actionType: 'create_playlist' }))
+        }
         className={`h-36 w-full overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[0_8px_16px_2px] shadow-[black]/25 lg:h-48 ${classNames}`}
         style={{ backgroundImage: `url(${addPlaylistImg})` }}
       >

@@ -1,16 +1,12 @@
 import MainButton from '../../Buttons/MainButton/MainButton';
 import Logo from '../../Logo/Logo';
-import PlaylistInfosModalContext from '../../../contexts/PlaylistInfosModalContext';
-import useSafeContext from '../../../hooks/useSafeContext';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 
 export default function SidebarWelcomePanel() {
-  const { openPlaylistModal } = useSafeContext(PlaylistInfosModalContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const onConfirm = (data) => {
-    console.log(data);
-  };
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -25,7 +21,9 @@ export default function SidebarWelcomePanel() {
             type="outline"
             variant="neutral"
             classNames="w-full"
-            onClick={() => openPlaylistModal('Create new playlist.', onConfirm)}
+            onClick={() =>
+              dispatch(openModal({ title: 'Create new playlist.', actionType: 'create_playlist' }))
+            }
           />
           <MainButton
             title="Browse"

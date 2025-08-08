@@ -9,7 +9,6 @@ import useMediaQuery from '../../hooks/useMediaQuery';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import PlaylistInfosModalContext from '../../contexts/PlaylistInfosModalContext';
 import MusicPlayerContext from '../../contexts/MusicPlayerContext';
 import useSafeContext from '../../hooks/useSafeContext';
 import { BASE_URL } from '../../services/api';
@@ -20,6 +19,8 @@ import IconButton from '../Buttons/IconButton/IconButton';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { getAllMusicsQueryOptions } from '../../queries/musics';
 import { addMusicToPlaylist, removeMusicFromPlaylist } from '../../services/playlists';
+import { useSelector, useDispatch } from 'react-redux';
+import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import PropTypes from 'prop-types';
 
 const schema = z.object({
@@ -29,6 +30,12 @@ const schema = z.object({
 });
 
 export default function PlaylistInfosModal() {
+  const {
+    isOpen,
+    title: modalTitle,
+    actionType,
+  } = useSelector((state) => state.playlistInfosModal);
+  const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const isSmallDesktop = useMediaQuery('(max-width: 1280px)');
@@ -48,8 +55,6 @@ export default function PlaylistInfosModal() {
   } = useSafeContext(MusicPlayerContext);
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
-  const { isOpen, closePlaylistModal, modalTitle, onConfirm } =
-    useSafeContext(PlaylistInfosModalContext);
   const {
     register,
     watch,
@@ -88,7 +93,14 @@ export default function PlaylistInfosModal() {
   const submitHandler = (data) => {
     // dont send any image to backend if user removed the cover of their playlist
     if (!data.cover) delete data.cover;
-    onConfirm?.(data);
+
+    switch (actionType) {
+      case 'create_playlist':
+        break;
+
+      case 'edit_playlist':
+        break;
+    }
   };
 
   const addSongHandler = useCallback(
@@ -136,7 +148,7 @@ export default function PlaylistInfosModal() {
   };
 
   const onClose = () => {
-    closePlaylistModal();
+    dispatch(closeModal());
     // To avoid an unpolished visual effect where the playlist title, description, and cover appear empty
     // during the modal's closing transition, we delay the reset until the transition completes.
     setTimeout(() => {
