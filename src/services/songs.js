@@ -18,13 +18,13 @@ export const getAllSongs = async () => {
   }
 };
 
-export const getSongsByAlbum = async (albumName, artist) => {
+export const getSongsByAlbumId = async (albumId) => {
   try {
-    const { error, data: songs } = await supabase
+    const { data: songs, error } = await supabase
       .from('songs')
       .select('*')
-      .eq('artist', artist)
-      .eq('album', albumName);
+      .eq('album_id', albumId)
+      .order('title', { ascending: true });
     if (error) throw error;
     return { status: 'success', success: true, songs };
   } catch (err) {

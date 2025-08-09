@@ -2,14 +2,13 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Music, Share } from 'iconsax-react';
-import { BASE_URL } from '../../../services/api';
 import useSafeContext from '../../../hooks/useSafeContext';
 import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import { useDispatch } from 'react-redux';
 import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
-  const { cover = noCoverImg, totaltracks, artists, title } = album;
+  const { cover = noCoverImg, totaltracks, artist, title } = album;
   const dispatch = useDispatch();
   const { setSelectedPlaylist, playlist } = useSafeContext(MusicPlayerContext);
   const isCurrentAlbumPlaying = album.title === playlist.title && album.id === playlist.id;
@@ -30,13 +29,13 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
         >
           <img
             className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
-            src={`${BASE_URL}/${cover}`}
+            src={cover}
             alt={title}
           />
           <div
             className={`absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60 ${isCurrentAlbumPlaying ? 'animate-infinite-rotate' : 'group-hover:animate-infinite-rotate'}`}
             style={{
-              backgroundImage: `url(${BASE_URL}/${cover})`,
+              backgroundImage: `url(${cover})`,
               mask: 'radial-gradient(circle, transparent 8px, black 8px)',
               WebkitMask: 'radial-gradient(circle, transparent 8px, black 8px)',
             }}
@@ -53,8 +52,8 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
             >
               {title}
             </p>
-            <span title={artists[0].name} className="block truncate text-sm text-white">
-              {artists[0].name}
+            <span title={artist} className="block truncate text-sm text-white">
+              {artist}
             </span>
           </div>
           {size === 'md' && (
