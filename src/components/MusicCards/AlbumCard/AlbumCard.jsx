@@ -6,15 +6,16 @@ import useSafeContext from '../../../hooks/useSafeContext';
 import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import { useDispatch } from 'react-redux';
 import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
+import { setSelectedPlaylist } from '../../../redux/slices/musicPlayerSlice';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const { cover = noCoverImg, totaltracks, artist, title } = album;
   const dispatch = useDispatch();
-  const { setSelectedPlaylist, playlist } = useSafeContext(MusicPlayerContext);
+  const { playlist } = useSafeContext(MusicPlayerContext);
   const isCurrentAlbumPlaying = album.title === playlist.title && album.id === playlist.id;
 
   const openMobilePlaylistHandler = () => {
-    setSelectedPlaylist(album);
+    dispatch(setSelectedPlaylist(album));
     dispatch(openMobilePlaylist());
   };
 

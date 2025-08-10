@@ -20,13 +20,13 @@ export const getAllSongs = async () => {
 
 export const getSongsByAlbumId = async (albumId) => {
   try {
-    const { data: songs, error } = await supabase
+    const { data, error } = await supabase
       .from('songs')
       .select('*')
       .eq('album_id', albumId)
       .order('title', { ascending: true });
     if (error) throw error;
-    return { status: 'success', success: true, songs };
+    return data;
   } catch (err) {
     return handleSongsErrors(err);
   }

@@ -3,21 +3,23 @@ import { Music, Timer, User, Edit2, Trash, Heart, Play, Pause, AddCircle } from 
 import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import DropDownList from '../../DropDownList/DropDownList';
-import { BASE_URL } from '../../../services/api';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import useSafeContext from '../../../hooks/useSafeContext';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
+import { getSongsByAlbumIdQueryOptions } from '../../../queries/musics';
+import { useQuery } from '@tanstack/react-query';
 
 const SidebarPlaylist = memo(() => {
-  const { selectedPlaylist, setPlaylist, playlist, isPlaying, play, pause } =
-    useSafeContext(MusicPlayerContext);
+  const { selectedPlaylist } = useSelector((state) => state.musicPlayer);
+  const { setPlaylist, playlist, isPlaying, play, pause } = useSafeContext(MusicPlayerContext);
+  const { data: selectedPlaylistSongs, isLoading } = useQuery(
+    getSongsByAlbumIdQueryOptions(selectedPlaylist.id)
+  );
   const dispatch = useDispatch();
-  const playlistCover = selectedPlaylist.cover
-    ? `${BASE_URL}/${selectedPlaylist.cover}`
-    : defaultCover;
+  const playlistCover = selectedPlaylist.cover ? selectedPlaylist.cover : defaultCover;
   const isPlayingPlaylistSelected =
     playlist.id === selectedPlaylist.id && playlist.title === selectedPlaylist.title;
 
@@ -147,10 +149,12 @@ const SidebarPlaylist = memo(() => {
             initial="hidden"
             animate="show"
             exit="hidden"
-            className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${selectedPlaylist.musics.length ? 'overflow-y-auto' : 'overflow-visible'}`}
+            className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${selectedPlaylistSongs?.length ? 'overflow-y-auto' : 'overflow-visible'}`}
           >
-            {selectedPlaylist.musics?.length ? (
-              selectedPlaylist.musics.map((song) => (
+            {isLoading ? (
+              'Please wait...'
+            ) : selectedPlaylistSongs?.length ? (
+              selectedPlaylistSongs?.map((song) => (
                 <motion.div key={song.id} variants={itemVariants}>
                   <PlayBar size="sm" {...song} />
                 </motion.div>
