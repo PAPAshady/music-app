@@ -3,7 +3,7 @@ import { setSelectedPlaylist } from './musicPlayerSlice';
 
 export const openMobilePlaylist = createAsyncThunk(
   'mobilePlaylist/openMobilePlaylist',
-  (_, { getState }) => {
+  (_, { getState, dispatch }) => {
     const { isOpen } = getState();
     const isLargeTablet = window.matchMedia('(max-width: 1280px)');
 
@@ -12,7 +12,7 @@ export const openMobilePlaylist = createAsyncThunk(
       window.history.pushState({ mobilePlaylist: true }, '');
     }
 
-    return true;
+    dispatch(setIsMobilePlaylistOpen(true));
   }
 );
 
@@ -22,11 +22,10 @@ export const closeMobilePlaylist = createAsyncThunk(
     window.history.back();
     const { playlist } = getState().musicPlayer;
 
+    dispatch(setIsMobilePlaylistOpen(false));
     // After viewing a different playlist's details, reset selectedPlaylist to the currently playing one.
     // This ensures that the next time the user opens the mobile playlist, it shows the correct (current) playlist info.
     dispatch(setSelectedPlaylist(playlist));
-
-    return true;
   }
 );
 
@@ -45,15 +44,6 @@ const mobilePlaylistSlice = createSlice({
     setIsMobilePlaylistOpen: (state, action) => {
       state.isOpen = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(openMobilePlaylist.fulfilled, (state) => {
-        state.isOpen = true;
-      })
-      .addCase(closeMobilePlaylist.fulfilled, (state) => {
-        state.isOpen = false;
-      });
   },
 });
 
