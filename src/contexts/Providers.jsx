@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from '../queryClient';
 import { MusicPlayerProvider } from './MusicPlayerContext';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -10,13 +11,6 @@ import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 import routes from '../Router';
 
 const router = createBrowserRouter(routes);
-const queryClinet = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
 
 export default function Providers() {
   const dispatch = useDispatch();
@@ -71,9 +65,9 @@ export default function Providers() {
   }, [dispatch]);
 
   return (
-    <QueryClientProvider client={queryClinet}>
+    <QueryClientProvider client={queryClient}>
       <MusicPlayerProvider>
-          <RouterProvider router={router} />
+        <RouterProvider router={router} />
       </MusicPlayerProvider>
     </QueryClientProvider>
   );

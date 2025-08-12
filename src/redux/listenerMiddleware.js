@@ -1,7 +1,16 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
+import queryClient from '../queryClient';
+import { getSongsByTracklistIdQueryOptions } from '../queries/musics';
 import { setUser } from './slices/authSlice';
 import { getUserAvatar } from './slices/authSlice';
-import { music, setPrevSongIndex, setCurrentSongIndex, play } from './slices/musicPlayerSlice';
+import { setSelectedPlaylistSongs } from './slices/musicPlayerSlice';
+import {
+  music,
+  setPrevSongIndex,
+  setCurrentSongIndex,
+  play,
+  setSelectedPlaylist,
+} from './slices/musicPlayerSlice';
 
 const listenerMiddleware = createListenerMiddleware();
 
@@ -26,6 +35,21 @@ listenerMiddleware.startListening({
       dispatch(setPrevSongIndex(currentSongIndex));
       dispatch(play());
     }
+  },
+});
+
+// fetch the songs of selected tracklist (playlist or album) and save them in redux store.
+listenerMiddleware.startListening({
+  actionCreator: setSelectedPlaylist,
+  effect: async (action, { dispatch }) => {
+    const { tracklistType, id } = action.payload;
+    const songs = await queryClient.fetchQuery(
+      getSongsByTracklistIdQueryOptions(id, tracklistType)
+    );
+
+    // we store the songs of the selected tracklist to keep track of them and do some things like
+    // calculating prev/next songs ids to determine their playing order and etc.
+    dispatch(setSelectedPlaylistSongs(songs));
   },
 });
 

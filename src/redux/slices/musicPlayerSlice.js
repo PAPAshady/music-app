@@ -75,6 +75,9 @@ const musicPlayerSlice = createSlice({
     setSelectedPlaylist(state, action) {
       state.selectedPlaylist = action.payload;
     },
+    setSelectedPlaylistSongs(state, action) {
+      state.selectedPlaylist.musics = action.payload;
+    },
     togglePlayState(state) {
       const playingStateOptions = ['repeat_all', 'repeat_one', 'shuffle'];
       const currentPlayStateIndex = playingStateOptions.indexOf(state.playingState);
@@ -95,5 +98,6 @@ export const {
   togglePlayState,
   setPlaylist,
   setSelectedPlaylist,
+  setSelectedPlaylistSongs,
 } = musicPlayerSlice.actions;
 export default musicPlayerSlice.reducer;
