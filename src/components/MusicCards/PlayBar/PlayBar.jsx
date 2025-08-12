@@ -4,14 +4,13 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
 import PropTypes from 'prop-types';
-import { BASE_URL } from '../../../services/api';
 
 const PlayBar = memo(
   ({
     size,
     title,
     cover,
-    artist: artists = 'Unknown artist',
+    artist = 'Unknown artist',
     duration,
     album = 'Unknown album',
     isFavorite,
@@ -48,11 +47,7 @@ const PlayBar = memo(
             className="relative size-14 min-h-14 min-w-14 overflow-hidden rounded-md"
             onClick={clickHandler}
           >
-            <img
-              src={cover ? BASE_URL + cover : noCoverImg}
-              className="size-full object-cover"
-              alt={title}
-            />
+            <img src={cover ? cover : noCoverImg} className="size-full object-cover" alt={title} />
             <span
               className={`absolute top-1/2 left-1/2 flex size-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition-all duration-300 group-hover:bg-black/60 group-hover:opacity-100`}
             >
@@ -69,8 +64,8 @@ const PlayBar = memo(
             >
               {title}
             </button>
-            <span className="text-secondary-200 grow truncate text-[13px]" title={artists[0].name}>
-              {artists[0].name}
+            <span className="text-secondary-200 grow truncate text-[13px]" title={artist}>
+              {artist}
             </span>
           </div>
         </div>
@@ -143,7 +138,7 @@ PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
-  artist: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  artist: PropTypes.string,
   duration: PropTypes.string.isRequired,
   album: PropTypes.string,
   clickHandler: PropTypes.func,
