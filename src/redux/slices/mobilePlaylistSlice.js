@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { setSelectedPlaylist } from './musicPlayerSlice';
 
 export const openMobilePlaylist = createAsyncThunk(
   'mobilePlaylist/openMobilePlaylist',
@@ -15,17 +16,19 @@ export const openMobilePlaylist = createAsyncThunk(
   }
 );
 
-export const closeMobilePlaylist = createAsyncThunk('mobilePlaylist/closeMobilePlaylist', () => {
-  window.history.back();
+export const closeMobilePlaylist = createAsyncThunk(
+  'mobilePlaylist/closeMobilePlaylist',
+  (_, { dispatch, getState }) => {
+    window.history.back();
+    const { playlist } = getState().musicPlayer;
 
-  // --- ATTENTION ---  Since MusicPlayerContext hasn't refactored yet to redux, we can't implement the following logic:
+    // After viewing a different playlist's details, reset selectedPlaylist to the currently playing one.
+    // This ensures that the next time the user opens the mobile playlist, it shows the correct (current) playlist info.
+    dispatch(setSelectedPlaylist(playlist));
 
-  // After viewing a different playlist's details, reset selectedPlaylist to the currently playing one.
-  // This ensures that the next time the user opens the mobile playlist, it shows the correct (current) playlist info.
-  // setSelectedPlaylist(playlist);
-
-  return true;
-});
+    return true;
+  }
+);
 
 export const toggleMobilePlaylist = createAsyncThunk(
   'mobilePlaylist/toggleMobilePlaylist',
