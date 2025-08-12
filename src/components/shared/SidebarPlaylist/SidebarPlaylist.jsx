@@ -9,14 +9,14 @@ import useSafeContext from '../../../hooks/useSafeContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
-import { getSongsByAlbumIdQueryOptions } from '../../../queries/musics';
+import { getSongsByTracklistIdQueryOptions } from '../../../queries/musics';
 import { useQuery } from '@tanstack/react-query';
 
 const SidebarPlaylist = memo(() => {
   const { selectedPlaylist } = useSelector((state) => state.musicPlayer);
   const { setPlaylist, playlist, isPlaying, play, pause } = useSafeContext(MusicPlayerContext);
   const { data: selectedPlaylistSongs, isLoading } = useQuery(
-    getSongsByAlbumIdQueryOptions(selectedPlaylist.id)
+    getSongsByTracklistIdQueryOptions(selectedPlaylist.id, selectedPlaylist.tracklistType)
   );
   const dispatch = useDispatch();
   const playlistCover = selectedPlaylist.cover ? selectedPlaylist.cover : defaultCover;

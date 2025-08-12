@@ -18,12 +18,22 @@ export const getAllSongs = async () => {
   }
 };
 
-export const getSongsByAlbumId = async (albumId) => {
+
+// this method is used to fetch both playlists and albums
+export const getSongsByTracklistId = async (tracklistId, tracklistType) => {
+  const validTracklistTypes = ['album', 'playlist'];
+
+  if (!validTracklistTypes.includes(tracklistType)) {
+    throw new Error(
+      `Invalid tracklistType "${tracklistType}" passed to getSongsByTracklistId. Valid types are: ${validTracklistTypes.join(', ')}.`
+    );
+  }
+
   try {
     const { data, error } = await supabase
       .from('songs')
       .select('*')
-      .eq('album_id', albumId)
+      .eq(`${tracklistType}_id`, tracklistId)
       .order('title', { ascending: true });
     if (error) throw error;
     return data;
