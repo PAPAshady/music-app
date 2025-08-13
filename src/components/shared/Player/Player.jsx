@@ -17,51 +17,46 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Range } from 'react-range';
 import PropTypes from 'prop-types';
-import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
-import { BASE_URL } from '../../../services/api';
 import { useNavigate } from 'react-router-dom';
-import useSafeContext from '../../../hooks/useSafeContext';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   closeMobilePlaylist,
   toggleMobilePlaylist,
 } from '../../../redux/slices/mobilePlaylistSlice';
+import {
+  formatTime,
+  music,
+  pause,
+  play,
+  next,
+  prev,
+  togglePlayState,
+} from '../../../redux/slices/musicPlayerSlice';
 
 const musicDefaultVolume = 70; // min: 0, max: 100
 
 export default function Player({ classNames, isPlayerPage }) {
   const dispatch = useDispatch();
   const { isOpen: isMobilePlaylistOpen } = useSelector((state) => state.mobilePlaylist);
+  const { songTotalDurations, isPlaying, playlist, currentMusic, playingState } = useSelector(
+    (state) => state.musicPlayer
+  );
   const [volume, setVolume] = useState([musicDefaultVolume]);
   const [musicProgress, setMusicProgress] = useState([0]);
   const [currentTime, setCurrentTime] = useState('0:00');
   const verticalVolumeSlider = useCloseOnClickOutside();
   const navigate = useNavigate();
-  const {
-    music,
-    play,
-    pause,
-    isPlaying,
-    next,
-    prev,
-    currentMusic,
-    getCurrentTime,
-    durations,
-    playlist,
-    playState,
-    togglePlayStates,
-  } = useSafeContext(MusicPlayerContext);
   const disabled = !playlist.musics?.length;
 
   useEffect(() => {
     const updateCurrentTime = () => {
       setMusicProgress([Math.floor((music.currentTime / music.duration) * 100)]);
-      setCurrentTime(getCurrentTime());
+      setCurrentTime(formatTime(music.currentTime));
     };
     music.addEventListener('timeupdate', updateCurrentTime);
     music.volume = musicDefaultVolume / 100;
     return () => music.removeEventListener('timeupdate', updateCurrentTime);
-  }, [music, getCurrentTime]);
+  }, []);
 
   const changeVolumeHandler = ([volume]) => {
     music.volume = volume / 100;
@@ -81,9 +76,13 @@ export default function Player({ classNames, isPlayerPage }) {
   };
 
   const playButtons = [
-    { id: 1, icon: <Previous />, onClick: prev },
-    { id: 2, icon: isPlaying ? <Pause /> : <Play />, onClick: isPlaying ? pause : play },
-    { id: 3, icon: <Next />, onClick: next },
+    { id: 1, icon: <Previous />, onClick: () => dispatch(prev()) },
+    {
+      id: 2,
+      icon: isPlaying ? <Pause /> : <Play />,
+      onClick: () => dispatch(isPlaying ? pause() : play()),
+    },
+    { id: 3, icon: <Next />, onClick: () => dispatch(next()) },
   ];
 
   return (
@@ -97,7 +96,7 @@ export default function Player({ classNames, isPlayerPage }) {
         >
           <img
             className="size-full object-cover"
-            src={currentMusic?.cover ? BASE_URL + currentMusic.cover : noCoverImg}
+            src={currentMusic?.cover ? currentMusic.cover : noCoverImg}
             alt={currentMusic?.title}
           />
           <div
@@ -112,9 +111,7 @@ export default function Player({ classNames, isPlayerPage }) {
           <p className="text-white-50 truncate font-semibold">
             {currentMusic?.title || 'No music is playing'}
           </p>
-          <p className="text-primary-100 truncate text-sm">
-            {currentMusic?.artist?.map((artist) => `${artist.name} `) || 'No Artists'}
-          </p>
+          <p className="text-primary-100 truncate text-sm">{currentMusic?.artist || 'No Artist'}</p>
         </div>
       </div>
 
@@ -126,7 +123,7 @@ export default function Player({ classNames, isPlayerPage }) {
                 {currentMusic?.title || 'No music is playing'}
               </p>
               <p className="text-primary-100 hidden sm:block">
-                {currentMusic?.artists?.map((artist) => `${artist.name} `) || 'No Artists'}
+                {currentMusic?.artist || 'No Artist'}
               </p>
             </div>
             <span className="text-primary-100 hidden w-[42px] text-sm md:block">{currentTime}</span>
@@ -136,7 +133,7 @@ export default function Player({ classNames, isPlayerPage }) {
               ))}
             </div>
             <span className="text-primary-100 hidden w-[42px] text-end text-sm md:block">
-              {durations.formatedDuration}
+              {songTotalDurations.formatedDuration}
             </span>
           </div>
           <Range
@@ -170,13 +167,13 @@ export default function Player({ classNames, isPlayerPage }) {
           />
         </div>
         <div className="ms-4 hidden items-center gap-4 md:flex">
-          <div title={playState}>
+          <div title={playingState}>
             <IconButton
-              onClick={togglePlayStates}
+              onClick={() => dispatch(togglePlayState())}
               icon={
-                playState === 'shuffle' ? (
+                playingState === 'shuffle' ? (
                   <Shuffle />
-                ) : playState === 'repeat_one' ? (
+                ) : playingState === 'repeat_one' ? (
                   <RepeatOne />
                 ) : (
                   <RepeateMusic />

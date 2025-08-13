@@ -9,7 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { getSongsByTracklistIdQueryOptions } from '../../../queries/musics';
 import { useQuery } from '@tanstack/react-query';
-import { setPlaylist, play, pause } from '../../../redux/slices/musicPlayerSlice';
+import {
+  setPlaylist,
+  play,
+  pause,
+  setCurrentSongIndex,
+} from '../../../redux/slices/musicPlayerSlice';
 
 const SidebarPlaylist = memo(() => {
   const { selectedPlaylist, playlist, isPlaying } = useSelector((state) => state.musicPlayer);
@@ -24,6 +29,7 @@ const SidebarPlaylist = memo(() => {
   const playPauseButtonHandler = () => {
     if (!isPlayingPlaylistSelected) {
       dispatch(setPlaylist(selectedPlaylist));
+      dispatch(setCurrentSongIndex(0));
       return;
     }
     dispatch(isPlaying ? pause() : play());

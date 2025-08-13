@@ -46,17 +46,24 @@ export const prev = createAsyncThunk('musicPlayer/prev', (_, { getState, dispatc
   }
 });
 
+// an utility function to convert milliseconds into currect time format to in the UI
+export const formatTime = (time) => {
+  const seconds = Math.floor(time % 60);
+  const mins = Math.floor(time / 60);
+  return `${mins}:${seconds < 10 ? `0${seconds}` : seconds}`;
+};
+
 const musicPlayerSlice = createSlice({
   name: 'musicPlayer',
   initialState: {
     isPlaying: false,
     currentSongIndex: 0,
-    prevSongIndex: 0,
+    prevSongIndex: null,
+    currentMusic: null,
     playlist: {},
     selectedPlaylist: {},
     playingState: 'repeat_all',
     songTotalDurations: { rawDuration: 0, formattedDuration: '0:00' },
-    songCurrentDurations: { rawDuration: 0, formattedDuration: '0:00' },
   },
   reducers: {
     setIsPlaying(state, action) {
@@ -67,6 +74,9 @@ const musicPlayerSlice = createSlice({
     },
     setPrevSongIndex(state, action) {
       state.prevSongIndex = action.payload;
+    },
+    setCurrentMusic(state, action) {
+      state.currentMusic = action.payload;
     },
     setPlayState(state, action) {
       state.playingState = action.payload;
@@ -82,9 +92,6 @@ const musicPlayerSlice = createSlice({
     },
     setSongTotalDurations(state, action) {
       state.songTotalDurations = action.payload;
-    },
-    setSongCurrentDurations(state, action) {
-      state.songCurrentDurations = action.payload;
     },
     togglePlayState(state) {
       const playingStateOptions = ['repeat_all', 'repeat_one', 'shuffle'];
@@ -102,12 +109,12 @@ export const {
   setIsPlaying,
   setCurrentSongIndex,
   setPrevSongIndex,
+  setCurrentMusic,
   setPlayState,
   togglePlayState,
   setPlaylist,
   setSelectedPlaylist,
   setSelectedPlaylistSongs,
   setSongTotalDurations,
-  setSongCurrentDurations,
 } = musicPlayerSlice.actions;
 export default musicPlayerSlice.reducer;

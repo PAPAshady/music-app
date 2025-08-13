@@ -3,7 +3,7 @@ import queryClient from '../queryClient';
 import { getSongsByTracklistIdQueryOptions } from '../queries/musics';
 import { setUser } from './slices/authSlice';
 import { getUserAvatar } from './slices/authSlice';
-import { setSelectedPlaylistSongs } from './slices/musicPlayerSlice';
+import { setSelectedPlaylistSongs, setCurrentMusic } from './slices/musicPlayerSlice';
 import {
   music,
   setPrevSongIndex,
@@ -11,7 +11,7 @@ import {
   play,
   setSelectedPlaylist,
   setSongTotalDurations,
-  setSongCurrentDurations,
+  formatTime,
 } from './slices/musicPlayerSlice';
 
 const listenerMiddleware = createListenerMiddleware();
@@ -28,52 +28,34 @@ listenerMiddleware.startListening({
 
 listenerMiddleware.startListening({
   actionCreator: setCurrentSongIndex,
-  effect: (action, { getState, dispatch, signal }) => {
+  effect: (action, { getState, dispatch, signal, getOriginalState }) => {
     // update music src everytime currentSongIndex changes
     const { playlist, currentSongIndex } = getState().musicPlayer;
+    const { currentSongIndex: prevSongIndex } = getOriginalState().musicPlayer;
     // dont try to play music onMount (because there is no music on Mount) to avoid errors.
     if (playlist.musics?.length) {
-      music.src = playlist.musics?.[action.payload]?.song_url;
-      dispatch(setPrevSongIndex(currentSongIndex));
+      music.src = playlist.musics[action.payload]?.song_url;
+      dispatch(setPrevSongIndex(prevSongIndex));
+      // update current song to the new one
+      dispatch(setCurrentMusic(playlist.musics[currentSongIndex]));
       dispatch(play());
     }
 
     // calculate the duration of the new song
     const formatSongDuration = () => {
-      const seconds = Math.floor(music.duration % 60);
-      const mins = Math.floor(music.duration / 60);
-      const formatedDuration = `${mins}:${seconds < 10 ? `0${seconds}` : seconds}`;
-      dispatch(setSongTotalDurations({ rawDuration: music.duration, formatedDuration }));
-    };
-
-    const getCurrentTime = () => {
-      const seconds = Math.round(music.currentTime % 60);
-      const mins = Math.round(music.currentTime / 60);
-      return `${mins}:${seconds < 10 ? `0${seconds}` : seconds}`;
-    };
-
-    let lastUpdate = 0;
-    const updateCurrentTime = () => {
-      const now = performance.now();
-      // throttle to every 0.5s to avoid too much re-renders
-      if (now - lastUpdate > 500) {
-        lastUpdate = now;
-        dispatch(
-          setSongCurrentDurations({
-            rawDuration: music.currentTime,
-            formatedDuration: getCurrentTime(),
-          })
-        );
-      }
+      dispatch(
+        setSongTotalDurations({
+          rawDuration: music.duration,
+          formatedDuration: formatTime(music.duration),
+        })
+      );
     };
 
     music.addEventListener('loadedmetadata', formatSongDuration);
-    music.addEventListener('timeupdate', updateCurrentTime);
 
     // Cleanup previous event listeners
     signal.addEventListener('abort', () => {
       music.removeEventListener('loadedmetadata', formatSongDuration);
-      music.removeEventListener('timeupdate', updateCurrentTime);
     });
   },
 });
