@@ -42,20 +42,12 @@ export default function Player({ classNames, isPlayerPage }) {
     (state) => state.musicPlayer
   );
   const [volume, setVolume] = useState([musicDefaultVolume]);
-  const [musicProgress, setMusicProgress] = useState([0]);
-  const [currentTime, setCurrentTime] = useState('0:00');
   const verticalVolumeSlider = useCloseOnClickOutside();
   const navigate = useNavigate();
   const disabled = !playlist.musics?.length;
 
   useEffect(() => {
-    const updateCurrentTime = () => {
-      setMusicProgress([Math.floor((music.currentTime / music.duration) * 100)]);
-      setCurrentTime(formatTime(music.currentTime));
-    };
-    music.addEventListener('timeupdate', updateCurrentTime);
     music.volume = musicDefaultVolume / 100;
-    return () => music.removeEventListener('timeupdate', updateCurrentTime);
   }, []);
 
   const changeVolumeHandler = ([volume]) => {
@@ -126,7 +118,7 @@ export default function Player({ classNames, isPlayerPage }) {
                 {currentMusic?.artist || 'No Artist'}
               </p>
             </div>
-            <span className="text-primary-100 hidden w-[42px] text-sm md:block">{currentTime}</span>
+            <CurrentTimeNumber />
             <div className="xs:gap-5 flex items-center gap-4 min-[400px]:gap-6 sm:gap-10 md:gap-12 2xl:!gap-16">
               {playButtons.map((button) => (
                 <PlayButton key={button.id} {...button} disabled={disabled} />
@@ -136,35 +128,7 @@ export default function Player({ classNames, isPlayerPage }) {
               {songTotalDurations.formatedDuration}
             </span>
           </div>
-          <Range
-            values={musicProgress}
-            disabled={disabled}
-            onChange={(values) => {
-              music.currentTime = (values[0] / 100) * music.duration;
-              setMusicProgress(values);
-            }}
-            min={0}
-            max={100}
-            renderTrack={({ props, children }) => (
-              <div
-                {...props}
-                className={`flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${disabled ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
-              >
-                <div
-                  className={`relative h-1.5 rounded-3xl border transition sm:h-2 ${disabled ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
-                  style={{ width: `${musicProgress[0]}%` }}
-                ></div>
-                {children}
-              </div>
-            )}
-            renderThumb={({ props }) => (
-              <div
-                className={`bg-primary-300 top-0 size-3 rounded-full transition outline-none sm:size-4 ${disabled ? 'hidden' : ''}`}
-                {...props}
-                key={1}
-              ></div>
-            )}
-          />
+          {!disabled && <ProgressBar disabled={disabled} />}
         </div>
         <div className="ms-4 hidden items-center gap-4 md:flex">
           <div title={playingState}>
@@ -282,6 +246,70 @@ function PlayButton({ icon, onClick, disabled }) {
   );
 }
 
+function ProgressBar({ disabled }) {
+  const [musicProgress, setMusicProgress] = useState([0]);
+
+  useEffect(() => {
+    const updateProgressBar = () => {
+      setMusicProgress([Math.floor((music.currentTime / music.duration) * 100)]);
+    };
+    music.addEventListener('timeupdate', updateProgressBar);
+    return () => {
+      music.removeEventListener('timeupdate', updateProgressBar);
+    };
+  }, []);
+
+  return (
+    <Range
+      values={musicProgress}
+      disabled={disabled}
+      onChange={(values) => {
+        music.currentTime = (values[0] / 100) * music.duration;
+        setMusicProgress(values);
+      }}
+      min={0}
+      max={100}
+      renderTrack={({ props, children }) => (
+        <div
+          {...props}
+          className={`flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${disabled ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
+        >
+          <div
+            className={`relative h-1.5 rounded-3xl border transition sm:h-2 ${disabled ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
+            style={{ width: `${musicProgress[0]}%` }}
+          ></div>
+          {children}
+        </div>
+      )}
+      renderThumb={({ props }) => (
+        <div
+          className={`bg-primary-300 top-0 size-3 rounded-full transition outline-none sm:size-4 ${disabled ? 'hidden' : ''}`}
+          {...props}
+          key={1}
+        ></div>
+      )}
+    />
+  );
+}
+
+function CurrentTimeNumber() {
+  const [currentTime, setCurrentTime] = useState('0:00');
+
+  useEffect(() => {
+    const updateCurrentTime = () => {
+      setCurrentTime(formatTime(music.currentTime));
+    };
+
+    music.addEventListener('timeupdate', updateCurrentTime);
+
+    return () => {
+      music.removeEventListener('timeupdate', updateCurrentTime);
+    };
+  }, []);
+
+  return <span className="text-primary-100 hidden w-[42px] text-sm md:block">{currentTime}</span>;
+}
+
 PlayButton.propTypes = {
   icon: PropTypes.element.isRequired,
   onClick: PropTypes.func.isRequired,
@@ -291,4 +319,8 @@ PlayButton.propTypes = {
 Player.propTypes = {
   classNames: PropTypes.string,
   isPlayerPage: PropTypes.bool,
+};
+
+ProgressBar.propTypes = {
+  disabled: PropTypes.bool.isRequired,
 };
