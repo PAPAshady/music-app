@@ -10,6 +10,8 @@ import {
   setCurrentSongIndex,
   play,
   setSelectedPlaylist,
+  setSongTotalDurations,
+  setSongCurrentDurations,
 } from './slices/musicPlayerSlice';
 
 const listenerMiddleware = createListenerMiddleware();
@@ -24,10 +26,10 @@ listenerMiddleware.startListening({
   },
 });
 
-// update music src everytime currentSongIndex changes
 listenerMiddleware.startListening({
   actionCreator: setCurrentSongIndex,
-  effect: (action, { getState, dispatch }) => {
+  effect: (action, { getState, dispatch, signal }) => {
+    // update music src everytime currentSongIndex changes
     const { playlist, currentSongIndex } = getState().musicPlayer;
     // dont try to play music onMount (because there is no music on Mount) to avoid errors.
     if (playlist.musics?.length) {
@@ -35,6 +37,44 @@ listenerMiddleware.startListening({
       dispatch(setPrevSongIndex(currentSongIndex));
       dispatch(play());
     }
+
+    // calculate the duration of the new song
+    const formatSongDuration = () => {
+      const seconds = Math.floor(music.duration % 60);
+      const mins = Math.floor(music.duration / 60);
+      const formatedDuration = `${mins}:${seconds < 10 ? `0${seconds}` : seconds}`;
+      dispatch(setSongTotalDurations({ rawDuration: music.duration, formatedDuration }));
+    };
+
+    const getCurrentTime = () => {
+      const seconds = Math.round(music.currentTime % 60);
+      const mins = Math.round(music.currentTime / 60);
+      return `${mins}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    };
+
+    let lastUpdate = 0;
+    const updateCurrentTime = () => {
+      const now = performance.now();
+      // throttle to every 0.5s to avoid too much re-renders
+      if (now - lastUpdate > 500) {
+        lastUpdate = now;
+        dispatch(
+          setSongCurrentDurations({
+            rawDuration: music.currentTime,
+            formatedDuration: getCurrentTime(),
+          })
+        );
+      }
+    };
+
+    music.addEventListener('loadedmetadata', formatSongDuration);
+    music.addEventListener('timeupdate', updateCurrentTime);
+
+    // Cleanup previous event listeners
+    signal.addEventListener('abort', () => {
+      music.removeEventListener('loadedmetadata', formatSongDuration);
+      music.removeEventListener('timeupdate', updateCurrentTime);
+    });
   },
 });
 

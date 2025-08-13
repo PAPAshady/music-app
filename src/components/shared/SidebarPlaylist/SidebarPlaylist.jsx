@@ -4,17 +4,15 @@ import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import DropDownList from '../../DropDownList/DropDownList';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
-import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
-import useSafeContext from '../../../hooks/useSafeContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { getSongsByTracklistIdQueryOptions } from '../../../queries/musics';
 import { useQuery } from '@tanstack/react-query';
+import { setPlaylist, play, pause } from '../../../redux/slices/musicPlayerSlice';
 
 const SidebarPlaylist = memo(() => {
-  const { selectedPlaylist } = useSelector((state) => state.musicPlayer);
-  const { setPlaylist, playlist, isPlaying, play, pause } = useSafeContext(MusicPlayerContext);
+  const { selectedPlaylist, playlist, isPlaying } = useSelector((state) => state.musicPlayer);
   const { data: selectedPlaylistSongs, isLoading } = useQuery(
     getSongsByTracklistIdQueryOptions(selectedPlaylist.id, selectedPlaylist.tracklistType)
   );
@@ -25,10 +23,10 @@ const SidebarPlaylist = memo(() => {
 
   const playPauseButtonHandler = () => {
     if (!isPlayingPlaylistSelected) {
-      setPlaylist(selectedPlaylist);
+      dispatch(setPlaylist(selectedPlaylist));
       return;
     }
-    isPlaying ? pause() : play();
+    dispatch(isPlaying ? pause() : play());
   };
 
   const headerVariants = {
