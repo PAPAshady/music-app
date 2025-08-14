@@ -1,5 +1,9 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getAllPlaylists } from '../services/playlists';
+import {
+  getAllPlaylists,
+  getAllPrivatePlaylists,
+  getAllPublicPlaylists,
+} from '../services/playlists';
 
 export const getAllPlaylistsQueryOptions = () => {
   return queryOptions({
@@ -11,10 +15,20 @@ export const getAllPlaylistsQueryOptions = () => {
   });
 };
 
-export const getUserPlaylistsQueryOptions = () => {
+export const getAllPublicPlaylistsQueryOptions = () => {
   return queryOptions({
-    queryKey: ['playlists', { isPrivate: true }],
-    queryFn: () => {},
+    queryKey: ['playlists', { is_public: true }],
+    queryFn: getAllPublicPlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const getAllPrivatePlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_public: false }],
+    queryFn: getAllPrivatePlaylists,
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,

@@ -35,7 +35,6 @@ export default function PlaylistInfosModal() {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
-  const isSmallDesktop = useMediaQuery('(max-width: 1280px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
@@ -44,6 +43,8 @@ export default function PlaylistInfosModal() {
     description = '',
     cover,
     musics,
+    tracklistType,
+    is_public,
   } = useSelector((state) => state.musicPlayer.selectedPlaylist);
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
@@ -226,11 +227,7 @@ export default function PlaylistInfosModal() {
           </div>
         </div>
 
-        {/* 
-          This condtion is wrong because this section will not appear to users with mobile devices.
-          so currently we must have to wait for the backend to include a flag in albums resoponse to determine if user selected an album or playlist.
-        */}
-        {!isSmallDesktop && (
+        {tracklistType === 'playlist' && !is_public && actionType === 'edit' && (
           <div className="flex flex-col gap-4">
             <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
               {tabButtons.map((button) => (

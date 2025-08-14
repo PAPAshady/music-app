@@ -7,15 +7,15 @@ import PlaylistCardSkeleton from '../../components/MusicCards/PlaylistCard/Playl
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import { songs, genres, playlists } from '../../data';
 import { useQuery } from '@tanstack/react-query';
-import { getUserPlaylistsQueryOptions } from '../../queries/playlists';
+import { getAllPrivatePlaylistsQueryOptions } from '../../queries/playlists';
 import PropTypes from 'prop-types';
 
 export default function PlayLists() {
-  const userPlaylists = useQuery(getUserPlaylistsQueryOptions());
+  const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
 
   // Render the "Add New Playlist" button as the first item in the playlists list.
   const privatePlaylists = userPlaylists.data?.playlist
-    ? [{ id: 0, isAddPlaylistButton: true }, ...userPlaylists.data.playlist]
+    ? [{ id: 0, isAddPlaylistButton: true }, ...userPlaylists.data]
     : [{ id: 0, isAddPlaylistButton: true }];
 
   const playlistsSections = [
@@ -34,7 +34,7 @@ export default function PlayLists() {
     {
       id: 3,
       title: 'Subscribed playlists',
-      playlists: userPlaylists.data?.playlist,
+      playlists: userPlaylists.data,
       isLoading: userPlaylists.isLoading,
     },
     {
@@ -75,7 +75,7 @@ export default function PlayLists() {
       <div>
         <SectionTitle title="Playlists You Recently Seen" />
         <PlaylistsContainer
-          playlists={userPlaylists.data?.playlist}
+          playlists={userPlaylists.data}
           isLoading={userPlaylists.isLoading}
           numberOfPlayLists={5}
         />
