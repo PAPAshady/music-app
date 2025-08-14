@@ -1,6 +1,6 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import queryClient from '../queryClient';
-import { getSongsByTracklistIdQueryOptions } from '../queries/musics';
+import { getSongsByAlbumIdQueryOptions } from '../queries/musics';
 import { setUser } from './slices/authSlice';
 import { getUserAvatar } from './slices/authSlice';
 import { setSelectedPlaylistSongs, setCurrentMusic } from './slices/musicPlayerSlice';
@@ -45,9 +45,9 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setSelectedPlaylist,
   effect: async (action, { dispatch }) => {
-    const { tracklistType, id } = action.payload;
+    const { id } = action.payload;
     const songs = await queryClient.fetchQuery(
-      getSongsByTracklistIdQueryOptions(id, tracklistType)
+      getSongsByAlbumIdQueryOptions(id)
     );
 
     // we store the songs of the selected tracklist to keep track of them and do some things like

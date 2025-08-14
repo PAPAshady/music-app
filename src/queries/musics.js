@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getAllSongs, getSongsByTracklistId } from '../services/songs';
+import { getAllSongs, getSongsByAlbumId } from '../services/songs';
 
 export const getAllMusicsQueryOptions = () => {
   return queryOptions({
@@ -11,10 +11,10 @@ export const getAllMusicsQueryOptions = () => {
   });
 };
 
-export const getSongsByTracklistIdQueryOptions = (tracklistId, tracklistType) => {
+export const getSongsByAlbumIdQueryOptions = (albumId) => {
   return queryOptions({
-    queryKey: ['tracklists', { tracklistId }],
-    queryFn: () => getSongsByTracklistId(tracklistId, tracklistType),
+    queryKey: ['albums', { albumId }],
+    queryFn: () => getSongsByAlbumId(albumId),
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,

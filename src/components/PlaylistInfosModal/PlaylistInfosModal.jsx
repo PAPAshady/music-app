@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, memo, useCallback } from 'react';
+import { useRef, useEffect, useState, memo } from 'react';
 import { Image, Trash, Edit2, AddCircle, Play, Music } from 'iconsax-react';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
@@ -16,9 +16,8 @@ import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import IconButton from '../Buttons/IconButton/IconButton';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getAllMusicsQueryOptions } from '../../queries/musics';
-import { addMusicToPlaylist, removeMusicFromPlaylist } from '../../services/playlists';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import PropTypes from 'prop-types';
@@ -42,16 +41,8 @@ export default function PlaylistInfosModal() {
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
-  const addMusicMutation = useMutation({
-    mutationKey: ['playlists'],
-    mutationFn: addMusicToPlaylist,
-  });
-  const removeMusicMutation = useMutation({
-    mutationKey: ['playlists'],
-    mutationFn: removeMusicFromPlaylist,
-  });
   const {
-    selectedPlaylist: { title, description = '', cover, musics, id: playlistId },
+    selectedPlaylist: { title, description = '', cover, musics },
   } = useSafeContext(MusicPlayerContext);
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
@@ -103,24 +94,15 @@ export default function PlaylistInfosModal() {
     }
   };
 
-  const addSongHandler = useCallback(
-    (musicId) => {
-      setPendingSongId(musicId);
-      addMusicMutation.mutate({ playlistId, musicId }, { onSettled: () => setPendingSongId(null) });
-    },
-    [addMusicMutation, playlistId]
-  );
+  const addSongHandler = (musicId) => {
+    setPendingSongId(musicId);
+    console.log('addSongHandler is running');
+  };
 
-  const removeSongHandler = useCallback(
-    (musicId) => {
-      setPendingSongId(musicId);
-      removeMusicMutation.mutate(
-        { playlistId, musicId },
-        { onSettled: () => setPendingSongId(null) }
-      );
-    },
-    [playlistId, removeMusicMutation]
-  );
+  const removeSongHandler = (musicId) => {
+    setPendingSongId(musicId);
+    console.log('removeSongHandler is running');
+  };
 
   const validateFileInput = (e) => {
     const selectedImage = e.target.files[0];

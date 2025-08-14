@@ -18,28 +18,28 @@ export const getAllSongs = async () => {
   }
 };
 
-
-// this method is used to fetch both playlists and albums
-export const getSongsByTracklistId = async (tracklistId, tracklistType) => {
-  const validTracklistTypes = ['album', 'playlist'];
-
-  if (!validTracklistTypes.includes(tracklistType)) {
-    throw new Error(
-      `Invalid tracklistType "${tracklistType}" passed to getSongsByTracklistId. Valid types are: ${validTracklistTypes.join(', ')}.`
-    );
-  }
-
+export const getSongsByAlbumId = async (albumId) => {
   try {
     const { data, error } = await supabase
       .from('songs')
       .select('*')
-      .eq(`${tracklistType}_id`, tracklistId)
+      .eq(`album_id`, albumId)
       .order('title', { ascending: true });
     if (error) throw error;
     return data;
   } catch (err) {
     return handleSongsErrors(err);
   }
+};
+
+export const getSongsByPlaylistId = async (playlistId) => {
+  const { data, error } = await supabase
+    .from('playlist_songs')
+    .select('songs(*)')
+    .eq('playlist_id', playlistId)
+    .order('title', { ascending: true });
+  if (error) throw error;
+  return data.map((data) => data.songs);
 };
 
 // Fetch songs that contain at least one of the specified genres in their genre array.
