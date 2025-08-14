@@ -62,6 +62,8 @@ const musicPlayerSlice = createSlice({
     currentMusic: null,
     playlist: {},
     selectedPlaylist: {},
+    isLoading: false, // music initial loading flag
+    isBuffering: false,
     playingState: 'repeat_all',
     songTotalDurations: { rawDuration: 0, formattedDuration: '0:00' },
   },
@@ -90,6 +92,12 @@ const musicPlayerSlice = createSlice({
     setSelectedPlaylistSongs(state, action) {
       state.selectedPlaylist.musics = action.payload;
     },
+    setIsLoading(state, action) {
+      state.isLoading = action.payload;
+    },
+    setIsBuffering(state, action) {
+      state.isBuffering = action.payload;
+    },
     setSongTotalDurations(state, action) {
       state.songTotalDurations = action.payload;
     },
@@ -115,6 +123,8 @@ export const {
   setPlaylist,
   setSelectedPlaylist,
   setSelectedPlaylistSongs,
+  setIsLoading,
+  setIsBuffering,
   setSongTotalDurations,
 } = musicPlayerSlice.actions;
 export default musicPlayerSlice.reducer;
