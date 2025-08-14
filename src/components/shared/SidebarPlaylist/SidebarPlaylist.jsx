@@ -7,7 +7,10 @@ import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
-import { getSongsByAlbumIdQueryOptions } from '../../../queries/musics';
+import {
+  getSongsByAlbumIdQueryOptions,
+  getSongsByPlaylistIdQueryOptions,
+} from '../../../queries/musics';
 import { useQuery } from '@tanstack/react-query';
 import {
   setPlaylist,
@@ -20,7 +23,9 @@ import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 const SidebarPlaylist = memo(() => {
   const { selectedPlaylist, playlist, isPlaying } = useSelector((state) => state.musicPlayer);
   const { data: selectedPlaylistSongs, isLoading } = useQuery(
-    getSongsByAlbumIdQueryOptions(selectedPlaylist.id)
+    selectedPlaylist.tracklistType === 'album'
+      ? getSongsByAlbumIdQueryOptions(selectedPlaylist.id)
+      : getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
   );
   const dispatch = useDispatch();
   const playlistCover = selectedPlaylist.cover ? selectedPlaylist.cover : defaultCover;

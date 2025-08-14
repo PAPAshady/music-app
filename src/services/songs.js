@@ -36,8 +36,7 @@ export const getSongsByPlaylistId = async (playlistId) => {
   const { data, error } = await supabase
     .from('playlist_songs')
     .select('songs(*)')
-    .eq('playlist_id', playlistId)
-    .order('title', { ascending: true });
+    .eq('playlist_id', playlistId);
   if (error) throw error;
   return data.map((data) => data.songs);
 };
