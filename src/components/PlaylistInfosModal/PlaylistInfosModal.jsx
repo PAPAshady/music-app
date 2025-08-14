@@ -9,8 +9,6 @@ import useMediaQuery from '../../hooks/useMediaQuery';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import MusicPlayerContext from '../../contexts/MusicPlayerContext';
-import useSafeContext from '../../hooks/useSafeContext';
 import { BASE_URL } from '../../services/api';
 import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
@@ -42,8 +40,11 @@ export default function PlaylistInfosModal() {
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
   const {
-    selectedPlaylist: { title, description = '', cover, musics },
-  } = useSafeContext(MusicPlayerContext);
+    title,
+    description = '',
+    cover,
+    musics,
+  } = useSelector((state) => state.musicPlayer.selectedPlaylist);
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
   const {

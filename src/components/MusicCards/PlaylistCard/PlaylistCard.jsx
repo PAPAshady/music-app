@@ -3,20 +3,18 @@ import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
 import { Heart, Play, AddCircle } from 'iconsax-react';
-import useSafeContext from '../../../hooks/useSafeContext';
-import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import { useDispatch } from 'react-redux';
+import { setSelectedPlaylist } from '../../../redux/slices/musicPlayerSlice';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 
 const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const dispatch = useDispatch();
   const { title, totaltracks, cover, isFavorite, classNames } = playlist;
-  const { setSelectedPlaylist } = useSafeContext(MusicPlayerContext);
   const playlistCover = cover ? cover : noCoverImg;
 
   const showSelectedPlaylist = () => {
-    setSelectedPlaylist(playlist);
+    dispatch(setSelectedPlaylist(playlist));
     dispatch(openMobilePlaylist());
   };
 

@@ -15,9 +15,6 @@ import {
 } from 'iconsax-react';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import IconButton from '../../Buttons/IconButton/IconButton';
-import useSafeContext from '../../../hooks/useSafeContext';
-import { BASE_URL } from '../../../services/api';
-import MusicPlayerContext from '../../../contexts/MusicPlayerContext';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import Player from '../Player/Player';
@@ -29,6 +26,7 @@ import { closeMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { songs } from '../../../data';
 import { setIsMobilePlaylistOpen } from '../../../redux/slices/mobilePlaylistSlice';
+import { togglePlayState, setPlaylist } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
 
 export default function MobilePlaylist() {
@@ -39,11 +37,8 @@ export default function MobilePlaylist() {
   const searchInput = useInput();
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const isTablet = useMediaQuery('(min-width: 768px)');
-  const { setPlaylist, playState, togglePlayStates, selectedPlaylist } =
-    useSafeContext(MusicPlayerContext);
-  const playlistCover = selectedPlaylist.cover
-    ? `${BASE_URL}/${selectedPlaylist.cover}`
-    : playlistDefaultCover;
+  const { playingState, selectedPlaylist } = useSelector((state) => state.musicPlayer);
+  const playlistCover = selectedPlaylist.cover ? selectedPlaylist.cover : playlistDefaultCover;
 
   // remove scrollbar for the body when mobile playlist is open
   useEffect(() => {
@@ -158,21 +153,21 @@ export default function MobilePlaylist() {
             <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
               <IconButton
                 icon={
-                  playState === 'shuffle' ? (
+                  playingState === 'shuffle' ? (
                     <Shuffle />
-                  ) : playState === 'repeat_one' ? (
+                  ) : playingState === 'repeat_one' ? (
                     <RepeateOne />
                   ) : (
                     <RepeateMusic />
                   )
                 }
                 classNames="sm:size-9 md:size-10"
-                onClick={togglePlayStates}
+                onClick={() => dispatch(togglePlayState())}
               />
               <MainButton
                 classNames="size-12 sm:size-14 md:size-20 !rounded-full flex justify-center items-center"
                 title={<Play size={isTablet ? 32 : 24} />}
-                onClick={() => setPlaylist(selectedPlaylist)}
+                onClick={() => dispatch(setPlaylist(selectedPlaylist))}
               />
             </div>
           </div>
@@ -233,7 +228,7 @@ function SuggestedSong({ title, cover, artist = 'Unknown artist' }) {
       <div className="flex grow items-center gap-2 overflow-hidden">
         <div className="relative h-15 w-15 min-w-[60px] overflow-hidden rounded-sm sm:h-[70px] sm:w-[70px] sm:min-w-[70px]">
           <img
-            src={cover ? `${BASE_URL}/${cover}` : playlistDefaultCover}
+            src={cover ? cover : playlistDefaultCover}
             alt={title}
             className="size-full object-cover"
           />

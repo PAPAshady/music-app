@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '../queryClient';
-import { MusicPlayerProvider } from './MusicPlayerContext';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser, setLoading } from '../redux/slices/authSlice';
@@ -68,9 +67,7 @@ export default function Providers() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MusicPlayerProvider>
-        <RouterProvider router={router} />
-      </MusicPlayerProvider>
+      <RouterProvider router={router} />
     </QueryClientProvider>
   );
 }

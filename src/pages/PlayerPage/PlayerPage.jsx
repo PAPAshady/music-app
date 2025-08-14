@@ -10,25 +10,24 @@ import { Mousewheel } from 'swiper/modules';
 import { lyrics } from '../../data';
 import backgroundImage from '../../assets/images/backgrounds/player-and-settings-page.png';
 import noMusicCover from '../../assets/images/covers/no-cover.jpg';
-import MusicPlayerContext from '../../contexts/MusicPlayerContext';
-import useSafeContext from '../../hooks/useSafeContext';
-import { BASE_URL } from '../../services/api';
+import { useSelector, useDispatch } from 'react-redux';
 import MobilePlaylist from '../../components/shared/MobilePlaylist/MobilePlaylist';
+import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
 import 'swiper/css';
 import './PlayerPage.css';
 
 export default function PlayerPage() {
   const swiperRef = useRef(null);
+  const dispatch = useDispatch();
   const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const { playlist, currentMusic, setCurrentSongIndex, currentSongIndex, prevSongIndex } =
-    useSafeContext(MusicPlayerContext);
-
-  console.log(currentSongIndex);
+  const { playlist, currentMusic, currentSongIndex, prevSongIndex } = useSelector(
+    (state) => state.musicPlayer
+  );
 
   useEffect(() => {
     const img = new Image();
-    img.src = currentMusic?.cover ? BASE_URL + currentMusic?.cover : noMusicCover;
+    img.src = currentMusic?.cover ? currentMusic?.cover : noMusicCover;
     img.addEventListener('load', () => setMusicCover(img.src));
   }, [currentMusic]);
 
@@ -54,9 +53,9 @@ export default function PlayerPage() {
   // play the song when user clicks on it
   const playerCardClickHandler = useCallback(
     (index) => {
-      setCurrentSongIndex(index);
+      dispatch(setCurrentSongIndex(index));
     },
-    [setCurrentSongIndex]
+    [dispatch]
   );
 
   return (
