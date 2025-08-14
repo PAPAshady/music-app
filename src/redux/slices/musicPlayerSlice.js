@@ -80,7 +80,7 @@ const musicPlayerSlice = createSlice({
     setCurrentMusic(state, action) {
       state.currentMusic = action.payload;
     },
-    setPlayState(state, action) {
+    setPlayingState(state, action) {
       state.playingState = action.payload;
     },
     setPlaylist(state, action) {
@@ -125,7 +125,7 @@ export const {
   setCurrentSongIndex,
   setPrevSongIndex,
   setCurrentMusic,
-  setPlayState,
+  setPlayingState,
   togglePlayState,
   setPlaylist,
   setSelectedPlaylist,

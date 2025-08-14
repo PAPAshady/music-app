@@ -1,15 +1,19 @@
 import { useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   music,
   setSongTotalDurations,
   formatTime,
   setMusicState,
   setBufferProgressPercentage,
+  setCurrentSongIndex,
+  next,
+  play,
 } from '../redux/slices/musicPlayerSlice';
 
 export default function useInitilizeAudioEvents() {
   const dispatch = useDispatch();
+  const { playingState, playlist, currentSongIndex } = useSelector((state) => state.musicPlayer);
 
   // calculate the duration of the new song
   const formatSongDuration = useCallback(() => {
@@ -37,11 +41,28 @@ export default function useInitilizeAudioEvents() {
     }
   }, [dispatch]);
 
+  const playStateHandler = useCallback(() => {
+    if (playingState === 'repeat_one' || playlist.musics?.length === 1) {
+      // replay the current song if playlist has only one song or if it is on 'reoeat_one'.
+      dispatch(play());
+    } else if (playingState === 'shuffle') {
+      // get a random index other than the current song
+      let randomIndex = null;
+      do {
+        randomIndex = Math.floor(Math.random() * playlist.musics?.length);
+      } while (randomIndex === currentSongIndex);
+      dispatch(setCurrentSongIndex(randomIndex));
+    } else {
+      dispatch(next());
+    }
+  }, [dispatch, currentSongIndex, playingState, playlist]);
+
   useEffect(() => {
     music.addEventListener('loadedmetadata', formatSongDuration);
     music.addEventListener('loadstart', startMusicInitialLoading);
     music.addEventListener('waiting', startMusicBuffering);
     music.addEventListener('canplay', startMusicPlaying);
+    music.addEventListener('ended', playStateHandler);
     if (!/Firefox/i.test(navigator.userAgent)) {
       // Buffer bar is disabled in Firefox due to inconsistent `audio.buffered` reporting.
       // Firefox often shows only small or partial buffered ranges, which breaks the progress calculation.
@@ -52,6 +73,7 @@ export default function useInitilizeAudioEvents() {
       music.removeEventListener('loadstart', startMusicInitialLoading);
       music.removeEventListener('waiting', startMusicBuffering);
       music.removeEventListener('canplay', startMusicPlaying);
+      music.removeEventListener('ended', playStateHandler);
       music.removeEventListener('progress', getBufferedPercentage);
     };
   }, [
@@ -60,5 +82,6 @@ export default function useInitilizeAudioEvents() {
     startMusicPlaying,
     getBufferedPercentage,
     startMusicInitialLoading,
+    playStateHandler,
   ]);
 }
