@@ -9,11 +9,13 @@ import { addUser, getUser } from '../services/users';
 import supabase from '../services/supabaseClient';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 import routes from '../Router';
+import useInitilizeAudioEvents from '../hooks/useInitilizeAudioEvents';
 
 const router = createBrowserRouter(routes);
 
 export default function Providers() {
   const dispatch = useDispatch();
+  useInitilizeAudioEvents(); // initilize all audio events globally.
 
   // initilize app's authentication
   useEffect(() => {

@@ -62,10 +62,9 @@ const musicPlayerSlice = createSlice({
     currentMusic: null,
     playlist: {},
     selectedPlaylist: {},
-    isLoading: false, // music initial loading flag
-    isBuffering: false,
+    musicState: 'loading',
     playingState: 'repeat_all',
-    songTotalDurations: { rawDuration: 0, formattedDuration: '0:00' },
+    songTotalDurations: { rawDuration: 0, formatedDuration: '0:00' },
   },
   reducers: {
     setIsPlaying(state, action) {
@@ -92,11 +91,15 @@ const musicPlayerSlice = createSlice({
     setSelectedPlaylistSongs(state, action) {
       state.selectedPlaylist.musics = action.payload;
     },
-    setIsLoading(state, action) {
-      state.isLoading = action.payload;
-    },
-    setIsBuffering(state, action) {
-      state.isBuffering = action.payload;
+    setMusicState(state, action) {
+      const validStates = ['initial_loading', 'buffering', 'playable'];
+
+      if (!validStates.includes(action.payload)) {
+        throw new Error(
+          `Invalid actionType "${action.payload}" passed to setMusicState. Valid types are: ${validStates.join(', ')}.`
+        );
+      }
+      state.musicState = action.payload;
     },
     setSongTotalDurations(state, action) {
       state.songTotalDurations = action.payload;
@@ -123,8 +126,7 @@ export const {
   setPlaylist,
   setSelectedPlaylist,
   setSelectedPlaylistSongs,
-  setIsLoading,
-  setIsBuffering,
+  setMusicState,
   setSongTotalDurations,
 } = musicPlayerSlice.actions;
 export default musicPlayerSlice.reducer;

@@ -10,8 +10,6 @@ import {
   setCurrentSongIndex,
   play,
   setSelectedPlaylist,
-  setSongTotalDurations,
-  formatTime,
 } from './slices/musicPlayerSlice';
 
 const listenerMiddleware = createListenerMiddleware();
@@ -28,7 +26,7 @@ listenerMiddleware.startListening({
 
 listenerMiddleware.startListening({
   actionCreator: setCurrentSongIndex,
-  effect: (action, { getState, dispatch, signal, getOriginalState }) => {
+  effect: (action, { getState, dispatch, getOriginalState }) => {
     // update music src everytime currentSongIndex changes
     const { playlist, currentSongIndex } = getState().musicPlayer;
     const { currentSongIndex: prevSongIndex } = getOriginalState().musicPlayer;
@@ -40,23 +38,6 @@ listenerMiddleware.startListening({
       dispatch(setCurrentMusic(playlist.musics[currentSongIndex]));
       dispatch(play());
     }
-
-    // calculate the duration of the new song
-    const formatSongDuration = () => {
-      dispatch(
-        setSongTotalDurations({
-          rawDuration: music.duration,
-          formatedDuration: formatTime(music.duration),
-        })
-      );
-    };
-
-    music.addEventListener('loadedmetadata', formatSongDuration);
-
-    // Cleanup previous event listeners
-    signal.addEventListener('abort', () => {
-      music.removeEventListener('loadedmetadata', formatSongDuration);
-    });
   },
 });
 

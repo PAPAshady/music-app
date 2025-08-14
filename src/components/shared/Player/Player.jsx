@@ -32,8 +32,6 @@ import {
   next,
   prev,
   togglePlayState,
-  setIsLoading,
-  setIsBuffering,
 } from '../../../redux/slices/musicPlayerSlice';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 
@@ -42,15 +40,8 @@ const musicDefaultVolume = 70; // min: 0, max: 100
 export default function Player({ classNames, isPlayerPage }) {
   const dispatch = useDispatch();
   const { isOpen: isMobilePlaylistOpen } = useSelector((state) => state.mobilePlaylist);
-  const {
-    songTotalDurations,
-    isPlaying,
-    playlist,
-    currentMusic,
-    playingState,
-    isLoading,
-    isBuffering,
-  } = useSelector((state) => state.musicPlayer);
+  const { songTotalDurations, isPlaying, playlist, currentMusic, playingState, musicState } =
+    useSelector((state) => state.musicPlayer);
   const [volume, setVolume] = useState([musicDefaultVolume]);
   const verticalVolumeSlider = useCloseOnClickOutside();
   const navigate = useNavigate();
@@ -59,24 +50,7 @@ export default function Player({ classNames, isPlayerPage }) {
 
   useEffect(() => {
     music.volume = musicDefaultVolume / 100;
-
-    const startMusicInitialLoading = () => dispatch(setIsLoading(true));
-    const endMusicInitialLoading = () => dispatch(setIsLoading(false));
-    const startMusicBuffering = () => dispatch(setIsBuffering(true));
-    const endMusicBuffering = () => dispatch(setIsBuffering(false));
-
-    music.addEventListener('loadstart', startMusicInitialLoading);
-    music.addEventListener('canplay', endMusicInitialLoading);
-    music.addEventListener('waiting', startMusicBuffering);
-    music.addEventListener('playing', endMusicBuffering);
-
-    return () => {
-      music.removeEventListener('loadstart', startMusicInitialLoading);
-      music.removeEventListener('waiting', startMusicBuffering);
-      music.removeEventListener('canplay', endMusicInitialLoading);
-      music.removeEventListener('playing', endMusicBuffering);
-    };
-  }, [dispatch]);
+  }, []);
 
   const changeVolumeHandler = ([volume]) => {
     music.volume = volume / 100;
@@ -119,7 +93,7 @@ export default function Player({ classNames, isPlayerPage }) {
             src={currentMusic?.cover ? currentMusic.cover : noCoverImg}
             alt={currentMusic?.title}
           />
-          {isLoading || isBuffering ? (
+          {musicState !== 'playable' ? (
             <div className="absolute inset-0 flex size-full items-center justify-center bg-black/50">
               <LoadingSpinner size={isLargeMobile ? 'sm' : 'md'} />
             </div>
@@ -162,7 +136,7 @@ export default function Player({ classNames, isPlayerPage }) {
               {songTotalDurations.formatedDuration}
             </span>
           </div>
-          {!disabled && <ProgressBar disabled={disabled || isLoading} />}
+          {!disabled && <ProgressBar disabled={disabled || musicState === 'initial_loading'} />}
         </div>
         <div className="ms-4 hidden items-center gap-4 md:flex">
           <div title={playingState}>
