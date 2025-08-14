@@ -3,21 +3,27 @@ import { Heart, Menu, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCurrentSongIndex, setPlaylist, music } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
 
 const PlayBar = memo(
   ({
     size,
+    index: songIndex,
     title,
     cover,
     artist = 'Unknown artist',
     duration,
     album = 'Unknown album',
     isFavorite,
-    clickHandler,
     classNames,
   }) => {
     const dropDownMenu = useCloseOnClickOutside();
+    const dispatch = useDispatch();
+    const { currentSongIndex, selectedPlaylist, playlist } = useSelector(
+      (state) => state.musicPlayer
+    );
 
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',
@@ -36,6 +42,18 @@ const PlayBar = memo(
       { id: 2, title: 'Add to favorites', icon: <Heart /> },
     ];
 
+    const playOnClick = () => {
+      if (playlist.id !== selectedPlaylist.id) {
+        dispatch(setPlaylist(selectedPlaylist));
+      }
+
+      // dont change the song index if user clicked on the current song which is playing because it will
+      // cause the song to replay from the start
+      if (currentSongIndex !== songIndex) {
+        dispatch(setCurrentSongIndex(songIndex));
+      }
+    };
+
     return (
       <div
         className={`bg-primary-800/60 hover:inset-shadow-secondary-400 border-primaty-10 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-[285px] items-center justify-between gap-4 rounded-lg border p-1.5 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${size === 'lg' ? 'lg:max-w-[890px]' : 'lg:max-w-[510px]'} ${classNames}`}
@@ -45,7 +63,7 @@ const PlayBar = memo(
         >
           <button
             className="relative size-14 min-h-14 min-w-14 overflow-hidden rounded-md"
-            onClick={clickHandler}
+            onClick={playOnClick}
           >
             <img src={cover ? cover : noCoverImg} className="size-full object-cover" alt={title} />
             <span
@@ -59,7 +77,7 @@ const PlayBar = memo(
           <div className="flex flex-col overflow-hidden">
             <button
               className={`text-white-50 grow truncate text-start ${musicTitleSizes[size]}`}
-              onClick={clickHandler}
+              onClick={playOnClick}
               title={title}
             >
               {title}
@@ -137,11 +155,11 @@ function DropDownMenuItem({ icon, title, onClick }) {
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
   title: PropTypes.string.isRequired,
+  index: PropTypes.number,
   cover: PropTypes.string,
   artist: PropTypes.string,
   duration: PropTypes.string.isRequired,
   album: PropTypes.string,
-  clickHandler: PropTypes.func,
   isFavorite: PropTypes.bool,
   classNames: PropTypes.string,
 };

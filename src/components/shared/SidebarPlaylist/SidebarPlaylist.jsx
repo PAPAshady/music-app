@@ -163,9 +163,9 @@ const SidebarPlaylist = memo(() => {
             {isLoading ? (
               'Please wait...'
             ) : selectedPlaylistSongs?.length ? (
-              selectedPlaylistSongs?.map((song) => (
+              selectedPlaylistSongs?.map((song, index) => (
                 <motion.div key={song.id} variants={itemVariants}>
-                  <PlayBar size="sm" {...song} />
+                  <PlayBar size="sm" index={index} {...song} />
                 </motion.div>
               ))
             ) : (
