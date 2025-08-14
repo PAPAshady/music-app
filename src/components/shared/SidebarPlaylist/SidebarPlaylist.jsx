@@ -15,6 +15,7 @@ import {
   pause,
   setCurrentSongIndex,
 } from '../../../redux/slices/musicPlayerSlice';
+import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 
 const SidebarPlaylist = memo(() => {
   const { selectedPlaylist, playlist, isPlaying } = useSelector((state) => state.musicPlayer);
@@ -120,22 +121,26 @@ const SidebarPlaylist = memo(() => {
                   className="size-32 object-cover xl:size-[140px]"
                 />
                 <div
-                  className={`absolute inset-0 flex size-full items-center justify-center p-3 transition-opacity duration-300 ${
+                  className={`absolute inset-0 flex size-full items-center justify-center p-3 transition-opacity duration-300 ${isLoading && 'bg-black/50'} ${
                     !isPlayingPlaylistSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'
                   }`}
                 >
-                  <button
-                    className="bg-primary-500/80 flex size-15 items-center justify-center rounded-full border"
-                    onClick={playPauseButtonHandler}
-                  >
-                    <span className="text-secondary-50 block size-7">
-                      {isPlaying && isPlayingPlaylistSelected ? (
-                        <Pause size="100%" />
-                      ) : (
-                        <Play size="100%" />
-                      )}
-                    </span>
-                  </button>
+                  {isLoading ? (
+                    <LoadingSpinner size="lg" />
+                  ) : (
+                    <button
+                      className="bg-primary-500/80 flex size-15 items-center justify-center rounded-full border"
+                      onClick={playPauseButtonHandler}
+                    >
+                      <span className="text-secondary-50 block size-7">
+                        {isPlaying && isPlayingPlaylistSelected ? (
+                          <Pause size="100%" />
+                        ) : (
+                          <Play size="100%" />
+                        )}
+                      </span>
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col">
