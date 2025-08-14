@@ -14,7 +14,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode, Mousewheel, Scrollbar } from 'swiper/modules';
 import { useQuery } from '@tanstack/react-query';
 import { albumsQueryOptions } from '../../queries/albums';
-import { getUserPlaylistsQueryOptions } from '../../queries/playlists';
+import { getUserPlaylistsQueryOptions, getAllPlaylistsQueryOptions } from '../../queries/playlists';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
@@ -24,6 +24,7 @@ export default function Home() {
   const albums = useQuery(albumsQueryOptions());
   const artists = useQuery(artistsQueryOptions());
   const userPlaylists = useQuery(getUserPlaylistsQueryOptions());
+  const publicPlaylists = useQuery(getAllPlaylistsQueryOptions());
 
   return (
     <div className="flex grow flex-col gap-8 lg:gap-10">
@@ -36,7 +37,7 @@ export default function Home() {
       </div>
       <div>
         <SectionHeader title="Playlists Tailored for You" />
-        <PlaylistsSlider playlists={playlists.slice(0, 5)} />
+        <PlaylistsSlider playlists={publicPlaylists.data} isLoading={publicPlaylists.isLoading} />
       </div>
       <div>
         <SectionHeader title="Your Personal Music Space" />
