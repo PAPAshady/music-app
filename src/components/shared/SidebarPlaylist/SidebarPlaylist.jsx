@@ -64,7 +64,7 @@ const SidebarPlaylist = memo(() => {
       icon: <Music />,
     },
     { id: 2, title: '01:11:58', icon: <Timer /> },
-    { id: 3, title: selectedPlaylist.artists?.[0].name ?? 'No Artist', icon: <User /> },
+    { id: 3, title: selectedPlaylist.artist ?? 'No Artist', icon: <User /> },
   ];
 
   const playlistDropDownListItems =
