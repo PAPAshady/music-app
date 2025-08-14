@@ -65,6 +65,7 @@ const musicPlayerSlice = createSlice({
     musicState: 'loading',
     playingState: 'repeat_all',
     songTotalDurations: { rawDuration: 0, formatedDuration: '0:00' },
+    bufferProgressPercentage: 0,
   },
   reducers: {
     setIsPlaying(state, action) {
@@ -113,6 +114,9 @@ const musicPlayerSlice = createSlice({
         state.playingState = playingStateOptions[currentPlayStateIndex + 1];
       }
     },
+    setBufferProgressPercentage(state, action) {
+      state.bufferProgressPercentage = action.payload;
+    },
   },
 });
 
@@ -128,5 +132,6 @@ export const {
   setSelectedPlaylistSongs,
   setMusicState,
   setSongTotalDurations,
+  setBufferProgressPercentage,
 } = musicPlayerSlice.actions;
 export default musicPlayerSlice.reducer;

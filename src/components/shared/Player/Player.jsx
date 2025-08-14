@@ -256,6 +256,9 @@ function PlayButton({ icon, onClick, disabled }) {
 
 function ProgressBar({ disabled }) {
   const [musicProgress, setMusicProgress] = useState([0]);
+  const bufferProgressPercentage = useSelector(
+    (state) => state.musicPlayer.bufferProgressPercentage
+  );
 
   useEffect(() => {
     const updateProgressBar = () => {
@@ -280,8 +283,16 @@ function ProgressBar({ disabled }) {
       renderTrack={({ props, children }) => (
         <div
           {...props}
-          className={`flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${disabled ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
+          className={`relative flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${disabled ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
         >
+          {/* Buffer bar is disabled in Firefox due to inconsistent `audio.buffered` reporting. */}
+          {/* Firefox often shows only small or partial buffered ranges, which breaks the progress calculation. */}
+          {!disabled && !/Firefox/i.test(navigator.userAgent) && (
+            <div
+              className="absolute h-1.5 rounded-3xl bg-white/30 transition sm:h-2"
+              style={{ width: `${bufferProgressPercentage}%` }}
+            ></div>
+          )}
           <div
             className={`relative h-1.5 rounded-3xl border transition sm:h-2 ${disabled ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
             style={{ width: `${musicProgress[0]}%` }}
