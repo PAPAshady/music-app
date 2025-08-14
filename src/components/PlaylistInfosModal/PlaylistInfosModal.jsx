@@ -9,7 +9,6 @@ import useMediaQuery from '../../hooks/useMediaQuery';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { BASE_URL } from '../../services/api';
 import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
@@ -74,9 +73,12 @@ export default function PlaylistInfosModal() {
     we also have to update playlist cover if user selcted another playlist or closed and re-opened the modal
   */
   useEffect(() => {
-    reset({ description: description || '', title: title || '' });
-    setPlaylistCover(cover ? BASE_URL + cover : playlistDefaultCover);
-  }, [reset, description, title, cover, isOpen]);
+    reset({
+      description: actionType === 'edit_playlist' ? description : '',
+      title: actionType === 'edit_playlist' ? title : '',
+    });
+    setPlaylistCover(cover ?? playlistDefaultCover);
+  }, [reset, description, title, cover, isOpen, actionType]);
 
   const changeTabHandler = (tabName) => {
     searchInput.reset();
@@ -227,7 +229,7 @@ export default function PlaylistInfosModal() {
           </div>
         </div>
 
-        {tracklistType === 'playlist' && !is_public && actionType === 'edit' && (
+        {tracklistType === 'playlist' && !is_public && actionType === 'edit_playlist' && (
           <div className="flex flex-col gap-4">
             <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
               {tabButtons.map((button) => (

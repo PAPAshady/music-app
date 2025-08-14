@@ -73,8 +73,16 @@ const SidebarPlaylist = memo(() => {
   ];
 
   const playlistDropDownListItems =
-    selectedPlaylist.playlist_public === 'private'
+    selectedPlaylist.is_public || selectedPlaylist.tracklistType === 'album'
       ? [
+          {
+            id: 1,
+            icon: <AddCircle />,
+            title: 'Add to library',
+          },
+          { id: 2, icon: <Heart />, title: 'Add to favorite playlists' },
+        ]
+      : [
           {
             id: 1,
             icon: <Edit2 />,
@@ -86,16 +94,7 @@ const SidebarPlaylist = memo(() => {
           },
           { id: 2, icon: <Trash />, title: 'Delete playlist' },
           { id: 3, icon: <Heart />, title: 'Add to favorite playlists' },
-        ]
-      : [
-          {
-            id: 1,
-            icon: <AddCircle />,
-            title: 'Add to library',
-          },
-          { id: 2, icon: <Heart />, title: 'Add to favorite playlists' },
         ];
-
   return (
     <div className="sticky top-10 hidden xl:block">
       <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
