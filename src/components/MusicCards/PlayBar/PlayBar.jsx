@@ -4,7 +4,7 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentSongIndex, setPlaylist, music } from '../../../redux/slices/musicPlayerSlice';
+import { setCurrentSongIndex, setPlaylist } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
 
 const PlayBar = memo(
@@ -12,6 +12,7 @@ const PlayBar = memo(
     size,
     index: songIndex,
     title,
+    id,
     cover,
     artist = 'Unknown artist',
     duration,
@@ -21,9 +22,7 @@ const PlayBar = memo(
   }) => {
     const dropDownMenu = useCloseOnClickOutside();
     const dispatch = useDispatch();
-    const { currentSongIndex, selectedPlaylist, playlist } = useSelector(
-      (state) => state.musicPlayer
-    );
+    const { currentMusic, selectedPlaylist, playlist } = useSelector((state) => state.musicPlayer);
 
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',
@@ -49,7 +48,7 @@ const PlayBar = memo(
 
       // dont change the song index if user clicked on the current song which is playing because it will
       // cause the song to replay from the start
-      if (currentSongIndex !== songIndex) {
+      if (currentMusic?.id !== id) {
         dispatch(setCurrentSongIndex(songIndex));
       }
     };
@@ -156,6 +155,7 @@ PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
   title: PropTypes.string.isRequired,
   index: PropTypes.number,
+  id: PropTypes.string,
   cover: PropTypes.string,
   artist: PropTypes.string,
   duration: PropTypes.string.isRequired,
