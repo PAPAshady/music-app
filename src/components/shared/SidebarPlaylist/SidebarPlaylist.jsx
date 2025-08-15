@@ -131,7 +131,7 @@ const SidebarPlaylist = memo(() => {
                 >
                   {isLoading ? (
                     <LoadingSpinner size="lg" />
-                  ) : (
+                  ) : selectedPlaylistSongs?.length ? (
                     <button
                       className="bg-primary-500/80 flex size-15 items-center justify-center rounded-full border"
                       onClick={playPauseButtonHandler}
@@ -144,6 +144,8 @@ const SidebarPlaylist = memo(() => {
                         )}
                       </span>
                     </button>
+                  ) : (
+                    ''
                   )}
                 </div>
               </div>
