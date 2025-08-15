@@ -13,10 +13,12 @@ import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import IconButton from '../Buttons/IconButton/IconButton';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { getAllMusicsQueryOptions } from '../../queries/musics';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
+import { uploadFile, getFileUrl } from '../../services/storage';
+import { createNewPrivatePlaylistQueryOptions } from '../../queries/playlists';
 import PropTypes from 'prop-types';
 
 const schema = z.object({
@@ -31,12 +33,14 @@ export default function PlaylistInfosModal() {
     title: modalTitle,
     actionType,
   } = useSelector((state) => state.playlistInfosModal);
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
+  const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistQueryOptions());
   const {
     title,
     description = '',
@@ -55,7 +59,7 @@ export default function PlaylistInfosModal() {
     clearErrors,
     setError,
     setValue,
-    formState: { errors },
+    formState: { isSubmitting, errors },
   } = useForm({
     defaultValues: {
       description,
@@ -63,6 +67,7 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
+
   const songsToRender = (
     selectedTab === 'add' ? suggestedSongs?.songs || [] : (musics ?? [])
   ).filter((song) => song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim()));
@@ -85,16 +90,29 @@ export default function PlaylistInfosModal() {
     setSelectedTab(tabName);
   };
 
-  const submitHandler = (data) => {
-    // dont send any image to backend if user removed the cover of their playlist
-    if (!data.cover) delete data.cover;
-
-    switch (actionType) {
-      case 'create_playlist':
-        break;
-
-      case 'edit_playlist':
-        break;
+  const submitHandler = async (data) => {
+    if (actionType === 'create_playlist') {
+      if (data.cover) {
+        const { playlistCoverError } = await uploadFile(
+          'playlist-covers',
+          `${user.id}/${data.title}`,
+          data.cover
+        );
+        if (playlistCoverError) {
+          setError('cover', {
+            message: 'Unexpected error occured wihle uploading image. Try again.',
+          });
+          console.error('Error uploading playlist cover : ', playlistCoverError);
+          return;
+        }
+        const playlistCoverUrl = getFileUrl(
+          'playlist-covers',
+          `${user.id}/${data.title}.${data.cover.name.split('.').pop()}`
+        );
+        data.cover = playlistCoverUrl;
+      }
+      await createNewPlaylistMutation.mutateAsync(data);
+      onClose();
     }
   };
 
@@ -170,6 +188,7 @@ export default function PlaylistInfosModal() {
       onClose={onClose}
       title={modalTitle}
       onConfirm={handleSubmit(submitHandler)}
+      confirmButtonTitle={isSubmitting ? 'Please wait...' : 'Confirm'}
       confirmButton
     >
       <div>
@@ -206,7 +225,7 @@ export default function PlaylistInfosModal() {
               </label>
             </div>
             <span
-              className={`text-red mb-1 text-sm transition-opacity duration-200 ${errors.cover ? 'opacity-100' : 'opacity-0'}`}
+              className={`text-red mb-1 text-center text-sm transition-opacity duration-200 ${errors.cover ? 'opacity-100' : 'opacity-0'}`}
             >
               {errors.cover?.message}
             </span>

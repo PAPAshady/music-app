@@ -1,8 +1,10 @@
 import { queryOptions } from '@tanstack/react-query';
+import queryClient from '../queryClient';
 import {
   getAllPlaylists,
   getAllPrivatePlaylists,
   getAllPublicPlaylists,
+  createNewPrivatePlaylist,
 } from '../services/playlists';
 
 export const getAllPlaylistsQueryOptions = () => {
@@ -32,5 +34,15 @@ export const getAllPrivatePlaylistsQueryOptions = () => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+  });
+};
+
+export const createNewPrivatePlaylistQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_public: false }],
+    mutationFn: (data) => createNewPrivatePlaylist(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['playlists', { is_public: false }] });
+    },
   });
 };
