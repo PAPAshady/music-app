@@ -12,6 +12,7 @@ export default function Modal({
   confirmButton,
   cancelButton,
   confirmButtonTitle = 'Confirm',
+  confirmButtonDisabled,
 }) {
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
@@ -46,6 +47,7 @@ export default function Modal({
                 size="sm"
                 variant="secondary"
                 onClick={onConfirm}
+                disabled={confirmButtonDisabled}
               />
             )}
           </div>
@@ -64,4 +66,5 @@ Modal.propTypes = {
   confirmButton: PropTypes.bool,
   cancelButton: PropTypes.bool,
   confirmButtonTitle: PropTypes.string,
+  confirmButtonDisabled: PropTypes.bool,
 };

@@ -208,8 +208,9 @@ export default function PlaylistInfosModal() {
       onClose={onClose}
       title={modalTitle}
       onConfirm={handleSubmit(submitHandler)}
-      confirmButtonTitle={isSubmitting ? 'Please wait...' : 'Confirm'}
       confirmButton
+      confirmButtonTitle={isSubmitting ? 'Please wait...' : 'Confirm'}
+      confirmButtonDisabled={isSubmitting}
     >
       <div>
         <div className="items-cente flex flex-col gap-3 sm:flex-row">
