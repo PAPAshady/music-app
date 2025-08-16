@@ -40,3 +40,14 @@ export const createNewPrivatePlaylist = async (playlistInfos) => {
   if (error) throw error; // other errors will be handled with react query or another try-catch block.
   return data;
 };
+
+export const updatePrivatePlaylist = async (playlistId, newData) => {
+  const { data, error } = await supabase
+    .from('playlists')
+    .update(newData)
+    .eq('id', playlistId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};

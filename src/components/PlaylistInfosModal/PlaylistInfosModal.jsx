@@ -17,8 +17,12 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { getAllMusicsQueryOptions } from '../../queries/musics';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
-import { uploadFile, getFileUrl } from '../../services/storage';
-import { createNewPrivatePlaylistQueryOptions } from '../../queries/playlists';
+import { uploadFile, getFileUrl, deleteFiles, listFiles } from '../../services/storage';
+import { setSelectedPlaylist } from '../../redux/slices/musicPlayerSlice';
+import {
+  createNewPrivatePlaylistQueryOptions,
+  updatePrivatePlaylistQueryOptions,
+} from '../../queries/playlists';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import PropTypes from 'prop-types';
 
@@ -41,15 +45,12 @@ export default function PlaylistInfosModal() {
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
+  const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
+
   const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistQueryOptions());
-  const {
-    title,
-    description = '',
-    cover,
-    musics,
-    tracklistType,
-    is_public,
-  } = useSelector((state) => state.musicPlayer.selectedPlaylist);
+  const updatePlaylistMutation = useMutation(
+    updatePrivatePlaylistQueryOptions(selectedPlaylist.id)
+  );
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
   const {
@@ -63,14 +64,14 @@ export default function PlaylistInfosModal() {
     formState: { isSubmitting, errors },
   } = useForm({
     defaultValues: {
-      description,
-      title,
+      description: selectedPlaylist.description || '',
+      title: selectedPlaylist.title,
     },
     resolver: zodResolver(schema),
   });
 
   const songsToRender = (
-    selectedTab === 'add' ? suggestedSongs?.songs || [] : (musics ?? [])
+    selectedTab === 'add' ? suggestedSongs?.songs || [] : (selectedPlaylist.musics ?? [])
   ).filter((song) => song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim()));
 
   /*
@@ -80,11 +81,11 @@ export default function PlaylistInfosModal() {
   */
   useEffect(() => {
     reset({
-      description: actionType === 'edit_playlist' ? description : '',
-      title: actionType === 'edit_playlist' ? title : '',
+      description: actionType === 'edit_playlist' ? selectedPlaylist.description : '',
+      title: actionType === 'edit_playlist' ? selectedPlaylist.title : '',
     });
-    setPlaylistCover(cover ?? playlistDefaultCover);
-  }, [reset, description, title, cover, isOpen, actionType]);
+    setPlaylistCover(selectedPlaylist.cover ?? playlistDefaultCover);
+  }, [reset, selectedPlaylist, isOpen, actionType]);
 
   const changeTabHandler = (tabName) => {
     searchInput.reset();
@@ -92,27 +93,61 @@ export default function PlaylistInfosModal() {
   };
 
   const submitHandler = async (data) => {
-    if (actionType === 'create_playlist') {
-      if (data.cover) {
-        const { playlistCoverError } = await uploadFile(
-          'playlist-covers',
-          `${user.id}/${data.title}`,
-          data.cover
-        );
-        if (playlistCoverError) {
-          setError('cover', {
-            message: 'Unexpected error occured wihle uploading image. Try again.',
-          });
-          console.error('Error uploading playlist cover : ', playlistCoverError);
-          return;
-        }
-        const playlistCoverUrl = getFileUrl(
-          'playlist-covers',
-          `${user.id}/${data.title}.${data.cover.name.split('.').pop()}`
-        );
-        data.cover = playlistCoverUrl;
+    clearErrors('cover');
+    // handle cover uploading/removing logic
+    if (data.cover) {
+      // if user selected a cover, upload it to server
+      const { playlistCoverError } = await uploadFile(
+        'playlist-covers',
+        `${user.id}/${data.title}`,
+        data.cover
+      );
+      if (playlistCoverError) {
+        setError('cover', {
+          message: 'Unexpected error occured wihle uploading image. Try again.',
+        });
+        console.error('Error uploading playlist cover : ', playlistCoverError);
+        return;
       }
+      const playlistCoverUrl = getFileUrl(
+        'playlist-covers',
+        `${user.id}/${data.title}.${data.cover.name.split('.').pop()}`
+      );
+      data.cover = playlistCoverUrl;
+    } else {
+      // if data.cover is null, user might want to remove the current cover from their playlist.
+      // so we check if this playlist has any cover in storage
+      // if no cover found, it means playlist had no cover in first place
 
+      const { data: listingData, error: listingError } = await listFiles(
+        'playlist-covers',
+        user.id,
+        undefined,
+        undefined,
+        data.title
+      );
+
+      if (listingError) {
+        setError('cover', { message: 'Unexpected error occured wihle deleting image. Try again.' });
+        console.error('Error listing files : ', listingError);
+      } else if (listingData.length) {
+        // remove the cover of the playlist
+        const { deleteError } = await deleteFiles('playlist-covers', [
+          `${user.id}/${data.title}.${listingData[0].name.split('.').pop()}`,
+        ]);
+        if (deleteError) {
+          setError('cover', {
+            message: 'Unexpected error occured wihle deleting image. Try again.',
+          });
+          console.error('Error deleting file : ', deleteError);
+        } else {
+          data.cover = null;
+        }
+      }
+    }
+
+    // handle creating a playlist logic in database
+    if (actionType === 'create_playlist') {
       try {
         await createNewPlaylistMutation.mutateAsync(data);
         dispatch(
@@ -132,6 +167,22 @@ export default function PlaylistInfosModal() {
           })
         );
         console.error('Error creating playlist in database : ', err);
+      }
+    } else {
+      // handle updating playlist logic in database
+      try {
+        const newPlaylistData = await updatePlaylistMutation.mutateAsync(data);
+        dispatch(setSelectedPlaylist({ ...newPlaylistData, musics: selectedPlaylist.musics })); // update redux store as well be synced with new changes
+        dispatch(showNewSnackbar({ message: 'Playlist updated successfully.', type: 'success' }));
+        onClose();
+      } catch (err) {
+        dispatch(
+          showNewSnackbar({
+            message: 'Unexpected error occured while updating the playlist. Try again.',
+            type: 'error',
+          })
+        );
+        console.error('Error updating playlist in database : ', err);
       }
     }
   };
@@ -218,7 +269,11 @@ export default function PlaylistInfosModal() {
             <div
               className={`group relative mx-auto mt-6 size-[150px] overflow-hidden rounded-xl border transition-colors duration-200 min-[480px]:size-[180px] sm:size-[190px] sm:min-w-[190px] ${errors.cover ? 'border-red' : 'border-transparent'}`}
             >
-              <img className="size-full object-cover" src={playlistCover} alt={title} />
+              <img
+                className="size-full object-cover"
+                src={playlistCover}
+                alt={selectedPlaylist.title}
+              />
               <label
                 className="absolute inset-0 size-full bg-black/30 sm:bg-transparent"
                 htmlFor="choose-playlist-img"
@@ -269,59 +324,61 @@ export default function PlaylistInfosModal() {
           </div>
         </div>
 
-        {tracklistType === 'playlist' && !is_public && actionType === 'edit_playlist' && (
-          <div className="flex flex-col gap-4">
-            <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
-              {tabButtons.map((button) => (
-                <TabButton
-                  key={button.id}
-                  isActive={button.title.toLowerCase().includes(selectedTab)}
-                  onClick={changeTabHandler}
-                  {...button}
-                />
-              ))}
-            </div>
-            <SearchInput {...searchInput} />
-            <div className="text-secondary-50">
-              {!!songsToRender.length && (
-                <p className="mb-4 font-semibold">
-                  {selectedTab === 'add'
-                    ? 'Recommended songs to add.'
-                    : `You have ${musics.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
-                </p>
-              )}
-
-              <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
-                {songsToRender.length ? (
-                  <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
-                    {songsToRender.map((song) => (
-                      <PlaylistSong
-                        key={song.id}
-                        buttonState={song.id === pendingSongId ? 'pending' : selectedTab}
-                        onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
-                        {...song}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
-                    <Music size={62} />
-                    <p className="text-xl font-semibold">
-                      {searchInput.value.trim().length
-                        ? 'No songs found'
-                        : 'This playlist is empty :('}
-                    </p>
-                    <p className="text-sm">
-                      {searchInput.value.trim().length
-                        ? "Oops! Couldn't find any songs with that keyword. Try searching for something else."
-                        : 'Switch to "Add Songs" tab and start searching for your tunes!'}
-                    </p>
-                  </div>
+        {selectedPlaylist.tracklistType === 'playlist' &&
+          !selectedPlaylist.is_public &&
+          actionType === 'edit_playlist' && (
+            <div className="flex flex-col gap-4">
+              <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
+                {tabButtons.map((button) => (
+                  <TabButton
+                    key={button.id}
+                    isActive={button.title.toLowerCase().includes(selectedTab)}
+                    onClick={changeTabHandler}
+                    {...button}
+                  />
+                ))}
+              </div>
+              <SearchInput {...searchInput} />
+              <div className="text-secondary-50">
+                {!!songsToRender.length && (
+                  <p className="mb-4 font-semibold">
+                    {selectedTab === 'add'
+                      ? 'Recommended songs to add.'
+                      : `You have ${selectedPlaylist.musics.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
+                  </p>
                 )}
+
+                <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
+                  {songsToRender.length ? (
+                    <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
+                      {songsToRender.map((song) => (
+                        <PlaylistSong
+                          key={song.id}
+                          buttonState={song.id === pendingSongId ? 'pending' : selectedTab}
+                          onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
+                          {...song}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
+                      <Music size={62} />
+                      <p className="text-xl font-semibold">
+                        {searchInput.value.trim().length
+                          ? 'No songs found'
+                          : 'This playlist is empty :('}
+                      </p>
+                      <p className="text-sm">
+                        {searchInput.value.trim().length
+                          ? "Oops! Couldn't find any songs with that keyword. Try searching for something else."
+                          : 'Switch to "Add Songs" tab and start searching for your tunes!'}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
     </Modal>
   );
