@@ -19,6 +19,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import { uploadFile, getFileUrl } from '../../services/storage';
 import { createNewPrivatePlaylistQueryOptions } from '../../queries/playlists';
+import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import PropTypes from 'prop-types';
 
 const schema = z.object({
@@ -111,8 +112,27 @@ export default function PlaylistInfosModal() {
         );
         data.cover = playlistCoverUrl;
       }
-      await createNewPlaylistMutation.mutateAsync(data);
-      onClose();
+
+      try {
+        await createNewPlaylistMutation.mutateAsync(data);
+        dispatch(
+          showNewSnackbar({
+            message: 'Playlist created successfully.',
+            type: 'success',
+            hideDuration: 4000,
+          })
+        );
+        onClose();
+      } catch (err) {
+        dispatch(
+          showNewSnackbar({
+            message: 'Unexpected error occured while creating playlist. Try again.',
+            type: 'error',
+            hideDuration: 4000,
+          })
+        );
+        console.error('Error creating playlist in database : ', err);
+      }
     }
   };
 
