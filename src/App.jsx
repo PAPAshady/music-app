@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { QueryClientProvider } from '@tanstack/react-query';
 import useInitilizeAudioEvents from './hooks/useInitilizeAudioEvents';
 import supabase from './services/supabaseClient';
@@ -9,6 +9,8 @@ import { setLoading } from './redux/slices/authSlice';
 import { getUser, addUser } from './services/users';
 import { showNewSnackbar } from './redux/slices/snackbarSlice';
 import queryClient from './queryClient';
+import { AnimatePresence, motion } from 'framer-motion';
+import Snackbar from './components/shared/Snackbar/Snackbar';
 import routes from './Router';
 import './App.css';
 
@@ -16,6 +18,7 @@ const router = createBrowserRouter(routes);
 
 function App() {
   const dispatch = useDispatch();
+  const snackbars = useSelector((state) => state.snackbars);
   useInitilizeAudioEvents(); // initilize all audio events globally.
 
   // initilize app's authentication
@@ -70,6 +73,22 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      {/* snackbar container template */}
+      <div className="fixed top-4 left-2 z-50 space-y-2 sm:left-5 lg:left-6">
+        <AnimatePresence>
+          {snackbars.map((snackbar) => (
+            <motion.div
+              key={snackbar.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Snackbar {...snackbar} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
     </QueryClientProvider>
   );
 }
