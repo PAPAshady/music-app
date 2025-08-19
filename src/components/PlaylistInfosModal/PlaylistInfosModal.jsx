@@ -98,7 +98,11 @@ export default function PlaylistInfosModal() {
       description: actionType === 'edit_playlist' ? selectedPlaylist.description : '',
       title: actionType === 'edit_playlist' ? selectedPlaylist.title : '',
     });
-    setPlaylistCover(selectedPlaylist.cover ?? playlistDefaultCover);
+    setPlaylistCover(
+      actionType === 'edit_playlist' && selectedPlaylist.cover
+        ? selectedPlaylist.cover
+        : playlistDefaultCover
+    );
   }, [reset, selectedPlaylist, isOpen, actionType]);
 
   const changeTabHandler = (tabName) => {
