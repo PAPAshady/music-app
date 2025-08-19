@@ -47,7 +47,7 @@ export default function PlaylistInfosModal() {
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
-  const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
+  const { data: allSongs } = useQuery(getAllMusicsQueryOptions());
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
   const addSongMutation = useMutation(addSongToPrivatePlaylistQueryOptions(selectedPlaylist.id));
   const removeSongMutation = useMutation(
@@ -78,10 +78,15 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
+  const searchValue = searchInput.value.toLowerCase().trim();
+
+  // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
+  const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));
+  const suggestedSongs = (allSongs?.songs ?? []).filter((song) => !playlistSongIds.has(song.id));
 
   const songsToRender = (
-    selectedTab === 'add' ? suggestedSongs?.songs || [] : (selectedPlaylistSongs ?? [])
-  ).filter((song) => song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim()));
+    selectedTab === 'add' ? suggestedSongs : (selectedPlaylistSongs ?? [])
+  ).filter((song) => song.title.toLowerCase().includes(searchValue));
 
   /*
     since useForm hook only sets defaultValues once on the initial render and wont update them ever again,
