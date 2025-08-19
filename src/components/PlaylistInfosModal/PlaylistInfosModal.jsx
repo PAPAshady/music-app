@@ -23,6 +23,7 @@ import {
   createNewPrivatePlaylistQueryOptions,
   updatePrivatePlaylistQueryOptions,
   addSongToPrivatePlaylistQueryOptions,
+  removeSongFromPrivatePlaylistQueryOptions,
 } from '../../queries/playlists';
 import { getSongsByPlaylistIdQueryOptions } from '../../queries/musics';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
@@ -49,6 +50,9 @@ export default function PlaylistInfosModal() {
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
   const addSongMutation = useMutation(addSongToPrivatePlaylistQueryOptions(selectedPlaylist.id));
+  const removeSongMutation = useMutation(
+    removeSongFromPrivatePlaylistQueryOptions(selectedPlaylist.id)
+  );
   const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistQueryOptions());
   const updatePlaylistMutation = useMutation(
     updatePrivatePlaylistQueryOptions(selectedPlaylist.id)
@@ -177,7 +181,7 @@ export default function PlaylistInfosModal() {
       // handle updating playlist logic in database
       try {
         const newPlaylistData = await updatePlaylistMutation.mutateAsync(data);
-        dispatch(setSelectedPlaylist({ ...newPlaylistData, musics: selectedPlaylist.musics })); // update redux store as well be synced with new changes
+        dispatch(setSelectedPlaylist({ ...newPlaylistData, musics: selectedPlaylistSongs })); // update redux store as well be synced with new changes
         dispatch(showNewSnackbar({ message: 'Playlist updated successfully.', type: 'success' }));
         onClose();
       } catch (err) {
@@ -214,9 +218,22 @@ export default function PlaylistInfosModal() {
     }
   };
 
-  const removeSongHandler = (musicId) => {
-    setPendingSongId(musicId);
-    console.log('removeSongHandler is running');
+  const removeSongHandler = async (songId) => {
+    try {
+      setPendingSongId(songId);
+      await removeSongMutation.mutateAsync(songId);
+      dispatch(showNewSnackbar({ message: 'Song removed succefully.', type: 'success' }));
+    } catch (err) {
+      dispatch(
+        showNewSnackbar({
+          message: 'Error while removing song from playlist. Try again.',
+          type: 'error',
+        })
+      );
+      console.error('Error removing song from playlist : ', err);
+    } finally {
+      setPendingSongId(null);
+    }
   };
 
   const validateFileInput = (e) => {
@@ -366,7 +383,7 @@ export default function PlaylistInfosModal() {
                   <p className="mb-4 font-semibold">
                     {selectedTab === 'add'
                       ? 'Recommended songs to add.'
-                      : `You have ${selectedPlaylist.musics.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
+                      : `You have ${selectedPlaylistSongs.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
                   </p>
                 )}
 

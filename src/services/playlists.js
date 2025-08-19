@@ -60,3 +60,14 @@ export const addSongToPrivatePlaylist = async (playlist_id, song_id) => {
   if (error) throw error;
   return data;
 };
+
+export const removeSongFromPrivatePlaylist = async (playlistId, songId) => {
+  const { data, error } = await supabase
+    .from('playlist_songs')
+    .delete()
+    .eq('song_id', songId)
+    .eq('playlist_id', playlistId)
+    .select();
+  if (error) throw error;
+  return data;
+};
