@@ -22,7 +22,9 @@ import { setSelectedPlaylist } from '../../redux/slices/musicPlayerSlice';
 import {
   createNewPrivatePlaylistQueryOptions,
   updatePrivatePlaylistQueryOptions,
+  addSongToPrivatePlaylistQueryOptions,
 } from '../../queries/playlists';
+import { getSongsByPlaylistIdQueryOptions } from '../../queries/musics';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import PropTypes from 'prop-types';
 
@@ -46,10 +48,13 @@ export default function PlaylistInfosModal() {
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: suggestedSongs } = useQuery(getAllMusicsQueryOptions());
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
-
+  const addSongMutation = useMutation(addSongToPrivatePlaylistQueryOptions(selectedPlaylist.id));
   const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistQueryOptions());
   const updatePlaylistMutation = useMutation(
     updatePrivatePlaylistQueryOptions(selectedPlaylist.id)
+  );
+  const { data: selectedPlaylistSongs } = useQuery(
+    getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
   );
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
@@ -71,7 +76,7 @@ export default function PlaylistInfosModal() {
   });
 
   const songsToRender = (
-    selectedTab === 'add' ? suggestedSongs?.songs || [] : (selectedPlaylist.musics ?? [])
+    selectedTab === 'add' ? suggestedSongs?.songs || [] : (selectedPlaylistSongs ?? [])
   ).filter((song) => song.title.toLowerCase().includes(searchInput.value.toLowerCase().trim()));
 
   /*
@@ -187,9 +192,26 @@ export default function PlaylistInfosModal() {
     }
   };
 
-  const addSongHandler = (musicId) => {
-    setPendingSongId(musicId);
-    console.log('addSongHandler is running');
+  const addSongHandler = async (songId) => {
+    const isAlreadyAdded = selectedPlaylistSongs.some((song) => song.id === songId);
+
+    if (isAlreadyAdded) {
+      dispatch(
+        showNewSnackbar({ message: 'This song already exists in your playlist.', type: 'warning' })
+      );
+      return;
+    }
+
+    try {
+      setPendingSongId(songId);
+      await addSongMutation.mutateAsync(songId);
+      dispatch(showNewSnackbar({ message: 'Song added succefully. Enjoy!', type: 'success' }));
+    } catch (err) {
+      dispatch(showNewSnackbar({ message: 'Error while adding new song to playlist. Try again.' }));
+      console.error('Error adding new song to playlist : ', err);
+    } finally {
+      setPendingSongId(null);
+    }
   };
 
   const removeSongHandler = (musicId) => {

@@ -51,3 +51,12 @@ export const updatePrivatePlaylist = async (playlistId, newData) => {
   if (error) throw error;
   return data;
 };
+
+export const addSongToPrivatePlaylist = async (playlist_id, song_id) => {
+  const { data, error } = await supabase
+    .from('playlist_songs')
+    .insert({ playlist_id, song_id })
+    .select();
+  if (error) throw error;
+  return data;
+};

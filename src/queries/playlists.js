@@ -6,6 +6,7 @@ import {
   getAllPublicPlaylists,
   createNewPrivatePlaylist,
   updatePrivatePlaylist,
+  addSongToPrivatePlaylist,
 } from '../services/playlists';
 
 export const getAllPlaylistsQueryOptions = () => {
@@ -54,6 +55,16 @@ export const updatePrivatePlaylistQueryOptions = (playlistId) => {
     mutationFn: (newData) => updatePrivatePlaylist(playlistId, newData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['playlists', { is_public: false }] });
+    },
+  });
+};
+
+export const addSongToPrivatePlaylistQueryOptions = (playlistId) => {
+  return queryOptions({
+    queryKey: ['playlists', { is_public: false, playlistId }],
+    mutationFn: (songId) => addSongToPrivatePlaylist(playlistId, songId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
     },
   });
 };
