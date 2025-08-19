@@ -70,7 +70,7 @@ export default function PlaylistInfosModal() {
     clearErrors,
     setError,
     setValue,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, errors, dirtyFields, isDirty },
   } = useForm({
     defaultValues: {
       description: selectedPlaylist.description || '',
@@ -110,56 +110,66 @@ export default function PlaylistInfosModal() {
     setSelectedTab(tabName);
   };
 
-  const submitHandler = async (data) => {
-    clearErrors('cover');
-    // handle cover uploading/removing logic
-    if (data.cover) {
-      // if user selected a cover, upload it to server
-      const { playlistCoverError } = await uploadFile(
-        'playlist-covers',
-        `${user.id}/${data.title}`,
-        data.cover
-      );
-      if (playlistCoverError) {
-        setError('cover', {
-          message: 'Unexpected error occured wihle uploading image. Try again.',
-        });
-        console.error('Error uploading playlist cover : ', playlistCoverError);
-        return;
-      }
-      const playlistCoverUrl = getFileUrl(
-        'playlist-covers',
-        `${user.id}/${data.title}.${data.cover.name.split('.').pop()}`
-      );
-      data.cover = playlistCoverUrl;
-    } else {
-      // if data.cover is null, user might want to remove the current cover from their playlist.
-      // so we check if this playlist has any cover in storage
-      // if no cover found, it means playlist had no cover in first place
+  const submitHandler = async (formData) => {
+    // fields which user changed
+    const modifiedFields = Object.keys(dirtyFields).reduce((acc, key) => {
+      acc[key] = formData[key];
+      return acc;
+    }, {});
 
-      const { data: listingData, error: listingError } = await listFiles(
-        'playlist-covers',
-        user.id,
-        undefined,
-        undefined,
-        data.title
-      );
+    if (modifiedFields.cover) {
+      clearErrors('cover');
+      // handle cover uploading/removing logic
+      if (formData.cover) {
+        // if user selected a cover, upload it to server
+        const { playlistCoverError } = await uploadFile(
+          'playlist-covers',
+          `${user.id}/${formData.title}`,
+          formData.cover
+        );
+        if (playlistCoverError) {
+          setError('cover', {
+            message: 'Unexpected error occured wihle uploading image. Try again.',
+          });
+          console.error('Error uploading playlist cover : ', playlistCoverError);
+          return;
+        }
+        const playlistCoverUrl = getFileUrl(
+          'playlist-covers',
+          `${user.id}/${formData.title}.${formData.cover.name.split('.').pop()}`
+        );
+        modifiedFields.cover = playlistCoverUrl;
+      } else {
+        // if data.cover is null, user might want to remove the current cover from their playlist.
+        // so we check if this playlist has any cover in storage
+        // if no cover found, it means playlist had no cover in first place
 
-      if (listingError) {
-        setError('cover', { message: 'Unexpected error occured wihle deleting image. Try again.' });
-        console.error('Error listing files : ', listingError);
-      } else if (listingData.length) {
-        // remove the cover of the playlist
-        const { deleteError } = await deleteFiles('playlist-covers', [
-          `${user.id}/${data.title}.${listingData[0].name.split('.').pop()}`,
-        ]);
-        if (deleteError) {
+        const { data: listingData, error: listingError } = await listFiles(
+          'playlist-covers',
+          user.id,
+          undefined,
+          undefined,
+          formData.title
+        );
+
+        if (listingError) {
           setError('cover', {
             message: 'Unexpected error occured wihle deleting image. Try again.',
           });
-          console.error('Error deleting file : ', deleteError);
-        } else {
-          data.cover = null;
+          console.error('Error listing files : ', listingError);
+        } else if (listingData.length) {
+          // remove the cover of the playlist
+          const { deleteError } = await deleteFiles('playlist-covers', [
+            `${user.id}/${formData.title}.${listingData[0].name.split('.').pop()}`,
+          ]);
+          if (deleteError) {
+            setError('cover', {
+              message: 'Unexpected error occured wihle deleting image. Try again.',
+            });
+            console.error('Error deleting file : ', deleteError);
+          } else {
+            modifiedFields.cover = null;
+          }
         }
       }
     }
@@ -167,7 +177,7 @@ export default function PlaylistInfosModal() {
     // handle creating a playlist logic in database
     if (actionType === 'create_playlist') {
       try {
-        await createNewPlaylistMutation.mutateAsync(data);
+        await createNewPlaylistMutation.mutateAsync(modifiedFields);
         dispatch(
           showNewSnackbar({
             message: 'Playlist created successfully.',
@@ -189,7 +199,7 @@ export default function PlaylistInfosModal() {
     } else {
       // handle updating playlist logic in database
       try {
-        const newPlaylistData = await updatePlaylistMutation.mutateAsync(data);
+        const newPlaylistData = await updatePlaylistMutation.mutateAsync(modifiedFields);
         dispatch(setSelectedPlaylist({ ...newPlaylistData, musics: selectedPlaylistSongs })); // update redux store as well be synced with new changes
         dispatch(showNewSnackbar({ message: 'Playlist updated successfully.', type: 'success' }));
         onClose();
@@ -259,7 +269,7 @@ export default function PlaylistInfosModal() {
         return;
       }
 
-      setValue('cover', selectedImage);
+      setValue('cover', selectedImage, { shouldDirty: true });
       setPlaylistCover(URL.createObjectURL(selectedImage));
     }
   };
@@ -267,7 +277,7 @@ export default function PlaylistInfosModal() {
   const removePlaylistCover = () => {
     fileInputRef.current.value = null;
     setPlaylistCover(playlistDefaultCover);
-    setValue('cover', null);
+    setValue('cover', null, { shouldDirty: true });
   };
 
   const onClose = () => {
@@ -309,7 +319,7 @@ export default function PlaylistInfosModal() {
       onConfirm={handleSubmit(submitHandler)}
       confirmButton
       confirmButtonTitle={isSubmitting ? 'Please wait...' : 'Confirm'}
-      confirmButtonDisabled={isSubmitting}
+      confirmButtonDisabled={isSubmitting || !isDirty}
     >
       <div>
         <div className="items-cente flex flex-col gap-3 sm:flex-row">
