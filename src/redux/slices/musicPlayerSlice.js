@@ -86,6 +86,9 @@ const musicPlayerSlice = createSlice({
     setPlaylist(state, action) {
       state.playlist = action.payload;
     },
+    setPlaylistSongs(state, action) {
+      state.playlist.musics = action.payload;
+    },
     setSelectedPlaylist(state, action) {
       state.selectedPlaylist = action.payload;
     },
@@ -128,6 +131,7 @@ export const {
   setPlayingState,
   togglePlayState,
   setPlaylist,
+  setPlaylistSongs,
   setSelectedPlaylist,
   setSelectedPlaylistSongs,
   setMusicState,

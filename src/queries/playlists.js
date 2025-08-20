@@ -1,4 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
+import { setSelectedPlaylistSongs, setPlaylistSongs } from '../redux/slices/musicPlayerSlice';
+import store from '../redux/store';
 import queryClient from '../queryClient';
 import {
   getAllPlaylists,
@@ -64,8 +66,13 @@ export const addSongToPrivatePlaylistQueryOptions = (playlistId) => {
   return queryOptions({
     queryKey: ['playlists', { playlistId }],
     mutationFn: (songId) => addSongToPrivatePlaylist(playlistId, songId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
+      // sync with redux
+      const updatedPlaylistSongs = queryClient.getQueryData(['playlists', { playlistId }]);
+      const playlist = store.getState().musicPlayer.playlist; // the playlist which is currently playing
+      store.dispatch(setSelectedPlaylistSongs(updatedPlaylistSongs));
+      playlist.id === playlistId && store.dispatch(setPlaylistSongs(updatedPlaylistSongs));
     },
   });
 };
@@ -74,8 +81,13 @@ export const removeSongFromPrivatePlaylistQueryOptions = (playlistId) => {
   return queryOptions({
     queryKey: ['playlists', { playlistId }],
     mutationFn: (songId) => removeSongFromPrivatePlaylist(playlistId, songId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
+      // sync with redux
+      const updatedPlaylistSongs = queryClient.getQueryData(['playlists', { playlistId }]);
+      const playlist = store.getState().musicPlayer.playlist; // the playlist which is currently playing
+      store.dispatch(setSelectedPlaylistSongs(updatedPlaylistSongs));
+      playlist.id === playlistId && store.dispatch(setPlaylistSongs(updatedPlaylistSongs));
     },
   });
 };
