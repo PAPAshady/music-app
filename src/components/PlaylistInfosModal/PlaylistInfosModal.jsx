@@ -49,8 +49,6 @@ export default function PlaylistInfosModal() {
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: allSongs } = useQuery(getAllMusicsQueryOptions());
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
-  const currentMusicId = useSelector((state) => state.musicPlayer.currentMusic.id);
-  const currentPlaylistId = useSelector((state) => state.musicPlayer.playlist.id);
   const addSongMutation = useMutation(addSongToPrivatePlaylistQueryOptions(selectedPlaylist.id));
   const removeSongMutation = useMutation(
     removeSongFromPrivatePlaylistQueryOptions(selectedPlaylist.id)
@@ -244,10 +242,6 @@ export default function PlaylistInfosModal() {
       setPendingSongId(songId);
       await removeSongMutation.mutateAsync(songId);
       dispatch(showNewSnackbar({ message: 'Song removed succefully.', type: 'success' }));
-
-      if (currentPlaylistId === selectedPlaylist.id && currentMusicId === songId) {
-        // fix the bug where removing the current playing song from current playlist will not make the player to updated it self
-      }
     } catch (err) {
       dispatch(
         showNewSnackbar({

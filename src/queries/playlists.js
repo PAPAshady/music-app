@@ -1,5 +1,12 @@
 import { queryOptions } from '@tanstack/react-query';
-import { setSelectedPlaylistSongs, setPlaylistSongs } from '../redux/slices/musicPlayerSlice';
+import {
+  setSelectedPlaylistSongs,
+  setPlaylistSongs,
+  setCurrentMusic,
+  setCurrentSongIndex,
+  pause,
+  music,
+} from '../redux/slices/musicPlayerSlice';
 import store from '../redux/store';
 import queryClient from '../queryClient';
 import {
@@ -72,7 +79,10 @@ export const addSongToPrivatePlaylistQueryOptions = (playlistId) => {
       const updatedPlaylistSongs = queryClient.getQueryData(['playlists', { playlistId }]);
       const playlist = store.getState().musicPlayer.playlist; // the playlist which is currently playing
       store.dispatch(setSelectedPlaylistSongs(updatedPlaylistSongs));
-      playlist.id === playlistId && store.dispatch(setPlaylistSongs(updatedPlaylistSongs));
+      if (playlist.id === playlistId) {
+        // if user updated the music list of current playing playlist, sync the updates in redux as well
+        store.dispatch(setPlaylistSongs(updatedPlaylistSongs));
+      }
     },
   });
 };
@@ -81,13 +91,37 @@ export const removeSongFromPrivatePlaylistQueryOptions = (playlistId) => {
   return queryOptions({
     queryKey: ['playlists', { playlistId }],
     mutationFn: (songId) => removeSongFromPrivatePlaylist(playlistId, songId),
-    onSuccess: async () => {
+    onSuccess: async (_, songId) => {
       await queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
       // sync with redux
       const updatedPlaylistSongs = queryClient.getQueryData(['playlists', { playlistId }]);
       const playlist = store.getState().musicPlayer.playlist; // the playlist which is currently playing
-      store.dispatch(setSelectedPlaylistSongs(updatedPlaylistSongs));
-      playlist.id === playlistId && store.dispatch(setPlaylistSongs(updatedPlaylistSongs));
+      const musicPlayer = store.getState().musicPlayer;
+      const { dispatch } = store;
+      dispatch(setSelectedPlaylistSongs(updatedPlaylistSongs));
+      if (playlist.id === playlistId) {
+        // if user updated the music list of current playlist, sync the updates in redux as well
+        dispatch(setPlaylistSongs(updatedPlaylistSongs));
+
+        // handle the case if user removed the current playing song from the current playlist.
+        if (musicPlayer.currentMusic?.id === songId) {
+          if (updatedPlaylistSongs.length === 0) {
+            // playlist empty -> stop
+            dispatch(pause());
+            music.src = '';
+            dispatch(setCurrentMusic(null));
+            dispatch(setCurrentSongIndex(0));
+            return;
+          }
+
+          // determine new index: prefer same index (which now points to next song after deletion),
+          // otherwise clamp to last index
+          const newIndex = Math.min(musicPlayer.currentSongIndex, updatedPlaylistSongs.length - 1);
+
+          // update store
+          dispatch(setCurrentSongIndex(newIndex));
+        }
+      }
     },
   });
 };
