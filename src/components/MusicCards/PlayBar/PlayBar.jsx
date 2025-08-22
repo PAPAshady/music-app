@@ -6,6 +6,7 @@ import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentSongIndex, setPlaylist } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
+import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 
 const PlayBar = memo(
   ({
@@ -18,6 +19,9 @@ const PlayBar = memo(
     duration,
     album = 'Unknown album',
     isFavorite,
+    ActionButtonIcon,
+    actionButtonClickHandler,
+    isActionButtonPending,
     classNames,
   }) => {
     const dropDownMenu = useCloseOnClickOutside();
@@ -102,14 +106,16 @@ const PlayBar = memo(
           )}
           <div className={`flex items-center gap-2 ${size !== 'sm' ? 'lg:gap-4' : ''}`}>
             <div className={` ${size === 'md' ? 'block lg:hidden' : 'block'}`}>
-              <IconButton
-                icon={
-                  <Heart
-                    size={size === 'sm' ? 16 : 24}
-                    className={`transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : ''}`}
-                  />
-                }
-              />
+              {isActionButtonPending ? (
+                <LoadingSpinner />
+              ) : ActionButtonIcon ? (
+                <IconButton icon={ActionButtonIcon} onClick={() => actionButtonClickHandler(id)} />
+              ) : (
+                <Heart
+                  size={size === 'sm' ? 16 : 24}
+                  className={`transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : ''}`}
+                />
+              )}
             </div>
             <div
               className={`${size === 'md' ? 'hidden lg:block' : ''} ${size === 'sm' ? 'hidden lg:block' : ''}`}
@@ -161,6 +167,9 @@ PlayBar.propTypes = {
   duration: PropTypes.string.isRequired,
   album: PropTypes.string,
   isFavorite: PropTypes.bool,
+  ActionButtonIcon: PropTypes.node,
+  actionButtonClickHandler: PropTypes.func,
+  isActionButtonPending: PropTypes.bool,
   classNames: PropTypes.string,
 };
 

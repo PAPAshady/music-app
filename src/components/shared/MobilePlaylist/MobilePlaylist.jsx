@@ -38,7 +38,10 @@ import {
 } from '../../../redux/slices/musicPlayerSlice';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { getSongsByPlaylistIdQueryOptions, getAllSongsQueryOptions } from '../../../queries/musics';
-import { addSongToPrivatePlaylistMutationOptions } from '../../../queries/playlists';
+import {
+  addSongToPrivatePlaylistMutationOptions,
+  removeSongFromPrivatePlaylistMutationOptions,
+} from '../../../queries/playlists';
 import PropTypes from 'prop-types';
 
 export default function MobilePlaylist() {
@@ -59,6 +62,9 @@ export default function MobilePlaylist() {
     getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
   );
   const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
+  const removeSongMutation = useMutation(
+    removeSongFromPrivatePlaylistMutationOptions(selectedPlaylist.id)
+  );
   const { data: allSongs, isLoading: isAllSongsLoading } = useQuery(getAllSongsQueryOptions());
 
   const searchedValue = searchInput.value.toLowerCase().trim();
@@ -150,6 +156,27 @@ export default function MobilePlaylist() {
       }
     },
     [dispatch, selectedPlaylistSongs, addSongMutation]
+  );
+
+  const removeSongHandler = useCallback(
+    async (songId) => {
+      try {
+        setPendingSongId(songId);
+        await removeSongMutation.mutateAsync(songId);
+        dispatch(showNewSnackbar({ message: 'Song removed succefully.', type: 'success' }));
+      } catch (err) {
+        dispatch(
+          showNewSnackbar({
+            message: 'Error while removing song from playlist. Try again.',
+            type: 'error',
+          })
+        );
+        console.error('Error removing song from playlist : ', err);
+      } finally {
+        setPendingSongId(null);
+      }
+    },
+    [dispatch, removeSongMutation]
   );
 
   const playlistDropDownListItems = [
@@ -251,12 +278,15 @@ export default function MobilePlaylist() {
             'Loading...'
           ) : (
             <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-              {selectedPlaylistSongs?.map((music) => (
+              {selectedPlaylistSongs?.map((song) => (
                 <PlayBar
-                  key={music.id}
+                  key={song.id}
                   size={isLargeMobile ? 'lg' : 'md'}
                   classNames="!w-full text-start !max-w-none"
-                  {...music}
+                  ActionButtonIcon={<Trash />}
+                  actionButtonClickHandler={removeSongHandler}
+                  isActionButtonPending={pendingSongId === song.id}
+                  {...song}
                 />
               ))}
             </div>
