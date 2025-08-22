@@ -14,7 +14,7 @@ import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import IconButton from '../Buttons/IconButton/IconButton';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { getAllMusicsQueryOptions } from '../../queries/musics';
+import { getAllSongsQueryOptions } from '../../queries/musics';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import { uploadFile, getFileUrl, deleteFiles, listFiles } from '../../services/storage';
@@ -47,7 +47,7 @@ export default function PlaylistInfosModal() {
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
-  const { data: allSongs } = useQuery(getAllMusicsQueryOptions());
+  const { data: allSongs } = useQuery(getAllSongsQueryOptions());
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
   const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
   const removeSongMutation = useMutation(

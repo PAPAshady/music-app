@@ -1,9 +1,9 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getAllSongs, getSongsByAlbumId, getSongsByPlaylistId } from '../services/songs';
 
-export const getAllMusicsQueryOptions = () => {
+export const getAllSongsQueryOptions = () => {
   return queryOptions({
-    queryKey: ['musics'],
+    queryKey: ['songs'],
     queryFn: getAllSongs,
     staleTime: Infinity,
     retry: true,

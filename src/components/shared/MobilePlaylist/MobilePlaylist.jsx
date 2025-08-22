@@ -1,10 +1,12 @@
 import { createPortal } from 'react-dom';
+import { memo, useCallback } from 'react';
 import { useState, useEffect } from 'react';
 import BgImage from '../../../assets/images/backgrounds/login-signup-page.jpg';
 import playlistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
 import {
   ArrowLeft,
   Play,
+  Pause,
   Shuffle,
   Additem,
   Edit,
@@ -14,6 +16,7 @@ import {
   Trash,
 } from 'iconsax-react';
 import MainButton from '../../Buttons/MainButton/MainButton';
+import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import useMediaQuery from '../../../hooks/useMediaQuery';
@@ -24,9 +27,18 @@ import DropDownList from '../../DropDownList/DropDownList';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
-import { songs } from '../../../data';
 import { setIsMobilePlaylistOpen } from '../../../redux/slices/mobilePlaylistSlice';
-import { togglePlayState, setPlaylist } from '../../../redux/slices/musicPlayerSlice';
+import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
+import {
+  togglePlayState,
+  setPlaylist,
+  setCurrentSongIndex,
+  play,
+  pause,
+} from '../../../redux/slices/musicPlayerSlice';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { getSongsByPlaylistIdQueryOptions, getAllSongsQueryOptions } from '../../../queries/musics';
+import { addSongToPrivatePlaylistMutationOptions } from '../../../queries/playlists';
 import PropTypes from 'prop-types';
 
 export default function MobilePlaylist() {
@@ -34,11 +46,20 @@ export default function MobilePlaylist() {
   const dispatch = useDispatch();
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+  const [pendingSongId, setPendingSongId] = useState(null);
   const searchInput = useInput();
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const isTablet = useMediaQuery('(min-width: 768px)');
-  const { playingState, selectedPlaylist } = useSelector((state) => state.musicPlayer);
+  const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
+  const playlist = useSelector((state) => state.musicPlayer.playlist);
+  const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
+  const playingState = useSelector((state) => state.musicPlayer.playingState);
   const playlistCover = selectedPlaylist.cover ? selectedPlaylist.cover : playlistDefaultCover;
+  const { data: selectedPlaylistSongs, isLoading: isPlaylistSongsLoading } = useQuery(
+    getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
+  );
+  const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
+  const { data: allSongs, isLoading: isAllSongsLoading } = useQuery(getAllSongsQueryOptions());
 
   // remove scrollbar for the body when mobile playlist is open
   useEffect(() => {
@@ -73,6 +94,15 @@ export default function MobilePlaylist() {
     }
   };
 
+  const playPauseButtonHandler = () => {
+    if (playlist.id !== selectedPlaylist.id) {
+      dispatch(setPlaylist(selectedPlaylist));
+      dispatch(setCurrentSongIndex(0));
+    } else {
+      dispatch(isPlaying ? pause() : play());
+    }
+  };
+
   const playButtons = [
     {
       id: 1,
@@ -84,6 +114,36 @@ export default function MobilePlaylist() {
     },
     { id: 2, icon: <Additem />, onClick: () => setIsAddMenuOpen(true) },
   ];
+
+  const addSongHandler = useCallback(
+    async (songId) => {
+      const isAlreadyAdded = selectedPlaylistSongs.some((song) => song.id === songId);
+
+      if (isAlreadyAdded) {
+        dispatch(
+          showNewSnackbar({
+            message: 'This song already exists in your playlist.',
+            type: 'warning',
+          })
+        );
+        return;
+      }
+
+      try {
+        setPendingSongId(songId);
+        await addSongMutation.mutateAsync(songId);
+        dispatch(showNewSnackbar({ message: 'Song added succefully. Enjoy!', type: 'success' }));
+      } catch (err) {
+        dispatch(
+          showNewSnackbar({ message: 'Error while adding new song to playlist. Try again.' })
+        );
+        console.error('Error adding new song to playlist : ', err);
+      } finally {
+        setPendingSongId(null);
+      }
+    },
+    [dispatch, selectedPlaylistSongs, addSongMutation]
+  );
 
   const playlistDropDownListItems = [
     {
@@ -100,7 +160,7 @@ export default function MobilePlaylist() {
 
   return createPortal(
     <div
-      className={`bg-primary-800 h-ful fixed inset-0 z-10 min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isMobilePlaylistOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+      className={`bg-primary-800 fixed inset-0 z-10 min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isMobilePlaylistOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div
         className="absolute size-full bg-cover bg-center bg-no-repeat opacity-15 blur-md"
@@ -140,7 +200,10 @@ export default function MobilePlaylist() {
           <div className="mt-3 flex w-full items-center justify-between gap-2 lg:px-8">
             <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
               <button className="border-primary-200 h-10 w-8 rounded-sm border p-[2px] sm:h-12 sm:w-9">
-                <img src={BgImage} className="size-full rounded-sm" />
+                <img
+                  src={selectedPlaylist.cover ?? playlistDefaultCover}
+                  className="size-full rounded-sm"
+                />
               </button>
               {playButtons.map((button) => (
                 <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
@@ -166,21 +229,31 @@ export default function MobilePlaylist() {
               />
               <MainButton
                 classNames="size-12 sm:size-14 md:size-20 !rounded-full flex justify-center items-center"
-                title={<Play size={isTablet ? 32 : 24} />}
-                onClick={() => dispatch(setPlaylist(selectedPlaylist))}
+                title={
+                  isPlaying ? (
+                    <Pause size={isTablet ? 32 : 24} />
+                  ) : (
+                    <Play size={isTablet ? 32 : 24} />
+                  )
+                }
+                onClick={playPauseButtonHandler}
               />
             </div>
           </div>
-          <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-            {selectedPlaylist.musics?.map((music) => (
-              <PlayBar
-                key={music.id}
-                size={isLargeMobile ? 'lg' : 'md'}
-                classNames="!w-full text-start !max-w-none"
-                {...music}
-              />
-            ))}
-          </div>
+          {isPlaylistSongsLoading ? (
+            'Loading...'
+          ) : (
+            <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
+              {selectedPlaylistSongs?.map((music) => (
+                <PlayBar
+                  key={music.id}
+                  size={isLargeMobile ? 'lg' : 'md'}
+                  classNames="!w-full text-start !max-w-none"
+                  {...music}
+                />
+              ))}
+            </div>
+          )}
           {/*
               conditionally rendering the <Player> component based on `isMobilePlaylistOpen` improves performance by preventing unnecessary re-renders when MobilePlaylist is closed and is not visible by user.
             */}
@@ -208,11 +281,20 @@ export default function MobilePlaylist() {
                   Based on tracks you&apos;ve added.
                 </p>
               </div>
-              <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
-                {songs.map((song) => (
-                  <SuggestedSong key={song.id} {...song} />
-                ))}
-              </div>
+              {isAllSongsLoading ? (
+                'Loading...'
+              ) : (
+                <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
+                  {allSongs?.map((song) => (
+                    <SuggestedSong
+                      key={song.id}
+                      isPending={song.id === pendingSongId}
+                      onAdd={addSongHandler}
+                      {...song}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -222,7 +304,7 @@ export default function MobilePlaylist() {
   );
 }
 
-function SuggestedSong({ title, cover, artist = 'Unknown artist' }) {
+const SuggestedSong = memo(({ id, title, cover, artist = 'Unknown artist', isPending, onAdd }) => {
   return (
     <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm md:border">
       <div className="flex grow items-center gap-2 overflow-hidden">
@@ -245,16 +327,25 @@ function SuggestedSong({ title, cover, artist = 'Unknown artist' }) {
           </p>
         </div>
       </div>
-      <IconButton
-        icon={<AddCircle />}
-        classNames="min-w-8.5 min-h-8.5 sm:min-w-10 sm:min-h-10 md:me-1"
-      />
+      {isPending ? (
+        <LoadingSpinner classNames="me-0.5" />
+      ) : (
+        <IconButton
+          icon={<AddCircle />}
+          classNames="min-w-8.5 min-h-8.5 sm:min-w-10 sm:min-h-10 md:me-1"
+          onClick={() => onAdd(id)}
+        />
+      )}
     </div>
   );
-}
+});
 
+SuggestedSong.displayName = 'SuggestedSong';
 SuggestedSong.propTypes = {
+  id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
   artist: PropTypes.array,
+  isPending: PropTypes.bool,
+  onAdd: PropTypes.func.isRequired,
 };

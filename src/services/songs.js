@@ -9,13 +9,9 @@ const handleSongsErrors = (err) => {
 };
 
 export const getAllSongs = async () => {
-  try {
-    const { data: songs, error } = await supabase.from('songs').select('*');
-    if (error) throw error;
-    return { status: 'success', success: true, songs };
-  } catch (err) {
-    return handleSongsErrors(err);
-  }
+  const { data, error } = await supabase.from('songs').select('*');
+  if (error) throw error;
+  return data;
 };
 
 export const getSongsByAlbumId = async (albumId) => {

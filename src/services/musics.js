@@ -10,7 +10,7 @@ export const getMusicsByTitle = async (title) => {
   return data;
 };
 
-export const getAllMusics = async () => {
+export const getAllSongs = async () => {
   const { data } = await api.get('/music/musics');
   return data;
 };
