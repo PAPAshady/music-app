@@ -20,10 +20,10 @@ import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import { uploadFile, getFileUrl, deleteFiles, listFiles } from '../../services/storage';
 import { setSelectedPlaylist } from '../../redux/slices/musicPlayerSlice';
 import {
-  createNewPrivatePlaylistQueryOptions,
-  updatePrivatePlaylistQueryOptions,
-  addSongToPrivatePlaylistQueryOptions,
-  removeSongFromPrivatePlaylistQueryOptions,
+  createNewPrivatePlaylistMutationOptions,
+  updatePrivatePlaylistMutationOptions,
+  addSongToPrivatePlaylistMutationOptions,
+  removeSongFromPrivatePlaylistMutationOptions,
 } from '../../queries/playlists';
 import { getSongsByPlaylistIdQueryOptions } from '../../queries/musics';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
@@ -49,13 +49,13 @@ export default function PlaylistInfosModal() {
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: allSongs } = useQuery(getAllMusicsQueryOptions());
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
-  const addSongMutation = useMutation(addSongToPrivatePlaylistQueryOptions(selectedPlaylist.id));
+  const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
   const removeSongMutation = useMutation(
-    removeSongFromPrivatePlaylistQueryOptions(selectedPlaylist.id)
+    removeSongFromPrivatePlaylistMutationOptions(selectedPlaylist.id)
   );
-  const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistQueryOptions());
+  const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistMutationOptions());
   const updatePlaylistMutation = useMutation(
-    updatePrivatePlaylistQueryOptions(selectedPlaylist.id)
+    updatePrivatePlaylistMutationOptions(selectedPlaylist.id)
   );
   const { data: selectedPlaylistSongs } = useQuery(
     getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
