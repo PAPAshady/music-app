@@ -82,7 +82,7 @@ export default function PlaylistInfosModal() {
 
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));
-  const suggestedSongs = (allSongs?.songs ?? []).filter((song) => !playlistSongIds.has(song.id));
+  const suggestedSongs = (allSongs ?? []).filter((song) => !playlistSongIds.has(song.id));
 
   const songsToRender = (
     selectedTab === 'add' ? suggestedSongs : (selectedPlaylistSongs ?? [])

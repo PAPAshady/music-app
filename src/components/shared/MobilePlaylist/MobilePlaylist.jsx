@@ -61,6 +61,13 @@ export default function MobilePlaylist() {
   const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
   const { data: allSongs, isLoading: isAllSongsLoading } = useQuery(getAllSongsQueryOptions());
 
+  const searchedValue = searchInput.value.toLowerCase().trim();
+  // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
+  const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));
+  const suggestedSongs = (allSongs ?? []).filter(
+    (song) => !playlistSongIds.has(song.id) && song.title.toLowerCase().includes(searchedValue)
+  );
+
   // remove scrollbar for the body when mobile playlist is open
   useEffect(() => {
     if (isMobilePlaylistOpen) {
@@ -285,7 +292,7 @@ export default function MobilePlaylist() {
                 'Loading...'
               ) : (
                 <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
-                  {allSongs?.map((song) => (
+                  {suggestedSongs.map((song) => (
                     <SuggestedSong
                       key={song.id}
                       isPending={song.id === pendingSongId}
