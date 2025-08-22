@@ -82,9 +82,19 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
   mutationFn: (songId) => addSongToPrivatePlaylist(playlistId, songId),
   onSuccess: async () => {
     await queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
-    // sync with redux
+
+    // update playlists cache to show the new value of totaltracks field
+    queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
+      return prevPlaylists.map((playlist) =>
+        playlist.id === playlistId
+          ? { ...playlist, totaltracks: playlist.totaltracks + 1 }
+          : playlist
+      );
+    });
+
     const updatedPlaylistSongs = queryClient.getQueryData(['playlists', { playlistId }]);
     const playlist = store.getState().musicPlayer.playlist; // the playlist which is currently playing
+    // sync with redux
     store.dispatch(setSelectedPlaylistSongs(updatedPlaylistSongs));
     if (playlist.id === playlistId) {
       // if user updated the music list of current playing playlist, sync the updates in redux as well
@@ -104,6 +114,16 @@ export const removeSongFromPrivatePlaylistMutationOptions = (playlistId) => ({
         return prevPlaylistSongs.filter((song) => song.id !== songId);
       }
     );
+
+    // update playlists cache to show the new value of totaltracks field
+    queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
+      return prevPlaylists.map((playlist) =>
+        playlist.id === playlistId
+          ? { ...playlist, totaltracks: playlist.totaltracks - 1 }
+          : playlist
+      );
+    });
+
     const playlist = store.getState().musicPlayer.playlist; // the playlist which is currently playing
     const musicPlayer = store.getState().musicPlayer;
     const { dispatch } = store;
