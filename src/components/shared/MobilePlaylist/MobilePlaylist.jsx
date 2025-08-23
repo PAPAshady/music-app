@@ -15,6 +15,7 @@ import {
   RepeateMusic,
   AddCircle,
   Trash,
+  Heart,
 } from 'iconsax-react';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import IconButton from '../../Buttons/IconButton/IconButton';
@@ -39,6 +40,7 @@ import {
 import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/react-query';
 import {
   getSongsByPlaylistIdQueryOptions,
+  getSongsByAlbumIdQueryOptions,
   getAllSongsInfiniteQueryOptions,
 } from '../../../queries/musics';
 import {
@@ -63,7 +65,9 @@ export default function MobilePlaylist() {
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const playlistCover = selectedPlaylist.cover ? selectedPlaylist.cover : playlistDefaultCover;
   const { data: selectedPlaylistSongs, isLoading: isPlaylistSongsLoading } = useQuery(
-    getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
+    selectedPlaylist.tracklistType === 'playlist'
+      ? getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
+      : getSongsByAlbumIdQueryOptions(selectedPlaylist.id)
   );
   const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
   const removeSongMutation = useMutation(
@@ -256,9 +260,10 @@ export default function MobilePlaylist() {
                   className="size-full rounded-sm object-cover"
                 />
               </button>
-              {playButtons.map((button) => (
-                <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
-              ))}
+              {!selectedPlaylist.is_public &&
+                playButtons.map((button) => (
+                  <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
+                ))}
               <DropDownList
                 menuItems={playlistDropDownListItems}
                 dropDownPlacement="bottom start"
@@ -295,48 +300,63 @@ export default function MobilePlaylist() {
             'Loading...'
           ) : !selectedPlaylistSongs?.length ? (
             <div className="my-2 w-full">
-              <p className="text-gray-400">No tracks in this playlist yet</p>
+              <p className="text-gray-400">
+                No tracks in this {selectedPlaylist.tracklistType} yet
+              </p>
             </div>
           ) : (
-            <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-              {selectedPlaylistSongs?.map((song) => (
-                <PlayBar
-                  key={song.id}
-                  size={isLargeMobile ? 'lg' : 'md'}
-                  classNames="!w-full text-start !max-w-none"
-                  ActionButtonIcon={<Trash />}
-                  actionButtonClickHandler={removeSongHandler}
-                  isActionButtonPending={pendingSongId === song.id}
-                  {...song}
-                />
-              ))}
-            </div>
+            <>
+              <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
+                {selectedPlaylistSongs?.map((song) => (
+                  <PlayBar
+                    key={song.id}
+                    size={isLargeMobile ? 'lg' : 'md'}
+                    classNames="!w-full text-start !max-w-none"
+                    ActionButtonIcon={selectedPlaylist.is_public ? <Heart /> : <Trash />}
+                    actionButtonClickHandler={
+                      selectedPlaylist.tracklistType === 'playlist' && removeSongHandler
+                    }
+                    isActionButtonPending={pendingSongId === song.id}
+                    {...song}
+                  />
+                ))}
+              </div>
+              <p className="mt-2 text-gray-400">
+                {selectedPlaylistSongs.length} song{selectedPlaylistSongs.length > 1 && 's'}
+              </p>
+            </>
           )}
 
-          <div className="mt-6 mb-4 w-full text-start">
-            <p className="my-4 text-xl font-bold">Suggestions</p>
-            <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
-              {suggestedSongs.map((song) => (
-                <SuggestedSong
-                  key={song.id}
-                  isPending={song.id === pendingSongId}
-                  onAdd={addSongHandler}
-                  {...song}
-                />
-              ))}
-            </div>
-          </div>
-          {allSongs?.pages?.length === 1 && (
-            <MainButton
-              size="md"
-              title={isFetchingNextPage ? 'Please wait...' : 'Load more'}
-              disabled={isFetchingNextPage}
-              onClick={fetchNextPage}
-            />
+          {!selectedPlaylist.is_public && (
+            <>
+              <div className="mt-6 mb-4 w-full text-start">
+                <p className="mb-4 text-xl font-bold">Suggestions</p>
+                <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
+                  {suggestedSongs.map((song) => (
+                    <SuggestedSong
+                      key={song.id}
+                      isPending={song.id === pendingSongId}
+                      onAdd={addSongHandler}
+                      {...song}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div>
+                {allSongs?.pages?.length === 1 && (
+                  <MainButton
+                    size="md"
+                    title={isFetchingNextPage ? 'Please wait...' : 'Load more'}
+                    disabled={isFetchingNextPage}
+                    onClick={fetchNextPage}
+                  />
+                )}
+                <span className="block" ref={targetRef}>
+                  {isFetchingNextPage && 'Loading new data...'}
+                </span>
+              </div>
+            </>
           )}
-          <span className="block" ref={targetRef}>
-            {isFetchingNextPage && 'Loading new data...'}
-          </span>
 
           {/*
               conditionally rendering the <Player> component based on `isMobilePlaylistOpen` improves performance by preventing unnecessary re-renders when MobilePlaylist is closed and is not visible by user.
@@ -344,7 +364,7 @@ export default function MobilePlaylist() {
           {isMobilePlaylistOpen && <Player classNames="text-start !w-full" />}
         </div>
       </div>
-      {isMobilePlaylistOpen && (
+      {isMobilePlaylistOpen && !selectedPlaylist.is_public && (
         <div
           className={`text-secondary-50 bg-primary-800 absolute inset-0 z-[10] size-full pb-4 transition-all duration-300 ${isAddMenuOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
         >
