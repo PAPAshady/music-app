@@ -24,7 +24,8 @@ const formSchema = z.object({
 });
 
 export default function Profile() {
-  const { user, avatar: userAvatar } = useSelector((state) => state.auth);
+  const userAvatar = useSelector((state) => state.auth.avatar);
+  const user = useSelector((state) => state.auth.user);
   const [avatar, setAvatar] = useState(null);
   const isTablet = useMediaQuery('(min-width: 640px)');
   const {

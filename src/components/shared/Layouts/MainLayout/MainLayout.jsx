@@ -22,7 +22,7 @@ export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
-  const { selectedPlaylist } = useSelector((state) => state.musicPlayer);
+  const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
 
   useEffect(() => {
     function handleScroll() {

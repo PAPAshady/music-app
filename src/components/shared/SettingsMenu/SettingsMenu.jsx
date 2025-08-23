@@ -8,7 +8,8 @@ import { signOut } from '../../../redux/slices/authSlice';
 
 export default function SettingsMenu({ isVisible }) {
   const dispatch = useDispatch();
-  const { avatar, user } = useSelector((state) => state.auth);
+  const avatar = useSelector((state) => state.auth.avatar);
+  const user = useSelector((state) => state.auth.user);
 
   const listItems = [
     { id: 1, title: 'Edit Profile', icon: <UserEdit />, href: '/settings/profile' },

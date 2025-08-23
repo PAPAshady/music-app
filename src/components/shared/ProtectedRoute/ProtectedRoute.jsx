@@ -5,7 +5,8 @@ import Logo from '../../Logo/Logo';
 import { useSelector } from 'react-redux';
 
 export default function ProtectedRoute({ children }) {
-  const { user, isLoading } = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.auth.user);
+  const isLoading = useSelector((state) => state.auth.isLoading);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   if (isLoading) {

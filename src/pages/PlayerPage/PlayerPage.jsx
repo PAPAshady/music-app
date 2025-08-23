@@ -21,9 +21,10 @@ export default function PlayerPage() {
   const dispatch = useDispatch();
   const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const { playlist, currentMusic, currentSongIndex, prevSongIndex } = useSelector(
-    (state) => state.musicPlayer
-  );
+  const playlist = useSelector((state) => state.musicPlayer.playlist);
+  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
+  const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
+  const prevSongIndex = useSelector((state) => state.musicPlayer.prevSongIndex);
 
   useEffect(() => {
     const img = new Image();

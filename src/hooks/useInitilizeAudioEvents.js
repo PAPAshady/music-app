@@ -13,7 +13,9 @@ import {
 
 export default function useInitilizeAudioEvents() {
   const dispatch = useDispatch();
-  const { playingState, playlist, currentSongIndex } = useSelector((state) => state.musicPlayer);
+  const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
+  const playlist = useSelector((state) => state.musicPlayer.playlist);
+  const playingState = useSelector((state) => state.musicPlayer.playingState);
 
   // calculate the duration of the new song
   const formatSongDuration = useCallback(() => {

@@ -36,11 +36,9 @@ const schema = z.object({
 });
 
 export default function PlaylistInfosModal() {
-  const {
-    isOpen,
-    title: modalTitle,
-    actionType,
-  } = useSelector((state) => state.playlistInfosModal);
+  const isOpen = useSelector((state) => state.playlistInfosModal.isOpen);
+  const modalTitle = useSelector((state) => state.playlistInfosModal.title);
+  const actionType = useSelector((state) => state.playlistInfosModal.actionType);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);

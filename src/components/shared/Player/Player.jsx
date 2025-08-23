@@ -39,9 +39,13 @@ const musicDefaultVolume = 70; // min: 0, max: 100
 
 export default function Player({ classNames, isPlayerPage }) {
   const dispatch = useDispatch();
-  const { isOpen: isMobilePlaylistOpen } = useSelector((state) => state.mobilePlaylist);
-  const { songTotalDurations, isPlaying, playlist, currentMusic, playingState, musicState } =
-    useSelector((state) => state.musicPlayer);
+  const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
+  const songTotalDurations = useSelector((state) => state.musicPlayer.songTotalDurations);
+  const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
+  const playlist = useSelector((state) => state.musicPlayer.playlist);
+  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
+  const playingState = useSelector((state) => state.musicPlayer.playingState);
+  const musicState = useSelector((state) => state.musicPlayer.musicState);
   const [volume, setVolume] = useState([musicDefaultVolume]);
   const verticalVolumeSlider = useCloseOnClickOutside();
   const navigate = useNavigate();

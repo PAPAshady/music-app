@@ -21,7 +21,9 @@ import {
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 
 const SidebarPlaylist = memo(() => {
-  const { selectedPlaylist, playlist, isPlaying } = useSelector((state) => state.musicPlayer);
+  const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
+  const playlist = useSelector((state) => state.musicPlayer.playlist);
+  const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const { data: selectedPlaylistSongs, isLoading } = useQuery(
     selectedPlaylist.tracklistType === 'album'
       ? getSongsByAlbumIdQueryOptions(selectedPlaylist.id)

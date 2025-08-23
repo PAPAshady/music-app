@@ -26,7 +26,9 @@ const PlayBar = memo(
   }) => {
     const dropDownMenu = useCloseOnClickOutside();
     const dispatch = useDispatch();
-    const { currentMusic, selectedPlaylist, playlist } = useSelector((state) => state.musicPlayer);
+    const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
+    const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
+    const playlist = useSelector((state) => state.musicPlayer.playlist);
 
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',

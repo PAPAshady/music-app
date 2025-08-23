@@ -51,7 +51,7 @@ import PropTypes from 'prop-types';
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver';
 
 export default function MobilePlaylist() {
-  const { isOpen: isMobilePlaylistOpen } = useSelector((state) => state.mobilePlaylist);
+  const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
   const dispatch = useDispatch();
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
