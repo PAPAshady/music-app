@@ -1,13 +1,18 @@
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, infiniteQueryOptions } from '@tanstack/react-query';
 import { getAllSongs, getSongsByAlbumId, getSongsByPlaylistId } from '../services/songs';
 
-export const getAllSongsQueryOptions = () => {
-  return queryOptions({
+export const getAllSongsInfiniteQueryOptions = ({ limit } = {}) => {
+  return infiniteQueryOptions({
     queryKey: ['songs'],
-    queryFn: getAllSongs,
+    queryFn: ({ pageParam }) => getAllSongs({ limit, cursor: pageParam }),
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage || lastPage.length < limit) return undefined; // no more data
+      // cursor = created_at of the last song in this batch
+      return lastPage[lastPage.length - 1].created_at;
+    },
   });
 };
 
@@ -28,5 +33,6 @@ export const getSongsByPlaylistIdQueryOptions = (playlistId) => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+    enabled: !!playlistId,
   });
 };

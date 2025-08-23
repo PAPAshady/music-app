@@ -13,8 +13,8 @@ import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import IconButton from '../Buttons/IconButton/IconButton';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { getAllSongsQueryOptions } from '../../queries/musics';
+import { useQuery, useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import { uploadFile, getFileUrl, deleteFiles, listFiles } from '../../services/storage';
@@ -47,7 +47,7 @@ export default function PlaylistInfosModal() {
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
-  const { data: allSongs } = useQuery(getAllSongsQueryOptions());
+  const { data: allSongs } = useInfiniteQuery(getAllSongsInfiniteQueryOptions());
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
   const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
   const removeSongMutation = useMutation(
@@ -82,7 +82,9 @@ export default function PlaylistInfosModal() {
 
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));
-  const suggestedSongs = (allSongs ?? []).filter((song) => !playlistSongIds.has(song.id));
+  const suggestedSongs = (allSongs?.pages?.flat() ?? []).filter(
+    (song) => !playlistSongIds.has(song.id)
+  );
 
   const songsToRender = (
     selectedTab === 'add' ? suggestedSongs : (selectedPlaylistSongs ?? [])

@@ -8,8 +8,18 @@ const handleSongsErrors = (err) => {
   }
 };
 
-export const getAllSongs = async () => {
-  const { data, error } = await supabase.from('songs').select('*');
+export const getAllSongs = async ({ limit, cursor }) => {
+  let query = supabase
+    .from('songs')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (cursor) {
+    query = query.lt('created_at', cursor);
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
   return data;
 };

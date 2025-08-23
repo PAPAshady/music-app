@@ -3,6 +3,7 @@ import { memo, useCallback } from 'react';
 import { useState, useEffect } from 'react';
 import BgImage from '../../../assets/images/backgrounds/login-signup-page.jpg';
 import playlistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
+import MainButton from '../../Buttons/MainButton/MainButton';
 import {
   ArrowLeft,
   Play,
@@ -15,7 +16,6 @@ import {
   AddCircle,
   Trash,
 } from 'iconsax-react';
-import MainButton from '../../Buttons/MainButton/MainButton';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
@@ -36,13 +36,17 @@ import {
   play,
   pause,
 } from '../../../redux/slices/musicPlayerSlice';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { getSongsByPlaylistIdQueryOptions, getAllSongsQueryOptions } from '../../../queries/musics';
+import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/react-query';
+import {
+  getSongsByPlaylistIdQueryOptions,
+  getAllSongsInfiniteQueryOptions,
+} from '../../../queries/musics';
 import {
   addSongToPrivatePlaylistMutationOptions,
   removeSongFromPrivatePlaylistMutationOptions,
 } from '../../../queries/playlists';
 import PropTypes from 'prop-types';
+import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver';
 
 export default function MobilePlaylist() {
   const { isOpen: isMobilePlaylistOpen } = useSelector((state) => state.mobilePlaylist);
@@ -65,13 +69,26 @@ export default function MobilePlaylist() {
   const removeSongMutation = useMutation(
     removeSongFromPrivatePlaylistMutationOptions(selectedPlaylist.id)
   );
-  const { data: allSongs, isLoading: isAllSongsLoading } = useQuery(getAllSongsQueryOptions());
+  const {
+    data: allSongs,
+    isLoading: isAllSongsLoading,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 6 }));
+  const { targetRef } = useIntersectionObserver({
+    onIntersect: () => {
+      if (hasNextPage && !isFetchingNextPage && allSongs?.pages?.length > 1) {
+        fetchNextPage();
+      }
+    },
+  });
 
   const searchedValue = searchInput.value.toLowerCase().trim();
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));
-  const suggestedSongs = (allSongs ?? []).filter(
-    (song) => !playlistSongIds.has(song.id) && song.title.toLowerCase().includes(searchedValue)
+  const suggestedSongs = (allSongs?.pages?.flat() ?? []).filter(
+    (song) => !playlistSongIds.has(song.id)
   );
 
   // remove scrollbar for the body when mobile playlist is open
@@ -236,7 +253,7 @@ export default function MobilePlaylist() {
               <button className="border-primary-200 h-10 w-8 rounded-sm border p-[2px] sm:h-12 sm:w-9">
                 <img
                   src={selectedPlaylist.cover ?? playlistDefaultCover}
-                  className="size-full rounded-sm"
+                  className="size-full rounded-sm object-cover"
                 />
               </button>
               {playButtons.map((button) => (
@@ -276,6 +293,10 @@ export default function MobilePlaylist() {
           </div>
           {isPlaylistSongsLoading ? (
             'Loading...'
+          ) : !selectedPlaylistSongs?.length ? (
+            <div className="my-2 w-full">
+              <p className="text-gray-400">No tracks in this playlist yet</p>
+            </div>
           ) : (
             <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
               {selectedPlaylistSongs?.map((song) => (
@@ -291,6 +312,32 @@ export default function MobilePlaylist() {
               ))}
             </div>
           )}
+
+          <div className="mt-6 mb-4 w-full text-start">
+            <p className="my-4 text-xl font-bold">Suggestions</p>
+            <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
+              {suggestedSongs.map((song) => (
+                <SuggestedSong
+                  key={song.id}
+                  isPending={song.id === pendingSongId}
+                  onAdd={addSongHandler}
+                  {...song}
+                />
+              ))}
+            </div>
+          </div>
+          {allSongs?.pages?.length === 1 && (
+            <MainButton
+              size="md"
+              title={isFetchingNextPage ? 'Please wait...' : 'Load more'}
+              disabled={isFetchingNextPage}
+              onClick={fetchNextPage}
+            />
+          )}
+          <span className="block" ref={targetRef}>
+            {isFetchingNextPage && 'Loading new data...'}
+          </span>
+
           {/*
               conditionally rendering the <Player> component based on `isMobilePlaylistOpen` improves performance by preventing unnecessary re-renders when MobilePlaylist is closed and is not visible by user.
             */}
@@ -322,14 +369,16 @@ export default function MobilePlaylist() {
                 'Loading...'
               ) : (
                 <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
-                  {suggestedSongs.map((song) => (
-                    <SuggestedSong
-                      key={song.id}
-                      isPending={song.id === pendingSongId}
-                      onAdd={addSongHandler}
-                      {...song}
-                    />
-                  ))}
+                  {suggestedSongs
+                    .filter((song) => song.title.toLowerCase().includes(searchedValue))
+                    .map((song) => (
+                      <SuggestedSong
+                        key={song.id}
+                        isPending={song.id === pendingSongId}
+                        onAdd={addSongHandler}
+                        {...song}
+                      />
+                    ))}
                 </div>
               )}
             </div>
