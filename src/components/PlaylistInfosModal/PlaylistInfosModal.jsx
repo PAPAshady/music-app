@@ -52,7 +52,7 @@ export default function PlaylistInfosModal() {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery(getAllSongsInfiniteQueryOptions({limit: 6}));
+  } = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 6 }));
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const { targetRef: triggerElem } = useIntersectionObserver({ onIntersect });
@@ -435,18 +435,22 @@ export default function PlaylistInfosModal() {
                           />
                         ))}
                       </div>
-                      <div className="mt-6 text-center">
-                        {allSongs?.pages?.length === 1 && (
+                      <span className="-mt-10 block" ref={triggerElem}></span>
+                      <div className="mt-16 text-center">
+                        {allSongs?.pages?.length === 1 && !isFetchingNextPage && (
                           <MainButton
                             classNames="!border-secondary-200"
                             title="Load more"
                             size="sm"
                             onClick={fetchNextPage}
-                            disabled={isFetchingNextPage && !hasNextPage}
                           />
                         )}
-                        <span ref={triggerElem}></span>
                       </div>
+                      {isFetchingNextPage && (
+                        <div className="flex justify-center pb-4">
+                          <LoadingSpinner size="md" />
+                        </div>
+                      )}
                     </>
                   ) : (
                     <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
