@@ -4,15 +4,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import { deletePrivatePlaylistMutationOptions } from '../../queries/playlists';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
+import { listFiles, deleteFiles } from '../../services/storage';
 
 export default function ConfirmModal() {
   const dispatch = useDispatch();
   const { isOpen, title, message, buttons, buttonsClassNames, actionType } = useSelector(
     (state) => state.confirmModal
   );
-  const selectedPlaylistId = useSelector((state) => state.musicPlayer.selectedPlaylist.id);
+  const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
+  const userId = useSelector((state) => state.auth.user?.id);
   const deletePlaylistMutation = useMutation(
-    deletePrivatePlaylistMutationOptions(selectedPlaylistId)
+    deletePrivatePlaylistMutationOptions(selectedPlaylist.id)
   );
 
   const onClose = () => {
@@ -24,6 +26,37 @@ export default function ConfirmModal() {
 
   const onConfirm = async () => {
     if (actionType === 'delete_playlist') {
+      const { data: listingData, error: listingError } = await listFiles(
+        'playlist-covers',
+        userId,
+        undefined,
+        undefined,
+        selectedPlaylist.title
+      );
+
+      if (listingError) {
+        dispatch(
+          showNewSnackbar({ message: 'Error removing playlist. Try again.', type: 'error' })
+        );
+        console.error('Error listing files : ', listingError);
+        return;
+      }
+
+      if (listingData.length) {
+        // remove playlist cover from storage
+        const { error: deleteError } = await deleteFiles('playlist-covers', [
+          `${userId}/${selectedPlaylist.title}.${listingData[0].name.split('.').pop()}`,
+        ]);
+
+        if (deleteError) {
+          dispatch(
+            showNewSnackbar({ message: 'Error removing playlist. Try again.', type: 'error' })
+          );
+          console.error('Error deleting file : ', deleteError);
+          return;
+        }
+      }
+
       try {
         await deletePlaylistMutation.mutateAsync();
         dispatch(showNewSnackbar({ message: 'Playlist removed successfully.', type: 'success' }));
