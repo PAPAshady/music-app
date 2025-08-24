@@ -1,7 +1,7 @@
 import { queryOptions, infiniteQueryOptions } from '@tanstack/react-query';
 import { getAllSongs, getSongsByAlbumId, getSongsByPlaylistId } from '../services/songs';
 
-export const getAllSongsInfiniteQueryOptions = ({ limit } = {}) => {
+export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
   return infiniteQueryOptions({
     queryKey: ['songs'],
     queryFn: ({ pageParam }) => getAllSongs({ limit, cursor: pageParam }),
@@ -10,6 +10,7 @@ export const getAllSongsInfiniteQueryOptions = ({ limit } = {}) => {
     retryDelay: 5000,
     getNextPageParam: (lastPage) => {
       if (!lastPage || lastPage.length < limit) return undefined; // no more data
+
       // cursor = created_at of the last song in this batch
       return lastPage[lastPage.length - 1].created_at;
     },

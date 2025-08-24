@@ -301,7 +301,7 @@ export default function MobilePlaylist() {
             'Loading...'
           ) : !selectedPlaylistSongs?.length ? (
             <div className="my-2 w-full">
-              <p className="text-gray-400">
+              <p className="text-gray-400 md:text-lg">
                 No tracks in this {selectedPlaylist.tracklistType} yet
               </p>
             </div>
