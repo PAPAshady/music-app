@@ -52,7 +52,7 @@ export default function PlaylistInfosModal() {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery(getAllSongsInfiniteQueryOptions());
+  } = useInfiniteQuery(getAllSongsInfiniteQueryOptions({limit: 6}));
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const { targetRef: triggerElem } = useIntersectionObserver({ onIntersect });
