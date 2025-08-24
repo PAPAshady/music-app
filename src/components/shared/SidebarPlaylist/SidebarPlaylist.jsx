@@ -68,7 +68,9 @@ const SidebarPlaylist = memo(() => {
   const playlistInfosArray = [
     {
       id: 1,
-      title: `${selectedPlaylist.musics?.length ?? 'No'} Track${selectedPlaylist.musics?.length > 1 ? 's' : ''}`,
+      title: selectedPlaylistSongs?.length
+        ? `${selectedPlaylistSongs?.length} ${selectedPlaylistSongs?.length > 1 ? 'tracks' : 'track'}`
+        : 'No tracks',
       icon: <Music />,
     },
     { id: 2, title: '01:11:58', icon: <Timer /> },

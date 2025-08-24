@@ -64,7 +64,8 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
         <div>
           <h3 className="text-white-50 mb-1 cursor-pointer truncate text-base">{title}</h3>
           <p className="text-sm text-white">
-            {totaltracks} {totaltracks > 1 ? 'tracks' : 'track'}
+            {totaltracks ? `${totaltracks} ${totaltracks > 1 ? 'tracks' : 'track'}` : 'No tracks'}
+            
           </p>
         </div>
       </div>
