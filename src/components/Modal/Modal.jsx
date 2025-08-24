@@ -9,11 +9,15 @@ export default function Modal({
   children,
   onClose,
   onConfirm,
+  onCancel,
   confirmButton,
   cancelButton,
   confirmButtonTitle = 'Confirm',
   confirmButtonDisabled,
+  confirmButtonClassNames,
+  cancelButtonClassNames,
 }) {
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <DialogBackdrop
@@ -38,7 +42,8 @@ export default function Modal({
                 size="sm"
                 type="outline"
                 variant="secondary"
-                onClick={onClose}
+                onClick={onCancel}
+                classNames={cancelButtonClassNames}
               />
             )}
             {confirmButton && (
@@ -47,6 +52,7 @@ export default function Modal({
                 size="sm"
                 variant="secondary"
                 onClick={onConfirm}
+                classNames={confirmButtonClassNames}
                 disabled={confirmButtonDisabled}
               />
             )}
@@ -63,8 +69,11 @@ Modal.propTypes = {
   children: PropTypes.element.isRequired,
   onClose: PropTypes.func,
   onConfirm: PropTypes.func,
+  onCancel: PropTypes.func,
   confirmButton: PropTypes.bool,
   cancelButton: PropTypes.bool,
   confirmButtonTitle: PropTypes.string,
   confirmButtonDisabled: PropTypes.bool,
+  confirmButtonClassNames: PropTypes.string,
+  cancelButtonClassNames: PropTypes.string,
 };

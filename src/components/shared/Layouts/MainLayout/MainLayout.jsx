@@ -17,6 +17,7 @@ import SidebarPlaylist from '../../SidebarPlaylist/SidebarPlaylist';
 import SidebarWelcomePanel from '../../SidebarWelcomePanel/SidebarWelcomePanel';
 import PlaylistInfosModal from '../../../PlaylistInfosModal/PlaylistInfosModal';
 import { useSelector } from 'react-redux';
+import ConfirmModal from '../../../ConfirmModal/ConfirmModal';
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
@@ -87,6 +88,7 @@ export default function MainLayout() {
         </main>
         <HamburgerMenu />
         {isDesktop && <MobilePlaylist />}
+        <ConfirmModal />
       </div>
       <PlaylistInfosModal />
     </>

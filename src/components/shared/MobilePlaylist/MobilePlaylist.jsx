@@ -28,6 +28,7 @@ import DropDownList from '../../DropDownList/DropDownList';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
+import { openModal as openConfirmModal } from '../../../redux/slices/confirmModalSlice';
 import { setIsMobilePlaylistOpen } from '../../../redux/slices/mobilePlaylistSlice';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 import {
@@ -210,6 +211,16 @@ export default function MobilePlaylist() {
       id: 2,
       icon: <Trash />,
       title: 'Delete playlist',
+      onClick: () =>
+        dispatch(
+          openConfirmModal({
+            title: `Delete "${selectedPlaylist.title}" playlist.`,
+            message: 'Are you sure you want to delete this playlist ?',
+            buttons: { confirm: true, cancel: true },
+            buttonsClassNames: { confirm: '!bg-red !inset-shadow-none' },
+            actionType: 'delete_playlist',
+          })
+        ),
     },
   ];
 

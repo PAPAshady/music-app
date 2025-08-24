@@ -7,6 +7,7 @@ import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
+import { openModal as openConfirmModal } from '../../../redux/slices/confirmModalSlice';
 import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
@@ -94,7 +95,21 @@ const SidebarPlaylist = memo(() => {
                 openModal({ title: `Edit ${selectedPlaylist.title}`, actionType: 'edit_playlist' })
               ),
           },
-          { id: 2, icon: <Trash />, title: 'Delete playlist' },
+          {
+            id: 2,
+            icon: <Trash />,
+            title: 'Delete playlist',
+            onClick: () =>
+              dispatch(
+                openConfirmModal({
+                  title: `Delete "${selectedPlaylist.title}" playlist.`,
+                  message: 'Are you sure you want to delete this playlist ?',
+                  buttons: { confirm: true, cancel: true },
+                  buttonsClassNames: { confirm: '!bg-red !inset-shadow-none' },
+                  actionType: 'delete_playlist',
+                })
+              ),
+          },
           { id: 3, icon: <Heart />, title: 'Add to favorite playlists' },
         ];
   return (
