@@ -2,6 +2,7 @@ import { cloneElement, memo } from 'react';
 import { Music, Timer, User, Edit2, Trash, Heart, Play, Pause, AddCircle } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
+import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import DropDownList from '../../DropDownList/DropDownList';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -183,10 +184,16 @@ const SidebarPlaylist = memo(() => {
             initial="hidden"
             animate="show"
             exit="hidden"
-            className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${selectedPlaylistSongs?.length ? 'overflow-y-auto' : 'overflow-visible'}`}
+            className={`flex grow flex-col gap-2 overflow-y-auto pe-2 pt-[2px]`}
           >
             {isLoading ? (
-              'Please wait...'
+              Array(10)
+                .fill()
+                .map((_, index) => (
+                  <motion.div key={index} variants={itemVariants}>
+                    <PlayBarSkeleton size="sm" />
+                  </motion.div>
+                ))
             ) : selectedPlaylistSongs?.length ? (
               selectedPlaylistSongs?.map((song, index) => (
                 <motion.div key={song.id} variants={itemVariants}>
