@@ -52,6 +52,12 @@ export const updatePrivatePlaylist = async (playlistId, newData) => {
   return data;
 };
 
+export const deletePrivatePlaylist = async (playlistId) => {
+  const { data, error } = await supabase.from('playlists').delete().eq('id', playlistId).select();
+  if (error) throw error;
+  return data;
+};
+
 export const addSongToPrivatePlaylist = async (playlist_id, song_id) => {
   const { data, error } = await supabase
     .from('playlist_songs')

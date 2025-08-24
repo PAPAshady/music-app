@@ -1,5 +1,6 @@
 import { Dialog, DialogPanel, DialogTitle, DialogBackdrop } from '@headlessui/react';
 import MainButton from '../Buttons/MainButton/MainButton';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { CloseCircle } from 'iconsax-react';
 import PropTypes from 'prop-types';
 
@@ -16,8 +17,8 @@ export default function Modal({
   confirmButtonDisabled,
   confirmButtonClassNames,
   cancelButtonClassNames,
+  isSubmitting,
 }) {
-
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <DialogBackdrop
@@ -44,18 +45,24 @@ export default function Modal({
                 variant="secondary"
                 onClick={onCancel}
                 classNames={cancelButtonClassNames}
+                disabled={isSubmitting}
               />
             )}
-            {confirmButton && (
-              <MainButton
-                title={confirmButtonTitle}
-                size="sm"
-                variant="secondary"
-                onClick={onConfirm}
-                classNames={confirmButtonClassNames}
-                disabled={confirmButtonDisabled}
-              />
-            )}
+            {confirmButton &&
+              (isSubmitting ? (
+                <div className="border-red bg-red rounded-lg border px-7 py-2">
+                  <LoadingSpinner size="xs" />
+                </div>
+              ) : (
+                <MainButton
+                  title={confirmButtonTitle}
+                  size="sm"
+                  variant="secondary"
+                  onClick={onConfirm}
+                  classNames={confirmButtonClassNames}
+                  disabled={confirmButtonDisabled}
+                />
+              ))}
           </div>
         </DialogPanel>
       </div>
@@ -76,4 +83,5 @@ Modal.propTypes = {
   confirmButtonDisabled: PropTypes.bool,
   confirmButtonClassNames: PropTypes.string,
   cancelButtonClassNames: PropTypes.string,
+  isSubmitting: PropTypes.bool,
 };

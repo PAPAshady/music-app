@@ -17,6 +17,7 @@ import {
   updatePrivatePlaylist,
   addSongToPrivatePlaylist,
   removeSongFromPrivatePlaylist,
+  deletePrivatePlaylist,
 } from '../services/playlists';
 
 export const getAllPlaylistsQueryOptions = () => {
@@ -73,6 +74,17 @@ export const updatePrivatePlaylistMutationOptions = (playlistId) => ({
       return prevPlaylists.map((playlist) =>
         playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
       );
+    });
+  },
+});
+
+export const deletePrivatePlaylistMutationOptions = (playlistId) => ({
+  queryKey: ['playlists', { is_public: false }],
+  mutationFn: () => deletePrivatePlaylist(playlistId),
+  onSuccess: () => {
+    queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
+      if (!prevPlaylists?.length) return [];
+      return prevPlaylists.filter((playlist) => playlist.id !== playlistId);
     });
   },
 });
