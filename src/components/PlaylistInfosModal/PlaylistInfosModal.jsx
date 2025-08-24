@@ -6,6 +6,7 @@ import TextArea from '../Inputs/TextArea/TextArea';
 import DropDownList from '../DropDownList/DropDownList';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import useMediaQuery from '../../hooks/useMediaQuery';
+import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -28,6 +29,7 @@ import {
 import { getSongsByPlaylistIdQueryOptions } from '../../queries/musics';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import PropTypes from 'prop-types';
+import MainButton from '../Buttons/MainButton/MainButton';
 
 const schema = z.object({
   description: z.string().optional(),
@@ -45,9 +47,15 @@ export default function PlaylistInfosModal() {
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
-  const { data: allSongs } = useInfiniteQuery(getAllSongsInfiniteQueryOptions());
+  const {
+    data: allSongs,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(getAllSongsInfiniteQueryOptions());
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
   const isDesktop = useMediaQuery('(max-width: 1280px)');
+  const { targetRef: triggerElem } = useIntersectionObserver({ onIntersect });
   const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
   const removeSongMutation = useMutation(
     removeSongFromPrivatePlaylistMutationOptions(selectedPlaylist.id)
@@ -105,6 +113,12 @@ export default function PlaylistInfosModal() {
         : playlistDefaultCover
     );
   }, [reset, selectedPlaylist, isOpen, actionType]);
+
+  function onIntersect() {
+    if (!isFetchingNextPage && hasNextPage && allSongs?.pages?.length > 1) {
+      fetchNextPage();
+    }
+  }
 
   const changeTabHandler = (tabName) => {
     searchInput.reset();
@@ -410,16 +424,30 @@ export default function PlaylistInfosModal() {
 
                 <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
                   {songsToRender.length ? (
-                    <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
-                      {songsToRender.map((song) => (
-                        <PlaylistSong
-                          key={song.id}
-                          buttonState={song.id === pendingSongId ? 'pending' : selectedTab}
-                          onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
-                          {...song}
-                        />
-                      ))}
-                    </div>
+                    <>
+                      <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
+                        {songsToRender.map((song) => (
+                          <PlaylistSong
+                            key={song.id}
+                            buttonState={song.id === pendingSongId ? 'pending' : selectedTab}
+                            onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
+                            {...song}
+                          />
+                        ))}
+                      </div>
+                      <div className="mt-6 text-center">
+                        {allSongs?.pages?.length === 1 && (
+                          <MainButton
+                            classNames="!border-secondary-200"
+                            title="Load more"
+                            size="sm"
+                            onClick={fetchNextPage}
+                            disabled={isFetchingNextPage && !hasNextPage}
+                          />
+                        )}
+                        <span ref={triggerElem}></span>
+                      </div>
+                    </>
                   ) : (
                     <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
                       <Music size={62} />

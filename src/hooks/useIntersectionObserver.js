@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useIntersectionObserver({
+function useIntersectionObserver({
   onIntersect,
   root = null,
   rootMargin = '0px',
@@ -33,3 +33,5 @@ export function useIntersectionObserver({
 
   return { targetRef, isInView };
 }
+
+export default useIntersectionObserver;

@@ -48,7 +48,7 @@ import {
   removeSongFromPrivatePlaylistMutationOptions,
 } from '../../../queries/playlists';
 import PropTypes from 'prop-types';
-import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver';
+import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
 
 export default function MobilePlaylist() {
   const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
