@@ -293,6 +293,7 @@ export default function MobilePlaylist() {
                   )
                 }
                 onClick={playPauseButtonHandler}
+                disabled={!selectedPlaylistSongs?.length}
               />
             </div>
           </div>
@@ -327,7 +328,7 @@ export default function MobilePlaylist() {
             </>
           )}
 
-          {!selectedPlaylist.is_public && (
+          {!selectedPlaylist.is_public && selectedPlaylist.tracklistType === 'playlist' && (
             <>
               <div className="mt-6 mb-4 w-full text-start">
                 <p className="mb-4 text-xl font-bold">Suggestions</p>

@@ -23,6 +23,7 @@ export const getSongsByAlbumIdQueryOptions = (albumId) => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+    enabled: !!albumId,
   });
 };
 
