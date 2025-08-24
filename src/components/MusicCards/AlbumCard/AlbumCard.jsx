@@ -7,7 +7,7 @@ import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 import { setSelectedPlaylist } from '../../../redux/slices/musicPlayerSlice';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
-  const { cover = noCoverImg, totaltracks, artist, title } = album;
+  const { cover, totaltracks, artist, title } = album;
   const dispatch = useDispatch();
   const playlist = useSelector((state) => state.musicPlayer.playlist);
   const isCurrentAlbumPlaying = album.title === playlist.title && album.id === playlist.id;
@@ -27,14 +27,14 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
           onClick={openMobilePlaylistHandler}
         >
           <img
-            className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
-            src={cover}
+            className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm object-cover transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
+            src={cover ?? noCoverImg}
             alt={title}
           />
           <div
             className={`absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60 ${isCurrentAlbumPlaying ? 'animate-infinite-rotate' : 'group-hover:animate-infinite-rotate'}`}
             style={{
-              backgroundImage: `url(${cover})`,
+              backgroundImage: `url(${cover ?? noCoverImg})`,
               mask: 'radial-gradient(circle, transparent 8px, black 8px)',
               WebkitMask: 'radial-gradient(circle, transparent 8px, black 8px)',
             }}
