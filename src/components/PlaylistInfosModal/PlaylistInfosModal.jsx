@@ -174,7 +174,7 @@ export default function PlaylistInfosModal() {
           console.error('Error listing files : ', listingError);
         } else if (listingData.length) {
           // remove the cover of the playlist
-          const { deleteError } = await deleteFiles('playlist-covers', [
+          const { error: deleteError } = await deleteFiles('playlist-covers', [
             `${user.id}/${formData.title}.${listingData[0].name.split('.').pop()}`,
           ]);
           if (deleteError) {
