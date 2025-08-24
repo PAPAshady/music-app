@@ -113,9 +113,12 @@ const PlayBar = memo(
               ) : ActionButtonIcon ? (
                 <IconButton icon={ActionButtonIcon} onClick={() => actionButtonClickHandler(id)} />
               ) : (
-                <Heart
-                  size={size === 'sm' ? 16 : 24}
-                  className={`transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : ''}`}
+                <IconButton
+                  icon={
+                    <Heart
+                      className={`transition-colors ${isFavorite ? 'text-red fill-red' : ''}`}
+                    />
+                  }
                 />
               )}
             </div>
