@@ -47,7 +47,7 @@ export default function PlaylistInfosModal() {
   const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
   const { data: allSongs } = useInfiniteQuery(getAllSongsInfiniteQueryOptions());
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
-  const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
+  const isDesktop = useMediaQuery('(max-width: 1280px)');
   const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
   const removeSongMutation = useMutation(
     removeSongFromPrivatePlaylistMutationOptions(selectedPlaylist.id)
@@ -386,7 +386,7 @@ export default function PlaylistInfosModal() {
         {selectedPlaylist.tracklistType === 'playlist' &&
           !selectedPlaylist.is_public &&
           actionType === 'edit_playlist' &&
-          !isMobilePlaylistOpen && (
+          !isDesktop && (
             <div className="flex flex-col gap-4">
               <div className="border-secondary-500 container flex items-center justify-center gap-2 border-b">
                 {tabButtons.map((button) => (
