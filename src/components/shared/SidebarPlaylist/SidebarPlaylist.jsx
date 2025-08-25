@@ -184,13 +184,13 @@ const SidebarPlaylist = memo(() => {
             initial="hidden"
             animate="show"
             exit="hidden"
-            className={`flex grow flex-col gap-2 overflow-y-auto pe-2 pt-[2px]`}
+            className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${selectedPlaylistSongs?.length || isLoading ? 'overflow-y-auto' : 'overflow-visible'}`}
           >
             {isLoading ? (
               Array(10)
                 .fill()
                 .map((_, index) => (
-                  <motion.div key={index} variants={itemVariants}>
+                  <motion.div key={index} variants={listVariants}>
                     <PlayBarSkeleton size="sm" />
                   </motion.div>
                 ))
