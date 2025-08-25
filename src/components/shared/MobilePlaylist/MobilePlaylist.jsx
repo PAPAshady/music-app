@@ -98,8 +98,6 @@ export default function MobilePlaylist() {
     (song) => !playlistSongIds.has(song.id)
   );
 
-  console.log(isAllSongsLoading);
-
   // remove scrollbar for the body when mobile playlist is open
   useEffect(() => {
     if (isMobilePlaylistOpen) {
@@ -332,10 +330,11 @@ export default function MobilePlaylist() {
           ) : (
             <>
               <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-                {selectedPlaylistSongs?.map((song) => (
+                {selectedPlaylistSongs?.map((song, index) => (
                   <PlayBar
                     key={song.id}
                     size={isLargeMobile ? 'lg' : 'md'}
+                    index={index}
                     classNames="!w-full text-start !max-w-none"
                     ActionButtonIcon={selectedPlaylist.is_public ? <Heart /> : <Trash />}
                     actionButtonClickHandler={

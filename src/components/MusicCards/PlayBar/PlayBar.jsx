@@ -165,7 +165,7 @@ function DropDownMenuItem({ icon, title, onClick }) {
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
   title: PropTypes.string.isRequired,
-  index: PropTypes.number,
+  index: PropTypes.number.isRequired,
   id: PropTypes.string,
   cover: PropTypes.string,
   artist: PropTypes.string,
