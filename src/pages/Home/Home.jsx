@@ -4,15 +4,16 @@ import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsS
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
+import PlayBarSkeleton from '../../components/MusicCards/PlayBar/PlayBarSkeleton';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import { artistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import { songs, genres, playlists } from '../../data';
-import { chunkArray, shuffleArray } from '../../utils/arrayUtils';
+import { genres, playlists } from '../../data';
+import { chunkArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode, Mousewheel, Scrollbar } from 'swiper/modules';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { albumsQueryOptions } from '../../queries/albums';
 import {
   getAllPrivatePlaylistsQueryOptions,
@@ -22,12 +23,14 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import PropTypes from 'prop-types';
+import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 
 export default function Home() {
   const albums = useQuery(albumsQueryOptions());
   const artists = useQuery(artistsQueryOptions());
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
   const publicPlaylists = useQuery(getAllPublicPlaylistsQueryOptions());
+  const allSongs = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 20 }));
 
   return (
     <div className="flex grow flex-col gap-8 lg:gap-10">
@@ -52,7 +55,7 @@ export default function Home() {
       </div>
       <div className="-mt-11">
         <SectionHeader title="Daily Picks" />
-        <PlayBarSlider songs={songs} />
+        <PlayBarSlider songs={allSongs.data?.pages.flat()} isPending={allSongs.isPending} />
       </div>
       <div>
         <SectionHeader title="Artists You Follow" />
@@ -77,7 +80,7 @@ export default function Home() {
       </div>
       <div className="-mt-8">
         <SectionHeader title="Trending Now" />
-        <PlayBarSlider songs={shuffleArray(songs)} />
+        <PlayBarSlider songs={allSongs.data?.pages.flat()} isPending={allSongs.isPending} />
       </div>
       <div>
         <SectionHeader title="Recently Seen" />
@@ -87,8 +90,9 @@ export default function Home() {
   );
 }
 
-function PlayBarSlider({ songs }) {
+function PlayBarSlider({ songs = [], isPending }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const itemsToRender = chunkArray(isPending ? Array(10).fill(1) : songs, isDesktop ? 5 : 3);
 
   return (
     <div className="mx-auto w-[95%] max-w-[1050px]">
@@ -121,17 +125,25 @@ function PlayBarSlider({ songs }) {
         }}
       >
         {/* Divide the songs array into chunks of 3 or 5 (depnends on screen size) and map over each chunk */}
-        {chunkArray(songs.slice(0, 9), isDesktop ? 5 : 3).map((songsArray, index) => (
+        {itemsToRender.map((chunk, index) => (
           <SwiperSlide key={index} className="p-[1px] pb-11 lg:!h-auto lg:p-0 lg:pe-8">
             <div className="flex flex-col gap-4 lg:gap-6">
-              {songsArray.map((song) => (
-                <PlayBar
-                  key={song.id}
-                  size={isDesktop ? 'lg' : 'md'}
-                  classNames="!max-w-none"
-                  {...song}
-                />
-              ))}
+              {chunk.map((item, index) =>
+                isPending ? (
+                  <PlayBarSkeleton
+                    key={index}
+                    classNames="!max-w-none"
+                    size={isDesktop ? 'lg' : 'md'}
+                  />
+                ) : (
+                  <PlayBar
+                    key={item.id}
+                    size={isDesktop ? 'lg' : 'md'}
+                    classNames="!max-w-none"
+                    {...item}
+                  />
+                )
+              )}
             </div>
           </SwiperSlide>
         ))}
@@ -142,4 +154,5 @@ function PlayBarSlider({ songs }) {
 
 PlayBarSlider.propTypes = {
   songs: PropTypes.array.isRequired,
+  isPending: PropTypes.bool.isRequired,
 };
