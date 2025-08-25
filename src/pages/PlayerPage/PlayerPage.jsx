@@ -13,6 +13,11 @@ import noMusicCover from '../../assets/images/covers/no-cover.jpg';
 import { useSelector, useDispatch } from 'react-redux';
 import MobilePlaylist from '../../components/shared/MobilePlaylist/MobilePlaylist';
 import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
+import { useQuery } from '@tanstack/react-query';
+import {
+  getSongsByAlbumIdQueryOptions,
+  getSongsByPlaylistIdQueryOptions,
+} from '../../queries/musics';
 import 'swiper/css';
 import './PlayerPage.css';
 
@@ -25,6 +30,11 @@ export default function PlayerPage() {
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
   const prevSongIndex = useSelector((state) => state.musicPlayer.prevSongIndex);
+  const { data: tracklistSongs, isPending: isTracklistSongsPending } = useQuery(
+    playlist.tracklistType === 'playlist'
+      ? getSongsByPlaylistIdQueryOptions(playlist.id)
+      : getSongsByAlbumIdQueryOptions(playlist.id)
+  );
 
   useEffect(() => {
     const img = new Image();
@@ -84,8 +94,15 @@ export default function PlayerPage() {
                 mousewheel={{ forceToAxis: true }}
                 className="max-h-[380px]"
               >
-                {playlist.musics?.length
-                  ? playlist.musics?.map((music, musicIndex) => (
+                {isTracklistSongsPending
+                  ? Array(6)
+                      .fill(0)
+                      .map((_, index) => (
+                        <SwiperSlide key={index}>
+                          <MusicPlayerCardSkeleton />
+                        </SwiperSlide>
+                      ))
+                  : tracklistSongs.map((music, musicIndex) => (
                       <SwiperSlide key={music.id} className="!h-auto">
                         <MusicPlayerCard
                           isPlaying={music.id === currentMusic?.id}
@@ -94,14 +111,7 @@ export default function PlayerPage() {
                           {...music}
                         />
                       </SwiperSlide>
-                    ))
-                  : Array(6)
-                      .fill(0)
-                      .map((_, index) => (
-                        <SwiperSlide key={index}>
-                          <MusicPlayerCardSkeleton />
-                        </SwiperSlide>
-                      ))}
+                    ))}
               </Swiper>
             </div>
           )}
