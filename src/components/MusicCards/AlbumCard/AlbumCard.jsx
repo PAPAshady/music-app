@@ -7,7 +7,7 @@ import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 import { setSelectedPlaylist } from '../../../redux/slices/musicPlayerSlice';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
-  const { cover, totaltracks, artist, title } = album;
+  const { cover, totalTracks, artist, title } = album;
   const dispatch = useDispatch();
   const playlist = useSelector((state) => state.musicPlayer.playlist);
   const isCurrentAlbumPlaying = album.title === playlist.title && album.id === playlist.id;
@@ -60,7 +60,7 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
               <p className="flex items-center gap-1">
                 <Music size={18} className="text-primary-50" />
                 <span className="text-xs text-white">
-                  {totaltracks} Track{totaltracks > 1 && 's'}
+                  {totalTracks ? `${totalTracks} Track${totalTracks > 1 && 's'}` : 'No tracks'}
                 </span>
               </p>
               <div className="text-primary-50 flex items-center gap-2">

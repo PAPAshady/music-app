@@ -1,13 +1,12 @@
 import IconButton from '../../Buttons/IconButton/IconButton';
 import { Heart } from 'iconsax-react';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
-import { BASE_URL } from '../../../services/api';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 export default function MusicPlayerCard({
   title,
-  artist = [{ name: 'Unkown artist' }],
-  duration,
+  artist = 'Unkown artist',
   isFavorite,
   cover = noCoverImg,
   isPlaying,
@@ -15,13 +14,17 @@ export default function MusicPlayerCard({
   classNames,
   musicIndex,
 }) {
+  const totalDuration = useSelector(
+    (state) => state.musicPlayer.songTotalDurations.formatedDuration
+  );
+
   return (
     <div
       className={`border-secondary-300 hover:border-secondary-50 flex items-center gap-2 overflow-hidden rounded-lg border-2 p-2 transition-all duration-300 ${classNames} ${isPlaying ? 'bg-secondary-600/40 backdrop-blur-xs' : '!border-transparent'}`}
     >
       <img
         onClick={() => onClick(musicIndex)}
-        src={cover ? `${BASE_URL}${cover}` : cover}
+        src={cover}
         alt={title}
         className={`size-24 cursor-pointer rounded-md border-2 border-transparent object-cover transition-colors duration-300 ${!isPlaying ? 'hover:border-secondary-300' : ''}`}
       />
@@ -36,12 +39,12 @@ export default function MusicPlayerCard({
           >
             {title}
           </h3>
-          <p className="text-primary-100 truncate text-sm" title={artist[0].name}>
-            {artist[0].name}
+          <p className="text-primary-100 truncate text-sm" title={artist}>
+            {artist}
           </p>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-primary-100 text-sm">{duration}</span>
+          <span className="text-primary-100 text-sm">{totalDuration}</span>
           <IconButton icon={<Heart className={isFavorite ? 'fill-red text-red' : ''} />} />
         </div>
       </div>
@@ -51,13 +54,12 @@ export default function MusicPlayerCard({
 
 MusicPlayerCard.propTypes = {
   title: PropTypes.string.isRequired,
-  artist: PropTypes.array,
-  duration: PropTypes.string.isRequired,
+  artist: PropTypes.string,
   isFavorite: PropTypes.bool,
   cover: PropTypes.string,
   isPlaying: PropTypes.bool,
   onClick: PropTypes.func,
   classNames: PropTypes.string,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   musicIndex: PropTypes.number.isRequired,
 };
