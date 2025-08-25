@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import BgImage from '../../../assets/images/backgrounds/login-signup-page.jpg';
 import playlistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
 import MainButton from '../../Buttons/MainButton/MainButton';
+import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 import {
   ArrowLeft,
   Play,
@@ -50,6 +51,7 @@ import {
 } from '../../../queries/playlists';
 import PropTypes from 'prop-types';
 import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
+import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 
 export default function MobilePlaylist() {
   const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
@@ -95,6 +97,8 @@ export default function MobilePlaylist() {
   const suggestedSongs = (allSongs?.pages?.flat() ?? []).filter(
     (song) => !playlistSongIds.has(song.id)
   );
+
+  console.log(isAllSongsLoading);
 
   // remove scrollbar for the body when mobile playlist is open
   useEffect(() => {
@@ -272,6 +276,7 @@ export default function MobilePlaylist() {
                 />
               </button>
               {!selectedPlaylist.is_public &&
+                selectedPlaylist.tracklistType !== 'album' &&
                 playButtons.map((button) => (
                   <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
                 ))}
@@ -309,7 +314,15 @@ export default function MobilePlaylist() {
             </div>
           </div>
           {isPlaylistSongsLoading ? (
-            'Loading...'
+            Array(8)
+              .fill()
+              .map((_, index) => (
+                <PlayBarSkeleton
+                  key={index}
+                  size={isLargeMobile ? 'lg' : 'md'}
+                  classNames="!w-full text-start !max-w-none"
+                />
+              ))
           ) : !selectedPlaylistSongs?.length ? (
             <div className="my-2 w-full">
               <p className="text-gray-400 md:text-lg">
@@ -344,18 +357,27 @@ export default function MobilePlaylist() {
               <div className="mt-6 mb-4 w-full text-start">
                 <p className="mb-4 text-xl font-bold">Suggestions</p>
                 <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
-                  {suggestedSongs.map((song) => (
-                    <SuggestedSong
-                      key={song.id}
-                      isPending={song.id === pendingSongId}
-                      onAdd={addSongHandler}
-                      {...song}
-                    />
-                  ))}
+                  {isAllSongsLoading
+                    ? Array(6)
+                        .fill()
+                        .map((_, index) => <SuggestedSongSkeleton key={index} />)
+                    : suggestedSongs.map((song) => (
+                        <SuggestedSong
+                          key={song.id}
+                          isPending={song.id === pendingSongId}
+                          onAdd={addSongHandler}
+                          {...song}
+                        />
+                      ))}
+                  {isFetchingNextPage &&
+                    Array(4)
+                      .fill()
+                      .map((_, index) => <SuggestedSongSkeleton key={index} />)}
                 </div>
               </div>
               <div>
-                {allSongs?.pages?.length === 1 && (
+                <span className="block" ref={targetRef}></span>
+                {allSongs?.pages?.length === 1 && !isAllSongsLoading && (
                   <MainButton
                     size="md"
                     title={isFetchingNextPage ? 'Please wait...' : 'Load more'}
@@ -363,9 +385,6 @@ export default function MobilePlaylist() {
                     onClick={fetchNextPage}
                   />
                 )}
-                <span className="block" ref={targetRef}>
-                  {isFetchingNextPage && 'Loading new data...'}
-                </span>
               </div>
             </>
           )}
@@ -397,22 +416,22 @@ export default function MobilePlaylist() {
                   Based on tracks you&apos;ve added.
                 </p>
               </div>
-              {isAllSongsLoading ? (
-                'Loading...'
-              ) : (
-                <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
-                  {suggestedSongs
-                    .filter((song) => song.title.toLowerCase().includes(searchedValue))
-                    .map((song) => (
-                      <SuggestedSong
-                        key={song.id}
-                        isPending={song.id === pendingSongId}
-                        onAdd={addSongHandler}
-                        {...song}
-                      />
-                    ))}
-                </div>
-              )}
+              <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
+                {!isAllSongsLoading
+                  ? Array(6)
+                      .fill()
+                      .map((_, index) => <SuggestedSongSkeleton key={index} />)
+                  : suggestedSongs
+                      .filter((song) => song.title.toLowerCase().includes(searchedValue))
+                      .map((song) => (
+                        <SuggestedSong
+                          key={song.id}
+                          isPending={song.id === pendingSongId}
+                          onAdd={addSongHandler}
+                          {...song}
+                        />
+                      ))}
+              </div>
             </div>
           </div>
         </div>
@@ -457,6 +476,25 @@ const SuggestedSong = memo(({ id, title, cover, artist = 'Unknown artist', isPen
     </div>
   );
 });
+
+const SuggestedSongSkeleton = () => {
+  return (
+    <div className="relative flex items-center justify-between gap-2 overflow-hidden rounded-sm bg-gray-600/60">
+      <ShimmerOverlay />
+      <div className="flex grow items-center gap-2 overflow-hidden">
+        <div className="relative h-15 w-15 min-w-[60px] overflow-hidden rounded-sm sm:h-[70px] sm:w-[70px] sm:min-w-[70px]">
+          <div className="size-full bg-gray-800/50"></div>
+        </div>
+        <div className="flex grow flex-col gap-1.5 overflow-hidden p-1">
+          <p className="h-3 w-3/4 rounded-full bg-gray-800/50 sm:w-1/2"></p>
+          <p className="h-3 w-1/2 rounded-full bg-gray-800/50 sm:w-1/3"></p>
+        </div>
+      </div>
+
+      <div className="me-2 min-h-8.5 min-w-8.5 rounded-md bg-gray-800/60 sm:min-h-10 sm:min-w-10"></div>
+    </div>
+  );
+};
 
 SuggestedSong.displayName = 'SuggestedSong';
 SuggestedSong.propTypes = {
