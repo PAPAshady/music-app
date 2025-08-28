@@ -14,7 +14,7 @@ export default function PlayLists() {
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
 
   // Render the "Add New Playlist" button as the first item in the playlists list.
-  const privatePlaylists = userPlaylists.data?.playlist
+  const privatePlaylists = userPlaylists.data
     ? [{ id: 0, isAddPlaylistButton: true }, ...userPlaylists.data]
     : [{ id: 0, isAddPlaylistButton: true }];
 
@@ -121,8 +121,8 @@ function PlaylistsContainer({
 }
 
 PlaylistsContainer.propTypes = {
-  playlists: PropTypes.array.isRequired,
+  playlists: PropTypes.array,
   numberOfPlayLists: PropTypes.number,
-  isLoading: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool,
   classNames: PropTypes.string,
 };
