@@ -18,12 +18,14 @@ import SidebarWelcomePanel from '../../SidebarWelcomePanel/SidebarWelcomePanel';
 import PlaylistInfosModal from '../../../PlaylistInfosModal/PlaylistInfosModal';
 import { useSelector } from 'react-redux';
 import ConfirmModal from '../../../ConfirmModal/ConfirmModal';
+import ArtistInfosPanel from '../../ArtistInfosPanel/ArtistInfosPanel';
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
+  const selectedArtist = useSelector((state) => state.artist);
 
   useEffect(() => {
     function handleScroll() {
@@ -80,7 +82,14 @@ export default function MainLayout() {
           <div className="flex grow flex-col items-start gap-12 pt-6 pb-32 lg:pb-10">
             <div className="flex w-full items-start gap-6">
               <Outlet />
-              {Object.keys(selectedPlaylist).length ? <SidebarPlaylist /> : <SidebarWelcomePanel />}
+
+              {Object.keys(selectedPlaylist).length ? (
+                <SidebarPlaylist />
+              ) : selectedArtist ? (
+                <ArtistInfosPanel />
+              ) : (
+                <SidebarWelcomePanel />
+              )}
             </div>
             <Player />
             <Footer />

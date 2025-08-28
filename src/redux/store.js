@@ -7,6 +7,7 @@ import playlistInfosModalReducer from '../redux/slices/playlistInfosModalSlice';
 import mobilePlaylistReducer from '../redux/slices/mobilePlaylistSlice';
 import musicPlayerReducer from '../redux/slices/musicPlayerSlice';
 import confirmModalReducer from '../redux/slices/confirmModalSlice';
+import artistReducer from '../redux/slices/artistSlice';
 
 export default configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export default configureStore({
     mobilePlaylist: mobilePlaylistReducer,
     musicPlayer: musicPlayerReducer,
     confirmModal: confirmModalReducer,
+    artist: artistReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().prepend(listenerMiddleware.middleware);
