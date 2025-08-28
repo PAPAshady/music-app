@@ -58,7 +58,7 @@ export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', 
 }
 
 AlbumsSlider.propTypes = {
-  albums: PropTypes.object,
+  albums: PropTypes.array,
   isLoading: PropTypes.bool.isRequired,
   albumCardSize: PropTypes.oneOf(['md', 'lg']),
   albumCardStyles: PropTypes.string,

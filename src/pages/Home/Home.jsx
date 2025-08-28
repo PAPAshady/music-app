@@ -153,6 +153,6 @@ function PlayBarSlider({ songs = [], isPending }) {
 }
 
 PlayBarSlider.propTypes = {
-  songs: PropTypes.array.isRequired,
+  songs: PropTypes.array,
   isPending: PropTypes.bool.isRequired,
 };

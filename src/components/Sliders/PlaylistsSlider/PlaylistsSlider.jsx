@@ -56,7 +56,7 @@ export default function PlaylistsSlider({
 }
 
 PlaylistsSlider.propTypes = {
-  playlists: PropTypes.array.isRequired,
-  isLoading: PropTypes.bool.isRequired,
+  playlists: PropTypes.array,
+  isLoading: PropTypes.bool,
   numberOfPlaylists: PropTypes.number,
 };
