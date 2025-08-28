@@ -1,6 +1,7 @@
-import api from './api';
+import supabase from './supabaseClient';
 
 export const getArtists = async () => {
-  const { data } = await api.get('/artist/artists/');
+  const { data, error } = await supabase.from('artists').select('*');
+  if (error) throw error;
   return data;
 };

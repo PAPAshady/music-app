@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getArtists } from '../services/artists';
 
-export const artistsQueryOptions = () => {
+export const getArtistsQueryOptions = () => {
   return queryOptions({
     queryKey: ['artists'],
     queryFn: getArtists,

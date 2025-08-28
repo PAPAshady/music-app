@@ -6,7 +6,7 @@ import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import PlayBarSkeleton from '../../components/MusicCards/PlayBar/PlayBarSkeleton';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
-import { artistsQueryOptions } from '../../queries/artists';
+import { getArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { genres, playlists } from '../../data';
@@ -27,7 +27,7 @@ import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 
 export default function Home() {
   const albums = useQuery(albumsQueryOptions());
-  const artists = useQuery(artistsQueryOptions());
+  const artists = useQuery(getArtistsQueryOptions());
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
   const publicPlaylists = useQuery(getAllPublicPlaylistsQueryOptions());
   const allSongs = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 20 }));

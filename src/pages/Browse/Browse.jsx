@@ -3,7 +3,7 @@ import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
-import { artistsQueryOptions } from '../../queries/artists';
+import { getArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
@@ -19,7 +19,7 @@ import 'swiper/css';
 
 export default function Browse() {
   const albums = useQuery(albumsQueryOptions());
-  const artists = useQuery(artistsQueryOptions());
+  const artists = useQuery(getArtistsQueryOptions());
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   return (
