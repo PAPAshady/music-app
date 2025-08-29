@@ -48,6 +48,6 @@ export default function ArtistsSlider({ artists, isLoading }) {
 }
 
 ArtistsSlider.propTypes = {
-  artists: PropTypes.object,
+  artists: PropTypes.array,
   isLoading: PropTypes.bool,
 };
