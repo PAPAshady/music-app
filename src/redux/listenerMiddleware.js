@@ -1,5 +1,6 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import queryClient from '../queryClient';
+import supabase from '../services/supabaseClient';
 import { getSongsByAlbumIdQueryOptions, getSongsByPlaylistIdQueryOptions } from '../queries/musics';
 import { setUser } from './slices/authSlice';
 import { getUserAvatar } from './slices/authSlice';
@@ -26,7 +27,7 @@ listenerMiddleware.startListening({
 
 listenerMiddleware.startListening({
   actionCreator: setCurrentSongIndex,
-  effect: (action, { getState, dispatch, getOriginalState }) => {
+  effect: async (action, { getState, dispatch, getOriginalState }) => {
     // update music src everytime currentSongIndex changes
     const { playlist, currentSongIndex } = getState().musicPlayer;
     const { currentSongIndex: prevSongIndex } = getOriginalState().musicPlayer;
@@ -37,6 +38,11 @@ listenerMiddleware.startListening({
       // update current song to the new one
       dispatch(setCurrentMusic(playlist.musics[currentSongIndex]));
       dispatch(play());
+
+      // update the play_count in database everytime a user plays the song to determine its popularity
+      await supabase.rpc('increment_play', {
+        song_id: playlist.musics[currentSongIndex].id,
+      });
     }
   },
 });
