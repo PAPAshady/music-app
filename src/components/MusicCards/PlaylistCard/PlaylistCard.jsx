@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { setSelectedPlaylist } from '../../../redux/slices/musicPlayerSlice';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
+import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 
 const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const showSelectedPlaylist = () => {
     dispatch(setSelectedPlaylist(playlist));
     dispatch(openMobilePlaylist());
+    dispatch(setSidebarPanelType('tracklist_panel'));
   };
 
   // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.
@@ -65,7 +67,6 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
           <h3 className="text-white-50 mb-1 cursor-pointer truncate text-base">{title}</h3>
           <p className="text-sm text-white">
             {totaltracks ? `${totaltracks} ${totaltracks > 1 ? 'tracks' : 'track'}` : 'No tracks'}
-            
           </p>
         </div>
       </div>

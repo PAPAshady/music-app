@@ -8,6 +8,7 @@ import mobilePlaylistReducer from '../redux/slices/mobilePlaylistSlice';
 import musicPlayerReducer from '../redux/slices/musicPlayerSlice';
 import confirmModalReducer from '../redux/slices/confirmModalSlice';
 import artistReducer from '../redux/slices/artistSlice';
+import sidebarPanelTypeReducer from '../redux/slices/sidebarTypeSlice';
 
 export default configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export default configureStore({
     musicPlayer: musicPlayerReducer,
     confirmModal: confirmModalReducer,
     artist: artistReducer,
+    sidebarPanelType: sidebarPanelTypeReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().prepend(listenerMiddleware.middleware);

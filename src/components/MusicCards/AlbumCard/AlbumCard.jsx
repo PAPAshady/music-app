@@ -5,6 +5,7 @@ import { Heart, Music, Share } from 'iconsax-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 import { setSelectedPlaylist } from '../../../redux/slices/musicPlayerSlice';
+import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const { cover, totalTracks, artist, title } = album;
@@ -15,6 +16,7 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const openMobilePlaylistHandler = () => {
     dispatch(setSelectedPlaylist(album));
     dispatch(openMobilePlaylist());
+    dispatch(setSidebarPanelType('tracklist_panel'));
   };
 
   return (
