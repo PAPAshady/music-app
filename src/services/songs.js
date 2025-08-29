@@ -34,3 +34,14 @@ export const getSongsByPlaylistId = async (playlistId) => {
   if (error) throw error;
   return data.map((data) => data.songs);
 };
+
+export const getPopularSongsByArtistId = async (artistId) => {
+  const { data, error } = await supabase
+    .from('songs')
+    .select('*')
+    .eq('artist_id', artistId)
+    .order('play_count', { ascending: false })
+    .limit(10);
+    if(error) throw error
+    return data
+};

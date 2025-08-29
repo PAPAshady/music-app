@@ -1,5 +1,10 @@
 import { queryOptions, infiniteQueryOptions } from '@tanstack/react-query';
-import { getAllSongs, getSongsByAlbumId, getSongsByPlaylistId } from '../services/songs';
+import {
+  getAllSongs,
+  getSongsByAlbumId,
+  getSongsByPlaylistId,
+  getPopularSongsByArtistId,
+} from '../services/songs';
 
 export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
   return infiniteQueryOptions({
@@ -14,6 +19,17 @@ export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
       // cursor = created_at of the last song in this batch
       return lastPage[lastPage.length - 1].created_at;
     },
+  });
+};
+
+export const getPopularSongsByArtistIdQueryOptions = (artistId) => {
+  return infiniteQueryOptions({
+    queryKey: ['songs', { artistId }],
+    queryFn: () => getPopularSongsByArtistId(artistId),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!artistId,
   });
 };
 

@@ -2,9 +2,14 @@ import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import { useSelector } from 'react-redux';
 import noImage from '../../../assets/images/Avatar/no-avatar.png';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
+import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 
 function ArtistInfosPanel() {
   const selectedArtist = useSelector((state) => state.artist);
+  const { data, isPending } = useQuery(getPopularSongsByArtistIdQueryOptions(selectedArtist.id));
+
   return (
     <div className="sticky top-10 hidden xl:block">
       <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col overflow-y-hidden rounded-xl border px-3 py-3 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
@@ -63,21 +68,21 @@ function ArtistInfosPanel() {
             exit="hidden"
             className={`flex grow flex-col gap-2 overflow-y-auto pe-2 pt-[2px]`}
           >
-            {/* <div className="flex grow flex-col gap-2 overflow-y-auto pe-2 pt-[2px]"> */}
-            {Array(10)
-              .fill()
-              .map((_, index) => (
-                <motion.div
-                  key={index}
-                  variants={{
-                    hidden: { opacity: 0, y: 15 },
-                    show: { opacity: 1, y: 0 },
-                  }}
-                >
-                  <PlayBarSkeleton size="sm" />
-                </motion.div>
-              ))}
-            {/* </div> */}
+            {isPending
+              ? Array(10)
+                  .fill()
+                  .map((_, index) => (
+                    <motion.div
+                      key={index}
+                      variants={{
+                        hidden: { opacity: 0, y: 15 },
+                        show: { opacity: 1, y: 0 },
+                      }}
+                    >
+                      <PlayBarSkeleton size="sm" />
+                    </motion.div>
+                  ))
+              : data?.map((song) => <PlayBar size="sm" key={song.id} {...song} />)}
           </motion.div>
         </AnimatePresence>
       </div>
