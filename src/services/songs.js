@@ -30,7 +30,7 @@ export const getSongsByAlbumId = async (albumId) => {
       .from('songs')
       .select('*')
       .eq(`album_id`, albumId)
-      .order('title', { ascending: true });
+      .order('track_number', { ascending: true });
     if (error) throw error;
     return data;
   } catch (err) {
