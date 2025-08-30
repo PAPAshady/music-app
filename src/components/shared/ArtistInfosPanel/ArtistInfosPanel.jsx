@@ -28,9 +28,9 @@ function ArtistInfosPanel() {
             exit="exit"
             transition={{ duration: 0.2 }}
           >
-            <div className="mx-auto min-h-[35%] w-[75%] overflow-hidden px-4 py-3">
+            <div className="mx-auto h-[190px] w-[190px] overflow-hidden p-3">
               <img
-                src={noImage}
+                src={selectedArtist.image || noImage}
                 alt={selectedArtist.name}
                 className="size-full rounded-2xl object-cover"
               />
