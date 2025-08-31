@@ -190,7 +190,7 @@ const SidebarPlaylist = memo(() => {
               Array(10)
                 .fill()
                 .map((_, index) => (
-                  <motion.div key={index} variants={listVariants}>
+                  <motion.div key={index} variants={itemVariants}>
                     <PlayBarSkeleton size="sm" />
                   </motion.div>
                 ))
