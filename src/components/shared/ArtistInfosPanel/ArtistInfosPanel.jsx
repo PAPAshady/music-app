@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
+import { Music } from 'iconsax-react';
 
 function ArtistInfosPanel() {
   const selectedArtist = useSelector((state) => state.artist);
@@ -66,23 +67,46 @@ function ArtistInfosPanel() {
             initial="hidden"
             animate="show"
             exit="hidden"
-            className={`flex grow flex-col gap-2 overflow-y-auto pe-2 pt-[2px]`}
+            className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${data?.length || isPending ? 'overflow-y-auto' : 'overflow-visible'}`}
           >
-            {isPending
-              ? Array(10)
-                  .fill()
-                  .map((_, index) => (
-                    <motion.div
-                      key={index}
-                      variants={{
-                        hidden: { opacity: 0, y: 15 },
-                        show: { opacity: 1, y: 0 },
-                      }}
-                    >
-                      <PlayBarSkeleton size="sm" />
-                    </motion.div>
-                  ))
-              : data?.map((song) => <PlayBar size="sm" key={song.id} {...song} />)}
+            {isPending ? (
+              Array(10)
+                .fill()
+                .map((_, index) => (
+                  <motion.div
+                    key={index}
+                    variants={{
+                      hidden: { opacity: 0, y: 15 },
+                      show: { opacity: 1, y: 0 },
+                    }}
+                  >
+                    <PlayBarSkeleton size="sm" />
+                  </motion.div>
+                ))
+            ) : data?.length ? (
+              data.map((song) => (
+                <motion.div
+                  key={song.id}
+                  variants={{
+                    hidden: { opacity: 0, y: 15 },
+                    show: { opacity: 1, y: 0 },
+                  }}
+                >
+                  <PlayBar size="sm" {...song} />
+                </motion.div>
+              ))
+            ) : (
+              <motion.div
+                variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}
+                className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center"
+              >
+                <Music size={60} className="text-secondary-300" />
+                <p className="mt-2 px-4 font-semibold text-white">
+                  No songs available at the moment.
+                </p>
+                <p className="text-sm">Check back soon!</p>
+              </motion.div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
