@@ -117,7 +117,7 @@ const SidebarPlaylist = memo(() => {
         ];
   return (
     <div className="sticky top-10 hidden xl:block">
-      <div className="bg-secondary-400/40 border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
+      <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900  px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
         <AnimatePresence mode="wait">
           <motion.div
             key={`playlist-header-${selectedPlaylist.title}-${selectedPlaylist.id}`}

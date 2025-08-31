@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const validSidebarPanelTypes = ['welcome_panel', 'tracklist_panel', 'artist_panel'];
+const validSidebarPanelTypes = ['welcome_panel', 'tracklist_panel', 'artist_panel', 'song_panel'];
 
 const sidebarPanelTypeSlice = createSlice({
   name: 'sidebarType',

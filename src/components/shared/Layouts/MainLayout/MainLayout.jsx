@@ -19,6 +19,7 @@ import PlaylistInfosModal from '../../../PlaylistInfosModal/PlaylistInfosModal';
 import { useSelector } from 'react-redux';
 import ConfirmModal from '../../../ConfirmModal/ConfirmModal';
 import ArtistInfosPanel from '../../ArtistInfosPanel/ArtistInfosPanel';
+import SongInfosPanel from '../../SongInfosPanel/SongInfosPanel';
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
@@ -84,6 +85,7 @@ export default function MainLayout() {
               {sidebarPanelType === 'welcome_panel' && <SidebarWelcomePanel />}
               {sidebarPanelType === 'tracklist_panel' && <SidebarPlaylist />}
               {sidebarPanelType === 'artist_panel' && <ArtistInfosPanel />}
+              {sidebarPanelType === 'song_panel' && <SongInfosPanel />}
             </div>
             <Player />
             <Footer />

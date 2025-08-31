@@ -10,7 +10,7 @@ export default function SidebarWelcomePanel() {
 
   return (
     <div className="sticky top-10 hidden xl:block">
-      <div className="bg-secondary-400/40 border-secondary-200 container flex h-[calc(100dvh-120px)] max-h-[530px] min-h-[460px] w-[270px] flex-col items-center justify-center gap-6 overflow-y-auto rounded-xl border px-3 py-6 text-center xl:w-[310px]">
+      <div className="border-secondary-200 container flex h-[calc(100dvh-120px)] max-h-[530px] min-h-[460px] w-[270px] flex-col items-center justify-center gap-6 overflow-y-auto rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 px-3 py-6 text-center xl:w-[310px]">
         <p className="text-whit text-[1.7rem] font-semibold text-white">No playlist selected</p>
         <Logo size="lg" />
         <p>Browse featured playlists, search for music, or create your own playlist.</p>
@@ -18,8 +18,7 @@ export default function SidebarWelcomePanel() {
           <MainButton
             title="Create playlist"
             size="md"
-            type="outline"
-            variant="neutral"
+            variant="secondary"
             classNames="w-full"
             onClick={() =>
               dispatch(openModal({ title: 'Create new playlist.', actionType: 'create_playlist' }))
@@ -28,8 +27,7 @@ export default function SidebarWelcomePanel() {
           <MainButton
             title="Browse"
             size="md"
-            type="outline"
-            variant="neutral"
+            variant="secondary"
             classNames="w-full"
             onClick={() => navigate('/browse')}
           />
