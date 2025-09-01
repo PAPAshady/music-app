@@ -31,7 +31,13 @@ export default function Favorites() {
       </div>
       <div className="sm: flex max-h-[280px] flex-col gap-3 overflow-y-auto px-3 sm:max-h-[360px] lg:max-h-[414px] lg:gap-4">
         {songs.map((song) => (
-          <PlayBar key={song.id} size={isTablet ? 'lg' : 'md'} {...song} classNames="!max-w-full" />
+          <PlayBar
+            key={song.id}
+            size={isTablet ? 'lg' : 'md'}
+            song={song}
+            isSingle={true}
+            classNames="!max-w-full"
+          />
         ))}
       </div>
       <div>

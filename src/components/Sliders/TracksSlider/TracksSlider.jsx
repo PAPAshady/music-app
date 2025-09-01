@@ -40,7 +40,8 @@ export default function TracksSlider({ songs }) {
               {songsArray.map((song) => (
                 <PlayBar
                   key={song.id}
-                  {...song}
+                  song={song}
+                  isSingle={true}
                   size={isDesktop ? 'sm' : 'md'}
                   classNames="!max-w-full"
                 />

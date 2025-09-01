@@ -68,7 +68,7 @@ export default function PlayLists() {
         <SectionTitle title="Add Tracks to your playlists" />
         <div className="flex flex-col gap-4">
           {songs.slice(0, 4).map((song) => (
-            <PlayBar key={song.id} size="lg" classNames="!max-w-none" {...song} />
+            <PlayBar isSingle={true} key={song.id} size="lg" classNames="!max-w-none" song={song} />
           ))}
         </div>
       </div>

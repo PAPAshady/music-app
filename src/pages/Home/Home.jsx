@@ -140,7 +140,8 @@ function PlayBarSlider({ songs = [], isPending }) {
                     key={item.id}
                     size={isDesktop ? 'lg' : 'md'}
                     classNames="!max-w-none"
-                    {...item}
+                    song={item}
+                    isSingle={true}
                   />
                 )
               )}

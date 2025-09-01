@@ -4,7 +4,12 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentSongIndex, setPlaylist } from '../../../redux/slices/musicPlayerSlice';
+import {
+  setCurrentSongIndex,
+  setPlaylist,
+  setSelectedPlaylist,
+} from '../../../redux/slices/musicPlayerSlice';
+import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import PropTypes from 'prop-types';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 
@@ -12,13 +17,9 @@ const PlayBar = memo(
   ({
     size,
     index: songIndex,
-    title,
-    id,
-    cover,
-    artist = 'Unknown artist',
-    duration,
-    album = 'Unknown album',
+    song,
     isFavorite,
+    isSingle,
     ActionButtonIcon,
     actionButtonClickHandler,
     isActionButtonPending,
@@ -29,6 +30,7 @@ const PlayBar = memo(
     const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
     const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
     const playlist = useSelector((state) => state.musicPlayer.playlist);
+    const { title, id, cover, artist, duration, album } = song;
 
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',
@@ -48,14 +50,30 @@ const PlayBar = memo(
     ];
 
     const playOnClick = () => {
-      if (playlist.id !== selectedPlaylist.id) {
-        dispatch(setPlaylist(selectedPlaylist));
-      }
+      if (isSingle) {
+        dispatch(
+          setSelectedPlaylist({
+            id: crypto.randomUUID(),
+            title: 'Queue list',
+            description: 'Up next',
+            isPublic: false,
+            tracklistType: 'queuelist',
+            cover: null,
+            totalTracks: 1,
+            musics: [song],
+          })
+        );
+        dispatch(setSidebarPanelType('song_panel'));
+      } else {
+        if (playlist.id !== selectedPlaylist.id) {
+          dispatch(setPlaylist(selectedPlaylist));
+        }
 
-      // dont change the song index if user clicked on the current song which is playing because it will
-      // cause the song to replay from the start
-      if (currentMusic?.id !== id) {
-        dispatch(setCurrentSongIndex(songIndex));
+        // dont change the song index if user clicked on the current song which is playing because it will
+        // cause the song to replay from the start
+        if (currentMusic?.id !== id) {
+          dispatch(setCurrentSongIndex(songIndex));
+        }
       }
     };
 
@@ -164,14 +182,10 @@ function DropDownMenuItem({ icon, title, onClick }) {
 
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
-  title: PropTypes.string.isRequired,
   index: PropTypes.number,
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  cover: PropTypes.string,
-  artist: PropTypes.string,
-  duration: PropTypes.string,
-  album: PropTypes.string,
   isFavorite: PropTypes.bool,
+  isSingle: PropTypes.bool,
+  song: PropTypes.object,
   ActionButtonIcon: PropTypes.node,
   actionButtonClickHandler: PropTypes.func,
   isActionButtonPending: PropTypes.bool,

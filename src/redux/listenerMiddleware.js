@@ -60,7 +60,9 @@ listenerMiddleware.startListening({
 
     // we store the songs of the selected tracklist to keep track of them and do some things like
     // calculating prev/next songs ids to determine their playing order and etc.
-    dispatch(setSelectedPlaylistSongs(songs));
+    if (tracklistType !== 'queuelist') {
+      dispatch(setSelectedPlaylistSongs(songs));
+    }
   },
 });
 

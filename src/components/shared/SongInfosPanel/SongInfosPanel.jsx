@@ -1,21 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-// SongSidebar.react.jsx
-// Single-file React component (TailwindCSS) for a desktop-only Song Details sidebar.
-// - Tabs: Lyrics (default) | Related | Artist
-// - Fixed height (80vh) with scrollable content area
-// - Header with cover, title, artist, and action buttons (Play/Pause, Like, Add, Share)
-// - Accessible buttons and keyboard navigation for tabs
-// - Mock data fallback included so component is preview-ready
-
-// Usage example:
-// <SongSidebar
-//    song={songObject}         // optional, falls back to MOCK_SONG
-//    isOpen={true}
-//    onClose={() => setSideOpen(false)}
-//    onPlay={(song) => console.log('play', song)}
-// />
-
 const MOCK_SONG = {
   id: 'song-1',
   title: 'Make You Love Me',
@@ -109,8 +93,6 @@ export default function SongSidebar({ song = MOCK_SONG }) {
   const [activeTab, setActiveTab] = useState('lyrics');
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [autoScroll, setAutoScroll] = useState(false);
-  const [currentLyricIndex, setCurrentLyricIndex] = useState(0);
 
   const contentRef = useRef(null);
   const lyricRefs = useRef([]);
@@ -122,29 +104,7 @@ export default function SongSidebar({ song = MOCK_SONG }) {
     // reset when song changes
     setActiveTab('lyrics');
     setIsPlaying(false);
-    setCurrentLyricIndex(0);
-    setAutoScroll(false);
   }, [song.id]);
-
-  // Simulate lyric progress when playing (demo only)
-  useEffect(() => {
-    if (!isPlaying || !autoScroll) return;
-    const timer = setInterval(() => {
-      setCurrentLyricIndex((i) => {
-        const next = Math.min(i + 1, (song.lyrics?.length || 1) - 1);
-        return next;
-      });
-    }, 2000);
-    return () => clearInterval(timer);
-  }, [isPlaying, autoScroll, song]);
-
-  useEffect(() => {
-    if (!autoScroll) return;
-    const node = lyricRefs.current[currentLyricIndex];
-    if (node && contentRef.current) {
-      node.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [currentLyricIndex, autoScroll]);
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -269,12 +229,7 @@ export default function SongSidebar({ song = MOCK_SONG }) {
               <div className="text-sm text-slate-300">Lyrics</div>
               <div className="flex items-center gap-2">
                 <label className="flex items-center gap-2 text-sm text-slate-300">
-                  <input
-                    type="checkbox"
-                    checked={autoScroll}
-                    onChange={(e) => setAutoScroll(e.target.checked)}
-                    className="accent-indigo-400"
-                  />
+                  <input type="checkbox" className="accent-indigo-400" />
                   Auto
                 </label>
               </div>
@@ -283,15 +238,7 @@ export default function SongSidebar({ song = MOCK_SONG }) {
               <div className="space-y-4">
                 <div className="space-y-2">
                   {(song.lyrics || []).map((line, idx) => (
-                    <p
-                      key={idx}
-                      ref={(el) => (lyricRefs.current[idx] = el)}
-                      className={`text-lg leading-7 ${
-                        idx === currentLyricIndex
-                          ? 'scale-100 font-semibold text-white'
-                          : 'text-slate-300'
-                      }`}
-                    >
+                    <p key={idx} className="text-lg leading-7 text-slate-300">
                       {line || '\u00A0'}
                     </p>
                   ))}

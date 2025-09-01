@@ -94,7 +94,7 @@ function ArtistInfosPanel() {
                     show: { opacity: 1, y: 0 },
                   }}
                 >
-                  <PlayBar size="sm" {...song} />
+                  <PlayBar size="sm" song={song} />
                 </motion.div>
               ))
             ) : (

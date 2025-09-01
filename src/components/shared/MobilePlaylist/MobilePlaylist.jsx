@@ -341,7 +341,7 @@ export default function MobilePlaylist() {
                       selectedPlaylist.tracklistType === 'playlist' && removeSongHandler
                     }
                     isActionButtonPending={pendingSongId === song.id}
-                    {...song}
+                    song={song}
                   />
                 ))}
               </div>

@@ -197,7 +197,7 @@ const SidebarPlaylist = memo(() => {
             ) : selectedPlaylistSongs?.length ? (
               selectedPlaylistSongs?.map((song, index) => (
                 <motion.div key={song.id} variants={itemVariants}>
-                  <PlayBar size="sm" index={index} {...song} />
+                  <PlayBar size="sm" index={index} song={song} />
                 </motion.div>
               ))
             ) : (
