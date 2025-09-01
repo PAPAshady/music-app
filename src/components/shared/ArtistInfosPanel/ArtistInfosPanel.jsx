@@ -6,10 +6,12 @@ import { useQuery } from '@tanstack/react-query';
 import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import { Music } from 'iconsax-react';
+import useMediaQuery from '../../../hooks/useMediaQuery';
 
 function ArtistInfosPanel() {
   const selectedArtist = useSelector((state) => state.artist);
   const { data, isPending } = useQuery(getPopularSongsByArtistIdQueryOptions(selectedArtist.id));
+  const isLargeDesktop = useMediaQuery('(min-width: 1400px)');
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -98,9 +100,9 @@ function ArtistInfosPanel() {
             ) : (
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}
-                className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center"
+                className="flex size-full flex-col items-center justify-center gap-1 rounded-md border border-dashed border-neutral-400 text-center"
               >
-                <Music size={60} className="text-secondary-300" />
+                <Music size={isLargeDesktop ? 60 : 52} className="text-secondary-300" />
                 <p className="mt-2 px-4 font-semibold text-white">
                   No songs available at the moment.
                 </p>

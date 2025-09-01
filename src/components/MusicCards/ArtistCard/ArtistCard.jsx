@@ -21,6 +21,7 @@ const ArtistCard = memo((artist) => {
       <div className="px-6">
         <div className="size-[72px] overflow-hidden rounded-full lg:size-[120px]">
           <img
+            loading="lazy"
             className="flex size-full items-center justify-center object-cover"
             src={artist.image ?? noAvatarImg}
             alt={artist.name}
