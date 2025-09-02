@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getArtists } from '../services/artists';
+import { getArtists, getArtistById } from '../services/artists';
 
 export const getArtistsQueryOptions = () => {
   return queryOptions({
@@ -8,5 +8,16 @@ export const getArtistsQueryOptions = () => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+  });
+};
+
+export const getArtistByIdQueryOptions = (artistId) => {
+  return queryOptions({
+    queryKey: ['artists', { artistId }],
+    queryFn: () => getArtistById(artistId),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!artistId,
   });
 };

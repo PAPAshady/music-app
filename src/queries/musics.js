@@ -23,7 +23,7 @@ export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
 };
 
 export const getPopularSongsByArtistIdQueryOptions = (artistId) => {
-  return infiniteQueryOptions({
+  return queryOptions({
     queryKey: ['songs', { artistId }],
     queryFn: () => getPopularSongsByArtistId(artistId),
     staleTime: Infinity,

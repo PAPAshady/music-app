@@ -1,26 +1,11 @@
+import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
-
-const MOCK_SONG = {
-  id: 'song-1',
-  title: 'Make You Love Me',
-  artist: { id: 'artist-1', name: 'Morgan' },
-  album: { id: 'album-1', title: 'Single' },
-  coverUrl: 'https://picsum.photos/200/200?random=12',
-  duration: '3:45',
-  year: 2021,
-  lyrics: [
-    'I hate to love it',
-    'Baby, I hate',
-    'that you hurt me',
-    'And I hate that I love you',
-    '',
-    'I hate to love it',
-    "Shouldn't want it",
-    'I know I do',
-    "Can't get enough",
-    'of making you love me',
-  ],
-};
+import { useSelector } from 'react-redux';
+import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
+import defaultArtistCover from '../../../assets/images/Avatar/no-avatar.png';
+import { useQuery } from '@tanstack/react-query';
+import { getArtistByIdQueryOptions } from '../../../queries/artists';
+import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
 
 const MOCK_RELATED = [
   { id: 'r1', title: 'In the Air', artist: 'Aeris', cover: 'https://picsum.photos/60/60?random=1' },
@@ -44,18 +29,6 @@ const MOCK_RELATED = [
   },
   { id: 'r5', title: 'Another Day', artist: 'Kaya', cover: 'https://picsum.photos/60/60?random=5' },
 ];
-
-const MOCK_ARTIST = {
-  id: 'artist-1',
-  name: 'Morgan',
-  avatar: 'https://picsum.photos/90/90?random=20',
-  bio: 'Morgan is a singer-songwriter blending intimate lyrics with modern production. Active since 2018.',
-  topTracks: [
-    { id: 't1', title: 'Make You Love Me' },
-    { id: 't2', title: 'Silent City' },
-    { id: 't3', title: 'Morning' },
-  ],
-};
 
 function IconButton({ children, label, onClick, className = '', title }) {
   return (
@@ -89,22 +62,24 @@ function TabButton({ active, onClick, children, id }) {
   );
 }
 
-export default function SongSidebar({ song = MOCK_SONG }) {
+export default function SongSidebar() {
   const [activeTab, setActiveTab] = useState('lyrics');
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-
   const contentRef = useRef(null);
-  const lyricRefs = useRef([]);
-
   const related = MOCK_RELATED;
-  const artist = MOCK_ARTIST;
+  const queueList = useSelector((state) => state.musicPlayer.selectedPlaylist.musics);
+  const selectedSong = queueList[0];
+  const { data: artist } = useQuery(getArtistByIdQueryOptions(selectedSong.artist_id));
+  const { data: popularSongs } = useQuery(
+    getPopularSongsByArtistIdQueryOptions(selectedSong.artist_id)
+  );
 
   useEffect(() => {
     // reset when song changes
     setActiveTab('lyrics');
     setIsPlaying(false);
-  }, [song.id]);
+  }, [selectedSong.id]);
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -112,19 +87,21 @@ export default function SongSidebar({ song = MOCK_SONG }) {
         className={`border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col overflow-y-hidden rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 p-5 px-3 py-5 pb-3 text-white shadow-2xl xl:w-[310px] 2xl:h-[calc(100dvh-200px)]`}
       >
         {/* Header */}
-        <div className="flex items-start gap-4">
+        <div className="flex items-center gap-4">
           <img
-            src={song.coverUrl}
-            alt={`${song.title} cover`}
+            src={selectedSong.cover || defaultSongCover}
+            alt={`${selectedSong.title} cover`}
             className="h-20 w-20 rounded-md object-cover shadow-md"
           />
           <div className="flex-1">
-            <h3 className="text-2xl leading-tight font-semibold">{song.title}</h3>
+            <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">
+              {selectedSong.title}
+            </h3>
             <button
               className="mt-1 text-sm text-slate-300 hover:underline"
               onClick={() => setActiveTab('artist')}
             >
-              {song.artist.name}
+              {selectedSong.artist}
             </button>
           </div>
         </div>
@@ -191,7 +168,7 @@ export default function SongSidebar({ song = MOCK_SONG }) {
           </IconButton>
 
           <div className="ml-auto text-sm text-slate-400">
-            {song.duration} • {song.year}
+            {selectedSong.duration} • {selectedSong.release_date?.split('-')[0]}
           </div>
         </div>
 
@@ -237,7 +214,7 @@ export default function SongSidebar({ song = MOCK_SONG }) {
             <div ref={contentRef} className="flex-1 overflow-auto pr-2 pb-2">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  {(song.lyrics || []).map((line, idx) => (
+                  {(selectedSong.lyrics || []).map((line, idx) => (
                     <p key={idx} className="text-lg leading-7 text-slate-300">
                       {line || '\u00A0'}
                     </p>
@@ -269,36 +246,41 @@ export default function SongSidebar({ song = MOCK_SONG }) {
             <button className="mt-3 w-full rounded-md bg-white/6 py-2 text-sm">Show more</button>
           </div>
         )}
-
         {activeTab === 'artist' && (
           <div className="my-4 flex-1 space-y-4 overflow-auto pr-2 pb-2">
             <div className="flex items-center gap-3">
               <img
-                src={artist.avatar}
-                alt={artist.name}
+                src={artist?.image || defaultArtistCover}
+                alt={artist?.name}
                 className="h-14 w-14 rounded-full object-cover"
               />
               <div>
-                <div className="text-lg font-semibold">{artist.name}</div>
+                <div className="text-lg font-semibold">{artist?.name}</div>
                 <div className="text-sm text-slate-300">Artist</div>
               </div>
             </div>
 
-            <p className="text-sm text-slate-300">{artist.bio}</p>
+            <p className="text-sm text-slate-300">{artist?.bio}</p>
 
             <div>
               <div className="mb-2 text-sm text-slate-300">Top tracks</div>
               <ul className="space-y-2">
-                {related.map((t) => (
+                {popularSongs?.map((song) => (
                   <li
-                    key={t.id}
+                    key={song.id}
                     className="ts-center flex cursor-pointer gap-3 rounded-md p-2 hover:bg-white/3"
-                    onClick={() => console.log('play related', t)}
+                    onClick={() => console.log('play related', song)}
                   >
-                    <img src={t.cover} alt="cover" className="h-12 w-12 rounded-md object-cover" />
+                    <img
+                      src={song.cover || defaultSongCover}
+                      alt="cover"
+                      className="h-12 w-12 rounded-md object-cover"
+                    />
                     <div className="flex-1">
-                      <div className="font-medium">{t.title}</div>
-                      <div className="text-sm text-slate-300">{t.artist}</div>
+                      <div className="font-medium" title={song.title}>
+                        {song.title}
+                      </div>
+                      <div className="text-sm text-slate-300">{song.artist}</div>
                     </div>
                     <div className="text-sm text-slate-400">3:12</div>
                   </li>
@@ -321,3 +303,18 @@ export default function SongSidebar({ song = MOCK_SONG }) {
     </div>
   );
 }
+
+IconButton.propTypes = {
+  children: PropTypes.node,
+  label: PropTypes.string,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  title: PropTypes.string,
+};
+
+TabButton.propTypes = {
+  active: PropTypes.bool,
+  onClick: PropTypes.func,
+  children: PropTypes.node,
+  id: PropTypes.string,
+};

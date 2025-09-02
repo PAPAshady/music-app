@@ -5,3 +5,9 @@ export const getArtists = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getArtistById = async (artistId) => {
+  const { data, error } = await supabase.from('artists').select('*').eq('id', artistId).single();
+  if (error) throw error;
+  return data;
+};
