@@ -4,14 +4,11 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  setCurrentSongIndex,
-  setPlaylist,
-  setSelectedPlaylist,
-} from '../../../redux/slices/musicPlayerSlice';
+import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import PropTypes from 'prop-types';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
+import { setPlayingContext, setSelectedContext } from '../../../redux/slices/playContextSlice';
 
 const PlayBar = memo(
   ({
@@ -28,8 +25,8 @@ const PlayBar = memo(
     const dropDownMenu = useCloseOnClickOutside();
     const dispatch = useDispatch();
     const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
-    const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
-    const playlist = useSelector((state) => state.musicPlayer.playlist);
+    const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
+    const playingTracklist = useSelector((state) => state.playContext.playingContext);
     const { title, id, cover, artist, duration, album } = song;
 
     const musicTitleSizes = {
@@ -52,7 +49,7 @@ const PlayBar = memo(
     const playOnClick = () => {
       if (isSingle) {
         dispatch(
-          setSelectedPlaylist({
+          setSelectedContext({
             id: crypto.randomUUID(),
             title: 'Queue list',
             description: 'Up next',
@@ -65,8 +62,8 @@ const PlayBar = memo(
         );
         dispatch(setSidebarPanelType('song_panel'));
       } else {
-        if (playlist.id !== selectedPlaylist.id) {
-          dispatch(setPlaylist(selectedPlaylist));
+        if (playingTracklist.id !== selectedTracklist.id) {
+          dispatch(setPlayingContext(selectedTracklist));
         }
 
         // dont change the song index if user clicked on the current song which is playing because it will

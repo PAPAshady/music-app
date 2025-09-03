@@ -26,14 +26,14 @@ export default function PlayerPage() {
   const dispatch = useDispatch();
   const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const playlist = useSelector((state) => state.musicPlayer.playlist);
+  const playingTracklist = useSelector((state) => state.playContext.playingContext);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
   const prevSongIndex = useSelector((state) => state.musicPlayer.prevSongIndex);
   const { data: tracklistSongs, isPending: isTracklistSongsPending } = useQuery(
-    playlist.tracklistType === 'playlist'
-      ? getSongsByPlaylistIdQueryOptions(playlist.id)
-      : getSongsByAlbumIdQueryOptions(playlist.id)
+    playingTracklist.tracklistType === 'playlist'
+      ? getSongsByPlaylistIdQueryOptions(playingTracklist.id)
+      : getSongsByAlbumIdQueryOptions(playingTracklist.id)
   );
 
   useEffect(() => {

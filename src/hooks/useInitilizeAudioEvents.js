@@ -14,7 +14,7 @@ import {
 export default function useInitilizeAudioEvents() {
   const dispatch = useDispatch();
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
-  const playlist = useSelector((state) => state.musicPlayer.playlist);
+  const playingTracklist = useSelector((state) => state.playContext.playingContext);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
 
   // calculate the duration of the new song
@@ -44,20 +44,20 @@ export default function useInitilizeAudioEvents() {
   }, [dispatch]);
 
   const playStateHandler = useCallback(() => {
-    if (playingState === 'repeat_one' || playlist.musics?.length === 1) {
+    if (playingState === 'repeat_one' || playingTracklist.musics?.length === 1) {
       // replay the current song if playlist has only one song or if it is on 'reoeat_one'.
       dispatch(play());
     } else if (playingState === 'shuffle') {
       // get a random index other than the current song
       let randomIndex = null;
       do {
-        randomIndex = Math.floor(Math.random() * playlist.musics?.length);
+        randomIndex = Math.floor(Math.random() * playingTracklist.musics?.length);
       } while (randomIndex === currentSongIndex);
       dispatch(setCurrentSongIndex(randomIndex));
     } else {
       dispatch(next());
     }
-  }, [dispatch, currentSongIndex, playingState, playlist]);
+  }, [dispatch, currentSongIndex, playingState, playingTracklist]);
 
   useEffect(() => {
     music.addEventListener('loadedmetadata', formatSongDuration);

@@ -11,10 +11,10 @@ export default function ConfirmModal() {
   const { isOpen, title, message, buttons, buttonsClassNames, actionType } = useSelector(
     (state) => state.confirmModal
   );
-  const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
+  const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
   const userId = useSelector((state) => state.auth.user?.id);
   const deletePlaylistMutation = useMutation(
-    deletePrivatePlaylistMutationOptions(selectedPlaylist.id)
+    deletePrivatePlaylistMutationOptions(selectedTracklist.id)
   );
 
   const onClose = () => {
@@ -31,7 +31,7 @@ export default function ConfirmModal() {
         userId,
         undefined,
         undefined,
-        selectedPlaylist.title
+        selectedTracklist.title
       );
 
       if (listingError) {
@@ -45,7 +45,7 @@ export default function ConfirmModal() {
       if (listingData.length) {
         // remove playlist cover from storage
         const { error: deleteError } = await deleteFiles('playlist-covers', [
-          `${userId}/${selectedPlaylist.title}.${listingData[0].name.split('.').pop()}`,
+          `${userId}/${selectedTracklist.title}.${listingData[0].name.split('.').pop()}`,
         ]);
 
         if (deleteError) {

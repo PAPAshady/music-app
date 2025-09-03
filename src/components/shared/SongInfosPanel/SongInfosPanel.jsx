@@ -68,7 +68,8 @@ export default function SongSidebar() {
   const [isLiked, setIsLiked] = useState(false);
   const contentRef = useRef(null);
   const related = MOCK_RELATED;
-  const queueList = useSelector((state) => state.musicPlayer.selectedPlaylist.musics);
+  const queueList = useSelector((state) => state.playContext.selectedContext.musics);
+
   const selectedSong = queueList[0];
   const { data: artist } = useQuery(getArtistByIdQueryOptions(selectedSong.artist_id));
   const { data: popularSongs } = useQuery(

@@ -34,7 +34,6 @@ import { setIsMobilePlaylistOpen } from '../../../redux/slices/mobilePlaylistSli
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 import {
   togglePlayState,
-  setPlaylist,
   setCurrentSongIndex,
   play,
   pause,
@@ -52,6 +51,7 @@ import {
 import PropTypes from 'prop-types';
 import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
+import { setPlayingContext } from '../../../redux/slices/playContextSlice';
 
 export default function MobilePlaylist() {
   const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
@@ -62,19 +62,21 @@ export default function MobilePlaylist() {
   const searchInput = useInput();
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const isTablet = useMediaQuery('(min-width: 768px)');
-  const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
-  const playlist = useSelector((state) => state.musicPlayer.playlist);
+  const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
+  const playingTracklist = useSelector((state) => state.playContext.playingContext);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
-  const playlistCover = selectedPlaylist.cover ? selectedPlaylist.cover : playlistDefaultCover;
+  const playlistCover = selectedTracklist.cover ? selectedTracklist.cover : playlistDefaultCover;
   const { data: selectedPlaylistSongs, isLoading: isPlaylistSongsLoading } = useQuery(
-    selectedPlaylist.tracklistType === 'playlist'
-      ? getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
-      : getSongsByAlbumIdQueryOptions(selectedPlaylist.id)
+    selectedTracklist.tracklistType === 'playlist'
+      ? getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
+      : getSongsByAlbumIdQueryOptions(selectedTracklist.id)
   );
-  const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
+  const addSongMutation = useMutation(
+    addSongToPrivatePlaylistMutationOptions(selectedTracklist.id)
+  );
   const removeSongMutation = useMutation(
-    removeSongFromPrivatePlaylistMutationOptions(selectedPlaylist.id)
+    removeSongFromPrivatePlaylistMutationOptions(selectedTracklist.id)
   );
   const {
     data: allSongs,
@@ -132,8 +134,8 @@ export default function MobilePlaylist() {
   };
 
   const playPauseButtonHandler = () => {
-    if (playlist.id !== selectedPlaylist.id) {
-      dispatch(setPlaylist(selectedPlaylist));
+    if (playingTracklist.id !== selectedTracklist.id) {
+      dispatch(setPlayingContext(selectedTracklist));
       dispatch(setCurrentSongIndex(0));
     } else {
       dispatch(isPlaying ? pause() : play());
@@ -146,7 +148,7 @@ export default function MobilePlaylist() {
       icon: <Edit />,
       onClick: () =>
         dispatch(
-          openModal({ title: `Edit ${selectedPlaylist.title}`, actionType: 'edit_playlist' })
+          openModal({ title: `Edit ${selectedTracklist.title}`, actionType: 'edit_playlist' })
         ),
     },
     { id: 2, icon: <Additem />, onClick: () => setIsAddMenuOpen(true) },
@@ -216,7 +218,7 @@ export default function MobilePlaylist() {
       onClick: () =>
         dispatch(
           openConfirmModal({
-            title: `Delete "${selectedPlaylist.title}" playlist.`,
+            title: `Delete "${selectedTracklist.title}" playlist.`,
             message: 'Are you sure you want to delete this playlist ?',
             buttons: { confirm: true, cancel: true },
             buttonsClassNames: { confirm: '!bg-red !inset-shadow-none' },
@@ -249,7 +251,7 @@ export default function MobilePlaylist() {
             <p
               className={`transition-opacity duration-300 lg:text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
             >
-              {selectedPlaylist.title}
+              {selectedTracklist.title}
             </p>
           </div>
         </div>
@@ -257,24 +259,24 @@ export default function MobilePlaylist() {
           <img
             src={playlistCover}
             className="size-46 rounded-md object-cover sm:size-56 md:size-64 lg:size-80"
-            alt={selectedPlaylist.title}
+            alt={selectedTracklist.title}
           />
           <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
-            {selectedPlaylist.title}
+            {selectedTracklist.title}
           </p>
           <p className="line-clamp-2 min-h-[45px] w-[90%] text-sm sm:text-base lg:text-lg">
-            {selectedPlaylist.description || 'No Description for this playlist.'}
+            {selectedTracklist.description || 'No Description for this playlist.'}
           </p>
           <div className="mt-3 flex w-full items-center justify-between gap-2 lg:px-8">
             <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
               <button className="border-primary-200 h-10 w-8 rounded-sm border p-[2px] sm:h-12 sm:w-9">
                 <img
-                  src={selectedPlaylist.cover ?? playlistDefaultCover}
+                  src={selectedTracklist.cover ?? playlistDefaultCover}
                   className="size-full rounded-sm object-cover"
                 />
               </button>
-              {!selectedPlaylist.is_public &&
-                selectedPlaylist.tracklistType !== 'album' &&
+              {!selectedTracklist.is_public &&
+                selectedTracklist.tracklistType !== 'album' &&
                 playButtons.map((button) => (
                   <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
                 ))}
@@ -324,7 +326,7 @@ export default function MobilePlaylist() {
           ) : !selectedPlaylistSongs?.length ? (
             <div className="my-2 w-full">
               <p className="text-gray-400 md:text-lg">
-                No tracks in this {selectedPlaylist.tracklistType} yet
+                No tracks in this {selectedTracklist.tracklistType} yet
               </p>
             </div>
           ) : (
@@ -336,9 +338,9 @@ export default function MobilePlaylist() {
                     size={isLargeMobile ? 'lg' : 'md'}
                     index={index}
                     classNames="!w-full text-start !max-w-none"
-                    ActionButtonIcon={selectedPlaylist.is_public ? <Heart /> : <Trash />}
+                    ActionButtonIcon={selectedTracklist.is_public ? <Heart /> : <Trash />}
                     actionButtonClickHandler={
-                      selectedPlaylist.tracklistType === 'playlist' && removeSongHandler
+                      selectedTracklist.tracklistType === 'playlist' && removeSongHandler
                     }
                     isActionButtonPending={pendingSongId === song.id}
                     song={song}
@@ -351,7 +353,7 @@ export default function MobilePlaylist() {
             </>
           )}
 
-          {!selectedPlaylist.is_public && selectedPlaylist.tracklistType === 'playlist' && (
+          {!selectedTracklist.is_public && selectedTracklist.tracklistType === 'playlist' && (
             <>
               <div className="mt-6 mb-4 w-full text-start">
                 <p className="mb-4 text-xl font-bold">Suggestions</p>
@@ -394,7 +396,7 @@ export default function MobilePlaylist() {
           {isMobilePlaylistOpen && <Player classNames="text-start !w-full" />}
         </div>
       </div>
-      {isMobilePlaylistOpen && !selectedPlaylist.is_public && (
+      {isMobilePlaylistOpen && !selectedTracklist.is_public && (
         <div
           className={`text-secondary-50 bg-primary-800 absolute inset-0 z-[10] size-full pb-4 transition-all duration-300 ${isAddMenuOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
         >

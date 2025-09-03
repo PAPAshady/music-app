@@ -4,17 +4,19 @@ import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Music, Share } from 'iconsax-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
-import { setSelectedPlaylist } from '../../../redux/slices/musicPlayerSlice';
+import { setSelectedContext } from '../../../redux/slices/playContextSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const { cover, totalTracks, artist, title } = album;
   const dispatch = useDispatch();
-  const playlist = useSelector((state) => state.musicPlayer.playlist);
-  const isCurrentAlbumPlaying = album.title === playlist.title && album.id === playlist.id;
+  const playingTracklist = useSelector((state) => state.playContext.playingContext);
+  const isCurrentAlbumPlaying =
+    album.title === playingTracklist.title && album.id === playingTracklist.id;
 
   const openMobilePlaylistHandler = () => {
-    dispatch(setSelectedPlaylist(album));
+    console.log(album)
+    dispatch(setSelectedContext(album));
     dispatch(openMobilePlaylist());
     dispatch(setSidebarPanelType('tracklist_panel'));
   };

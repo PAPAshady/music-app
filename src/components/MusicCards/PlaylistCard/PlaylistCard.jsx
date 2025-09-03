@@ -4,10 +4,10 @@ import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
 import { Heart, Play, AddCircle } from 'iconsax-react';
 import { useDispatch } from 'react-redux';
-import { setSelectedPlaylist } from '../../../redux/slices/musicPlayerSlice';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
+import { setSelectedContext } from '../../../redux/slices/playContextSlice';
 
 const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const playlistCover = cover ? cover : noCoverImg;
 
   const showSelectedPlaylist = () => {
-    dispatch(setSelectedPlaylist(playlist));
+    dispatch(setSelectedContext(playlist));
     dispatch(openMobilePlaylist());
     dispatch(setSidebarPanelType('tracklist_panel'));
   };

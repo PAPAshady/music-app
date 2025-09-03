@@ -19,7 +19,7 @@ import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import { uploadFile, getFileUrl, deleteFiles, listFiles } from '../../services/storage';
-import { setSelectedPlaylist } from '../../redux/slices/musicPlayerSlice';
+import { setSelectedContext } from '../../redux/slices/playContextSlice';
 import {
   createNewPrivatePlaylistMutationOptions,
   updatePrivatePlaylistMutationOptions,
@@ -53,19 +53,21 @@ export default function PlaylistInfosModal() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 6 }));
-  const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
+  const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const { targetRef: triggerElem } = useIntersectionObserver({ onIntersect });
-  const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(selectedPlaylist.id));
+  const addSongMutation = useMutation(
+    addSongToPrivatePlaylistMutationOptions(selectedTracklist.id)
+  );
   const removeSongMutation = useMutation(
-    removeSongFromPrivatePlaylistMutationOptions(selectedPlaylist.id)
+    removeSongFromPrivatePlaylistMutationOptions(selectedTracklist.id)
   );
   const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistMutationOptions());
   const updatePlaylistMutation = useMutation(
-    updatePrivatePlaylistMutationOptions(selectedPlaylist.id)
+    updatePrivatePlaylistMutationOptions(selectedTracklist.id)
   );
   const { data: selectedPlaylistSongs } = useQuery(
-    getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
+    getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
   );
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
@@ -80,8 +82,8 @@ export default function PlaylistInfosModal() {
     formState: { isSubmitting, errors, dirtyFields, isDirty },
   } = useForm({
     defaultValues: {
-      description: selectedPlaylist.description || '',
-      title: selectedPlaylist.title,
+      description: selectedTracklist.description || '',
+      title: selectedTracklist.title,
     },
     resolver: zodResolver(schema),
   });
@@ -104,15 +106,15 @@ export default function PlaylistInfosModal() {
   */
   useEffect(() => {
     reset({
-      description: actionType === 'edit_playlist' ? selectedPlaylist.description : '',
-      title: actionType === 'edit_playlist' ? selectedPlaylist.title : '',
+      description: actionType === 'edit_playlist' ? selectedTracklist.description : '',
+      title: actionType === 'edit_playlist' ? selectedTracklist.title : '',
     });
     setPlaylistCover(
-      actionType === 'edit_playlist' && selectedPlaylist.cover
-        ? selectedPlaylist.cover
+      actionType === 'edit_playlist' && selectedTracklist.cover
+        ? selectedTracklist.cover
         : playlistDefaultCover
     );
-  }, [reset, selectedPlaylist, isOpen, actionType]);
+  }, [reset, selectedTracklist, isOpen, actionType]);
 
   function onIntersect() {
     if (!isFetchingNextPage && hasNextPage && allSongs?.pages?.length > 1) {
@@ -215,7 +217,7 @@ export default function PlaylistInfosModal() {
       // handle updating playlist logic in database
       try {
         const newPlaylistData = await updatePlaylistMutation.mutateAsync(modifiedFields);
-        dispatch(setSelectedPlaylist({ ...newPlaylistData, musics: selectedPlaylistSongs })); // update redux store as well be synced with new changes
+        dispatch(setSelectedContext({ ...newPlaylistData, musics: selectedPlaylistSongs })); // update redux store as well be synced with new changes
         dispatch(showNewSnackbar({ message: 'Playlist updated successfully.', type: 'success' }));
         onClose();
       } catch (err) {
@@ -345,7 +347,7 @@ export default function PlaylistInfosModal() {
               <img
                 className="size-full object-cover"
                 src={playlistCover}
-                alt={selectedPlaylist.title}
+                alt={selectedTracklist.title}
               />
               <label
                 className="absolute inset-0 size-full bg-black/30 sm:bg-transparent"
@@ -397,8 +399,8 @@ export default function PlaylistInfosModal() {
           </div>
         </div>
 
-        {selectedPlaylist.tracklistType === 'playlist' &&
-          !selectedPlaylist.is_public &&
+        {selectedTracklist.tracklistType === 'playlist' &&
+          !selectedTracklist.is_public &&
           actionType === 'edit_playlist' &&
           !isDesktop && (
             <div className="flex flex-col gap-4">

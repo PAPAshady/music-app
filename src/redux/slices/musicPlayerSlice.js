@@ -13,16 +13,17 @@ export const pause = createAsyncThunk('musicPlayer/pause', (_, { dispatch }) => 
 });
 
 export const next = createAsyncThunk('musicPlayer/next', (_, { getState, dispatch }) => {
-  const { playlist, currentSongIndex } = getState().musicPlayer;
+  const currentSongIndex = getState().musicPlayer.currentSongIndex;
+  const playingTracklist = getState().playContext.playingContext;
 
   // if playlist has only one song, play it again in case user clicks on next button
-  if (playlist.musics?.length === 1) {
+  if (playingTracklist.musics?.length === 1) {
     music.currentTime = 0;
     dispatch(play());
     return;
   }
 
-  if (currentSongIndex === playlist.musics?.length - 1) {
+  if (currentSongIndex === playingTracklist.musics?.length - 1) {
     dispatch(setCurrentSongIndex(0));
   } else {
     dispatch(setCurrentSongIndex(currentSongIndex + 1));
@@ -30,17 +31,18 @@ export const next = createAsyncThunk('musicPlayer/next', (_, { getState, dispatc
 });
 
 export const prev = createAsyncThunk('musicPlayer/prev', (_, { getState, dispatch }) => {
-  const { playlist, currentSongIndex } = getState().musicPlayer;
+  const currentSongIndex = getState().musicPlayer.currentSongIndex;
+  const playingTracklist = getState().playContext.playingContext;
 
   // if playlist has only one song, play it again in case user clicks on prev button
-  if (playlist.musics?.length === 1) {
+  if (playingTracklist.musics?.length === 1) {
     music.currentTime = 0;
     dispatch(play());
     return;
   }
 
   if (currentSongIndex === 0) {
-    dispatch(setCurrentSongIndex(playlist.musics?.length - 1));
+    dispatch(setCurrentSongIndex(playingTracklist.musics?.length - 1));
   } else {
     dispatch(setCurrentSongIndex(currentSongIndex - 1));
   }
@@ -60,8 +62,6 @@ const musicPlayerSlice = createSlice({
     currentSongIndex: 0,
     prevSongIndex: null,
     currentMusic: null,
-    playlist: {},
-    selectedPlaylist: {},
     musicState: 'loading',
     playingState: 'repeat_all',
     songTotalDurations: { rawDuration: 0, formatedDuration: '0:00' },
@@ -82,18 +82,6 @@ const musicPlayerSlice = createSlice({
     },
     setPlayingState(state, action) {
       state.playingState = action.payload;
-    },
-    setPlaylist(state, action) {
-      state.playlist = action.payload;
-    },
-    setPlaylistSongs(state, action) {
-      state.playlist.musics = action.payload;
-    },
-    setSelectedPlaylist(state, action) {
-      state.selectedPlaylist = action.payload;
-    },
-    setSelectedPlaylistSongs(state, action) {
-      state.selectedPlaylist.musics = action.payload;
     },
     setMusicState(state, action) {
       const validStates = ['initial_loading', 'buffering', 'playable'];
@@ -130,10 +118,6 @@ export const {
   setCurrentMusic,
   setPlayingState,
   togglePlayState,
-  setPlaylist,
-  setPlaylistSongs,
-  setSelectedPlaylist,
-  setSelectedPlaylistSongs,
   setMusicState,
   setSongTotalDurations,
   setBufferProgressPercentage,

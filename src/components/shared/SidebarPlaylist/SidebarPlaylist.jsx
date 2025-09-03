@@ -14,31 +14,28 @@ import {
   getSongsByPlaylistIdQueryOptions,
 } from '../../../queries/musics';
 import { useQuery } from '@tanstack/react-query';
-import {
-  setPlaylist,
-  play,
-  pause,
-  setCurrentSongIndex,
-} from '../../../redux/slices/musicPlayerSlice';
+import { play, pause, setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
+import { setPlayingContext } from '../../../redux/slices/playContextSlice';
 
 const SidebarPlaylist = memo(() => {
-  const selectedPlaylist = useSelector((state) => state.musicPlayer.selectedPlaylist);
-  const playlist = useSelector((state) => state.musicPlayer.playlist);
+  const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
+  const playingTracklist = useSelector((state) => state.playContext.playingContext);
+
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const { data: selectedPlaylistSongs, isLoading } = useQuery(
-    selectedPlaylist.tracklistType === 'album'
-      ? getSongsByAlbumIdQueryOptions(selectedPlaylist.id)
-      : getSongsByPlaylistIdQueryOptions(selectedPlaylist.id)
+    selectedTracklist.tracklistType === 'album'
+      ? getSongsByAlbumIdQueryOptions(selectedTracklist.id)
+      : getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
   );
   const dispatch = useDispatch();
-  const playlistCover = selectedPlaylist.cover ? selectedPlaylist.cover : defaultCover;
+  const playlistCover = selectedTracklist.cover ? selectedTracklist.cover : defaultCover;
   const isPlayingPlaylistSelected =
-    playlist.id === selectedPlaylist.id && playlist.title === selectedPlaylist.title;
+    playingTracklist.id === selectedTracklist.id && playingTracklist.title === selectedTracklist.title;
 
   const playPauseButtonHandler = () => {
     if (!isPlayingPlaylistSelected) {
-      dispatch(setPlaylist(selectedPlaylist));
+      dispatch(setPlayingContext(selectedTracklist));
       dispatch(setCurrentSongIndex(0));
       return;
     }
@@ -75,11 +72,11 @@ const SidebarPlaylist = memo(() => {
       icon: <Music />,
     },
     { id: 2, title: '01:11:58', icon: <Timer /> },
-    { id: 3, title: selectedPlaylist.artist ?? 'No Artist', icon: <User /> },
+    { id: 3, title: selectedTracklist.artist ?? 'No Artist', icon: <User /> },
   ];
 
   const playlistDropDownListItems =
-    selectedPlaylist.is_public || selectedPlaylist.tracklistType === 'album'
+    selectedTracklist.is_public || selectedTracklist.tracklistType === 'album'
       ? [
           {
             id: 1,
@@ -95,7 +92,7 @@ const SidebarPlaylist = memo(() => {
             title: 'Edit playlist',
             onClick: () =>
               dispatch(
-                openModal({ title: `Edit ${selectedPlaylist.title}`, actionType: 'edit_playlist' })
+                openModal({ title: `Edit ${selectedTracklist.title}`, actionType: 'edit_playlist' })
               ),
           },
           {
@@ -105,7 +102,7 @@ const SidebarPlaylist = memo(() => {
             onClick: () =>
               dispatch(
                 openConfirmModal({
-                  title: `Delete "${selectedPlaylist.title}" playlist.`,
+                  title: `Delete "${selectedTracklist.title}" playlist.`,
                   message: 'Are you sure you want to delete this playlist ?',
                   buttons: { confirm: true, cancel: true },
                   buttonsClassNames: { confirm: '!bg-red !inset-shadow-none' },
@@ -117,10 +114,10 @@ const SidebarPlaylist = memo(() => {
         ];
   return (
     <div className="sticky top-10 hidden xl:block">
-      <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900  px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
+      <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
         <AnimatePresence mode="wait">
           <motion.div
-            key={`playlist-header-${selectedPlaylist.title}-${selectedPlaylist.id}`}
+            key={`playlist-header-${selectedTracklist.title}-${selectedTracklist.id}`}
             variants={headerVariants}
             initial="initial"
             animate="animate"
@@ -130,9 +127,9 @@ const SidebarPlaylist = memo(() => {
             <div className="flex items-center justify-between gap-1">
               <p
                 className="text-white-50 subheading-3 truncate"
-                title={selectedPlaylist.title || 'Select a playlist'}
+                title={selectedTracklist.title || 'Select a playlist'}
               >
-                {selectedPlaylist.title || 'Select a playlist'}
+                {selectedTracklist.title || 'Select a playlist'}
               </p>
               <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
             </div>
@@ -141,7 +138,7 @@ const SidebarPlaylist = memo(() => {
               <div className="group relative overflow-hidden rounded-[10px]">
                 <img
                   src={playlistCover}
-                  alt={selectedPlaylist.title || 'Select a playlist'}
+                  alt={selectedTracklist.title || 'Select a playlist'}
                   className="size-32 object-cover xl:size-[140px]"
                 />
                 <div
@@ -179,7 +176,7 @@ const SidebarPlaylist = memo(() => {
         </AnimatePresence>
         <AnimatePresence mode="wait">
           <motion.div
-            key={`${selectedPlaylist.title}-${selectedPlaylist.id}`}
+            key={`${selectedTracklist.title}-${selectedTracklist.id}`}
             variants={listVariants}
             initial="hidden"
             animate="show"

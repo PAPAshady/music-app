@@ -1,7 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
 import {
-  setSelectedPlaylistSongs,
-  setPlaylistSongs,
   setCurrentMusic,
   setCurrentSongIndex,
   pause,
@@ -19,6 +17,7 @@ import {
   removeSongFromPrivatePlaylist,
   deletePrivatePlaylist,
 } from '../services/playlists';
+import { setPlayingContextSongs, setSelectedContextSongs } from '../redux/slices/playContextSlice';
 
 export const getAllPlaylistsQueryOptions = () => {
   return queryOptions({
@@ -105,12 +104,12 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
     });
 
     const updatedPlaylistSongs = queryClient.getQueryData(['playlists', { playlistId }]);
-    const playlist = store.getState().musicPlayer.playlist; // the playlist which is currently playing
+    const playingTracklist = store.getState().playContext.playingContext; // the playlist which is currently playing
     // sync with redux
-    store.dispatch(setSelectedPlaylistSongs(updatedPlaylistSongs));
-    if (playlist.id === playlistId) {
+    store.dispatch(setSelectedContextSongs(updatedPlaylistSongs));
+    if (playingTracklist.id === playlistId) {
       // if user updated the music list of current playing playlist, sync the updates in redux as well
-      store.dispatch(setPlaylistSongs(updatedPlaylistSongs));
+      store.dispatch(setPlayingContextSongs(updatedPlaylistSongs));
     }
   },
 });
@@ -136,14 +135,14 @@ export const removeSongFromPrivatePlaylistMutationOptions = (playlistId) => ({
       );
     });
 
-    const playlist = store.getState().musicPlayer.playlist; // the playlist which is currently playing
+    const playingTracklist = store.getState().playContext.playingContext; // the playlist which is currently playing
     const musicPlayer = store.getState().musicPlayer;
     const { dispatch } = store;
     // sync with redux
-    dispatch(setSelectedPlaylistSongs(updatedPlaylistSongs));
-    if (playlist.id === playlistId) {
+    dispatch(setSelectedContextSongs(updatedPlaylistSongs));
+    if (playingTracklist.id === playlistId) {
       // if user updated the music list of current playlist, sync the updates in redux as well
-      dispatch(setPlaylistSongs(updatedPlaylistSongs));
+      dispatch(setPlayingContextSongs(updatedPlaylistSongs));
 
       // handle the case if user removed the current playing song from the current playlist.
       if (musicPlayer.currentMusic?.id === songId) {
