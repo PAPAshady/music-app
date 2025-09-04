@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 import defaultArtistCover from '../../../assets/images/Avatar/no-avatar.png';
 import { useQuery } from '@tanstack/react-query';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
+import { Music } from 'iconsax-react';
 
 const MOCK_RELATED = [
   { id: 'r1', title: 'In the Air', artist: 'Aeris', cover: 'https://picsum.photos/60/60?random=1' },
@@ -66,7 +67,6 @@ export default function SongSidebar() {
   const [activeTab, setActiveTab] = useState('lyrics');
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const contentRef = useRef(null);
   const related = MOCK_RELATED;
   const queueList = useSelector((state) => state.playContext.selectedContextQueueList);
   const selectedSong = queueList[0];
@@ -211,16 +211,26 @@ export default function SongSidebar() {
                 </label>
               </div>
             </div>
-            <div ref={contentRef} className="flex-1 overflow-auto pr-2 pb-2">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  {(selectedSong.lyrics || []).map((line, idx) => (
-                    <p key={idx} className="text-lg leading-7 text-slate-300">
-                      {line || '\u00A0'}
-                    </p>
-                  ))}
+            <div className="flex-1 overflow-auto pr-2 pb-2">
+              {selectedSong.lyrics ? (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    {(selectedSong.lyrics || []).map((line, idx) => (
+                      <p key={idx} className="text-lg leading-7 text-slate-300">
+                        {line || '\u00A0'}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center">
+                  <Music size={55} className="text-secondary-300" />
+                  <p className="mt-2 px-4 font-semibold text-white">
+                    No lyrics available at the moment.
+                  </p>
+                  <p className="text-sm">Check back soon!</p>
+                </div>
+              )}
             </div>
           </>
         )}
