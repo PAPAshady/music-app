@@ -25,19 +25,19 @@ listenerMiddleware.startListening({
   effect: async (action, { getState, dispatch, getOriginalState }) => {
     // update music src everytime currentSongIndex changes
     const currentSongIndex = getState().musicPlayer.currentSongIndex;
-    const playingContext = getState().playContext.playingContext;
+    const playingContextSongs = getOriginalState().playContext.playingContextQueueList;
     const { currentSongIndex: prevSongIndex } = getOriginalState().musicPlayer;
     // dont try to play music onMount (because there is no music on Mount) to avoid errors.
-    if (playingContext.musics?.length) {
-      music.src = playingContext.musics[action.payload]?.song_url;
+    if (playingContextSongs?.length) {
+      music.src = playingContextSongs[action.payload]?.song_url;
       dispatch(setPrevSongIndex(prevSongIndex));
       // update current song to the new one
-      dispatch(setCurrentMusic(playingContext.musics[currentSongIndex]));
+      dispatch(setCurrentMusic(playingContextSongs[currentSongIndex]));
       dispatch(play());
 
       // update the play_count in database everytime a user plays the song to determine its popularity
       await supabase.rpc('increment_play', {
-        song_id: playingContext.musics[currentSongIndex].id,
+        song_id: playingContextSongs[currentSongIndex].id,
       });
     }
   },

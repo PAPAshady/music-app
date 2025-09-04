@@ -34,8 +34,10 @@ const playContextSlice = createSlice({
     setPlayingContext(state, action) {
       const playingContextType = action.payload.tracklistType;
       const isTracklist = playingContextType === 'playlist' || playingContextType === 'album';
+      state.playingContext = action.payload;
       if (isTracklist) {
         state.isPlayingTracklist = true;
+        state.playingContextQueueList = state.selectedContextQueueList;
       } else {
         state.isPlayingTracklist = false;
         state.playingContextQueueList = [action.payload];

@@ -15,7 +15,6 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
     album.title === playingTracklist.title && album.id === playingTracklist.id;
 
   const openMobilePlaylistHandler = () => {
-    console.log(album)
     dispatch(setSelectedContext(album));
     dispatch(openMobilePlaylist());
     dispatch(setSidebarPanelType('tracklist_panel'));
