@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
 import { Music } from 'iconsax-react';
+import { formatTime } from '../../../redux/slices/musicPlayerSlice';
 
 const MOCK_RELATED = [
   { id: 'r1', title: 'In the Air', artist: 'Aeris', cover: 'https://picsum.photos/60/60?random=1' },
@@ -168,7 +169,7 @@ export default function SongSidebar() {
           </IconButton>
 
           <div className="ml-auto text-sm text-slate-400">
-            {selectedSong.duration} • {selectedSong.release_date?.split('-')[0]}
+            {formatTime(selectedSong.duration)} • {selectedSong.release_date?.split('-')[0]}
           </div>
         </div>
 

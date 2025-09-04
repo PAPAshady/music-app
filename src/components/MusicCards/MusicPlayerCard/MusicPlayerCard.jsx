@@ -1,23 +1,20 @@
 import IconButton from '../../Buttons/IconButton/IconButton';
 import { Heart } from 'iconsax-react';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { formatTime } from '../../../redux/slices/musicPlayerSlice';
 
 export default function MusicPlayerCard({
   title,
   artist = 'Unkown artist',
   isFavorite,
+  duration,
   cover = noCoverImg,
   isPlaying,
   onClick,
   classNames,
   musicIndex,
 }) {
-  const totalDuration = useSelector(
-    (state) => state.musicPlayer.songTotalDurations.formatedDuration
-  );
-
   return (
     <div
       className={`border-secondary-300 hover:border-secondary-50 flex items-center gap-2 overflow-hidden rounded-lg border-2 p-2 transition-all duration-300 ${classNames} ${isPlaying ? 'bg-secondary-600/40 backdrop-blur-xs' : '!border-transparent'}`}
@@ -44,7 +41,7 @@ export default function MusicPlayerCard({
           </p>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-primary-100 text-sm">{totalDuration}</span>
+          <span className="text-primary-100 text-sm">{formatTime(duration)}</span>
           <IconButton icon={<Heart className={isFavorite ? 'fill-red text-red' : ''} />} />
         </div>
       </div>
@@ -56,6 +53,7 @@ MusicPlayerCard.propTypes = {
   title: PropTypes.string.isRequired,
   artist: PropTypes.string,
   isFavorite: PropTypes.bool,
+  duration: PropTypes.string,
   cover: PropTypes.string,
   isPlaying: PropTypes.bool,
   onClick: PropTypes.func,

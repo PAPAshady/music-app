@@ -40,7 +40,6 @@ const musicDefaultVolume = 70; // min: 0, max: 100
 export default function Player({ classNames, isPlayerPage }) {
   const dispatch = useDispatch();
   const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
-  const songTotalDurations = useSelector((state) => state.musicPlayer.songTotalDurations);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const playingTracklistSongs = useSelector((state) => state.playContext.playingContextQueueList);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
@@ -137,7 +136,7 @@ export default function Player({ classNames, isPlayerPage }) {
               ))}
             </div>
             <span className="text-primary-100 hidden w-[42px] text-end text-sm md:block">
-              {songTotalDurations.formatedDuration}
+              {formatTime(currentMusic?.duration) ?? '0:00'}
             </span>
           </div>
           {!disabled && <ProgressBar disabled={disabled || musicState === 'initial_loading'} />}

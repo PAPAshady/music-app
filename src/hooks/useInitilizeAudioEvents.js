@@ -2,8 +2,6 @@ import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   music,
-  setSongTotalDurations,
-  formatTime,
   setMusicState,
   setBufferProgressPercentage,
   setCurrentSongIndex,
@@ -16,16 +14,6 @@ export default function useInitilizeAudioEvents() {
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
   const playingTracklist = useSelector((state) => state.playContext.playingContext);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
-
-  // calculate the duration of the new song
-  const formatSongDuration = useCallback(() => {
-    dispatch(
-      setSongTotalDurations({
-        rawDuration: music.duration,
-        formatedDuration: formatTime(music.duration),
-      })
-    );
-  }, [dispatch]);
 
   const startMusicInitialLoading = useCallback(
     () => dispatch(setMusicState('initial_loading')),
@@ -60,7 +48,6 @@ export default function useInitilizeAudioEvents() {
   }, [dispatch, currentSongIndex, playingState, playingTracklist]);
 
   useEffect(() => {
-    music.addEventListener('loadedmetadata', formatSongDuration);
     music.addEventListener('loadstart', startMusicInitialLoading);
     music.addEventListener('waiting', startMusicBuffering);
     music.addEventListener('canplay', startMusicPlaying);
@@ -71,7 +58,6 @@ export default function useInitilizeAudioEvents() {
       music.addEventListener('progress', getBufferedPercentage);
     }
     return () => {
-      music.removeEventListener('loadedmetadata', formatSongDuration);
       music.removeEventListener('loadstart', startMusicInitialLoading);
       music.removeEventListener('waiting', startMusicBuffering);
       music.removeEventListener('canplay', startMusicPlaying);
@@ -79,7 +65,6 @@ export default function useInitilizeAudioEvents() {
       music.removeEventListener('progress', getBufferedPercentage);
     };
   }, [
-    formatSongDuration,
     startMusicBuffering,
     startMusicPlaying,
     getBufferedPercentage,

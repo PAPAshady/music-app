@@ -4,7 +4,7 @@ import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
+import { formatTime, setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import PropTypes from 'prop-types';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
@@ -106,7 +106,7 @@ const PlayBar = memo(
               <span
                 className={`text-secondary-200 pe-3 text-xs lg:p-0 ${size === 'lg' ? 'lg:text-sm' : 'hidden lg:block'}`}
               >
-                {duration}
+                {formatTime(duration)}
               </span>
             </>
           )}
