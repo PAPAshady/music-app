@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Play, Pause, Heart, Menu } from 'iconsax-react';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 import defaultArtistCover from '../../../assets/images/Avatar/no-avatar.png';
@@ -7,7 +8,14 @@ import { useQuery } from '@tanstack/react-query';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
 import { Music } from 'iconsax-react';
-import { formatTime } from '../../../redux/slices/musicPlayerSlice';
+import {
+  formatTime,
+  play,
+  pause,
+  setCurrentSongIndex,
+} from '../../../redux/slices/musicPlayerSlice';
+import { useDispatch } from 'react-redux';
+import { setPlayingContext } from '../../../redux/slices/playContextSlice';
 
 const MOCK_RELATED = [
   { id: 'r1', title: 'In the Air', artist: 'Aeris', cover: 'https://picsum.photos/60/60?random=1' },
@@ -65,22 +73,27 @@ function TabButton({ active, onClick, children, id }) {
 }
 
 export default function SongSidebar() {
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('lyrics');
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const related = MOCK_RELATED;
+  const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const queueList = useSelector((state) => state.playContext.selectedContextQueueList);
-  const selectedSong = queueList[0];
-  const { data: artist } = useQuery(getArtistByIdQueryOptions(selectedSong.artist_id));
-  const { data: popularSongs } = useQuery(
-    getPopularSongsByArtistIdQueryOptions(selectedSong.artist_id)
-  );
+  const selectedSong = useSelector((state) => state.playContext.selectedContext);
+  const playingSong = useSelector((state) => state.playContext.playingContext);
+  const song = queueList[0];
+  const { data: artist } = useQuery(getArtistByIdQueryOptions(song.artist_id));
+  const { data: popularSongs } = useQuery(getPopularSongsByArtistIdQueryOptions(song.artist_id));
+  const isPlayingSongSelected = selectedSong.id === playingSong.id;
 
-  useEffect(() => {
-    // reset when song changes
-    setActiveTab('lyrics');
-    setIsPlaying(false);
-  }, [selectedSong.id]);
+  const playPauseButtonHandler = () => {
+    if (isPlayingSongSelected) {
+      dispatch(isPlaying ? pause() : play());
+    } else {
+      dispatch(setPlayingContext(selectedSong));
+      dispatch(setCurrentSongIndex(0));
+    }
+  };
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -90,86 +103,49 @@ export default function SongSidebar() {
         {/* Header */}
         <div className="flex items-center gap-4">
           <img
-            src={selectedSong.cover || defaultSongCover}
-            alt={`${selectedSong.title} cover`}
+            src={song.cover || defaultSongCover}
+            alt={`${song.title} cover`}
             className="h-20 w-20 rounded-md object-cover shadow-md"
           />
           <div className="flex-1">
-            <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">
-              {selectedSong.title}
-            </h3>
+            <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">{song.title}</h3>
             <button
               className="mt-1 text-sm text-slate-300 hover:underline"
               onClick={() => setActiveTab('artist')}
             >
-              {selectedSong.artist}
+              {song.artist}
             </button>
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2">
           <IconButton
-            label={isPlaying ? 'Pause' : 'Play'}
-            onClick={() => setIsPlaying((prev) => !prev)}
+            onClick={playPauseButtonHandler}
+            label={isPlayingSongSelected ? (isPlaying ? 'Pause' : 'Play') : 'Play'}
             className="bg-white/6"
           >
-            {isPlaying ? (
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect x="6" y="5" width="4" height="14" rx="1" />
-                <rect x="14" y="5" width="4" height="14" rx="1" />
-              </svg>
+            {isPlayingSongSelected ? (
+              isPlaying ? (
+                <Pause size={20} />
+              ) : (
+                <Play size={20} />
+              )
             ) : (
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M5 3v18l15-9L5 3z" />
-              </svg>
+              <Play size={20} />
             )}
           </IconButton>
           <IconButton label={isLiked ? 'Unlike' : 'Like'} onClick={() => setIsLiked((v) => !v)}>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 21s-7-4.35-9-7.05C1.33 11.8 3 7 7 6c2.3-.66 3.55 1 5 2 1.45-1 2.7-2.66 5-2 4 1 5.67 5.8 4 7.95C19 16.65 12 21 12 21z"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill={isLiked ? 'rgba(255,255,255,0.95)' : 'none'}
-              />
-            </svg>
+            <Heart
+              size={20}
+              className={`transition-colors ${isLiked ? 'fill-white text-white' : 'fill-transparent text-white'}`}
+            />
           </IconButton>
 
           <IconButton label="More">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="5" cy="12" r="1.5" fill="currentColor" />
-              <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-              <circle cx="19" cy="12" r="1.5" fill="currentColor" />
-            </svg>
+            <Menu size={20} />
           </IconButton>
 
           <div className="ml-auto text-sm text-slate-400">
-            {formatTime(selectedSong.duration)} • {selectedSong.release_date?.split('-')[0]}
+            {formatTime(song.duration)} • {song.release_date?.split('-')[0]}
           </div>
         </div>
 
@@ -213,10 +189,10 @@ export default function SongSidebar() {
               </div>
             </div>
             <div className="flex-1 overflow-auto pr-2 pb-2">
-              {selectedSong.lyrics ? (
+              {song.lyrics ? (
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    {(selectedSong.lyrics || []).map((line, idx) => (
+                    {(song.lyrics || []).map((line, idx) => (
                       <p key={idx} className="text-lg leading-7 text-slate-300">
                         {line || '\u00A0'}
                       </p>
