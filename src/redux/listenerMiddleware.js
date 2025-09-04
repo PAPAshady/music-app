@@ -47,16 +47,19 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setSelectedContext,
   effect: async (action, { dispatch }) => {
-    console.log(action.payload);
     const { id, tracklistType } = action.payload;
     const songs = await queryClient.fetchQuery(
       tracklistType === 'album'
         ? getSongsByAlbumIdQueryOptions(id)
         : getSongsByPlaylistIdQueryOptions(id)
     );
-    // we store the songs of the selected tracklist to keep track of them and do some things like
-    // calculating prev/next songs ids to determine their playing order and etc.
-    dispatch(setSelectedContextSongs(songs));
+
+    // if "tracklistType" dosen't have exist, it means user selected a single song not a playlist or an album.
+    if (tracklistType) {
+      // we store the songs of the selected tracklist to keep track of them and do some things like
+      // calculating prev/next songs ids to determine their playing order and etc.
+      dispatch(setSelectedContextSongs(songs));
+    }
   },
 });
 

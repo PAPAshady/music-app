@@ -3,21 +3,46 @@ import { createSlice } from '@reduxjs/toolkit';
 const playContextSlice = createSlice({
   name: 'queueList',
   initialState: {
-    selectedContext: {},
-    playingContext: {},
+    isSelectedTracklist: false, // Determine whether the user has selected a single song or a tracklist.
+    isPlayingTracklist: false, // Determine whether the user is currently playing a single song or a tracklist.
+    selectedContext: {}, // A tracklist or single song that the user has selected.
+    playingContext: {}, // A tracklist or single song that the user is currenlt playing.
+    selectedContextQueueList: [],
+    playingContextQueueList: [],
   },
   reducers: {
+    setIsSelectedTracklist(state, action) {
+      state.isSelectedTracklist = action.payload;
+    },
+    setIsPlayingTracklist(state, action) {
+      state.isPlayingTracklist = action.payload;
+    },
     setSelectedContext(state, action) {
+      const selectedContextType = action.payload.tracklistType;
+      const isTracklist = selectedContextType === 'playlist' || selectedContextType === 'album';
       state.selectedContext = action.payload;
+      if (isTracklist) {
+        state.isSelectedTracklist = true;
+      } else {
+        state.isSelectedTracklist = false;
+        state.selectedContextQueueList = [action.payload];
+      }
     },
     setSelectedContextSongs(state, action) {
-      state.selectedContext.musics = action.payload;
+      state.selectedContextQueueList = action.payload;
     },
     setPlayingContext(state, action) {
-      state.playingContext = action.payload;
+      const playingContextType = action.payload.tracklistType;
+      const isTracklist = playingContextType === 'playlist' || playingContextType === 'album';
+      if (isTracklist) {
+        state.isPlayingTracklist = true;
+      } else {
+        state.isPlayingTracklist = false;
+        state.playingContextQueueList = [action.payload];
+      }
     },
     setPlayingContextSongs(state, action) {
-      state.playingContext.musics = action.payload;
+      state.playingContextQueueList = action.payload;
     },
     clearSelectedContext(state) {
       state.selectedContext = {};
@@ -29,6 +54,8 @@ const playContextSlice = createSlice({
 });
 
 export const {
+  setIsSelectedTracklist,
+  setIsPlayingTracklist,
   setSelectedContext,
   setSelectedContextSongs,
   setPlayingContext,

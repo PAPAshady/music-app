@@ -48,18 +48,7 @@ const PlayBar = memo(
 
     const playOnClick = () => {
       if (isSingle) {
-        dispatch(
-          setSelectedContext({
-            id: crypto.randomUUID(),
-            title: 'Queue list',
-            description: 'Up next',
-            isPublic: false,
-            tracklistType: 'queuelist',
-            cover: null,
-            totalTracks: 1,
-            musics: [song],
-          })
-        );
+        dispatch(setSelectedContext(song));
         dispatch(setSidebarPanelType('song_panel'));
       } else {
         if (playingTracklist.id !== selectedTracklist.id) {
