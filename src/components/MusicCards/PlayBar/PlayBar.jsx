@@ -60,6 +60,10 @@ const PlayBar = memo(
         if (currentMusic?.id !== id) {
           dispatch(setCurrentSongIndex(songIndex));
         }
+
+        if (selectedTracklist.id !== playingTracklist.id && currentMusic?.id === id) {
+          dispatch(setCurrentSongIndex(songIndex));
+        }
       }
     };
 

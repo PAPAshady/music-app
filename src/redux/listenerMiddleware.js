@@ -1,7 +1,11 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import queryClient from '../queryClient';
 import supabase from '../services/supabaseClient';
-import { getSongsByAlbumIdQueryOptions, getSongsByPlaylistIdQueryOptions } from '../queries/musics';
+import {
+  getSongsByAlbumIdQueryOptions,
+  getSongsByPlaylistIdQueryOptions,
+  getRelatedSongsBySongDataQueryOptions,
+} from '../queries/musics';
 import { setUser } from './slices/authSlice';
 import { getUserAvatar } from './slices/authSlice';
 import { setCurrentMusic } from './slices/musicPlayerSlice';
@@ -47,19 +51,18 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setSelectedContext,
   effect: async (action, { dispatch }) => {
-    const { id, tracklistType } = action.payload;
+    const song = action.payload;
     const songs = await queryClient.fetchQuery(
-      tracklistType === 'album'
-        ? getSongsByAlbumIdQueryOptions(id)
-        : getSongsByPlaylistIdQueryOptions(id)
+      song.tracklistType === 'album'
+        ? getSongsByAlbumIdQueryOptions(song.id)
+        : song.tracklistType === 'playlist'
+          ? getSongsByPlaylistIdQueryOptions(song.id)
+          : getRelatedSongsBySongDataQueryOptions(song)
     );
 
-    // if "tracklistType" dosen't have exist, it means user selected a single song not a playlist or an album.
-    if (tracklistType) {
-      // we store the songs of the selected tracklist to keep track of them and do some things like
-      // calculating prev/next songs ids to determine their playing order and etc.
-      dispatch(setSelectedContextSongs(songs));
-    }
+    // we store the songs of the selected tracklist to keep track of them and do some things like
+    // calculating prev/next songs ids to determine their playing order and etc.
+    dispatch(setSelectedContextSongs(songs));
   },
 });
 

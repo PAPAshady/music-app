@@ -4,6 +4,7 @@ import {
   getSongsByAlbumId,
   getSongsByPlaylistId,
   getPopularSongsByArtistId,
+  getRelatedSongsBySongData,
 } from '../services/songs';
 
 export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
@@ -52,5 +53,16 @@ export const getSongsByPlaylistIdQueryOptions = (playlistId) => {
     retry: true,
     retryDelay: 5000,
     enabled: !!playlistId,
+  });
+};
+
+export const getRelatedSongsBySongDataQueryOptions = (song) => {
+  return queryOptions({
+    queryKey: ['songs', { relation: song.id }],
+    queryFn: () => getRelatedSongsBySongData(song),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!song.id,
   });
 };

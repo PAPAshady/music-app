@@ -6,7 +6,12 @@ import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 import defaultArtistCover from '../../../assets/images/Avatar/no-avatar.png';
 import { useQuery } from '@tanstack/react-query';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
-import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
+import PlayBar from '../../MusicCards/PlayBar/PlayBar';
+import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
+import {
+  getPopularSongsByArtistIdQueryOptions,
+  getRelatedSongsBySongDataQueryOptions,
+} from '../../../queries/musics';
 import { Music } from 'iconsax-react';
 import {
   formatTime,
@@ -16,29 +21,6 @@ import {
 } from '../../../redux/slices/musicPlayerSlice';
 import { useDispatch } from 'react-redux';
 import { setPlayingContext } from '../../../redux/slices/playContextSlice';
-
-const MOCK_RELATED = [
-  { id: 'r1', title: 'In the Air', artist: 'Aeris', cover: 'https://picsum.photos/60/60?random=1' },
-  {
-    id: 'r2',
-    title: 'Love Like This',
-    artist: 'Zachary Johnson',
-    cover: 'https://picsum.photos/60/60?random=2',
-  },
-  {
-    id: 'r3',
-    title: 'Give Me Love',
-    artist: 'Sally',
-    cover: 'https://picsum.photos/60/60?random=3',
-  },
-  {
-    id: 'r4',
-    title: 'Endless',
-    artist: 'The Natives',
-    cover: 'https://picsum.photos/60/60?random=4',
-  },
-  { id: 'r5', title: 'Another Day', artist: 'Kaya', cover: 'https://picsum.photos/60/60?random=5' },
-];
 
 function IconButton({ children, label, onClick, className = '', title }) {
   return (
@@ -76,21 +58,23 @@ export default function SongSidebar() {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('lyrics');
   const [isLiked, setIsLiked] = useState(false);
-  const related = MOCK_RELATED;
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
-  const queueList = useSelector((state) => state.playContext.selectedContextQueueList);
-  const selectedSong = useSelector((state) => state.playContext.selectedContext);
+  const song = useSelector((state) => state.playContext.selectedContext);
+  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const playingSong = useSelector((state) => state.playContext.playingContext);
-  const song = queueList[0];
   const { data: artist } = useQuery(getArtistByIdQueryOptions(song.artist_id));
   const { data: popularSongs } = useQuery(getPopularSongsByArtistIdQueryOptions(song.artist_id));
-  const isPlayingSongSelected = selectedSong.id === playingSong.id;
+  const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
+    getRelatedSongsBySongDataQueryOptions(song)
+  );
+  const isPlayingSongSelected = song.id === playingSong.id;
+  const songMetadataToShow = isPlayingSongSelected ? currentMusic : song;
 
   const playPauseButtonHandler = () => {
     if (isPlayingSongSelected) {
       dispatch(isPlaying ? pause() : play());
     } else {
-      dispatch(setPlayingContext(selectedSong));
+      dispatch(setPlayingContext(song));
       dispatch(setCurrentSongIndex(0));
     }
   };
@@ -103,17 +87,19 @@ export default function SongSidebar() {
         {/* Header */}
         <div className="flex items-center gap-4">
           <img
-            src={song.cover || defaultSongCover}
-            alt={`${song.title} cover`}
+            src={songMetadataToShow.cover || defaultSongCover}
+            alt={`${songMetadataToShow.title} cover`}
             className="h-20 w-20 rounded-md object-cover shadow-md"
           />
           <div className="flex-1">
-            <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">{song.title}</h3>
+            <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">
+              {songMetadataToShow.title}
+            </h3>
             <button
               className="mt-1 text-sm text-slate-300 hover:underline"
               onClick={() => setActiveTab('artist')}
             >
-              {song.artist}
+              {songMetadataToShow.artist}
             </button>
           </div>
         </div>
@@ -145,7 +131,8 @@ export default function SongSidebar() {
           </IconButton>
 
           <div className="ml-auto text-sm text-slate-400">
-            {formatTime(song.duration)} • {song.release_date?.split('-')[0]}
+            {formatTime(songMetadataToShow.duration)} •{' '}
+            {songMetadataToShow.release_date?.split('-')[0]}
           </div>
         </div>
 
@@ -189,10 +176,10 @@ export default function SongSidebar() {
               </div>
             </div>
             <div className="flex-1 overflow-auto pr-2 pb-2">
-              {song.lyrics ? (
+              {songMetadataToShow.lyrics ? (
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    {(song.lyrics || []).map((line, idx) => (
+                    {(songMetadataToShow.lyrics || []).map((line, idx) => (
                       <p key={idx} className="text-lg leading-7 text-slate-300">
                         {line || '\u00A0'}
                       </p>
@@ -215,20 +202,13 @@ export default function SongSidebar() {
           <div className="my-4 flex-1 space-y-4 overflow-auto pr-2 pb-2">
             <div className="text-sm text-slate-300">Suggested & Queue</div>
             <ul className="mt-2 space-y-3">
-              {related.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-white/3"
-                  onClick={() => console.log('play related', item)}
-                >
-                  <img src={item.cover} alt="cover" className="h-12 w-12 rounded-md object-cover" />
-                  <div className="flex-1">
-                    <div className="font-medium">{item.title}</div>
-                    <div className="text-sm text-slate-300">{item.artist}</div>
-                  </div>
-                  <div className="text-sm text-slate-400">3:12</div>
-                </li>
-              ))}
+              {isRelatedSongsPending
+                ? Array(10)
+                    .fill()
+                    .map((_, index) => <PlayBarSkeleton size="sm" key={index} />)
+                : relatedSongs.map((song, index) => (
+                    <PlayBar key={song.id} size="sm" song={song} index={index} />
+                  ))}
             </ul>
             <button className="mt-3 w-full rounded-md bg-white/6 py-2 text-sm">Show more</button>
           </div>

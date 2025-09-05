@@ -1,4 +1,5 @@
 import supabase from './supabaseClient';
+import { shuffleArray } from '../utils/arrayUtils';
 
 export const getAllSongs = async ({ limit, cursor }) => {
   let query = supabase
@@ -42,6 +43,30 @@ export const getPopularSongsByArtistId = async (artistId) => {
     .eq('artist_id', artistId)
     .order('play_count', { ascending: false })
     .limit(10);
-    if(error) throw error
-    return data
+  if (error) throw error;
+  return data;
+};
+
+export const getRelatedSongsBySongData = async (song) => {
+  const [artistRes, genresRes] = await Promise.all([
+    supabase.from('songs').select('*').eq('artist_id', song.artist_id).neq('id', song.id).limit(10),
+    supabase
+      .from('songs')
+      .select('*')
+      .overlaps('genres', song.genres)
+      .neq('id', song.id)
+      .neq('artist_id', song.artist_id)
+      .limit(10),
+  ]);
+
+  if (artistRes.error) {
+    console.error('Error getting related songs by artist : ', artistRes.error);
+    throw artistRes.error;
+  } else if (genresRes.error) {
+    console.error('Error getting related songs by genre : ', genresRes.error);
+    throw genresRes.error;
+  }
+
+  const relatedSongs = shuffleArray([...(artistRes.data || []), ...(genresRes.data || [])]);
+  return [song, ...relatedSongs];
 };
