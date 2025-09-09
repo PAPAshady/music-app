@@ -137,7 +137,7 @@ export default function SongSidebar() {
         {/* Content */}
         {activeTab === 'lyrics' && (
           <>
-            <div className="my-4 flex items-center justify-between">
+            <div className="mt-4 flex items-center justify-between">
               <div className="text-sm text-slate-300">Lyrics</div>
               <div className="flex items-center gap-2">
                 <label className="flex items-center gap-2 text-sm text-slate-300">
@@ -170,7 +170,7 @@ export default function SongSidebar() {
           </>
         )}
         {activeTab === 'related' && (
-          <div className="my-4 flex-1 space-y-4 overflow-auto pr-2 pb-2">
+          <div className="mt-4 flex-1 space-y-4 overflow-auto pr-2 pb-2">
             <div className="text-sm text-slate-300">Suggested & Queue</div>
             <ul className="mt-2 space-y-3">
               {isRelatedSongsPending
@@ -185,7 +185,7 @@ export default function SongSidebar() {
           </div>
         )}
         {activeTab === 'artist' && (
-          <div className="my-4 flex-1 space-y-4 overflow-auto pr-2 pb-2">
+          <div className="mt-4 flex-1 space-y-4 overflow-auto pr-2 pb-2">
             <div className="flex items-center gap-3">
               <img
                 src={artist?.image || defaultArtistCover}
