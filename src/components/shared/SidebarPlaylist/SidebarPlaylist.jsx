@@ -14,14 +14,18 @@ import {
   getSongsByPlaylistIdQueryOptions,
 } from '../../../queries/musics';
 import { useQuery } from '@tanstack/react-query';
-import { play, pause, setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
+import {
+  play,
+  pause,
+  setCurrentSongIndex,
+  formatTime,
+} from '../../../redux/slices/musicPlayerSlice';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 
 const SidebarPlaylist = memo(() => {
   const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
-
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const { data: selectedPlaylistSongs, isLoading } = useQuery(
     selectedTracklist.tracklistType === 'album'
@@ -33,6 +37,7 @@ const SidebarPlaylist = memo(() => {
   const isPlayingPlaylistSelected =
     playingTracklist.id === selectedTracklist.id &&
     playingTracklist.title === selectedTracklist.title;
+  const totalTracklistTime = selectedPlaylistSongs?.reduce((acc, next) => acc + next.duration, 0);
 
   const playPauseButtonHandler = () => {
     if (!isPlayingPlaylistSelected) {
@@ -72,7 +77,11 @@ const SidebarPlaylist = memo(() => {
         : 'No tracks',
       icon: <Music />,
     },
-    { id: 2, title: '01:11:58', icon: <Timer /> },
+    {
+      id: 2,
+      title: selectedPlaylistSongs ? formatTime(totalTracklistTime) : '00:00',
+      icon: <Timer />,
+    },
     { id: 3, title: selectedTracklist.artist ?? 'No Artist', icon: <User /> },
   ];
 

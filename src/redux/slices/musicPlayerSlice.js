@@ -50,9 +50,17 @@ export const prev = createAsyncThunk('musicPlayer/prev', (_, { getState, dispatc
 
 // an utility function to convert milliseconds into currect time format to in the UI
 export const formatTime = (time) => {
+  const hours = Math.floor(time / 3600);
+  const mins = Math.floor((time % 3600) / 60);
   const seconds = Math.floor(time % 60);
-  const mins = Math.floor(time / 60);
-  return `${mins}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  const fomrattedMinsAndSeconds = `${mins.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+  if (hours) {
+    const formattedHours = `${hours.toString().padStart(2, '0')}:`;
+    return formattedHours + fomrattedMinsAndSeconds;
+  }
+
+  return fomrattedMinsAndSeconds;
 };
 
 const musicPlayerSlice = createSlice({
