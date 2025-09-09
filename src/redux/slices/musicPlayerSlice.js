@@ -14,10 +14,7 @@ export const pause = createAsyncThunk('musicPlayer/pause', (_, { dispatch }) => 
 
 export const next = createAsyncThunk('musicPlayer/next', (_, { getState, dispatch }) => {
   const currentSongIndex = getState().musicPlayer.currentSongIndex;
-  const playContext = getState().playContext;
-  const queuelist = playContext.isSingleSong
-    ? playContext.relatedSongs
-    : playContext.currentCollection.tracks;
+  const queuelist = getState().playContext.currentQueuelist;
 
   // if queuelist has only one song, play it again in case user clicks on next button
   if (queuelist?.length === 1) {
@@ -35,10 +32,7 @@ export const next = createAsyncThunk('musicPlayer/next', (_, { getState, dispatc
 
 export const prev = createAsyncThunk('musicPlayer/prev', (_, { getState, dispatch }) => {
   const currentSongIndex = getState().musicPlayer.currentSongIndex;
-  const playContext = getState().playContext;
-  const queuelist = playContext.isSingleSong
-    ? playContext.relatedSongs
-    : playContext.currentCollection.tracks;
+  const queuelist = getState().playContext.currentQueuelist;
 
   // if queuelist has only one song, play it again in case user clicks on prev button
   if (queuelist?.length === 1) {

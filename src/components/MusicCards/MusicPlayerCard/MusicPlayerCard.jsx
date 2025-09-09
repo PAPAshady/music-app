@@ -53,7 +53,7 @@ MusicPlayerCard.propTypes = {
   title: PropTypes.string.isRequired,
   artist: PropTypes.string,
   isFavorite: PropTypes.bool,
-  duration: PropTypes.string,
+  duration: PropTypes.number,
   cover: PropTypes.string,
   isPlaying: PropTypes.bool,
   onClick: PropTypes.func,

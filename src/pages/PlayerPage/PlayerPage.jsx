@@ -15,6 +15,7 @@ import MobilePlaylist from '../../components/shared/MobilePlaylist/MobilePlaylis
 import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
 import { useQuery } from '@tanstack/react-query';
 import {
+  getRelatedSongsBySongDataQueryOptions,
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
 } from '../../queries/musics';
@@ -27,18 +28,22 @@ export default function PlayerPage() {
   const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
+  const isSingleSong = useSelector((state) => state.playContext.isSingleSong);
+  const selectedSingleSong = useSelector((state) => state.playContext.singleSong);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
   const prevSongIndex = useSelector((state) => state.musicPlayer.prevSongIndex);
   const { data: tracklistSongs, isPending: isTracklistSongsPending } = useQuery(
-    playingTracklist.tracklistType === 'playlist'
-      ? getSongsByPlaylistIdQueryOptions(playingTracklist.id)
-      : getSongsByAlbumIdQueryOptions(playingTracklist.id)
+    isSingleSong
+      ? getRelatedSongsBySongDataQueryOptions(selectedSingleSong)
+      : playingTracklist.tracklistType === 'playlist'
+        ? getSongsByPlaylistIdQueryOptions(playingTracklist.id)
+        : getSongsByAlbumIdQueryOptions(playingTracklist.id)
   );
 
   useEffect(() => {
     const img = new Image();
-    img.src = currentMusic?.cover ? currentMusic?.cover : noMusicCover;
+    img.src = currentMusic?.cover || noMusicCover;
     img.addEventListener('load', () => setMusicCover(img.src));
   }, [currentMusic]);
 
