@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
-import { setSelectedContext } from '../../../redux/slices/playContextSlice';
+import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 
 const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const playlistCover = cover ? cover : noCoverImg;
 
   const showSelectedPlaylist = () => {
-    dispatch(setSelectedContext(playlist));
+    dispatch(setSelectedCollection(playlist));
     dispatch(openMobilePlaylist());
     dispatch(setSidebarPanelType('tracklist_panel'));
   };

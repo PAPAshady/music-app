@@ -8,7 +8,11 @@ import { formatTime, setCurrentSongIndex } from '../../../redux/slices/musicPlay
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import PropTypes from 'prop-types';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
-import { setPlayingContext, setSelectedContext } from '../../../redux/slices/playContextSlice';
+import {
+  setCurrentCollection,
+  setCurrentQueuelist,
+  setSingleSong,
+} from '../../../redux/slices/playContextSlice';
 
 const PlayBar = memo(
   ({
@@ -25,8 +29,8 @@ const PlayBar = memo(
     const dropDownMenu = useCloseOnClickOutside();
     const dispatch = useDispatch();
     const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
-    const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
-    const playingTracklist = useSelector((state) => state.playContext.playingContext);
+    const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
+    const playingTracklist = useSelector((state) => state.playContext.currentCollection);
     const { title, id, cover, artist, duration, album } = song;
 
     const musicTitleSizes = {
@@ -48,20 +52,18 @@ const PlayBar = memo(
 
     const playOnClick = () => {
       if (isSingle) {
-        dispatch(setSelectedContext(song));
+        dispatch(setSingleSong(song));
+        dispatch(setCurrentQueuelist([song]));
+        dispatch(setCurrentSongIndex(0));
         dispatch(setSidebarPanelType('song_panel'));
       } else {
         if (playingTracklist.id !== selectedTracklist.id) {
-          dispatch(setPlayingContext(selectedTracklist));
+          dispatch(setCurrentCollection(selectedTracklist));
         }
 
         // dont change the song index if user clicked on the current song which is playing because it will
         // cause the song to replay from the start
         if (currentMusic?.id !== id) {
-          dispatch(setCurrentSongIndex(songIndex));
-        }
-
-        if (selectedTracklist.id !== playingTracklist.id && currentMusic?.id === id) {
           dispatch(setCurrentSongIndex(songIndex));
         }
       }

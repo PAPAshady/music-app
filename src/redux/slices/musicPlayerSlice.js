@@ -14,16 +14,19 @@ export const pause = createAsyncThunk('musicPlayer/pause', (_, { dispatch }) => 
 
 export const next = createAsyncThunk('musicPlayer/next', (_, { getState, dispatch }) => {
   const currentSongIndex = getState().musicPlayer.currentSongIndex;
-  const playingTracklistSongs = getState().playContext.playingContextQueueList;
+  const playContext = getState().playContext;
+  const queuelist = playContext.isSingleSong
+    ? playContext.relatedSongs
+    : playContext.currentCollection.tracks;
 
-  // if playlist has only one song, play it again in case user clicks on next button
-  if (playingTracklistSongs?.length === 1) {
+  // if queuelist has only one song, play it again in case user clicks on next button
+  if (queuelist?.length === 1) {
     music.currentTime = 0;
     dispatch(play());
     return;
   }
 
-  if (currentSongIndex === playingTracklistSongs?.length - 1) {
+  if (currentSongIndex === queuelist?.length - 1) {
     dispatch(setCurrentSongIndex(0));
   } else {
     dispatch(setCurrentSongIndex(currentSongIndex + 1));
@@ -32,17 +35,20 @@ export const next = createAsyncThunk('musicPlayer/next', (_, { getState, dispatc
 
 export const prev = createAsyncThunk('musicPlayer/prev', (_, { getState, dispatch }) => {
   const currentSongIndex = getState().musicPlayer.currentSongIndex;
-  const playingTracklistSongs = getState().playContext.playingContextQueueList;
+  const playContext = getState().playContext;
+  const queuelist = playContext.isSingleSong
+    ? playContext.relatedSongs
+    : playContext.currentCollection.tracks;
 
-  // if playlist has only one song, play it again in case user clicks on prev button
-  if (playingTracklistSongs?.length === 1) {
+  // if queuelist has only one song, play it again in case user clicks on prev button
+  if (queuelist?.length === 1) {
     music.currentTime = 0;
     dispatch(play());
     return;
   }
 
   if (currentSongIndex === 0) {
-    dispatch(setCurrentSongIndex(playingTracklistSongs?.length - 1));
+    dispatch(setCurrentSongIndex(queuelist?.length - 1));
   } else {
     dispatch(setCurrentSongIndex(currentSongIndex - 1));
   }

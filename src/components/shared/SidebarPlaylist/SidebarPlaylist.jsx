@@ -16,11 +16,11 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { play, pause, setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
-import { setPlayingContext } from '../../../redux/slices/playContextSlice';
+import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 
 const SidebarPlaylist = memo(() => {
-  const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
-  const playingTracklist = useSelector((state) => state.playContext.playingContext);
+  const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
+  const playingTracklist = useSelector((state) => state.playContext.currentCollection);
 
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const { data: selectedPlaylistSongs, isLoading } = useQuery(
@@ -31,11 +31,12 @@ const SidebarPlaylist = memo(() => {
   const dispatch = useDispatch();
   const playlistCover = selectedTracklist.cover ? selectedTracklist.cover : defaultCover;
   const isPlayingPlaylistSelected =
-    playingTracklist.id === selectedTracklist.id && playingTracklist.title === selectedTracklist.title;
+    playingTracklist.id === selectedTracklist.id &&
+    playingTracklist.title === selectedTracklist.title;
 
   const playPauseButtonHandler = () => {
     if (!isPlayingPlaylistSelected) {
-      dispatch(setPlayingContext(selectedTracklist));
+      dispatch(setCurrentCollection(selectedTracklist));
       dispatch(setCurrentSongIndex(0));
       return;
     }
@@ -203,7 +204,9 @@ const SidebarPlaylist = memo(() => {
                 className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center"
               >
                 <Music size={68} className="text-secondary-300" />
-                <p className="mt-2 text-xl font-semibold text-white">This playlist is empty</p>
+                <p className="mt-2 text-xl font-semibold text-white">
+                  This {selectedTracklist.tracklistType} is empty
+                </p>
                 <p>Let the music begin...</p>
               </motion.div>
             )}

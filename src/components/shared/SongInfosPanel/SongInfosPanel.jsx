@@ -13,14 +13,8 @@ import {
   getRelatedSongsBySongDataQueryOptions,
 } from '../../../queries/musics';
 import { Music } from 'iconsax-react';
-import {
-  formatTime,
-  play,
-  pause,
-  setCurrentSongIndex,
-} from '../../../redux/slices/musicPlayerSlice';
+import { formatTime, play, pause } from '../../../redux/slices/musicPlayerSlice';
 import { useDispatch } from 'react-redux';
-import { setPlayingContext } from '../../../redux/slices/playContextSlice';
 
 function IconButton({ children, label, onClick, className = '', title }) {
   return (
@@ -59,25 +53,13 @@ export default function SongSidebar() {
   const [activeTab, setActiveTab] = useState('lyrics');
   const [isLiked, setIsLiked] = useState(false);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
-  const song = useSelector((state) => state.playContext.selectedContext);
-  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
-  const playingSong = useSelector((state) => state.playContext.playingContext);
+  const song = useSelector((state) => state.musicPlayer.currentMusic);
+  const selectedSong = useSelector((state) => state.playContext.singleSong);
   const { data: artist } = useQuery(getArtistByIdQueryOptions(song.artist_id));
   const { data: popularSongs } = useQuery(getPopularSongsByArtistIdQueryOptions(song.artist_id));
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
-    getRelatedSongsBySongDataQueryOptions(song)
+    getRelatedSongsBySongDataQueryOptions(selectedSong)
   );
-  const isPlayingSongSelected = song.id === playingSong.id;
-  const songMetadataToShow = isPlayingSongSelected ? currentMusic : song;
-
-  const playPauseButtonHandler = () => {
-    if (isPlayingSongSelected) {
-      dispatch(isPlaying ? pause() : play());
-    } else {
-      dispatch(setPlayingContext(song));
-      dispatch(setCurrentSongIndex(0));
-    }
-  };
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -87,37 +69,27 @@ export default function SongSidebar() {
         {/* Header */}
         <div className="flex items-center gap-4">
           <img
-            src={songMetadataToShow.cover || defaultSongCover}
-            alt={`${songMetadataToShow.title} cover`}
+            src={song.cover || defaultSongCover}
+            alt={`${song.title} cover`}
             className="h-20 w-20 rounded-md object-cover shadow-md"
           />
           <div className="flex-1">
-            <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">
-              {songMetadataToShow.title}
-            </h3>
+            <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">{song.title}</h3>
             <button
               className="mt-1 text-sm text-slate-300 hover:underline"
               onClick={() => setActiveTab('artist')}
             >
-              {songMetadataToShow.artist}
+              {song.artist}
             </button>
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2">
           <IconButton
-            onClick={playPauseButtonHandler}
-            label={isPlayingSongSelected ? (isPlaying ? 'Pause' : 'Play') : 'Play'}
+            onClick={() => dispatch(isPlaying ? pause() : play())}
+            label={isPlaying ? 'Pause' : 'Play'}
             className="bg-white/6"
           >
-            {isPlayingSongSelected ? (
-              isPlaying ? (
-                <Pause size={20} />
-              ) : (
-                <Play size={20} />
-              )
-            ) : (
-              <Play size={20} />
-            )}
+            {isPlaying ? <Pause size={20} /> : <Play size={20} />}
           </IconButton>
           <IconButton label={isLiked ? 'Unlike' : 'Like'} onClick={() => setIsLiked((v) => !v)}>
             <Heart
@@ -131,8 +103,7 @@ export default function SongSidebar() {
           </IconButton>
 
           <div className="ml-auto text-sm text-slate-400">
-            {formatTime(songMetadataToShow.duration)} •{' '}
-            {songMetadataToShow.release_date?.split('-')[0]}
+            {formatTime(song.duration)} • {song.release_date?.split('-')[0]}
           </div>
         </div>
 
@@ -176,10 +147,10 @@ export default function SongSidebar() {
               </div>
             </div>
             <div className="flex-1 overflow-auto pr-2 pb-2">
-              {songMetadataToShow.lyrics ? (
+              {song.lyrics ? (
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    {(songMetadataToShow.lyrics || []).map((line, idx) => (
+                    {(song.lyrics || []).map((line, idx) => (
                       <p key={idx} className="text-lg leading-7 text-slate-300">
                         {line || '\u00A0'}
                       </p>

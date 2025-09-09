@@ -17,7 +17,7 @@ import {
   removeSongFromPrivatePlaylist,
   deletePrivatePlaylist,
 } from '../services/playlists';
-import { setPlayingContextSongs, setSelectedContextSongs } from '../redux/slices/playContextSlice';
+import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
 
 export const getAllPlaylistsQueryOptions = () => {
   return queryOptions({
@@ -104,12 +104,12 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
     });
 
     const updatedPlaylistSongs = queryClient.getQueryData(['playlists', { playlistId }]);
-    const playingTracklist = store.getState().playContext.playingContext; // the playlist which is currently playing
+    const playingTracklist = store.getState().playContext.currentCollection; // the playlist which is currently playing
     // sync with redux
-    store.dispatch(setSelectedContextSongs(updatedPlaylistSongs));
+    store.dispatch(setSelectedCollectionTracks(updatedPlaylistSongs));
     if (playingTracklist.id === playlistId) {
       // if user updated the music list of current playing playlist, sync the updates in redux as well
-      store.dispatch(setPlayingContextSongs(updatedPlaylistSongs));
+      store.dispatch(setCurrentQueuelist(updatedPlaylistSongs));
     }
   },
 });
@@ -135,14 +135,14 @@ export const removeSongFromPrivatePlaylistMutationOptions = (playlistId) => ({
       );
     });
 
-    const playingTracklist = store.getState().playContext.playingContext; // the playlist which is currently playing
+    const playingTracklist = store.getState().playContext.currentCollection; // the playlist which is currently playing
     const musicPlayer = store.getState().musicPlayer;
     const { dispatch } = store;
     // sync with redux
-    dispatch(setSelectedContextSongs(updatedPlaylistSongs));
+    dispatch(setSelectedCollectionTracks(updatedPlaylistSongs));
     if (playingTracklist.id === playlistId) {
       // if user updated the music list of current playlist, sync the updates in redux as well
-      dispatch(setPlayingContextSongs(updatedPlaylistSongs));
+      dispatch(setCurrentQueuelist(updatedPlaylistSongs));
 
       // handle the case if user removed the current playing song from the current playlist.
       if (musicPlayer.currentMusic?.id === songId) {

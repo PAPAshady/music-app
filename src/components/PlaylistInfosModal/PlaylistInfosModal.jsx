@@ -19,7 +19,7 @@ import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import { uploadFile, getFileUrl, deleteFiles, listFiles } from '../../services/storage';
-import { setSelectedContext } from '../../redux/slices/playContextSlice';
+import { setSelectedCollection } from '../../redux/slices/playContextSlice';
 import {
   createNewPrivatePlaylistMutationOptions,
   updatePrivatePlaylistMutationOptions,
@@ -53,7 +53,7 @@ export default function PlaylistInfosModal() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 6 }));
-  const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
+  const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const { targetRef: triggerElem } = useIntersectionObserver({ onIntersect });
   const addSongMutation = useMutation(
@@ -217,7 +217,7 @@ export default function PlaylistInfosModal() {
       // handle updating playlist logic in database
       try {
         const newPlaylistData = await updatePlaylistMutation.mutateAsync(modifiedFields);
-        dispatch(setSelectedContext({ ...newPlaylistData, musics: selectedPlaylistSongs })); // update redux store as well be synced with new changes
+        dispatch(setSelectedCollection({ ...newPlaylistData, musics: selectedPlaylistSongs })); // update redux store as well be synced with new changes
         dispatch(showNewSnackbar({ message: 'Playlist updated successfully.', type: 'success' }));
         onClose();
       } catch (err) {

@@ -12,7 +12,7 @@ import {
 export default function useInitilizeAudioEvents() {
   const dispatch = useDispatch();
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
-  const playingTracklist = useSelector((state) => state.playContext.playingContext);
+  const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
 
   const startMusicInitialLoading = useCallback(

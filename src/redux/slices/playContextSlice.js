@@ -1,63 +1,52 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const playContextSlice = createSlice({
-  name: 'queueList',
+  name: 'playContext',
   initialState: {
-    isSelectedTracklist: false, // Determine whether the user has selected a single song or a tracklist.
-    isPlayingTracklist: false, // Determine whether the user is currently playing a single song or a tracklist.
-    selectedContext: {}, // A tracklist or single song that the user has selected.
-    playingContext: {}, // A tracklist or single song that the user is currenlt playing.
-    selectedContextQueueList: [],
-    playingContextQueueList: [],
+    isSingleSong: false,
+    selectedCollection: {},
+    currentCollection: {},
+    singleSong: {},
+    currentQueuelist: [],
   },
   reducers: {
-    setIsSelectedTracklist(state, action) {
-      state.isSelectedTracklist = action.payload;
+    setIsSingleSong(state, action) {
+      state.isSingleSong = action.payload;
     },
-    setIsPlayingTracklist(state, action) {
-      state.isPlayingTracklist = action.payload;
+    setSelectedCollection(state, action) {
+      state.isSingleSong = false;
+      state.selectedCollection = action.payload;
     },
-    setSelectedContext(state, action) {
-      const selectedContextType = action.payload.tracklistType;
-      const isTracklist = selectedContextType === 'playlist' || selectedContextType === 'album';
-      state.selectedContext = action.payload;
-      if (isTracklist) {
-        state.isSelectedTracklist = true;
-      } else {
-        state.isSelectedTracklist = false;
-        state.selectedContextQueueList = [action.payload];
-      }
+    setSelectedCollectionTracks(state, action) {
+      state.selectedCollection = {
+        ...state.selectedCollection,
+        tracks: action.payload,
+      };
     },
-    setSelectedContextSongs(state, action) {
-      state.selectedContextQueueList = action.payload;
+    setCurrentCollection(state, action) {
+      state.isSingleSong = false;
+      state.currentCollection = action.payload;
+      state.currentQueuelist = state.selectedCollection.tracks;
     },
-    setPlayingContext(state, action) {
-      const playingContextType = action.payload.tracklistType;
-      const isTracklist = playingContextType === 'playlist' || playingContextType === 'album';
-      state.playingContext = action.payload;
-      isTracklist ? (state.isPlayingTracklist = true) : (state.isPlayingTracklist = false);
-      state.playingContextQueueList = state.selectedContextQueueList;
+
+    setSingleSong(state, action) {
+      state.isSingleSong = true;
+      state.selectedCollection = {};
+      state.currentCollection = {};
+      state.singleSong = action.payload;
     },
-    setPlayingContextSongs(state, action) {
-      state.playingContextQueueList = action.payload;
-    },
-    clearSelectedContext(state) {
-      state.selectedContext = {};
-    },
-    clearPlayingContext(state) {
-      state.playingContext = {};
+    setCurrentQueuelist(state, action) {
+      state.currentQueuelist = action.payload;
     },
   },
 });
 
 export const {
-  setIsSelectedTracklist,
-  setIsPlayingTracklist,
-  setSelectedContext,
-  setSelectedContextSongs,
-  setPlayingContext,
-  setPlayingContextSongs,
-  clearSelectedContext,
-  clearPlayingContext,
+  setIsSingleSong,
+  setSelectedCollection,
+  setSelectedCollectionTracks,
+  setCurrentCollection,
+  setSingleSong,
+  setCurrentQueuelist,
 } = playContextSlice.actions;
 export default playContextSlice.reducer;

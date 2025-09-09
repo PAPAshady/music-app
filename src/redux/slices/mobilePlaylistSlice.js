@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { setSelectedContext } from './playContextSlice';
+import { setSelectedCollection } from './playContextSlice';
 
 export const openMobilePlaylist = createAsyncThunk(
   'mobilePlaylist/openMobilePlaylist',
@@ -20,12 +20,12 @@ export const closeMobilePlaylist = createAsyncThunk(
   'mobilePlaylist/closeMobilePlaylist',
   (_, { dispatch, getState }) => {
     window.history.back();
-    const playingContext = getState().playingContext.playingContext;
+    const currentCollection = getState().currentCollection.currentCollection;
 
     dispatch(setIsMobilePlaylistOpen(false));
     // After viewing a different playlist's details, reset selectedPlaylist to the currently playing one.
     // This ensures that the next time the user opens the mobile playlist, it shows the correct (current) playlist info.
-    dispatch(setSelectedContext(playingContext));
+    dispatch(setSelectedCollection(currentCollection));
   }
 );
 

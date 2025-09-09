@@ -11,7 +11,7 @@ export default function ConfirmModal() {
   const { isOpen, title, message, buttons, buttonsClassNames, actionType } = useSelector(
     (state) => state.confirmModal
   );
-  const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
+  const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
   const userId = useSelector((state) => state.auth.user?.id);
   const deletePlaylistMutation = useMutation(
     deletePrivatePlaylistMutationOptions(selectedTracklist.id)

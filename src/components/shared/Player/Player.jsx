@@ -41,14 +41,14 @@ export default function Player({ classNames, isPlayerPage }) {
   const dispatch = useDispatch();
   const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
-  const playingTracklistSongs = useSelector((state) => state.playContext.playingContextQueueList);
+  const queuelist = useSelector((state) => state.playContext.currentQueuelist);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const musicState = useSelector((state) => state.musicPlayer.musicState);
   const [volume, setVolume] = useState([musicDefaultVolume]);
   const verticalVolumeSlider = useCloseOnClickOutside();
   const navigate = useNavigate();
-  const disabled = !playingTracklistSongs?.length;
+  const disabled = !queuelist?.length;
   const isLargeMobile = useMediaQuery('(max-width: 639px)');
 
   useEffect(() => {

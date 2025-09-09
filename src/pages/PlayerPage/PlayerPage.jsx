@@ -26,7 +26,7 @@ export default function PlayerPage() {
   const dispatch = useDispatch();
   const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const playingTracklist = useSelector((state) => state.playContext.playingContext);
+  const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
   const prevSongIndex = useSelector((state) => state.musicPlayer.prevSongIndex);

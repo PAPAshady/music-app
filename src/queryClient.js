@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 
-const queryClinet = new QueryClient({
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
@@ -8,4 +8,7 @@ const queryClinet = new QueryClient({
   },
 });
 
-export default queryClinet;
+// activate react-query devtools
+window.__TANSTACK_QUERY_CLIENT__ = queryClient;
+
+export default queryClient;

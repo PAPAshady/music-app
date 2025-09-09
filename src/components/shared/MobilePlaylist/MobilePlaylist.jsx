@@ -51,7 +51,7 @@ import {
 import PropTypes from 'prop-types';
 import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
-import { setPlayingContext } from '../../../redux/slices/playContextSlice';
+import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 
 export default function MobilePlaylist() {
   const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
@@ -62,8 +62,8 @@ export default function MobilePlaylist() {
   const searchInput = useInput();
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const isTablet = useMediaQuery('(min-width: 768px)');
-  const selectedTracklist = useSelector((state) => state.playContext.selectedContext);
-  const playingTracklist = useSelector((state) => state.playContext.playingContext);
+  const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
+  const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const playlistCover = selectedTracklist.cover ? selectedTracklist.cover : playlistDefaultCover;
@@ -135,7 +135,7 @@ export default function MobilePlaylist() {
 
   const playPauseButtonHandler = () => {
     if (playingTracklist.id !== selectedTracklist.id) {
-      dispatch(setPlayingContext(selectedTracklist));
+      dispatch(setCurrentCollection(selectedTracklist));
       dispatch(setCurrentSongIndex(0));
     } else {
       dispatch(isPlaying ? pause() : play());
