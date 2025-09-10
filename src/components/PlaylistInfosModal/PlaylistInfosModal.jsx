@@ -46,7 +46,7 @@ export default function PlaylistInfosModal() {
   const fileInputRef = useRef(null);
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
-  const [selectedTab, setSelectedTab] = useState('view'); // could be on of the following:  [add, view]
+  const [selectedTab, setSelectedTab] = useState('view'); // could be one of the following:  [add, view]
   const {
     data: allSongs,
     isFetchingNextPage,
@@ -439,14 +439,16 @@ export default function PlaylistInfosModal() {
                       </div>
                       <span className="-mt-10 block" ref={triggerElem}></span>
                       <div className="mt-16 text-center">
-                        {allSongs?.pages?.length === 1 && !isFetchingNextPage && (
-                          <MainButton
-                            classNames="!border-secondary-200"
-                            title="Load more"
-                            size="sm"
-                            onClick={fetchNextPage}
-                          />
-                        )}
+                        {selectedTab === 'add' &&
+                          allSongs?.pages?.length === 1 &&
+                          !isFetchingNextPage && (
+                            <MainButton
+                              classNames="!border-secondary-200"
+                              title="Load more"
+                              size="sm"
+                              onClick={fetchNextPage}
+                            />
+                          )}
                       </div>
                       {isFetchingNextPage && (
                         <div className="flex justify-center pb-4">

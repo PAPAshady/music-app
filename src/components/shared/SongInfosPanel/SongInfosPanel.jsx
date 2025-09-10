@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   getPopularSongsByArtistIdQueryOptions,
   getRelatedSongsBySongDataQueryOptions,
@@ -64,179 +65,260 @@ export default function SongSidebar() {
   return (
     <div className="sticky top-10 hidden xl:block">
       <aside
-        className={`border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col overflow-y-hidden rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 p-5 px-3 py-5 pb-3 text-white shadow-2xl xl:w-[310px] 2xl:h-[calc(100dvh-200px)]`}
+        className={`border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col overflow-y-hidden rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 p-5 px-3 py-5 pb-4 text-white shadow-2xl xl:w-[310px] 2xl:h-[calc(100dvh-200px)]`}
       >
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <img
-            src={song.cover || defaultSongCover}
-            alt={`${song.title} cover`}
-            className="h-20 w-20 rounded-md object-cover shadow-md"
-          />
-          <div className="flex-1">
-            <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">{song.title}</h3>
-            <button
-              className="mt-1 text-sm text-slate-300 hover:underline"
-              onClick={() => setActiveTab('artist')}
-            >
-              {song.artist}
-            </button>
-          </div>
-        </div>
-        <div className="mt-3 flex items-center gap-2">
-          <IconButton
-            onClick={() => dispatch(isPlaying ? pause() : play())}
-            label={isPlaying ? 'Pause' : 'Play'}
-            className="bg-white/6"
+        <AnimatePresence mode="wait">
+          <motion.div
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.2 }}
+            key={song?.id}
+            variants={{
+              initial: { opacity: 0, y: 15 },
+              animate: { opacity: 1, y: 0 },
+              exit: { opacity: 0, y: 15 },
+              transition: { duration: 0.2 },
+            }}
           >
-            {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-          </IconButton>
-          <IconButton label={isLiked ? 'Unlike' : 'Like'} onClick={() => setIsLiked((v) => !v)}>
-            <Heart
-              size={20}
-              className={`transition-colors ${isLiked ? 'fill-white text-white' : 'fill-transparent text-white'}`}
-            />
-          </IconButton>
-
-          <IconButton label="More">
-            <Menu size={20} />
-          </IconButton>
-
-          <div className="ml-auto text-sm text-slate-400">
-            {formatTime(song.duration)} • {song.release_date?.split('-')[0]}
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="mt-5">
-          <div role="tablist" aria-label="Song panels" className="flex gap-2">
-            <TabButton
-              id="tab-lyrics"
-              active={activeTab === 'lyrics'}
-              onClick={() => setActiveTab('lyrics')}
-            >
-              Lyrics
-            </TabButton>
-            <TabButton
-              id="tab-related"
-              active={activeTab === 'related'}
-              onClick={() => setActiveTab('related')}
-            >
-              Related
-            </TabButton>
-            <TabButton
-              id="tab-artist"
-              active={activeTab === 'artist'}
-              onClick={() => setActiveTab('artist')}
-            >
-              Artist
-            </TabButton>
-          </div>
-        </div>
-
-        {/* Content */}
-        {activeTab === 'lyrics' && (
-          <>
-            <div className="mt-4 flex items-center justify-between">
-              <div className="text-sm text-slate-300">Lyrics</div>
-              <div className="flex items-center gap-2">
-                <label className="flex items-center gap-2 text-sm text-slate-300">
-                  <input type="checkbox" className="accent-indigo-400" />
-                  Auto
-                </label>
+            <div className="flex items-center gap-4">
+              <img
+                src={song.cover || defaultSongCover}
+                alt={`${song.title} cover`}
+                className="h-20 w-20 rounded-md object-cover shadow-md"
+              />
+              <div className="flex-1">
+                <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">
+                  {song.title}
+                </h3>
+                <button
+                  className="mt-1 text-sm text-slate-300 hover:underline"
+                  onClick={() => setActiveTab('artist')}
+                >
+                  {song.artist}
+                </button>
               </div>
             </div>
-            <div className="flex-1 overflow-auto pr-2 pb-2">
-              {song.lyrics ? (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    {(song.lyrics || []).map((line, idx) => (
-                      <p key={idx} className="text-lg leading-7 text-slate-300">
-                        {line || '\u00A0'}
-                      </p>
-                    ))}
+            <div className="mt-3 flex items-center gap-2">
+              <IconButton
+                onClick={() => dispatch(isPlaying ? pause() : play())}
+                label={isPlaying ? 'Pause' : 'Play'}
+                className="bg-white/6"
+              >
+                {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+              </IconButton>
+              <IconButton label={isLiked ? 'Unlike' : 'Like'} onClick={() => setIsLiked((v) => !v)}>
+                <Heart
+                  size={20}
+                  className={`transition-colors ${isLiked ? 'fill-white text-white' : 'fill-transparent text-white'}`}
+                />
+              </IconButton>
+
+              <IconButton label="More">
+                <Menu size={20} />
+              </IconButton>
+
+              <div className="ml-auto text-sm text-slate-400">
+                {formatTime(song.duration)} • {song.release_date?.split('-')[0]}
+              </div>
+            </div>
+            {/* Tabs */}
+            <div className="mt-5">
+              <div role="tablist" aria-label="Song panels" className="flex gap-2">
+                <TabButton
+                  id="tab-lyrics"
+                  active={activeTab === 'lyrics'}
+                  onClick={() => setActiveTab('lyrics')}
+                >
+                  Lyrics
+                </TabButton>
+                <TabButton
+                  id="tab-related"
+                  active={activeTab === 'related'}
+                  onClick={() => setActiveTab('related')}
+                >
+                  Related
+                </TabButton>
+                <TabButton
+                  id="tab-artist"
+                  active={activeTab === 'artist'}
+                  onClick={() => setActiveTab('artist')}
+                >
+                  Artist
+                </TabButton>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {activeTab === 'lyrics' && (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={song.id}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={{
+                initial: { opacity: 0, y: 15 },
+                animate: { opacity: 1, y: 0 },
+                exit: { opacity: 0, y: 15 },
+                transition: { duration: 0.6 },
+              }}
+              className="flex h-full flex-col"
+            >
+              <>
+                <div className="my-4 flex items-center justify-between">
+                  <div className="text-sm text-slate-300">Lyrics</div>
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-2 text-sm text-slate-300">
+                      <input type="checkbox" className="accent-indigo-400" />
+                      Auto
+                    </label>
                   </div>
                 </div>
-              ) : (
-                <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center">
-                  <Music size={55} className="text-secondary-300" />
-                  <p className="mt-2 px-4 font-semibold text-white">
-                    No lyrics available at the moment.
-                  </p>
-                  <p className="text-sm">Check back soon!</p>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-        {activeTab === 'related' && (
-          <div className="mt-4 flex-1 space-y-4 overflow-auto pr-2 pb-2">
-            <div className="text-sm text-slate-300">Suggested & Queue</div>
-            <ul className="mt-2 space-y-3">
-              {isRelatedSongsPending
-                ? Array(10)
-                    .fill()
-                    .map((_, index) => <PlayBarSkeleton size="sm" key={index} />)
-                : relatedSongs.map((song, index) => (
-                    <PlayBar key={song.id} size="sm" song={song} index={index} />
-                  ))}
-            </ul>
-            <button className="mt-3 w-full rounded-md bg-white/6 py-2 text-sm">Show more</button>
-          </div>
-        )}
-        {activeTab === 'artist' && (
-          <div className="mt-4 flex-1 space-y-4 overflow-auto pr-2 pb-2">
-            <div className="flex items-center gap-3">
-              <img
-                src={artist?.image || defaultArtistCover}
-                alt={artist?.name}
-                className="h-14 w-14 rounded-full object-cover"
-              />
-              <div>
-                <div className="text-lg font-semibold">{artist?.name}</div>
-                <div className="text-sm text-slate-300">Artist</div>
-              </div>
-            </div>
-
-            <p className="text-sm text-slate-300">{artist?.bio}</p>
-
-            <div>
-              <div className="mb-2 text-sm text-slate-300">Top tracks</div>
-              <ul className="space-y-2">
-                {popularSongs?.map((song) => (
-                  <li
-                    key={song.id}
-                    className="ts-center flex cursor-pointer gap-3 rounded-md p-2 hover:bg-white/3"
-                    onClick={() => console.log('play related', song)}
-                  >
-                    <img
-                      src={song.cover || defaultSongCover}
-                      alt="cover"
-                      className="h-12 w-12 rounded-md object-cover"
-                    />
-                    <div className="flex-1">
-                      <div className="font-medium" title={song.title}>
-                        {song.title}
+                <div className="flex-1 overflow-auto pr-2 pb-2">
+                  {song.lyrics ? (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        {(song.lyrics || []).map((line, idx) => (
+                          <p key={idx} className="text-lg leading-7 text-slate-300">
+                            {line || '\u00A0'}
+                          </p>
+                        ))}
                       </div>
-                      <div className="text-sm text-slate-300">{song.artist}</div>
                     </div>
-                    <div className="text-sm text-slate-400">3:12</div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+                  ) : (
+                    <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center">
+                      <Music size={55} className="text-secondary-300" />
+                      <p className="mt-2 px-4 font-semibold text-white">
+                        No lyrics available at the moment.
+                      </p>
+                      <p className="text-sm">Check back soon!</p>
+                    </div>
+                  )}
+                </div>
+              </>
+            </motion.div>
+          </AnimatePresence>
         )}
 
-        {/* Footer actions (optional) */}
-        <div className="mt-3 flex items-center gap-2">
-          <button
-            onClick={() => console.log('add to playlist')}
-            className="flex-1 rounded-md bg-white/6 py-2 text-sm hover:bg-white/8"
-          >
-            Add to playlist
-          </button>
-        </div>
+        {activeTab === 'related' && (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedSong.id}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={{
+                initial: { opacity: 0, y: 15 },
+                animate: { opacity: 1, y: 0 },
+                exit: { opacity: 0, y: 15 },
+                transition: { duration: 0.6 },
+              }}
+              className="mt-4 h-full space-y-4 overflow-auto pr-2 pb-2"
+            >
+              <div className="text-sm text-slate-300">Suggested & Queue</div>
+              <motion.div
+                initial="hidden"
+                animate="show"
+                exit="hidden"
+                variants={{
+                  show: {
+                    transition: {
+                      delayChildren: 0.1,
+                      staggerChildren: 0.1,
+                    },
+                  },
+                }}
+                className="mt-2 space-y-3"
+              >
+                {isRelatedSongsPending
+                  ? Array(10)
+                      .fill()
+                      .map((_, index) => (
+                        <motion.div
+                          key={index}
+                          variants={{
+                            hidden: { opacity: 0, y: 15 },
+                            show: { opacity: 1, y: 0 },
+                          }}
+                        >
+                          <PlayBarSkeleton size="sm" />
+                        </motion.div>
+                      ))
+                  : relatedSongs.map((song, index) => (
+                      <motion.div
+                        key={song.id}
+                        variants={{
+                          hidden: { opacity: 0, y: 15 },
+                          show: { opacity: 1, y: 0 },
+                        }}
+                      >
+                        <PlayBar size="sm" song={song} index={index} />
+                      </motion.div>
+                    ))}
+              </motion.div>
+              <button className="mt-3 w-full rounded-md bg-white/6 py-2 text-sm">Show more</button>
+            </motion.div>
+          </AnimatePresence>
+        )}
+
+        {activeTab === 'artist' && (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={song.id}
+              initial="initial"
+              exit="exit"
+              animate="animate"
+              className="mt-4 flex-1 space-y-4 overflow-auto pr-2 pb-2"
+              variants={{
+                initial: { opacity: 0, y: 15 },
+                animate: { opacity: 1, y: 0 },
+                exit: { opacity: 0, y: 15 },
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <img
+                  src={artist?.image || defaultArtistCover}
+                  alt={artist?.name}
+                  className="h-14 w-14 rounded-full object-cover"
+                />
+                <div>
+                  <div className="text-lg font-semibold">{artist?.name}</div>
+                  <div className="text-sm text-slate-300">Artist</div>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-300">{artist?.bio}</p>
+
+              <div>
+                <div className="mb-2 text-sm text-slate-300">Top tracks</div>
+                <ul className="space-y-2">
+                  {popularSongs?.map((song) => (
+                    <li
+                      key={song.id}
+                      className="ts-center flex cursor-pointer gap-3 rounded-md p-2 hover:bg-white/3"
+                      onClick={() => console.log('play related', song)}
+                    >
+                      <img
+                        src={song.cover || defaultSongCover}
+                        alt="cover"
+                        className="h-12 w-12 rounded-md object-cover"
+                      />
+                      <div className="flex-1">
+                        <div className="font-medium" title={song.title}>
+                          {song.title}
+                        </div>
+                        <div className="text-sm text-slate-300">{song.artist}</div>
+                      </div>
+                      <div className="text-sm text-slate-400">3:12</div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        )}
       </aside>
     </div>
   );
