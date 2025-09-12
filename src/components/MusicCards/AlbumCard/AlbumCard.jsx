@@ -33,6 +33,7 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
             className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm object-cover transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
             src={cover ?? noCoverImg}
             alt={title}
+            loading='lazy'
           />
           <div
             className={`absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60 ${isCurrentAlbumPlaying ? 'animate-infinite-rotate' : 'group-hover:animate-infinite-rotate'}`}

@@ -80,7 +80,7 @@ const PlayBar = memo(
             className="relative size-14 min-h-14 min-w-14 overflow-hidden rounded-md"
             onClick={playOnClick}
           >
-            <img src={cover ? cover : noCoverImg} className="size-full object-cover" alt={title} />
+            <img src={cover ? cover : noCoverImg} className="size-full object-cover" alt={title} loading='lazy' />
             <span
               className={`absolute top-1/2 left-1/2 flex size-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition-all duration-300 group-hover:bg-black/60 group-hover:opacity-100`}
             >
