@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Music, Share } from 'iconsax-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
+import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 
@@ -14,9 +14,9 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const isCurrentAlbumPlaying =
     album.title === playingTracklist.title && album.id === playingTracklist.id;
 
-  const openMobilePlaylistHandler = () => {
+  const openMobilePanelHandler = () => {
     dispatch(setSelectedCollection(album));
-    dispatch(openMobilePlaylist());
+    dispatch(openMobilePanel({ type: 'tracklist', title: album.title }));
     dispatch(setSidebarPanelType('tracklist_panel'));
   };
 
@@ -27,13 +27,13 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
       <div className="flex items-center lg:p-3">
         <div
           className="relative flex items-center justify-center lg:pe-10"
-          onClick={openMobilePlaylistHandler}
+          onClick={openMobilePanelHandler}
         >
           <img
             className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm object-cover transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
             src={cover ?? noCoverImg}
             alt={title}
-            loading='lazy'
+            loading="lazy"
           />
           <div
             className={`absolute z-[2] flex size-[70%] items-center justify-center rounded-full border border-white bg-cover bg-center bg-no-repeat opacity-0 transition-all duration-300 group-hover:opacity-100 lg:left-12 lg:z-auto lg:size-[80px] lg:border-white/60 lg:opacity-60 ${isCurrentAlbumPlaying ? 'animate-infinite-rotate' : 'group-hover:animate-infinite-rotate'}`}
@@ -51,7 +51,7 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
             <p
               className={`text-white-50 cursor-pointer truncate text-base ${size === 'lg' ? 'lg:text-lg' : ''}`}
               title={title}
-              onClick={openMobilePlaylistHandler}
+              onClick={openMobilePanelHandler}
             >
               {title}
             </p>

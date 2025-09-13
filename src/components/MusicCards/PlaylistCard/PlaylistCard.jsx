@@ -5,7 +5,7 @@ import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
 import { Heart, Play, AddCircle } from 'iconsax-react';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
-import { openMobilePlaylist } from '../../../redux/slices/mobilePlaylistSlice';
+import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 
@@ -16,7 +16,7 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
 
   const showSelectedPlaylist = () => {
     dispatch(setSelectedCollection(playlist));
-    dispatch(openMobilePlaylist());
+    dispatch(openMobilePanel({ type: 'tracklist', title }));
     dispatch(setSidebarPanelType('tracklist_panel'));
   };
 

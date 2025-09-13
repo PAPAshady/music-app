@@ -11,7 +11,7 @@ import { lyrics } from '../../data';
 import backgroundImage from '../../assets/images/backgrounds/player-and-settings-page.png';
 import noMusicCover from '../../assets/images/covers/no-cover.jpg';
 import { useSelector, useDispatch } from 'react-redux';
-import MobilePlaylist from '../../components/shared/MobilePlaylist/MobilePlaylist';
+import MobilePanel from '../../components/shared/MobilePanel/MobilePanel';
 import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -149,7 +149,7 @@ export default function PlayerPage() {
         <Player classNames="lg:!bottom-4 lg:!w-full" isPlayerPage />
       </main>
       <HamburgerMenu />
-      {!isDesktop && <MobilePlaylist />}
+      {!isDesktop && <MobilePanel />}
     </div>
   );
 }

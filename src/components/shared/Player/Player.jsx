@@ -20,10 +20,7 @@ import { Range } from 'react-range';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  closeMobilePlaylist,
-  toggleMobilePlaylist,
-} from '../../../redux/slices/mobilePlaylistSlice';
+import { closeMobilePanel, toggleMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import {
   formatTime,
   music,
@@ -39,7 +36,7 @@ const musicDefaultVolume = 70; // min: 0, max: 100
 
 export default function Player({ classNames, isPlayerPage }) {
   const dispatch = useDispatch();
-  const isMobilePlaylistOpen = useSelector((state) => state.mobilePlaylist.isOpen);
+  const isMobilePanelOpen = useSelector((state) => state.mobilePanel.isMobilePanelOpen);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const queuelist = useSelector((state) => state.playContext.currentQueuelist);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
@@ -65,9 +62,9 @@ export default function Player({ classNames, isPlayerPage }) {
   // Otherwise, close the mobile playlist if it's open, and navigate to /player.
   const onPlayerCoverClick = () => {
     if (isPlayerPage) {
-      dispatch(toggleMobilePlaylist());
+      dispatch(toggleMobilePanel());
     } else {
-      isMobilePlaylistOpen && dispatch(closeMobilePlaylist());
+      isMobilePanelOpen && dispatch(closeMobilePanel());
       navigate('/player');
     }
   };
@@ -160,7 +157,7 @@ export default function Player({ classNames, isPlayerPage }) {
           <IconButton
             icon={<MusicFilter />}
             classNames={isPlayerPage ? 'hidden' : 'xl:hidden'}
-            onClick={() => dispatch(toggleMobilePlaylist())}
+            onClick={() => dispatch(toggleMobilePanel())}
           />
           <div
             className="relative hidden items-center gap-2 md:flex"

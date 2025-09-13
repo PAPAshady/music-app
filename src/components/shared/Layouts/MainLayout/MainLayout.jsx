@@ -10,7 +10,7 @@ import HamburgerMenu from '../../HamburgerMenu/HamburgerMenu';
 import Player from '../../Player/Player';
 import Footer from '../../Footer/Footer';
 import Logo from '../../../Logo/Logo';
-import MobilePlaylist from '../../MobilePlaylist/MobilePlaylist';
+import MobilePanel from '../../MobilePanel/MobilePanel';
 import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { useLocation, Outlet, Link } from 'react-router-dom';
 import SidebarPlaylist from '../../SidebarPlaylist/SidebarPlaylist';
@@ -92,7 +92,7 @@ export default function MainLayout() {
           </div>
         </main>
         <HamburgerMenu />
-        {isDesktop && <MobilePlaylist />}
+        {isDesktop && <MobilePanel />}
         <ConfirmModal />
       </div>
       <PlaylistInfosModal />
