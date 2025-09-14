@@ -33,7 +33,7 @@ export default function Home() {
   const allSongs = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 20 }));
 
   return (
-    <div className="flex grow flex-col gap-8 lg:gap-10">
+    <>
       <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
         {genres.slice(0, 3).map((track) => (
           <div key={track.id} className="flex w-full justify-center">
@@ -86,7 +86,7 @@ export default function Home() {
         <SectionHeader title="Recently Seen" />
         <PlaylistsSlider isLoading={userPlaylists.isLoading} playlists={userPlaylists.data} />
       </div>
-    </div>
+    </>
   );
 }
 

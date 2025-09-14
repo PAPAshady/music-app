@@ -23,7 +23,7 @@ export default function Browse() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   return (
-    <div className="flex grow flex-col gap-8 lg:gap-10">
+    <>
       <div>
         <SectionTitle title="Tranding Tracks" />
         <TracksSlider songs={songs} />
@@ -133,6 +133,6 @@ export default function Browse() {
         <SectionTitle title="Meet the Top New Singers of 2024" />
         <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
       </div>
-    </div>
+    </>
   );
 }

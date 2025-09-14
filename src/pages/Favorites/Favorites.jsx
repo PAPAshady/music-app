@@ -15,7 +15,7 @@ export default function Favorites() {
   const isTablet = useMediaQuery('(min-width: 480px)');
 
   return (
-    <div className="flex grow flex-col gap-8 lg:gap-10">
+    <>
       <div
         className="border-primary-300 relative overflow-hidden rounded-4xl border bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${bannerBg})` }}
@@ -53,6 +53,6 @@ export default function Favorites() {
           albumCardStyles="!max-w-none"
         />
       </div>
-    </div>
+    </>
   );
 }

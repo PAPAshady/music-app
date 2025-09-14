@@ -170,7 +170,7 @@ export default function Profile() {
   };
 
   return (
-    <form className="flex flex-col gap-8 lg:gap-10" onSubmit={handleSubmit(submitHandler)}>
+    <form onSubmit={handleSubmit(submitHandler)}>
       <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6 md:pt-8">
         <label
           htmlFor="file-input"

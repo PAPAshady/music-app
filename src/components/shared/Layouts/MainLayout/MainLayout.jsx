@@ -81,7 +81,9 @@ export default function MainLayout() {
           </div>
           <div className="flex grow flex-col items-start gap-12 pt-6 pb-32 lg:pb-10">
             <div className="flex w-full items-start gap-6">
-              <Outlet />
+              <div className="flex grow flex-col gap-8 pt-8 lg:gap-11">
+                <Outlet />
+              </div>
               {sidebarPanelType === 'welcome_panel' && <SidebarWelcomePanel />}
               {sidebarPanelType === 'tracklist_panel' && <SidebarPlaylist />}
               {sidebarPanelType === 'artist_panel' && <ArtistInfosPanel />}

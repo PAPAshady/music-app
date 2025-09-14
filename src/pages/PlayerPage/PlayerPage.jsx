@@ -76,7 +76,7 @@ export default function PlayerPage() {
 
   return (
     <div
-      className="pb- relative min-h-[100dvh] overflow-y-auto bg-cover bg-center bg-no-repeat"
+      className="relative min-h-[100dvh] overflow-y-auto bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="relative w-full pt-4">
