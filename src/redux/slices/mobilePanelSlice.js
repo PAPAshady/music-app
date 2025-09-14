@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { setSelectedCollection } from './playContextSlice';
 
-const validMobilePanelTypes = [null, 'tracklist'];
+const validMobilePanelTypes = [null, 'tracklist', 'artist'];
 
 export const openMobilePanel = createAsyncThunk(
   'mobilePanel/openMobilePanel',

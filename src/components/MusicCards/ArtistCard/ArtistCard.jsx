@@ -4,6 +4,7 @@ import noAvatarImg from '../../../assets/images/Avatar/no-avatar.png';
 import { useDispatch } from 'react-redux';
 import { setSelectedArtist } from '../../../redux/slices/artistSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
+import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 
 const ArtistCard = memo((artist) => {
   const dispatch = useDispatch();
@@ -11,6 +12,7 @@ const ArtistCard = memo((artist) => {
   const showArtistInfosInSidebar = () => {
     dispatch(setSelectedArtist(artist));
     dispatch(setSidebarPanelType('artist_panel'));
+    dispatch(openMobilePanel({ type: 'artist', title: artist.name }));
   };
 
   return (

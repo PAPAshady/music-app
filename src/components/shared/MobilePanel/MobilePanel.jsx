@@ -7,6 +7,7 @@ import Player from '../Player/Player';
 import { useDispatch, useSelector } from 'react-redux';
 import { closePanel, closeMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import MobileTracklistPanel from '../../MobilePanels/MobileTracklistPanel/MobileTracklistPanel';
+import MobileArtistPanel from '../../MobilePanels/MobileArtistPanel/MobileArtistPanel';
 
 export default function MobilePanel() {
   const isMobilePanelOpen = useSelector((state) => state.mobilePanel.isMobilePanelOpen);
@@ -78,6 +79,7 @@ export default function MobilePanel() {
           </p>
 
           {panelType === 'tracklist' && <MobileTracklistPanel />}
+          {panelType === 'artist' && <MobileArtistPanel />}
 
           {/*
               conditionally rendering the <Player> component based on `isMobilePanelOpen` improves performance by preventing unnecessary re-renders when mobilePanel is closed and is not visible by user.
