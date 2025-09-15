@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Play, Pause, Heart, Menu } from 'iconsax-react';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
@@ -16,6 +16,8 @@ import {
 import { Music } from 'iconsax-react';
 import { formatTime, play, pause } from '../../../redux/slices/musicPlayerSlice';
 import { useDispatch } from 'react-redux';
+import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
+import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 
 function IconButton({ children, label, onClick, className = '', title }) {
   return (
@@ -60,6 +62,22 @@ export default function SongSidebar() {
   const { data: popularSongs } = useQuery(getPopularSongsByArtistIdQueryOptions(song.artist_id));
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
     getRelatedSongsBySongDataQueryOptions(selectedSong)
+  );
+  const playingTracklistId = useSelector((state) => state.playContext.currentCollection?.id);
+  const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
+
+  const playbarClickHandler = useCallback(
+    (music, songIndex) => {
+      if (playingTracklistId !== selectedTracklist.id) {
+        dispatch(setCurrentCollection(selectedTracklist));
+      }
+      // dont change the song index if user clicked on the current song which is playing because it will
+      // cause the song to replay from the start
+      if (song?.id !== music.id) {
+        dispatch(setCurrentSongIndex(songIndex));
+      }
+    },
+    [dispatch, song, playingTracklistId, selectedTracklist]
   );
 
   return (
@@ -254,7 +272,7 @@ export default function SongSidebar() {
                           show: { opacity: 1, y: 0 },
                         }}
                       >
-                        <PlayBar size="sm" song={song} index={index} />
+                        <PlayBar size="sm" onPlay={playbarClickHandler} song={song} index={index} />
                       </motion.div>
                     ))}
               </motion.div>

@@ -7,11 +7,24 @@ import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import { Music } from 'iconsax-react';
 import useMediaQuery from '../../../hooks/useMediaQuery';
+import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { setCurrentQueuelist } from '../../../redux/slices/playContextSlice';
+import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 
 function ArtistInfosPanel() {
   const selectedArtist = useSelector((state) => state.artist);
+  const dispatch = useDispatch();
   const { data, isPending } = useQuery(getPopularSongsByArtistIdQueryOptions(selectedArtist.id));
   const isLargeDesktop = useMediaQuery('(min-width: 1400px)');
+
+  const playBarClickHandler = useCallback(
+    (_, songIndex) => {
+      dispatch(setCurrentQueuelist(data));
+      dispatch(setCurrentSongIndex(songIndex));
+    },
+    [dispatch, data]
+  );
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -86,7 +99,7 @@ function ArtistInfosPanel() {
                   </motion.div>
                 ))
             ) : data?.length ? (
-              data.map((song) => (
+              data.map((song, index) => (
                 <motion.div
                   key={song.id}
                   variants={{
@@ -94,7 +107,7 @@ function ArtistInfosPanel() {
                     show: { opacity: 1, y: 0 },
                   }}
                 >
-                  <PlayBar size="sm" song={song} />
+                  <PlayBar size="sm" song={song} index={index} onPlay={playBarClickHandler} />
                 </motion.div>
               ))
             ) : (

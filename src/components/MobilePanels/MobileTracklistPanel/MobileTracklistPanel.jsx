@@ -54,6 +54,7 @@ function MobileTracklistPanel() {
   const isTablet = useMediaQuery('(min-width: 768px)');
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
+  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const {
     data: allSongs,
@@ -95,6 +96,20 @@ function MobileTracklistPanel() {
       dispatch(isPlaying ? pause() : play());
     }
   };
+
+  const playbarClickHandler = useCallback(
+    (music, songIndex) => {
+      if (playingTracklist.id !== selectedTracklist.id) {
+        dispatch(setCurrentCollection(selectedTracklist));
+      }
+      // dont change the song index if user clicked on the current song which is playing because it will
+      // cause the song to replay from the start
+      if (currentMusic?.id !== music.id) {
+        dispatch(setCurrentSongIndex(songIndex));
+      }
+    },
+    [dispatch, currentMusic, playingTracklist, selectedTracklist]
+  );
 
   const addSongHandler = useCallback(
     async (songId) => {
@@ -258,6 +273,7 @@ function MobileTracklistPanel() {
                 key={song.id}
                 size={isLargeMobile ? 'lg' : 'md'}
                 index={index}
+                onPlay={playbarClickHandler}
                 classNames="!w-full text-start !max-w-none"
                 ActionButtonIcon={selectedTracklist.is_public ? <Heart /> : <Trash />}
                 actionButtonClickHandler={

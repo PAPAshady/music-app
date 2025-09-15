@@ -3,34 +3,23 @@ import { Heart, Menu, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
-import { useDispatch, useSelector } from 'react-redux';
-import { formatTime, setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
-import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
+import { formatTime } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
-import {
-  setCurrentCollection,
-  setCurrentQueuelist,
-  setSingleSong,
-} from '../../../redux/slices/playContextSlice';
 
 const PlayBar = memo(
   ({
     size,
     index: songIndex,
     song,
+    onPlay,
     isFavorite,
-    isSingle,
     ActionButtonIcon,
     actionButtonClickHandler,
     isActionButtonPending,
     classNames,
   }) => {
     const dropDownMenu = useCloseOnClickOutside();
-    const dispatch = useDispatch();
-    const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
-    const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
-    const playingTracklist = useSelector((state) => state.playContext.currentCollection);
     const { title, id, cover, artist, duration, album } = song;
 
     const musicTitleSizes = {
@@ -50,25 +39,6 @@ const PlayBar = memo(
       { id: 2, title: 'Add to favorites', icon: <Heart /> },
     ];
 
-    const playOnClick = () => {
-      if (isSingle) {
-        dispatch(setSingleSong(song));
-        dispatch(setCurrentQueuelist([song]));
-        dispatch(setCurrentSongIndex(0));
-        dispatch(setSidebarPanelType('song_panel'));
-      } else {
-        if (playingTracklist.id !== selectedTracklist.id) {
-          dispatch(setCurrentCollection(selectedTracklist));
-        }
-
-        // dont change the song index if user clicked on the current song which is playing because it will
-        // cause the song to replay from the start
-        if (currentMusic?.id !== id) {
-          dispatch(setCurrentSongIndex(songIndex));
-        }
-      }
-    };
-
     return (
       <div
         className={`bg-primary-800/60 hover:inset-shadow-secondary-400 border-primaty-10 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-[285px] items-center justify-between gap-4 rounded-lg border p-1.5 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${size === 'lg' ? 'lg:max-w-[890px]' : 'lg:max-w-[510px]'} ${classNames}`}
@@ -78,9 +48,14 @@ const PlayBar = memo(
         >
           <button
             className="relative size-14 min-h-14 min-w-14 overflow-hidden rounded-md"
-            onClick={playOnClick}
+            onClick={() => onPlay(song, songIndex)}
           >
-            <img src={cover ? cover : noCoverImg} className="size-full object-cover" alt={title} loading='lazy' />
+            <img
+              src={cover ? cover : noCoverImg}
+              className="size-full object-cover"
+              alt={title}
+              loading="lazy"
+            />
             <span
               className={`absolute top-1/2 left-1/2 flex size-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition-all duration-300 group-hover:bg-black/60 group-hover:opacity-100`}
             >
@@ -92,7 +67,7 @@ const PlayBar = memo(
           <div className="flex flex-col overflow-hidden">
             <button
               className={`text-white-50 grow truncate text-start ${musicTitleSizes[size]}`}
-              onClick={playOnClick}
+              onClick={() => onPlay(song, songIndex)}
               title={title}
             >
               {title}
@@ -176,8 +151,8 @@ PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
   index: PropTypes.number,
   isFavorite: PropTypes.bool,
-  isSingle: PropTypes.bool,
   song: PropTypes.object,
+  onPlay: PropTypes.func,
   ActionButtonIcon: PropTypes.node,
   actionButtonClickHandler: PropTypes.func,
   isActionButtonPending: PropTypes.bool,

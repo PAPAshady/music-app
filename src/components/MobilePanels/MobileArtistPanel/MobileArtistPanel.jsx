@@ -10,6 +10,9 @@ import { useQuery } from '@tanstack/react-query';
 import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
+import { setCurrentQueuelist } from '../../../redux/slices/playContextSlice';
+import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
+import { useCallback } from 'react';
 
 function MobileArtistPanel() {
   const dispatch = useDispatch();
@@ -24,7 +27,18 @@ function MobileArtistPanel() {
   });
   const dropDownListItems = [];
 
-  const playPauseHandler = () => {};
+  const playPauseHandler = () => {
+    dispatch(setCurrentQueuelist(popularSongs));
+    dispatch(setCurrentSongIndex(0));
+  };
+
+  const playBarClickHandler = useCallback(
+    (_, songIndex) => {
+      dispatch(setCurrentQueuelist(popularSongs));
+      dispatch(setCurrentSongIndex(songIndex));
+    },
+    [dispatch, popularSongs]
+  );
 
   return (
     <>
@@ -37,7 +51,7 @@ function MobileArtistPanel() {
             />
           </button>
 
-          <MainButton size="sm" variant='primary' type='outline' title="Follow" />
+          <MainButton size="sm" variant="primary" type="outline" title="Follow" />
           <DropDownList menuItems={dropDownListItems} dropDownPlacement="bottom start" />
         </div>
         <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
@@ -66,7 +80,7 @@ function MobileArtistPanel() {
       </div>
 
       <div className="w-full">
-        <p className="px-4 pt-2 text-center text-2xl font-bold">Popular</p>
+        <p className="gap-3 px-4 py-2 text-center text-2xl font-bold">Popular</p>
         {isPopularSongsPending ? (
           Array(8)
             .fill()
@@ -93,6 +107,7 @@ function MobileArtistPanel() {
                   ActionButtonIcon={<Heart />}
                   actionButtonClickHandler={() => {}}
                   song={song}
+                  onPlay={playBarClickHandler}
                 />
               ))}
             </div>

@@ -24,6 +24,11 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import PropTypes from 'prop-types';
 import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
+import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { setSingleSong, setCurrentQueuelist } from '../../redux/slices/playContextSlice';
+import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
+import { setSidebarPanelType } from '../../redux/slices/sidebarTypeSlice';
 
 export default function Home() {
   const albums = useQuery(albumsQueryOptions());
@@ -91,8 +96,19 @@ export default function Home() {
 }
 
 function PlayBarSlider({ songs = [], isPending }) {
+  const dispatch = useDispatch();
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const itemsToRender = chunkArray(isPending ? Array(10).fill(1) : songs, isDesktop ? 5 : 3);
+
+  const playBarClickHanlder = useCallback(
+    (song) => {
+      dispatch(setSingleSong(song));
+      dispatch(setCurrentQueuelist([song]));
+      dispatch(setCurrentSongIndex(0));
+      dispatch(setSidebarPanelType('song_panel'));
+    },
+    [dispatch]
+  );
 
   return (
     <div className="mx-auto w-[95%] max-w-[1050px]">
@@ -141,7 +157,7 @@ function PlayBarSlider({ songs = [], isPending }) {
                     size={isDesktop ? 'lg' : 'md'}
                     classNames="!max-w-none"
                     song={item}
-                    isSingle={true}
+                    onPlay={playBarClickHanlder}
                   />
                 )
               )}

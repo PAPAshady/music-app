@@ -9,10 +9,26 @@ import { useQuery } from '@tanstack/react-query';
 import { albumsQueryOptions } from '../../queries/albums';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { setSingleSong, setCurrentQueuelist } from '../../redux/slices/playContextSlice';
+import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
+import { setSidebarPanelType } from '../../redux/slices/sidebarTypeSlice';
 
 export default function Favorites() {
   const albums = useQuery(albumsQueryOptions());
   const isTablet = useMediaQuery('(min-width: 480px)');
+  const dispatch = useDispatch();
+
+  const playBarClickHanlder = useCallback(
+    (song) => {
+      dispatch(setSingleSong(song));
+      dispatch(setCurrentQueuelist([song]));
+      dispatch(setCurrentSongIndex(0));
+      dispatch(setSidebarPanelType('song_panel'));
+    },
+    [dispatch]
+  );
 
   return (
     <>
@@ -35,7 +51,7 @@ export default function Favorites() {
             key={song.id}
             size={isTablet ? 'lg' : 'md'}
             song={song}
-            isSingle={true}
+            onPlay={playBarClickHanlder}
             classNames="!max-w-full"
           />
         ))}
