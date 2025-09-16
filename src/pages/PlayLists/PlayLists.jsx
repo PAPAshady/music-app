@@ -9,25 +9,11 @@ import { songs, genres, playlists } from '../../data';
 import { useQuery } from '@tanstack/react-query';
 import { getAllPrivatePlaylistsQueryOptions } from '../../queries/playlists';
 import PropTypes from 'prop-types';
-import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { setSingleSong, setCurrentQueuelist } from '../../redux/slices/playContextSlice';
-import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
-import { setSidebarPanelType } from '../../redux/slices/sidebarTypeSlice';
+import usePlayBar from '../../hooks/usePlayBar';
 
 export default function PlayLists() {
-  const dispatch = useDispatch();
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
-
-  const playBarClickHanlder = useCallback(
-    (song) => {
-      dispatch(setSingleSong(song));
-      dispatch(setCurrentQueuelist([song]));
-      dispatch(setCurrentSongIndex(0));
-      dispatch(setSidebarPanelType('song_panel'));
-    },
-    [dispatch]
-  );
+  const { playSingleSong } = usePlayBar();
 
   // Render the "Add New Playlist" button as the first item in the playlists list.
   const privatePlaylists = userPlaylists.data
@@ -85,7 +71,7 @@ export default function PlayLists() {
         <div className="flex flex-col gap-4">
           {songs.slice(0, 4).map((song) => (
             <PlayBar
-              onPlay={playBarClickHanlder}
+              onPlay={playSingleSong}
               key={song.id}
               size="lg"
               classNames="!max-w-none"

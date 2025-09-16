@@ -1,4 +1,4 @@
-import { cloneElement, memo, useCallback } from 'react';
+import { cloneElement, memo } from 'react';
 import { Music, Timer, User, Edit2, Trash, Heart, Play, Pause, AddCircle } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
@@ -22,12 +22,12 @@ import {
 } from '../../../redux/slices/musicPlayerSlice';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
+import usePlayBar from '../../../hooks/usePlayBar';
 
 const SidebarPlaylist = memo(() => {
   const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
-  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const { data: selectedPlaylistSongs, isLoading } = useQuery(
     selectedTracklist.tracklistType === 'album'
       ? getSongsByAlbumIdQueryOptions(selectedTracklist.id)
@@ -39,6 +39,7 @@ const SidebarPlaylist = memo(() => {
     playingTracklist.id === selectedTracklist.id &&
     playingTracklist.title === selectedTracklist.title;
   const totalTracklistTime = selectedPlaylistSongs?.reduce((acc, next) => acc + next.duration, 0);
+  const { playTracklist } = usePlayBar();
 
   const playPauseButtonHandler = () => {
     if (!isPlayingPlaylistSelected) {
@@ -48,20 +49,6 @@ const SidebarPlaylist = memo(() => {
     }
     dispatch(isPlaying ? pause() : play());
   };
-
-  const playbarClickHandler = useCallback(
-    (song, songIndex) => {
-      if (playingTracklist.id !== selectedTracklist.id) {
-        dispatch(setCurrentCollection(selectedTracklist));
-      }
-      // dont change the song index if user clicked on the current song which is playing because it will
-      // cause the song to replay from the start
-      if (currentMusic?.id !== song.id) {
-        dispatch(setCurrentSongIndex(songIndex));
-      }
-    },
-    [dispatch, currentMusic, playingTracklist, selectedTracklist]
-  );
 
   const headerVariants = {
     initial: { opacity: 0, y: 15 },
@@ -219,7 +206,7 @@ const SidebarPlaylist = memo(() => {
             ) : selectedPlaylistSongs?.length ? (
               selectedPlaylistSongs?.map((song, index) => (
                 <motion.div key={song.id} variants={itemVariants}>
-                  <PlayBar size="sm" index={index} song={song} onPlay={playbarClickHandler} />
+                  <PlayBar size="sm" index={index} song={song} onPlay={playTracklist} />
                 </motion.div>
               ))
             ) : (

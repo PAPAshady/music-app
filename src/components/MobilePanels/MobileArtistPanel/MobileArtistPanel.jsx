@@ -12,7 +12,7 @@ import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import { setCurrentQueuelist } from '../../../redux/slices/playContextSlice';
 import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
-import { useCallback } from 'react';
+import usePlayBar from '../../../hooks/usePlayBar';
 
 function MobileArtistPanel() {
   const dispatch = useDispatch();
@@ -25,20 +25,13 @@ function MobileArtistPanel() {
     ...getPopularSongsByArtistIdQueryOptions(artist.id),
     select: (data) => data.slice(0, 5),
   });
+  const { playArtistSongs } = usePlayBar(artist?.id);
   const dropDownListItems = [];
 
   const playPauseHandler = () => {
     dispatch(setCurrentQueuelist(popularSongs));
     dispatch(setCurrentSongIndex(0));
   };
-
-  const playBarClickHandler = useCallback(
-    (_, songIndex) => {
-      dispatch(setCurrentQueuelist(popularSongs));
-      dispatch(setCurrentSongIndex(songIndex));
-    },
-    [dispatch, popularSongs]
-  );
 
   return (
     <>
@@ -107,7 +100,7 @@ function MobileArtistPanel() {
                   ActionButtonIcon={<Heart />}
                   actionButtonClickHandler={() => {}}
                   song={song}
-                  onPlay={playBarClickHandler}
+                  onPlay={playArtistSongs}
                 />
               ))}
             </div>

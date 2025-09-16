@@ -4,25 +4,11 @@ import { shuffleArray, chunkArray } from '../../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import PropTypes from 'prop-types';
-import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { setSingleSong, setCurrentQueuelist } from '../../../redux/slices/playContextSlice';
-import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
-import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
+import usePlayBar from '../../../hooks/usePlayBar';
 
 export default function TracksSlider({ songs }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const dispatch = useDispatch();
-
-  const playBarClickHanlder = useCallback(
-    (song) => {
-      dispatch(setSingleSong(song));
-      dispatch(setCurrentQueuelist([song]));
-      dispatch(setCurrentSongIndex(0));
-      dispatch(setSidebarPanelType('song_panel'));
-    },
-    [dispatch]
-  );
+  const { playSingleSong } = usePlayBar();
 
   return (
     <div className="mx-auto w-[95%] xl:max-w-[940px]">
@@ -57,7 +43,7 @@ export default function TracksSlider({ songs }) {
                 <PlayBar
                   key={song.id}
                   song={song}
-                  onPlay={playBarClickHanlder}
+                  onPlay={playSingleSong}
                   size={isDesktop ? 'sm' : 'md'}
                   classNames="!max-w-full"
                 />
