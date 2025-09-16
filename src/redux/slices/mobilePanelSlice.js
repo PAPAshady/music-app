@@ -50,17 +50,24 @@ const mobilePanelSlice = createSlice({
     isMobilePanelOpen: false,
     type: null,
     title: '',
+    description: '',
+    image: null,
   },
   reducers: {
     openPanel: (state, action) => {
-      state.type = action.payload.type;
-      state.title = action.payload.title;
+      const { type, title, description, image } = action.payload;
+      state.type = type;
+      state.title = title;
+      state.description = description;
+      if (image) state.image = image;
       state.isMobilePanelOpen = true;
     },
     closePanel: (state) => {
       state.isMobilePanelOpen = false;
       state.type = null;
       state.title = '';
+      state.description = '';
+      state.image = null;
     },
   },
 });

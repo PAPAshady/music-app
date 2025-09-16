@@ -12,7 +12,14 @@ const ArtistCard = memo((artist) => {
   const showArtistInfosInSidebar = () => {
     dispatch(setSelectedArtist(artist));
     dispatch(setSidebarPanelType('artist_panel'));
-    dispatch(openMobilePanel({ type: 'artist', title: artist.name }));
+    dispatch(
+      openMobilePanel({
+        type: 'artist',
+        title: artist.name,
+        description: artist.bio,
+        image: artist.image,
+      })
+    );
   };
 
   return (

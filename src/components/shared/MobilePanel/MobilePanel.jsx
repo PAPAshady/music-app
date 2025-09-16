@@ -1,7 +1,8 @@
 import { createPortal } from 'react-dom';
 import { useState, useEffect } from 'react';
 import BgImage from '../../../assets/images/backgrounds/login-signup-page.jpg';
-import playlistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
+import tracklistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
+import artistDefaultImage from '../../../assets/images/Avatar/no-avatar.png';
 import { ArrowLeft } from 'iconsax-react';
 import Player from '../Player/Player';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,12 +11,12 @@ import MobileTracklistPanel from '../../MobilePanels/MobileTracklistPanel/Mobile
 import MobileArtistPanel from '../../MobilePanels/MobileArtistPanel/MobileArtistPanel';
 
 export default function MobilePanel() {
-  const isMobilePanelOpen = useSelector((state) => state.mobilePanel.isMobilePanelOpen);
+  const { isMobilePanelOpen, title, description, image, type } = useSelector(
+    (state) => state.mobilePanel
+  );
   const dispatch = useDispatch();
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
-  const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
-  const playlistCover = selectedTracklist.cover ? selectedTracklist.cover : playlistDefaultCover;
-  const panelType = useSelector((state) => state.mobilePanel.type);
+  const defaultImage = type === 'artist' ? artistDefaultImage : tracklistDefaultCover;
 
   // if user clicks on back button of their device, mobilePanel will close
   useEffect(() => {
@@ -60,26 +61,24 @@ export default function MobilePanel() {
             <p
               className={`transition-opacity duration-300 lg:text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
             >
-              {selectedTracklist.title}
+              {title}
             </p>
           </div>
         </div>
 
         <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center min-[360px]:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
           <img
-            src={playlistCover}
+            src={image ?? defaultImage}
             className="size-46 rounded-md object-cover sm:size-56 md:size-64 lg:size-80"
-            alt={selectedTracklist.title}
+            alt={title}
           />
-          <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
-            {selectedTracklist.title}
-          </p>
-          <p className="line-clamp-2 min-h-[45px] w-[90%] text-sm sm:text-base lg:text-lg">
-            {selectedTracklist.description || 'No Description for this playlist.'}
+          <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">{title}</p>
+          <p className="w-[90%] text-sm sm:text-base lg:text-lg">
+            {description || 'No Description for this playlist.'}
           </p>
 
-          {panelType === 'tracklist' && <MobileTracklistPanel />}
-          {panelType === 'artist' && <MobileArtistPanel />}
+          {type === 'tracklist' && <MobileTracklistPanel />}
+          {type === 'artist' && <MobileArtistPanel />}
 
           {/*
               conditionally rendering the <Player> component based on `isMobilePanelOpen` improves performance by preventing unnecessary re-renders when mobilePanel is closed and is not visible by user.

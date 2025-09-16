@@ -8,15 +8,14 @@ import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
-  const { cover, totalTracks, artist, title } = album;
+  const { cover, totalTracks, artist, title, description, id } = album;
   const dispatch = useDispatch();
-  const playingTracklist = useSelector((state) => state.playContext.currentCollection);
-  const isCurrentAlbumPlaying =
-    album.title === playingTracklist.title && album.id === playingTracklist.id;
+  const playingTracklistId = useSelector((state) => state.playContext.currentCollection?.id);
+  const isCurrentAlbumPlaying = id === playingTracklistId;
 
   const openMobilePanelHandler = () => {
     dispatch(setSelectedCollection(album));
-    dispatch(openMobilePanel({ type: 'tracklist', title: album.title }));
+    dispatch(openMobilePanel({ type: 'tracklist', title, image: cover, description }));
     dispatch(setSidebarPanelType('tracklist_panel'));
   };
 

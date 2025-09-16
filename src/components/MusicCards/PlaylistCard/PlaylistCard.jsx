@@ -11,12 +11,11 @@ import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 
 const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   const dispatch = useDispatch();
-  const { title, totaltracks, cover, isFavorite, classNames } = playlist;
-  const playlistCover = cover ? cover : noCoverImg;
+  const { title, totaltracks, cover, isFavorite, classNames, description } = playlist;
 
   const showSelectedPlaylist = () => {
     dispatch(setSelectedCollection(playlist));
-    dispatch(openMobilePanel({ type: 'tracklist', title }));
+    dispatch(openMobilePanel({ type: 'tracklist', title, image: cover, description }));
     dispatch(setSidebarPanelType('tracklist_panel'));
   };
 
@@ -43,7 +42,7 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   return (
     <div
       className={`group relative flex h-36 min-w-36 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[2px_2px_15px_rgba(0,0,0,0.5)] outline outline-transparent transition-all duration-300 hover:outline-white lg:h-48 lg:min-w-[152px] lg:outline-none xl:min-w-[140px] ${classNames}`}
-      style={{ backgroundImage: `url(${playlistCover})` }}
+      style={{ backgroundImage: `url(${cover ?? noCoverImg})` }}
       title={title}
       onClick={showSelectedPlaylist}
     >
