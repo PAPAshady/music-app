@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { QueryClientProvider } from '@tanstack/react-query';
 import useInitilizeAudioEvents from './hooks/useInitilizeAudioEvents';
-import useInitilizeAuth from './hooks/useinitilizeAuth';
+import useInitilizeAuth from './hooks/useInitilizeAuth';
 import queryClient from './queryClient';
 import { AnimatePresence, motion } from 'framer-motion';
 import Snackbar from './components/shared/Snackbar/Snackbar';
