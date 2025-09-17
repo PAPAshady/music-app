@@ -14,7 +14,7 @@ import { chunkArray } from '../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode, Mousewheel, Scrollbar } from 'swiper/modules';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { albumsQueryOptions } from '../../queries/albums';
+import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import {
   getAllPrivatePlaylistsQueryOptions,
   getAllPublicPlaylistsQueryOptions,
@@ -27,7 +27,7 @@ import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import usePlayBar from '../../hooks/usePlayBar';
 
 export default function Home() {
-  const albums = useQuery(albumsQueryOptions());
+  const albums = useQuery(getAllAlbumsQueryOptions());
   const artists = useQuery(getArtistsQueryOptions());
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
   const publicPlaylists = useQuery(getAllPublicPlaylistsQueryOptions());

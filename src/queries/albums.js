@@ -1,12 +1,23 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getAllAlbums } from '../services/albums';
+import { getAllAlbums, getAlbumsByArtistId } from '../services/albums';
 
-export const albumsQueryOptions = () => {
+export const getAllAlbumsQueryOptions = () => {
   return queryOptions({
     queryKey: ['albums'],
     queryFn: getAllAlbums,
     staleTime: Infinity,
     retryDelay: 5000,
     retry: true,
+  });
+};
+
+export const getAlbumsByArtistIdQueryOptions = (artistId) => {
+  return queryOptions({
+    queryKey: ['albums', { artistId }],
+    queryFn: () => getAlbumsByArtistId(artistId),
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+    enabled: !!artistId,
   });
 };

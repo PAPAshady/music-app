@@ -98,8 +98,6 @@ function MobileTracklistPanel() {
     }
   };
 
-
-
   const addSongHandler = useCallback(
     async (songId) => {
       const isAlreadyAdded = selectedPlaylistSongs.some((song) => song.id === songId);
@@ -266,7 +264,7 @@ function MobileTracklistPanel() {
                 classNames="!w-full text-start !max-w-none"
                 ActionButtonIcon={selectedTracklist.is_public ? <Heart /> : <Trash />}
                 actionButtonClickHandler={
-                  selectedTracklist.tracklistType === 'playlist' && removeSongHandler
+                  selectedTracklist.tracklistType === 'playlist' ? removeSongHandler : undefined
                 }
                 isActionButtonPending={pendingSongId === song.id}
                 song={song}

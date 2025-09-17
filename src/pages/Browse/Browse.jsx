@@ -11,14 +11,14 @@ import MainButton from '../../components/Buttons/MainButton/MainButton';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import sectionBgImage from '../../assets/images/backgrounds/section-bg-2.jpg';
 import { useQuery } from '@tanstack/react-query';
-import { albumsQueryOptions } from '../../queries/albums';
+import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import { songs, playlists, genres } from '../../data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 
 export default function Browse() {
-  const albums = useQuery(albumsQueryOptions());
+  const albums = useQuery(getAllAlbumsQueryOptions());
   const artists = useQuery(getArtistsQueryOptions());
   const isDesktop = useMediaQuery('(min-width: 768px)');
 

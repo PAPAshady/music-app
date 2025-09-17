@@ -1,7 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import artistDefaultImage from '../../../assets/images/Avatar/no-avatar.png';
 import MainButton from '../../Buttons/MainButton/MainButton';
-import DropDownList from '../../DropDownList/DropDownList';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import { Shuffle, RepeateOne, RepeateMusic, Play, Pause, Heart } from 'iconsax-react';
 import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
@@ -13,6 +12,10 @@ import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import { setCurrentQueuelist } from '../../../redux/slices/playContextSlice';
 import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 import usePlayBar from '../../../hooks/usePlayBar';
+import AlbumsSlider from '../../Sliders/AlbumsSlider/AlbumsSlider';
+import { getAlbumsByArtistIdQueryOptions } from '../../../queries/albums';
+import { getRelatedArtistsByGenresQueryOptions } from '../../../queries/artists';
+import ArtistsSlider from '../../Sliders/ArtistsSlider/ArtistsSlider';
 
 function MobileArtistPanel() {
   const dispatch = useDispatch();
@@ -26,7 +29,12 @@ function MobileArtistPanel() {
     select: (data) => data.slice(0, 5),
   });
   const { playArtistSongs } = usePlayBar(artist?.id);
-  const dropDownListItems = [];
+  const { data: albums, isPending: isAlbumsPending } = useQuery(
+    getAlbumsByArtistIdQueryOptions(artist.id)
+  );
+  const { data: relatedArtists, isPending: isRelatedArtistsPending } = useQuery(
+    getRelatedArtistsByGenresQueryOptions(artist?.genres)
+  );
 
   const playPauseHandler = () => {
     dispatch(setCurrentQueuelist(popularSongs));
@@ -45,7 +53,6 @@ function MobileArtistPanel() {
           </button>
 
           <MainButton size="sm" variant="primary" type="outline" title="Follow" />
-          <DropDownList menuItems={dropDownListItems} dropDownPlacement="bottom start" />
         </div>
         <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
           <IconButton
@@ -72,45 +79,58 @@ function MobileArtistPanel() {
         </div>
       </div>
 
-      <div className="w-full">
-        <p className="px-4 py-2 text-center text-2xl font-bold">Popular</p>
-        {isPopularSongsPending ? (
-          <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-            {Array(8)
-              .fill()
-              .map((_, index) => (
-                <PlayBarSkeleton
-                  key={index}
-                  size={isLargeMobile ? 'lg' : 'md'}
-                  classNames="!w-full text-start !max-w-none"
-                />
-              ))}
-          </div>
-        ) : !popularSongs.length ? (
-          <div className="my-2 w-full">
-            <p className="text-gray-400 md:text-lg">No tracks from this artist.</p>
-          </div>
-        ) : (
-          <>
+      <div className="flex w-full flex-col gap-7">
+        <div>
+          <p className="px-4 py-4 text-center text-2xl font-bold">Popular</p>
+
+          {isPopularSongsPending ? (
             <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-              {popularSongs.map((song, index) => (
-                <PlayBar
-                  key={song.id}
-                  size={isLargeMobile ? 'lg' : 'md'}
-                  index={index}
-                  classNames="!w-full text-start !max-w-none"
-                  ActionButtonIcon={<Heart />}
-                  actionButtonClickHandler={() => {}}
-                  song={song}
-                  onPlay={playArtistSongs}
-                />
-              ))}
+              {Array(8)
+                .fill()
+                .map((_, index) => (
+                  <PlayBarSkeleton
+                    key={index}
+                    size={isLargeMobile ? 'lg' : 'md'}
+                    classNames="!w-full text-start !max-w-none"
+                  />
+                ))}
             </div>
-            <p className="mt-2 text-gray-400">
-              {popularSongs.length} song{popularSongs.length > 1 && 's'}
-            </p>
-          </>
-        )}
+          ) : !popularSongs.length ? (
+            <div className="my-2 w-full">
+              <p className="text-gray-400 md:text-lg">No tracks from this artist.</p>
+            </div>
+          ) : (
+            <>
+              <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
+                {popularSongs.map((song, index) => (
+                  <PlayBar
+                    key={song.id}
+                    size={isLargeMobile ? 'lg' : 'md'}
+                    index={index}
+                    classNames="!w-full text-start !max-w-none"
+                    ActionButtonIcon={<Heart />}
+                    actionButtonClickHandler={() => {}}
+                    song={song}
+                    onPlay={playArtistSongs}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <div>
+          <p className="px-4 pt-4 pb-8 text-center text-2xl font-bold">Albums</p>
+          {albums?.length ? (
+            <AlbumsSlider albums={albums} isLoading={isAlbumsPending}  />
+          ) : (
+            <p className="text-gray-400 md:text-lg">No tracks from this artist.</p>
+          )}
+        </div>
+        <div>
+          <p className="px-4 pb-8 text-center text-2xl font-bold">Fans also like</p>
+          <ArtistsSlider artists={relatedArtists} isLoading={isRelatedArtistsPending} />
+        </div>
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getArtists, getArtistById } from '../services/artists';
+import { getArtists, getArtistById, getRelatedArtistsByGenres } from '../services/artists';
 
 export const getArtistsQueryOptions = () => {
   return queryOptions({
@@ -19,5 +19,16 @@ export const getArtistByIdQueryOptions = (artistId) => {
     retry: true,
     retryDelay: 5000,
     enabled: !!artistId,
+  });
+};
+
+export const getRelatedArtistsByGenresQueryOptions = (genres) => {
+  return queryOptions({
+    queryKey: ['artists', { genres }],
+    queryFn: () => getRelatedArtistsByGenres(genres),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!genres?.length,
   });
 };

@@ -6,14 +6,14 @@ import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { songs } from '../../data';
 import { useQuery } from '@tanstack/react-query';
-import { albumsQueryOptions } from '../../queries/albums';
+import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
 import usePlayBar from '../../hooks/usePlayBar';
 
 export default function Favorites() {
-  const albums = useQuery(albumsQueryOptions());
+  const albums = useQuery(getAllAlbumsQueryOptions());
   const isTablet = useMediaQuery('(min-width: 480px)');
   const { playSingleSong } = usePlayBar();
 

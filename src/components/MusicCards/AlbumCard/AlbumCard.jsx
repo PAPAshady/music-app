@@ -46,7 +46,7 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
           </div>
         </div>
         <div className="flex grow items-center justify-between overflow-hidden px-3.5 lg:block">
-          <div className="overflow-hidden">
+          <div className="overflow-hidden text-start">
             <p
               className={`text-white-50 cursor-pointer truncate text-base ${size === 'lg' ? 'lg:text-lg' : ''}`}
               title={title}
