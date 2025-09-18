@@ -17,6 +17,8 @@ import { Music } from 'iconsax-react';
 import { formatTime, play, pause } from '../../../redux/slices/musicPlayerSlice';
 import { useDispatch } from 'react-redux';
 import usePlayBar from '../../../hooks/usePlayBar';
+import SongCard from '../../MusicCards/SongCard/SongCard';
+import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 
 function IconButton({ children, label, onClick, className = '', title }) {
   return (
@@ -58,7 +60,9 @@ export default function SongSidebar() {
   const song = useSelector((state) => state.musicPlayer.currentMusic);
   const selectedSong = useSelector((state) => state.playContext.singleSong);
   const { data: artist } = useQuery(getArtistByIdQueryOptions(song.artist_id));
-  const { data: popularSongs } = useQuery(getPopularSongsByArtistIdQueryOptions(song.artist_id));
+  const { data: popularSongs, isPending: isPopularSongsPending } = useQuery(
+    getPopularSongsByArtistIdQueryOptions(song.artist_id)
+  );
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
     getRelatedSongsBySongDataQueryOptions(selectedSong)
   );
@@ -268,7 +272,7 @@ export default function SongSidebar() {
         {activeTab === 'artist' && (
           <AnimatePresence mode="wait">
             <motion.div
-              key={song.id}
+              key={song.artist_id}
               initial="initial"
               exit="exit"
               animate="animate"
@@ -295,28 +299,13 @@ export default function SongSidebar() {
 
               <div>
                 <div className="mb-2 text-sm text-slate-300">Top tracks</div>
-                <ul className="space-y-2">
-                  {popularSongs?.map((song) => (
-                    <li
-                      key={song.id}
-                      className="ts-center flex cursor-pointer gap-3 rounded-md p-2 hover:bg-white/3"
-                      onClick={() => console.log('play related', song)}
-                    >
-                      <img
-                        src={song.cover || defaultSongCover}
-                        alt="cover"
-                        className="h-12 w-12 rounded-md object-cover"
-                      />
-                      <div className="flex-1">
-                        <div className="font-medium" title={song.title}>
-                          {song.title}
-                        </div>
-                        <div className="text-sm text-slate-300">{song.artist}</div>
-                      </div>
-                      <div className="text-sm text-slate-400">3:12</div>
-                    </li>
-                  ))}
-                </ul>
+                <div className="space-y-2">
+                  {isPopularSongsPending
+                    ? Array(5)
+                        .fill()
+                        .map((_, index) => <SongCardSkeleton key={index} />)
+                    : popularSongs?.map((song) => <SongCard key={song.id} song={song} />)}
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>

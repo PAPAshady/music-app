@@ -1,4 +1,3 @@
-import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import { useSelector } from 'react-redux';
 import noImage from '../../../assets/images/Avatar/no-avatar.png';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -7,9 +6,11 @@ import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
 import { Music } from 'iconsax-react';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import usePlayBar from '../../../hooks/usePlayBar';
-import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
-import { formatTime } from '../../../redux/slices/musicPlayerSlice';
-import PropTypes from 'prop-types';
+import SmallAlbumCard from '../../MusicCards/SmallAlbumCard/SmallAlbumCard';
+import { getAlbumsByArtistIdQueryOptions } from '../../../queries/albums';
+import SmallAlbumCardSkeleton from '../../MusicCards/SmallAlbumCard/SmallAlbumCardSkeleton';
+import SongCard from '../../MusicCards/SongCard/SongCard';
+import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 
 function ArtistInfosPanel() {
   const selectedArtist = useSelector((state) => state.artist);
@@ -17,6 +18,9 @@ function ArtistInfosPanel() {
     ...getPopularSongsByArtistIdQueryOptions(selectedArtist.id),
     select: (data) => data.slice(0, 4),
   });
+  const { data: albums, isPending: isAlbumsPending } = useQuery(
+    getAlbumsByArtistIdQueryOptions(selectedArtist?.id)
+  );
   const isLargeDesktop = useMediaQuery('(min-width: 1400px)');
   const { playArtistSongs } = usePlayBar(selectedArtist?.id);
 
@@ -65,99 +69,82 @@ function ArtistInfosPanel() {
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className="grow">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selectedArtist.id}
-                variants={{
-                  show: {
-                    transition: {
-                      delayChildren: 0.1,
-                      staggerChildren: 0.1,
+          <div className="mt-4 flex grow flex-col gap-6">
+            <div>
+              <p className="ps-3 pb-2 text-xl font-bold text-white">Popular</p>
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedArtist.id}
+                  variants={{
+                    show: {
+                      transition: {
+                        delayChildren: 0.1,
+                        staggerChildren: 0.1,
+                      },
                     },
-                  },
-                }}
-                initial="hidden"
-                animate="show"
-                exit="hidden"
-                className={`flex h-full grow flex-col gap-2 pe-2 pt-[2px]`}
-              >
-                {isPending ? (
-                  Array(10)
-                    .fill()
-                    .map((_, index) => (
+                  }}
+                  initial="hidden"
+                  animate="show"
+                  exit="hidden"
+                  className={`flex flex-col gap-2 pe-2 pt-[2px] ${!data?.length && 'h-full'}`}
+                >
+                  {isPending ? (
+                    Array(5)
+                      .fill()
+                      .map((_, index) => (
+                        <motion.div
+                          key={index}
+                          variants={{
+                            hidden: { opacity: 0, y: 15 },
+                            show: { opacity: 1, y: 0 },
+                          }}
+                        >
+                          <SongCardSkeleton />
+                        </motion.div>
+                      ))
+                  ) : data?.length ? (
+                    data.map((song, index) => (
                       <motion.div
-                        key={index}
+                        key={song.id}
                         variants={{
                           hidden: { opacity: 0, y: 15 },
                           show: { opacity: 1, y: 0 },
                         }}
                       >
-                        <PlayBarSkeleton size="sm" />
+                        <SongCard song={song} index={index} onPlay={playArtistSongs} />
                       </motion.div>
                     ))
-                ) : data?.length ? (
-                  data.map((song, index) => (
+                  ) : (
                     <motion.div
-                      key={song.id}
-                      variants={{
-                        hidden: { opacity: 0, y: 15 },
-                        show: { opacity: 1, y: 0 },
-                      }}
+                      variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}
+                      className="flex size-full grow flex-col items-center justify-center gap-1 rounded-md border border-dashed border-neutral-400 p-4 text-center"
                     >
-                      <Song song={song} index={index} onPlay={playArtistSongs} />
-                      {/* <PlayBar size="sm" song={song} index={index} onPlay={playArtistSongs} /> */}
+                      <Music size={isLargeDesktop ? 60 : 52} className="text-secondary-300" />
+                      <p className="mt-2 px-4 font-semibold text-white">
+                        No songs available at the moment.
+                      </p>
+                      <p className="text-sm">Check back soon!</p>
                     </motion.div>
-                  ))
-                ) : (
-                  <motion.div
-                    variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}
-                    className="flex size-full grow flex-col items-center justify-center gap-1 rounded-md border border-dashed border-neutral-400 p-4 text-center"
-                  >
-                    <Music size={isLargeDesktop ? 60 : 52} className="text-secondary-300" />
-                    <p className="mt-2 px-4 font-semibold text-white">
-                      No songs available at the moment.
-                    </p>
-                    <p className="text-sm">Check back soon!</p>
-                  </motion.div>
-                )}
-              </motion.div>
-            </AnimatePresence>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div className="pe-2">
+              <p className="ps-3 pb-3 text-xl font-bold text-white">Albums</p>
+              <div className="flex flex-col gap-2">
+                {isAlbumsPending
+                  ? Array(3)
+                      .fill()
+                      .map((_, index) => <SmallAlbumCardSkeleton key={index} />)
+                  : albums.map((album) => <SmallAlbumCard key={album.id} {...album} />)}
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-function Song({ song, index: songIndex, onPlay }) {
-  const { id, cover, title, artist, duration } = song;
-  return (
-    <div
-      key={id}
-      className="ts-center flex cursor-pointer gap-3 rounded-md p-2 hover:bg-white/3"
-      onClick={() => onPlay(song, songIndex)}
-    >
-      <img
-        src={cover || defaultSongCover}
-        alt="cover"
-        className="h-12 w-12 rounded-md object-cover"
-      />
-      <div className="flex flex-1 flex-col justify-center gap-1">
-        <div className="text-sm font-medium" title={title}>
-          {title}
-        </div>
-        <div className="text-xs text-slate-300">{artist}</div>
-      </div>
-      <div className="text-sm text-slate-400">{formatTime(duration)}</div>
-    </div>
-  );
-}
-
-Song.propTypes = {
-  song: PropTypes.object,
-  index: PropTypes.number,
-  onPlay: PropTypes.func,
-};
 
 export default ArtistInfosPanel;
