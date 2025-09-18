@@ -85,7 +85,7 @@ function MobileArtistPanel() {
 
           {isPopularSongsPending ? (
             <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-              {Array(8)
+              {Array(5)
                 .fill()
                 .map((_, index) => (
                   <PlayBarSkeleton
