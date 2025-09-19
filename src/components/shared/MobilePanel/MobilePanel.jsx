@@ -29,6 +29,16 @@ export default function MobilePanel() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [dispatch, isMobilePanelOpen]);
 
+  // remove the main scrolbar because it causes ui gliches in mobile devices
+  useEffect(() => {
+    if (isMobilePanelOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'visible';
+    }
+    return () => (document.body.style.overflow = 'visible');
+  }, [isMobilePanelOpen]);
+
   const handleScroll = (e) => {
     if (e.target.scrollTop <= 30) {
       setIsTopbarVisible(false);
