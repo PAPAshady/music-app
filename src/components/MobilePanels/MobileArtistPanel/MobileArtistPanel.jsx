@@ -124,7 +124,7 @@ function MobileArtistPanel() {
           {albums?.length ? (
             <AlbumsSlider albums={albums} isLoading={isAlbumsPending}  />
           ) : (
-            <p className="text-gray-400 md:text-lg">No tracks from this artist.</p>
+            <p className="text-gray-400 md:text-lg">No albums from this artist.</p>
           )}
         </div>
         <div>
