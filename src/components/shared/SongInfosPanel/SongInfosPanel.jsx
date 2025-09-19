@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Play, Pause, Heart, Menu } from 'iconsax-react';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import usePlayBar from '../../../hooks/usePlayBar';
 import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
+import { music } from '../../../redux/slices/musicPlayerSlice';
 
 function IconButton({ children, label, onClick, className = '', title }) {
   return (
@@ -67,6 +68,52 @@ export default function SongSidebar() {
     getRelatedSongsBySongDataQueryOptions(selectedSong)
   );
   const { playTracklist } = usePlayBar();
+  const [currentLine, setCurrentLine] = useState(null);
+  const lineRefs = useRef([]);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!song.lyrics || song.lyrics.length === 0) return;
+
+    let animationFrameId;
+
+    const updateCurrentLine = () => {
+      const currentTime = music.currentTime;
+      const index = song.lyrics.findIndex((line, i) => {
+        const nextLine = song.lyrics[i + 1];
+        return currentTime >= line.time && (!nextLine || currentTime < nextLine.time);
+      });
+
+      if (index !== -1 && index !== currentLine) {
+        setCurrentLine(index);
+      }
+      animationFrameId = requestAnimationFrame(updateCurrentLine);
+    };
+
+    animationFrameId = requestAnimationFrame(updateCurrentLine);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [song.lyrics, currentLine]);
+
+  useEffect(() => {
+    if (!lineRefs.current[currentLine] || !containerRef.current) return;
+
+    const container = containerRef.current;
+    const line = lineRefs.current[currentLine];
+
+    // Line's position relative to the container
+    const lineTopRelativeToContainer = line.offsetTop - container.offsetTop;
+
+    const containerHeight = container.clientHeight;
+    const lineHeight = line.offsetHeight;
+
+    console.log(lineTopRelativeToContainer);
+
+    container.scrollTo({
+      top: lineTopRelativeToContainer - containerHeight / 2 + lineHeight / 2,
+      behavior: 'smooth',
+    });
+  }, [currentLine]);
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -170,40 +217,40 @@ export default function SongSidebar() {
                 exit: { opacity: 0, y: 15 },
                 transition: { duration: 0.6 },
               }}
-              className="flex h-full flex-col"
+              className="flex h-full grow flex-col overflow-hidden"
             >
-              <>
-                <div className="my-4 flex items-center justify-between">
-                  <div className="text-sm text-slate-300">Lyrics</div>
-                  <div className="flex items-center gap-2">
-                    <label className="flex items-center gap-2 text-sm text-slate-300">
-                      <input type="checkbox" className="accent-indigo-400" />
-                      Auto
-                    </label>
-                  </div>
+              <div className="my-4 flex items-center justify-between">
+                <div className="text-sm text-slate-300">Lyrics</div>
+                <div className="flex items-center gap-2">
+                  <label className="flex items-center gap-2 text-sm text-slate-300">
+                    <input type="checkbox" className="accent-indigo-400" />
+                    Auto
+                  </label>
                 </div>
-                <div className="flex-1 overflow-auto pr-2 pb-2">
-                  {song.lyrics ? (
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        {(song.lyrics || []).map((line, idx) => (
-                          <p key={idx} className="text-lg leading-7 text-slate-300">
-                            {line || '\u00A0'}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center">
-                      <Music size={55} className="text-secondary-300" />
-                      <p className="mt-2 px-4 font-semibold text-white">
-                        No lyrics available at the moment.
+              </div>
+              <div className="h-full grow overflow-auto pr-2 pb-2" ref={containerRef}>
+                {song.lyrics ? (
+                  <div className="space-y-4">
+                    {song.lyrics.map((lyric, index) => (
+                      <p
+                        ref={(el) => (lineRefs.current[index] = el)}
+                        key={index}
+                        className={`leading-7 transition-all ${index === currentLine ? 'font-semibold text-[#fff]' : 'text-slate-400'}`}
+                      >
+                        {lyric.text || '\u00A0'}
                       </p>
-                      <p className="text-sm">Check back soon!</p>
-                    </div>
-                  )}
-                </div>
-              </>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center">
+                    <Music size={55} className="text-secondary-300" />
+                    <p className="mt-2 px-4 font-semibold text-white">
+                      No lyrics available at the moment.
+                    </p>
+                    <p className="text-sm">Check back soon!</p>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </AnimatePresence>
         )}
