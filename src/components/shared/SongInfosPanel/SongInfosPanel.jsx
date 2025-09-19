@@ -79,6 +79,10 @@ export default function SongSidebar() {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    setCurrentLine(null);
+  }, [song]);
+
+  useEffect(() => {
     if (!song.lyrics || song.lyrics.length === 0) return;
 
     let animationFrameId;
