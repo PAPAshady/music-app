@@ -96,21 +96,17 @@ export default function SongSidebar() {
   }, [song.lyrics, currentLine]);
 
   useEffect(() => {
-    if (!lineRefs.current[currentLine] || !containerRef.current) return;
-
+    const line = lineRefs.current?.[currentLine];
     const container = containerRef.current;
-    const line = lineRefs.current[currentLine];
+    if (!line && container) return;
 
-    // Line's position relative to the container
-    const lineTopRelativeToContainer = line.offsetTop - container.offsetTop;
-
-    const containerHeight = container.clientHeight;
+    // line position related to container
+    const linePosition = line.offsetTop - container.offsetTop;
+    const containerHeigth = container.clientHeight;
     const lineHeight = line.offsetHeight;
 
-    console.log(lineTopRelativeToContainer);
-
     container.scrollTo({
-      top: lineTopRelativeToContainer - containerHeight / 2 + lineHeight / 2,
+      top: linePosition - containerHeigth / 2 + lineHeight / 2,
       behavior: 'smooth',
     });
   }, [currentLine]);
