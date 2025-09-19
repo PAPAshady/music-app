@@ -14,7 +14,12 @@ import {
   getRelatedSongsBySongDataQueryOptions,
 } from '../../../queries/musics';
 import { Music } from 'iconsax-react';
-import { formatTime, play, pause } from '../../../redux/slices/musicPlayerSlice';
+import {
+  formatTime,
+  play,
+  pause,
+  setAutoLyricsTracker,
+} from '../../../redux/slices/musicPlayerSlice';
 import { useDispatch } from 'react-redux';
 import usePlayBar from '../../../hooks/usePlayBar';
 import SongCard from '../../MusicCards/SongCard/SongCard';
@@ -60,6 +65,7 @@ export default function SongSidebar() {
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const song = useSelector((state) => state.musicPlayer.currentMusic);
   const selectedSong = useSelector((state) => state.playContext.singleSong);
+  const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
   const { data: artist } = useQuery(getArtistByIdQueryOptions(song.artist_id));
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery(
     getPopularSongsByArtistIdQueryOptions(song.artist_id)
@@ -96,20 +102,22 @@ export default function SongSidebar() {
   }, [song.lyrics, currentLine]);
 
   useEffect(() => {
-    const line = lineRefs.current?.[currentLine];
-    const container = containerRef.current;
-    if (!line && container) return;
+    if (shouldAutoTrackLyrics) {
+      const line = lineRefs.current?.[currentLine];
+      const container = containerRef.current;
+      if (!line || !container) return;
 
-    // line position related to container
-    const linePosition = line.offsetTop - container.offsetTop;
-    const containerHeigth = container.clientHeight;
-    const lineHeight = line.offsetHeight;
+      // line position related to container
+      const linePosition = line.offsetTop - container.offsetTop;
+      const containerHeigth = container.clientHeight;
+      const lineHeight = line.offsetHeight;
 
-    container.scrollTo({
-      top: linePosition - containerHeigth / 2 + lineHeight / 2,
-      behavior: 'smooth',
-    });
-  }, [currentLine]);
+      container.scrollTo({
+        top: linePosition - containerHeigth / 2 + lineHeight / 2,
+        behavior: 'smooth',
+      });
+    }
+  }, [currentLine, shouldAutoTrackLyrics]);
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -219,8 +227,13 @@ export default function SongSidebar() {
                 <div className="text-sm text-slate-300">Lyrics</div>
                 <div className="flex items-center gap-2">
                   <label className="flex items-center gap-2 text-sm text-slate-300">
-                    <input type="checkbox" className="accent-indigo-400" />
-                    Auto
+                    <input
+                      type="checkbox"
+                      className="accent-indigo-400"
+                      checked={shouldAutoTrackLyrics}
+                      onChange={() => dispatch(setAutoLyricsTracker(!shouldAutoTrackLyrics))}
+                    />
+                    Auto-Sync
                   </label>
                 </div>
               </div>
