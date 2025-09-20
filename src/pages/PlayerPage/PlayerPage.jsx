@@ -137,7 +137,7 @@ export default function PlayerPage() {
           </div>
           <div
             id="lyrics-wrapper"
-            className="xs:text-base flex max-h-[200px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[270px] min-[480px]:w-full min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base"
+            className="xs:text-base flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:w-full min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base"
             ref={containerRef}
           >
             {currentMusic.lyrics?.map((lyric, index) => (

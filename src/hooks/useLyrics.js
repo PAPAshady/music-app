@@ -9,7 +9,8 @@ export default function useLyrics(lineRefs, containerRef) {
 
   useEffect(() => {
     setCurrentLineIndex(null);
-  }, [song]);
+    containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [song, containerRef]);
 
   useEffect(() => {
     if (!song.lyrics || song.lyrics.length === 0) return;
