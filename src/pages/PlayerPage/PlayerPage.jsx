@@ -14,6 +14,7 @@ import MobilePanel from '../../components/shared/MobilePanel/MobilePanel';
 import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
 import { useQuery } from '@tanstack/react-query';
 import useLyrics from '../../hooks/useLyrics';
+import { setAutoLyricsTracker } from '../../redux/slices/musicPlayerSlice';
 import {
   getRelatedSongsBySongDataQueryOptions,
   getSongsByAlbumIdQueryOptions,
@@ -43,6 +44,7 @@ export default function PlayerPage() {
         : getSongsByAlbumIdQueryOptions(playingTracklist.id)
   );
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
+  const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
 
   useEffect(() => {
     const img = new Image();
@@ -135,20 +137,29 @@ export default function PlayerPage() {
               <div className="border-primary-300 size-[22.5%] rounded-full border-2"></div>
             </div>
           </div>
-          <div
-            id="lyrics-wrapper"
-            className="xs:text-base flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:w-full min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base"
-            ref={containerRef}
-          >
-            {currentMusic.lyrics?.map((lyric, index) => (
-              <p
-                className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
-                key={lyric.id}
-                ref={(el) => (lineRefs.current[index] = el)}
-              >
-                {lyric.text}
-              </p>
-            ))}
+          <div className="min-[480px]:w-full">
+            <div
+              className={`xs:text-base lyrics-wrapper flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base ${shouldAutoTrackLyrics && 'hide-scrollbar'}`}
+              ref={containerRef}
+            >
+              {currentMusic.lyrics?.map((lyric, index) => (
+                <p
+                  className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
+                  key={lyric.id}
+                  ref={(el) => (lineRefs.current[index] = el)}
+                >
+                  {lyric.text}
+                </p>
+              ))}
+            </div>
+            <label className="hidden px-4 pt-8 lg:block">
+              <input
+                type="checkbox"
+                checked={shouldAutoTrackLyrics}
+                onChange={() => dispatch(setAutoLyricsTracker(!shouldAutoTrackLyrics))}
+              />
+              <span className="ms-2">Auto-Sync</span>
+            </label>
           </div>
         </div>
         <Player classNames="lg:!bottom-4 lg:!w-full" isPlayerPage />

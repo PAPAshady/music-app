@@ -1,7 +1,11 @@
-#lyrics-wrapper::-webkit-scrollbar {
-  width: 0;
+.lyrics-wrapper {
+  scrollbar-gutter: stable;
 }
 
-#lyrics-wrapper {
+.hide-scrollbar {
   scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0;
 }
