@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Play, Pause, Heart, Menu } from 'iconsax-react';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
@@ -24,7 +24,7 @@ import { useDispatch } from 'react-redux';
 import usePlayBar from '../../../hooks/usePlayBar';
 import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
-import { music } from '../../../redux/slices/musicPlayerSlice';
+import useLyrics from '../../../hooks/useLyrics';
 
 function IconButton({ children, label, onClick, className = '', title }) {
   return (
@@ -74,54 +74,9 @@ export default function SongSidebar() {
     getRelatedSongsBySongDataQueryOptions(selectedSong)
   );
   const { playTracklist } = usePlayBar();
-  const [currentLine, setCurrentLine] = useState(null);
   const lineRefs = useRef([]);
   const containerRef = useRef(null);
-
-  useEffect(() => {
-    setCurrentLine(null);
-  }, [song]);
-
-  useEffect(() => {
-    if (!song.lyrics || song.lyrics.length === 0) return;
-
-    let animationFrameId;
-
-    const updateCurrentLine = () => {
-      const currentTime = music.currentTime;
-      const index = song.lyrics.findIndex((line, i) => {
-        const nextLine = song.lyrics[i + 1];
-        return currentTime >= line.time && (!nextLine || currentTime < nextLine.time);
-      });
-
-      if (index !== -1 && index !== currentLine) {
-        setCurrentLine(index);
-      }
-      animationFrameId = requestAnimationFrame(updateCurrentLine);
-    };
-
-    animationFrameId = requestAnimationFrame(updateCurrentLine);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [song.lyrics, currentLine]);
-
-  useEffect(() => {
-    if (shouldAutoTrackLyrics) {
-      const line = lineRefs.current?.[currentLine];
-      const container = containerRef.current;
-      if (!line || !container) return;
-
-      // line position related to container
-      const linePosition = line.offsetTop - container.offsetTop;
-      const containerHeigth = container.clientHeight;
-      const lineHeight = line.offsetHeight;
-
-      container.scrollTo({
-        top: linePosition - containerHeigth / 2 + lineHeight / 2,
-        behavior: 'smooth',
-      });
-    }
-  }, [currentLine, shouldAutoTrackLyrics]);
+  const { currentLineIndex } = useLyrics(lineRefs, containerRef);
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -248,7 +203,7 @@ export default function SongSidebar() {
                       <p
                         ref={(el) => (lineRefs.current[index] = el)}
                         key={index}
-                        className={`leading-7 transition-all ${index === currentLine ? 'font-semibold text-[#fff]' : 'text-slate-400'}`}
+                        className={`leading-7 transition-all ${index === currentLineIndex ? 'font-semibold text-[#fff]' : 'text-slate-400'}`}
                       >
                         {lyric.text || '\u00A0'}
                       </p>

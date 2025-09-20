@@ -7,13 +7,13 @@ import MusicPlayerCardSkeleton from '../../components/MusicCards/MusicPlayerCard
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel } from 'swiper/modules';
-import { lyrics } from '../../data';
 import backgroundImage from '../../assets/images/backgrounds/player-and-settings-page.png';
 import noMusicCover from '../../assets/images/covers/no-cover.jpg';
 import { useSelector, useDispatch } from 'react-redux';
 import MobilePanel from '../../components/shared/MobilePanel/MobilePanel';
 import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
 import { useQuery } from '@tanstack/react-query';
+import useLyrics from '../../hooks/useLyrics';
 import {
   getRelatedSongsBySongDataQueryOptions,
   getSongsByAlbumIdQueryOptions,
@@ -24,6 +24,8 @@ import './PlayerPage.css';
 
 export default function PlayerPage() {
   const swiperRef = useRef(null);
+  const lineRefs = useRef([]);
+  const containerRef = useRef(null);
   const dispatch = useDispatch();
   const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
@@ -40,6 +42,7 @@ export default function PlayerPage() {
         ? getSongsByPlaylistIdQueryOptions(playingTracklist.id)
         : getSongsByAlbumIdQueryOptions(playingTracklist.id)
   );
+  const { currentLineIndex } = useLyrics(lineRefs, containerRef);
 
   useEffect(() => {
     const img = new Image();
@@ -135,13 +138,15 @@ export default function PlayerPage() {
           <div
             id="lyrics-wrapper"
             className="xs:text-base flex max-h-[200px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[270px] min-[480px]:w-full min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base"
+            ref={containerRef}
           >
-            {lyrics.map((lyric) => (
+            {currentMusic.lyrics?.map((lyric, index) => (
               <p
-                className={`transition-colors duration-300 ${lyric.isShown ? 'text-white-50' : 'text-white-700'}`}
+                className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
                 key={lyric.id}
+                ref={(el) => (lineRefs.current[index] = el)}
               >
-                {lyric.lyric}
+                {lyric.text}
               </p>
             ))}
           </div>
