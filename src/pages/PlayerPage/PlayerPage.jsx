@@ -20,6 +20,7 @@ import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
 } from '../../queries/musics';
+import { getPopularSongsByArtistIdQueryOptions } from '../../queries/musics';
 import 'swiper/css';
 import './PlayerPage.css';
 
@@ -31,17 +32,19 @@ export default function PlayerPage() {
   const [musicCover, setMusicCover] = useState(noMusicCover);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
-  const isSingleSong = useSelector((state) => state.playContext.isSingleSong);
   const selectedSingleSong = useSelector((state) => state.playContext.singleSong);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
   const prevSongIndex = useSelector((state) => state.musicPlayer.prevSongIndex);
+  const queuelistType = useSelector((state) => state.playContext.queuelistType);
   const { data: tracklistSongs, isPending: isTracklistSongsPending } = useQuery(
-    isSingleSong
+    queuelistType === 'related_songs'
       ? getRelatedSongsBySongDataQueryOptions(selectedSingleSong)
-      : playingTracklist.tracklistType === 'playlist'
+      : queuelistType === 'playlist'
         ? getSongsByPlaylistIdQueryOptions(playingTracklist.id)
-        : getSongsByAlbumIdQueryOptions(playingTracklist.id)
+        : queuelistType === 'album'
+          ? getSongsByAlbumIdQueryOptions(playingTracklist.id)
+          : getPopularSongsByArtistIdQueryOptions(currentMusic?.artist_id)
   );
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
@@ -145,7 +148,7 @@ export default function PlayerPage() {
               {currentMusic.lyrics?.map((lyric, index) => (
                 <p
                   className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
-                  key={lyric.id}
+                  key={lyric.time}
                   ref={(el) => (lineRefs.current[index] = el)}
                 >
                   {lyric.text}

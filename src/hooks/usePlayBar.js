@@ -4,6 +4,7 @@ import {
   setSingleSong,
   setCurrentQueuelist,
   setCurrentCollection,
+  setQueuelistType,
 } from '../redux/slices/playContextSlice';
 import { setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
 import { setSidebarPanelType } from '../redux/slices/sidebarTypeSlice';
@@ -45,6 +46,7 @@ function usePlayBar(artistId) {
     (_, songIndex) => {
       dispatch(setCurrentQueuelist(artistPopularSongs));
       dispatch(setCurrentSongIndex(songIndex));
+      dispatch(setQueuelistType('artist_popular_songs'));
     },
     [dispatch, artistPopularSongs]
   );

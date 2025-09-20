@@ -8,6 +8,7 @@ const playContextSlice = createSlice({
     currentCollection: {},
     singleSong: {},
     currentQueuelist: [],
+    queuelistType: null, // could be on of the followings: [null, 'album', 'playlist', 'related_songs', 'artist_popular_songs']
   },
   reducers: {
     setIsSingleSong(state, action) {
@@ -27,6 +28,7 @@ const playContextSlice = createSlice({
       state.isSingleSong = false;
       state.currentCollection = action.payload;
       state.currentQueuelist = state.selectedCollection.tracks;
+      state.queuelistType = action.payload.tracklistType;
     },
 
     setSingleSong(state, action) {
@@ -34,9 +36,13 @@ const playContextSlice = createSlice({
       state.selectedCollection = {};
       state.currentCollection = {};
       state.singleSong = action.payload;
+      state.queuelistType = 'related_songs';
     },
     setCurrentQueuelist(state, action) {
       state.currentQueuelist = action.payload;
+    },
+    setQueuelistType(state, action) {
+      state.queuelistType = action.payload;
     },
   },
 });
@@ -48,5 +54,6 @@ export const {
   setCurrentCollection,
   setSingleSong,
   setCurrentQueuelist,
+  setQueuelistType,
 } = playContextSlice.actions;
 export default playContextSlice.reducer;
