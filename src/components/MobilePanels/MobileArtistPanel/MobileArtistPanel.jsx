@@ -14,7 +14,7 @@ import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 import usePlayBar from '../../../hooks/usePlayBar';
 import AlbumsSlider from '../../Sliders/AlbumsSlider/AlbumsSlider';
 import { getAlbumsByArtistIdQueryOptions } from '../../../queries/albums';
-import { getRelatedArtistsByGenresQueryOptions } from '../../../queries/artists';
+import { getRelatedArtistsQueryOptions } from '../../../queries/artists';
 import ArtistsSlider from '../../Sliders/ArtistsSlider/ArtistsSlider';
 
 function MobileArtistPanel() {
@@ -33,7 +33,7 @@ function MobileArtistPanel() {
     getAlbumsByArtistIdQueryOptions(artist.id)
   );
   const { data: relatedArtists, isPending: isRelatedArtistsPending } = useQuery(
-    getRelatedArtistsByGenresQueryOptions(artist?.genres)
+    getRelatedArtistsQueryOptions(artist)
   );
 
   const playPauseHandler = () => {

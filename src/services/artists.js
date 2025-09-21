@@ -12,11 +12,12 @@ export const getArtistById = async (artistId) => {
   return data;
 };
 
-export const getRelatedArtistsByGenres = async (genres) => {
+export const getRelatedArtists = async (artist) => {
   const { data, error } = await supabase
     .from('artists')
     .select('*')
-    .overlaps('genres', genres)
+    .overlaps('genres', artist.genres)
+    .neq('id', artist.id)
     .limit(10);
   if (error) throw error;
   return data;

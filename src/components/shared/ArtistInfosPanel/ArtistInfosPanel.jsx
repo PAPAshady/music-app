@@ -10,7 +10,7 @@ import SmallAlbumCardSkeleton from '../../MusicCards/SmallAlbumCard/SmallAlbumCa
 import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 import artistDefaultCover from '../../../assets/images/Avatar/no-avatar.png';
-import { getRelatedArtistsByGenresQueryOptions } from '../../../queries/artists';
+import { getRelatedArtistsQueryOptions } from '../../../queries/artists';
 import PropTypes from 'prop-types';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 import { setSelectedArtist } from '../../../redux/slices/artistSlice';
@@ -26,7 +26,7 @@ function ArtistInfosPanel() {
     getAlbumsByArtistIdQueryOptions(selectedArtist?.id)
   );
   const { data: relatedArtists, isPending: isRelatedArtistsPending } = useQuery(
-    getRelatedArtistsByGenresQueryOptions(selectedArtist?.genres)
+    getRelatedArtistsQueryOptions(selectedArtist)
   );
   const { playArtistSongs } = usePlayBar(selectedArtist?.id);
   const containerRef = useRef();
