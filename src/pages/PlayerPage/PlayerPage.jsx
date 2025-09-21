@@ -15,6 +15,7 @@ import { setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
 import { useQuery } from '@tanstack/react-query';
 import useLyrics from '../../hooks/useLyrics';
 import { setAutoLyricsTracker } from '../../redux/slices/musicPlayerSlice';
+import { Navigate } from 'react-router-dom';
 import {
   getRelatedSongsBySongDataQueryOptions,
   getSongsByAlbumIdQueryOptions,
@@ -82,93 +83,97 @@ export default function PlayerPage() {
     [dispatch]
   );
 
-  return (
-    <div
-      className="relative min-h-[100dvh] overflow-y-auto bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      <div className="relative w-full pt-4">
-        <div className="container">
-          <Header />
+  if (currentMusic?.id) {
+    return (
+      <div
+        className="relative min-h-[100dvh] overflow-y-auto bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
+        <div className="relative w-full pt-4">
+          <div className="container">
+            <Header />
+          </div>
         </div>
-      </div>
 
-      <main className="text-secondary-50 relative container h-[calc(100dvh-58px)] pt-6 lg:h-[calc(100dvh-170px)]">
-        <div className="flex min-h-full grow flex-col items-center justify-center gap-10 pb-24 min-[480px]:pb-28 sm:gap-12 sm:pb-32 lg:flex-row lg:justify-between lg:pb-8 xl:gap-16 2xl:!gap-24">
-          {isDesktop && (
-            <div className="mx-auto w-full grow">
-              <Swiper
-                onSwiper={(swiper) => (swiperRef.current = swiper)}
-                watchSlidesProgress
-                slidesPerView={3}
-                spaceBetween={16}
-                direction="vertical"
-                modules={[Mousewheel]}
-                mousewheel={{ forceToAxis: true }}
-                className="max-h-[380px]"
-              >
-                {isTracklistSongsPending
-                  ? Array(6)
-                      .fill(0)
-                      .map((_, index) => (
-                        <SwiperSlide key={index}>
-                          <MusicPlayerCardSkeleton />
-                        </SwiperSlide>
-                      ))
-                  : tracklistSongs.map((music, musicIndex) => (
-                      <SwiperSlide key={music.id} className="!h-auto">
-                        <MusicPlayerCard
-                          isPlaying={music.id === currentMusic?.id}
-                          onClick={playerCardClickHandler}
-                          musicIndex={musicIndex}
-                          {...music}
-                        />
-                      </SwiperSlide>
-                    ))}
-              </Swiper>
-            </div>
-          )}
-          <div>
-            <div
-              className={`border-primary-300 flex animate-[rotate_20s_linear_infinite] items-center justify-center rounded-full border-2 bg-cover bg-center bg-no-repeat ${CD_Sizes}`}
-              style={{
-                backgroundImage: `url(${musicCover})`,
-                mask: 'radial-gradient(circle, transparent 15%, black 15%)',
-                WebkitMask: 'radial-gradient(circle, transparent 15%, black 15%)',
-              }}
-            >
-              <div className="border-primary-300 size-[22.5%] rounded-full border-2"></div>
-            </div>
-          </div>
-          <div className="min-[480px]:w-full">
-            <div
-              className={`xs:text-base lyrics-wrapper flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base ${shouldAutoTrackLyrics && 'hide-scrollbar'}`}
-              ref={containerRef}
-            >
-              {currentMusic.lyrics?.map((lyric, index) => (
-                <p
-                  className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
-                  key={lyric.time}
-                  ref={(el) => (lineRefs.current[index] = el)}
+        <main className="text-secondary-50 relative container h-[calc(100dvh-58px)] pt-6 lg:h-[calc(100dvh-170px)]">
+          <div className="flex min-h-full grow flex-col items-center justify-center gap-10 pb-24 min-[480px]:pb-28 sm:gap-12 sm:pb-32 lg:flex-row lg:justify-between lg:pb-8 xl:gap-16 2xl:!gap-24">
+            {isDesktop && (
+              <div className="mx-auto w-full grow">
+                <Swiper
+                  onSwiper={(swiper) => (swiperRef.current = swiper)}
+                  watchSlidesProgress
+                  slidesPerView={3}
+                  spaceBetween={16}
+                  direction="vertical"
+                  modules={[Mousewheel]}
+                  mousewheel={{ forceToAxis: true }}
+                  className="max-h-[380px]"
                 >
-                  {lyric.text}
-                </p>
-              ))}
+                  {isTracklistSongsPending
+                    ? Array(6)
+                        .fill(0)
+                        .map((_, index) => (
+                          <SwiperSlide key={index}>
+                            <MusicPlayerCardSkeleton />
+                          </SwiperSlide>
+                        ))
+                    : tracklistSongs.map((music, musicIndex) => (
+                        <SwiperSlide key={music.id} className="!h-auto">
+                          <MusicPlayerCard
+                            isPlaying={music.id === currentMusic?.id}
+                            onClick={playerCardClickHandler}
+                            musicIndex={musicIndex}
+                            {...music}
+                          />
+                        </SwiperSlide>
+                      ))}
+                </Swiper>
+              </div>
+            )}
+            <div>
+              <div
+                className={`border-primary-300 flex animate-[rotate_20s_linear_infinite] items-center justify-center rounded-full border-2 bg-cover bg-center bg-no-repeat ${CD_Sizes}`}
+                style={{
+                  backgroundImage: `url(${musicCover})`,
+                  mask: 'radial-gradient(circle, transparent 15%, black 15%)',
+                  WebkitMask: 'radial-gradient(circle, transparent 15%, black 15%)',
+                }}
+              >
+                <div className="border-primary-300 size-[22.5%] rounded-full border-2"></div>
+              </div>
             </div>
-            <label className="hidden px-4 pt-8 lg:block">
-              <input
-                type="checkbox"
-                checked={shouldAutoTrackLyrics}
-                onChange={() => dispatch(setAutoLyricsTracker(!shouldAutoTrackLyrics))}
-              />
-              <span className="ms-2">Auto-Sync</span>
-            </label>
+            <div className="min-[480px]:w-full">
+              <div
+                className={`xs:text-base lyrics-wrapper flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base ${shouldAutoTrackLyrics && 'hide-scrollbar'}`}
+                ref={containerRef}
+              >
+                {currentMusic.lyrics?.map((lyric, index) => (
+                  <p
+                    className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
+                    key={lyric.time}
+                    ref={(el) => (lineRefs.current[index] = el)}
+                  >
+                    {lyric.text}
+                  </p>
+                ))}
+              </div>
+              <label className="hidden px-4 pt-8 lg:block">
+                <input
+                  type="checkbox"
+                  checked={shouldAutoTrackLyrics}
+                  onChange={() => dispatch(setAutoLyricsTracker(!shouldAutoTrackLyrics))}
+                />
+                <span className="ms-2">Auto-Sync</span>
+              </label>
+            </div>
           </div>
-        </div>
-        <Player classNames="lg:!bottom-4 lg:!w-full" isPlayerPage />
-      </main>
-      <HamburgerMenu />
-      {!isDesktop && <MobilePanel />}
-    </div>
-  );
+          <Player classNames="lg:!bottom-4 lg:!w-full" isPlayerPage />
+        </main>
+        <HamburgerMenu />
+        {!isDesktop && <MobilePanel />}
+      </div>
+    );
+  } else {
+    return <Navigate to="/" replace />;
+  }
 }

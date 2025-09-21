@@ -13,7 +13,7 @@ export default function useLyrics(lineRefs, containerRef) {
   }, [song, containerRef]);
 
   useEffect(() => {
-    if (!song.lyrics || song.lyrics.length === 0) return;
+    if (!song?.lyrics || song?.lyrics.length === 0) return;
 
     let animationFrameId;
 
@@ -33,7 +33,7 @@ export default function useLyrics(lineRefs, containerRef) {
     animationFrameId = requestAnimationFrame(updateCurrentLineIndex);
 
     return () => cancelAnimationFrame(animationFrameId);
-  }, [song.lyrics, currentLineIndex]);
+  }, [song?.lyrics, currentLineIndex]);
 
   useEffect(() => {
     if (shouldAutoTrackLyrics) {
