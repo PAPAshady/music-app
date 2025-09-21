@@ -174,6 +174,6 @@ export default function PlayerPage() {
       </div>
     );
   } else {
-    return <Navigate to="/" replace />;
+    return <Navigate to="*" replace />;
   }
 }

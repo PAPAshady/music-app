@@ -17,8 +17,17 @@ import Profile from './pages/Profile/Profile';
 import Analytics from './pages/Analytics/Analytics';
 import ContactUs from './pages/ContactUs/ContactUs';
 import FAQ from './pages/FAQ/FAQ';
+import NotFoundPage from './pages/404/404';
 
 const routes = [
+  {
+    path: '*',
+    element: (
+      <ProtectedRoute>
+        <NotFoundPage />
+      </ProtectedRoute>
+    ),
+  },
   {
     path: '/',
 
