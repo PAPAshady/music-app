@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
 import useInput from '../../../hooks/useInput';
@@ -18,6 +18,7 @@ export default memo(function Header() {
   const notificationMenu = useCloseOnClickOutside();
   const mobileSearchBox = useCloseOnClickOutside();
   const settingsMenu = useCloseOnClickOutside();
+  const [isSearchBarFocused, setIsSearchBarFocused] = useState(false);
 
   return (
     <header>
@@ -47,8 +48,22 @@ export default memo(function Header() {
         </div>
       </div>
       <div className="hidden items-center justify-between lg:flex">
-        <div>
-          <SearchInput {...searchInput} />
+        <div className="relative w-full">
+          <div
+            className={`relative z-30 transition-all ${isSearchBarFocused ? 'w-[70%]' : 'w-[315px]'}`}
+          >
+            <SearchInput
+              {...searchInput}
+              onFocus={() => setIsSearchBarFocused(true)}
+              onBlur={() => setIsSearchBarFocused(false)}
+            />
+            <div
+              className={`absolute z-[-1] -mt-4 max-h-[450px] w-full rounded-md bg-gradient-to-b from-slate-800 to-slate-700 px-4 py-7 transition duration-100 ${isSearchBarFocused ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'}`}
+            ></div>
+          </div>
+          <div
+            className={`fixed inset-0 size-full transition-all ${isSearchBarFocused && 'z-20 bg-black/50'}`}
+          ></div>
         </div>
         <div className="text-secondary-100 flex items-center gap-2">
           <div className="relative" ref={notificationMenu.ref}>
