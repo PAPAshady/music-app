@@ -19,7 +19,7 @@ const schema = z.object({
 
 function NotFoundPage() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
-  const isMobile = useMediaQuery('(min-width: 640px)');
+  const isMobile = useMediaQuery('(max-width: 640px)');
   const {
     register,
     handleSubmit,
