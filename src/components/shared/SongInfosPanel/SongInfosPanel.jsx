@@ -73,7 +73,7 @@ export default function SongSidebar() {
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
     getRelatedSongsBySongDataQueryOptions(selectedSong)
   );
-  const { playTracklist } = usePlayBar();
+  const { playTracklist, playArtistSongs } = usePlayBar(song?.artist_id);
   const lineRefs = useRef([]);
   const containerRef = useRef(null);
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
@@ -319,7 +319,14 @@ export default function SongSidebar() {
                     ? Array(5)
                         .fill()
                         .map((_, index) => <SongCardSkeleton key={index} />)
-                    : popularSongs?.map((song) => <SongCard key={song.id} song={song} />)}
+                    : popularSongs?.map((song, index) => (
+                        <SongCard
+                          key={song.id}
+                          song={song}
+                          index={index}
+                          onPlay={playArtistSongs}
+                        />
+                      ))}
                 </div>
               </div>
             </motion.div>
