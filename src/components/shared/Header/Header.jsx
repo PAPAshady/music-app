@@ -56,7 +56,7 @@ export default memo(function Header() {
         <div className="relative w-full">
           <div
             ref={desktopSearchBoxRef}
-            className={`relative z-30 transition-all ${isDesktopSearchBoxOpen ? 'w-[65%]' : 'w-[315px]'}`}
+            className={`relative z-30 transition-all ease-in-out ${isDesktopSearchBoxOpen ? 'w-[65%]' : 'w-[315px]'}`}
           >
             <SearchInput {...searchInput} onFocus={() => setIsDesktopSearchBoxOpen(true)} />
             <DesktopSearchBox isVisible={isDesktopSearchBoxOpen} />
