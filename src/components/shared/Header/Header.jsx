@@ -19,11 +19,6 @@ export default memo(function Header() {
   const notificationMenu = useCloseOnClickOutside();
   const mobileSearchBox = useCloseOnClickOutside();
   const settingsMenu = useCloseOnClickOutside();
-  const {
-    isVisible: isDesktopSearchBoxOpen,
-    setIsVisible: setIsDesktopSearchBoxOpen,
-    ref: desktopSearchBoxRef,
-  } = useCloseOnClickOutside();
 
   return (
     <header>
@@ -53,18 +48,8 @@ export default memo(function Header() {
         </div>
       </div>
       <div className="hidden items-center justify-between lg:flex">
-        <div className="relative w-full">
-          <div
-            ref={desktopSearchBoxRef}
-            className={`relative z-30 transition-all ease-in-out ${isDesktopSearchBoxOpen ? 'w-[65%]' : 'w-[315px]'}`}
-          >
-            <SearchInput {...searchInput} onFocus={() => setIsDesktopSearchBoxOpen(true)} />
-            <DesktopSearchBox isVisible={isDesktopSearchBoxOpen} />
-          </div>
-          <div
-            className={`fixed inset-0 size-full transition-all ${isDesktopSearchBoxOpen && 'z-20 bg-black/50'}`}
-          ></div>
-        </div>
+        <DesktopSearchBox />
+
         <div className="text-secondary-100 flex items-center gap-2">
           <div className="relative" ref={notificationMenu.ref}>
             <IconButton

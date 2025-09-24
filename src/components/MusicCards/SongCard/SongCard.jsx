@@ -6,7 +6,7 @@ function Song({ song, index: songIndex, onPlay }) {
   const { cover, title, artist, duration } = song;
   return (
     <div
-      className="flex cursor-pointer gap-3 rounded-md p-2 hover:bg-white/3"
+      className="flex cursor-pointer gap-3 rounded-md border p-2 hover:bg-white/3"
       onClick={() => onPlay(song, songIndex)}
     >
       <img
@@ -14,11 +14,13 @@ function Song({ song, index: songIndex, onPlay }) {
         alt="cover"
         className="h-12 w-12 rounded-md object-cover"
       />
-      <div className="flex flex-1 flex-col justify-center gap-1">
-        <div className="text-sm font-medium" title={title}>
+      <div className="flex flex-1 flex-col justify-center gap-1 overflow-hidden">
+        <p className="truncate text-sm font-medium" title={title}>
           {title}
-        </div>
-        <div className="text-xs text-slate-300">{artist}</div>
+        </p>
+        <p className="truncate text-xs text-slate-300" title={artist}>
+          {artist}
+        </p>
       </div>
       <div className="text-sm text-slate-400">{formatTime(duration)}</div>
     </div>

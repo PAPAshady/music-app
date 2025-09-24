@@ -28,7 +28,7 @@ export default function SearchInput({
         value={value}
       />
       {!disabled && (
-        <button onClick={() => reset()}>
+        <button onClick={reset}>
           <CloseCircle
             className={`text-secondary-100 size-4 transition-all duration-300 lg:size-5 ${value ? 'visible opacity-100' : 'invisible opacity-0'}`}
           />
