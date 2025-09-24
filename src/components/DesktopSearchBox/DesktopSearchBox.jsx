@@ -10,12 +10,10 @@ import { globalSearchQueryOptions } from '../../queries/globalSearch';
 import { Musicnote, Profile2User } from 'iconsax-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
-import { artists } from '../../data';
 import SongCard from '../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../MusicCards/SongCard/SongCardSkeleton';
 import { chunkArray } from '../../utils/arrayUtils';
 import ShimmerOverlay from '../ShimmerOverlay/ShimmerOverlay';
-import { isPending } from '@reduxjs/toolkit';
 
 function DesktopSearchBox() {
   const [activeButton, setActiveButton] = useState('all');
