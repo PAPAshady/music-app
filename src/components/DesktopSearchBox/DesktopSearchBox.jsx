@@ -10,6 +10,8 @@ import { globalSearchQueryOptions } from '../../queries/globalSearch';
 import { Musicnote, Profile2User } from 'iconsax-react';
 import SearchBoxTracksSlider from './SearchBoxSliders/SearchBoxTracksSlider';
 import SearchBoxArtistsSlider from './SearchBoxSliders/SearchBoxArtistsSlider';
+import SearchBoxAlbumsSlider from './SearchBoxSliders/SearchBoxAlbumsSlider';
+import { MusicPlaylist } from 'iconsax-react';
 
 function DesktopSearchBox() {
   const [activeButton, setActiveButton] = useState('all');
@@ -40,7 +42,7 @@ function DesktopSearchBox() {
         <div
           className={`text-secondary-50 absolute z-[-1] -mt-4 w-full rounded-md bg-gradient-to-b from-slate-800 to-slate-700 px-2 py-8 ${isDesktopSearchBoxOpen ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'}`}
         >
-          <div className="flex pb-2 items-center gap-2">
+          <div className="flex items-center gap-2 pb-2">
             {filterButtons.map((button) => (
               <FilterButton
                 key={button.id}
@@ -63,6 +65,12 @@ function DesktopSearchBox() {
                   <div>
                     <SliderTitle icon={<Profile2User />} title="Artists" />
                     <SearchBoxArtistsSlider artists={data?.artists} isPending={isPending} />
+                  </div>
+                )}
+                {data?.albums.length !== 0 && (
+                  <div>
+                    <SliderTitle icon={<MusicPlaylist />} title="Albums" />
+                    <SearchBoxAlbumsSlider albums={data?.albums} isPending={isPending} />
                   </div>
                 )}
               </div>

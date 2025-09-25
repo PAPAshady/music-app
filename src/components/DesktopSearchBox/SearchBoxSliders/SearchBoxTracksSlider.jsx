@@ -12,7 +12,6 @@ function SearchBoxTracksSlider({ songs, isPending }) {
       spaceBetween={16}
       modules={[Pagination]}
       pagination={{ clickable: true }}
-      freeMode
     >
       {chunkArray(isPending ? Array(8).fill() : songs, 2).map((songsArr, index) => (
         <SwiperSlide key={index} className="pb-11">
