@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import noImage from '../../../assets/images/Avatar/no-avatar.png';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
@@ -9,12 +9,10 @@ import { getAlbumsByArtistIdQueryOptions } from '../../../queries/albums';
 import SmallAlbumCardSkeleton from '../../MusicCards/SmallAlbumCard/SmallAlbumCardSkeleton';
 import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
-import artistDefaultCover from '../../../assets/images/Avatar/no-avatar.png';
 import { getRelatedArtistsQueryOptions } from '../../../queries/artists';
-import PropTypes from 'prop-types';
-import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
-import { setSelectedArtist } from '../../../redux/slices/artistSlice';
+import SmallArtistCardSkeleton from '../../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
 import { useEffect, useRef } from 'react';
+import SmallArtistCard from '../../MusicCards/SmallArtistCard/SmallArtistCard';
 
 function ArtistInfosPanel() {
   const selectedArtist = useSelector((state) => state.artist);
@@ -143,8 +141,10 @@ function ArtistInfosPanel() {
                 {isRelatedArtistsPending
                   ? Array(6)
                       .fill()
-                      .map((_, index) => <ArtistSekeleton key={index} />)
-                  : relatedArtists.map((artist) => <Artist key={artist.id} {...artist} />)}
+                      .map((_, index) => <SmallArtistCardSkeleton key={index} size="sm" />)
+                  : relatedArtists.map((artist) => (
+                      <SmallArtistCard key={artist.id} size="sm" artist={artist} />
+                    ))}
               </div>
             </div>
           </div>
@@ -153,41 +153,5 @@ function ArtistInfosPanel() {
     </div>
   );
 }
-
-function Artist(artist) {
-  const { image, name } = artist;
-  const dispatch = useDispatch();
-
-  return (
-    <div
-      className="group flex cursor-pointer flex-col items-center text-center"
-      onClick={() => dispatch(setSelectedArtist(artist))}
-    >
-      <img
-        src={image ?? artistDefaultCover}
-        className="group-hover:outline-primary-50 mb-1 size-18 rounded-full object-cover outline-1 outline-transparent transition-colors"
-      />
-      <span className="text-sm">{name}</span>
-    </div>
-  );
-}
-
-function ArtistSekeleton() {
-  return (
-    <div className="flex flex-col items-center text-center">
-      <div className="relative mb-2 size-18 overflow-hidden rounded-full bg-gray-600/60">
-        <ShimmerOverlay />
-      </div>
-      <span className="relative h-2 w-[60%] overflow-hidden rounded-full bg-gray-600/60">
-        <ShimmerOverlay />
-      </span>
-    </div>
-  );
-}
-
-Artist.propTypes = {
-  name: PropTypes.string.isRequired,
-  image: PropTypes.string,
-};
 
 export default ArtistInfosPanel;
