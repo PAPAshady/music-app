@@ -32,9 +32,7 @@ function DesktopSearchBox() {
     { id: 4, text: 'albums' },
     { id: 5, text: 'playlists' },
   ];
-
-  console.log(data);
-
+  
   return (
     <div className="relative w-full">
       <div
