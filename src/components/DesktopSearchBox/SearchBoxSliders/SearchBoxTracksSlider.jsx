@@ -4,8 +4,11 @@ import { chunkArray } from '../../../utils/arrayUtils';
 import PropTypes from 'prop-types';
 import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
+import usePlayBar from '../../../hooks/usePlayBar';
 
 function SearchBoxTracksSlider({ songs, isPending }) {
+  const { playSingleSong } = usePlayBar();
+
   return (
     <Swiper
       slidesPerView={2.4}
@@ -20,7 +23,13 @@ function SearchBoxTracksSlider({ songs, isPending }) {
               isPending ? (
                 <SongCardSkeleton key={index} />
               ) : (
-                <SongCard key={song.id} song={song} index={index} size="sm" />
+                <SongCard
+                  key={song.id}
+                  song={song}
+                  index={index}
+                  size="sm"
+                  onPlay={playSingleSong}
+                />
               )
             )}
           </div>
