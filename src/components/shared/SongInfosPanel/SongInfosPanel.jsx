@@ -61,7 +61,6 @@ function TabButton({ active, onClick, children, id }) {
 export default function SongSidebar() {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('lyrics');
-  const [isLiked, setIsLiked] = useState(false);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const song = useSelector((state) => state.musicPlayer.currentMusic);
   const selectedSong = useSelector((state) => state.playContext.singleSong);
@@ -123,10 +122,10 @@ export default function SongSidebar() {
               >
                 {isPlaying ? <Pause size={20} /> : <Play size={20} />}
               </IconButton>
-              <IconButton label={isLiked ? 'Unlike' : 'Like'} onClick={() => setIsLiked((v) => !v)}>
+              <IconButton label={song?.is_liked ? 'Unlike' : 'Like'}>
                 <Heart
                   size={20}
-                  className={`transition-colors ${isLiked ? 'fill-white text-white' : 'fill-transparent text-white'}`}
+                  className={`transition-colors ${song?.is_liked ? 'fill-secondary-50 text-secondary-50' : 'fill-transparent text-white'}`}
                 />
               </IconButton>
 

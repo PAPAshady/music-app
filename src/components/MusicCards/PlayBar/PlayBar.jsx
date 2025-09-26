@@ -13,14 +13,13 @@ const PlayBar = memo(
     index: songIndex,
     song,
     onPlay,
-    isFavorite,
     ActionButtonIcon,
     actionButtonClickHandler,
     isActionButtonPending,
     classNames,
   }) => {
     const dropDownMenu = useCloseOnClickOutside();
-    const { title, id, cover, artist, duration, album } = song;
+    const { title, id, cover, artist, duration, album, is_liked } = song;
 
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',
@@ -101,7 +100,7 @@ const PlayBar = memo(
                 <IconButton
                   icon={
                     <Heart
-                      className={`transition-colors ${isFavorite ? 'text-red fill-red' : ''}`}
+                      className={`transition-colors ${is_liked ? 'text-secondary-50 fill-secondary-50' : ''}`}
                     />
                   }
                 />
@@ -150,7 +149,6 @@ function DropDownMenuItem({ icon, title, onClick }) {
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
   index: PropTypes.number,
-  isFavorite: PropTypes.bool,
   song: PropTypes.object,
   onPlay: PropTypes.func,
   ActionButtonIcon: PropTypes.node,

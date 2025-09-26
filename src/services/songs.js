@@ -3,7 +3,7 @@ import { shuffleArray } from '../utils/arrayUtils';
 
 export const getAllSongs = async ({ limit, cursor }) => {
   let query = supabase
-    .from('songs')
+    .from('songs_with_user_data')
     .select('*')
     .order('created_at', { ascending: false })
     .limit(limit);
@@ -19,7 +19,7 @@ export const getAllSongs = async ({ limit, cursor }) => {
 
 export const getSongsByAlbumId = async (albumId) => {
   const { data, error } = await supabase
-    .from('songs')
+    .from('songs_with_user_data')
     .select('*')
     .eq(`album_id`, albumId)
     .order('track_number', { ascending: true });
@@ -38,7 +38,7 @@ export const getSongsByPlaylistId = async (playlistId) => {
 
 export const getPopularSongsByArtistId = async (artistId) => {
   const { data, error } = await supabase
-    .from('songs')
+    .from('songs_with_user_data')
     .select('*')
     .eq('artist_id', artistId)
     .order('play_count', { ascending: false })
@@ -49,9 +49,14 @@ export const getPopularSongsByArtistId = async (artistId) => {
 
 export const getRelatedSongsBySongData = async (song) => {
   const [artistRes, genresRes] = await Promise.all([
-    supabase.from('songs').select('*').eq('artist_id', song.artist_id).neq('id', song.id).limit(10),
     supabase
-      .from('songs')
+      .from('songs_with_user_data')
+      .select('*')
+      .eq('artist_id', song.artist_id)
+      .neq('id', song.id)
+      .limit(10),
+    supabase
+      .from('songs_with_user_data')
       .select('*')
       .overlaps('genres', song.genres)
       .neq('id', song.id)
