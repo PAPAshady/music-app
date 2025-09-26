@@ -33,6 +33,8 @@ function DesktopSearchBox() {
     { id: 5, text: 'playlists' },
   ];
 
+  console.log(data);
+
   return (
     <div className="relative w-full">
       <div
@@ -56,25 +58,25 @@ function DesktopSearchBox() {
           <div className="max-h-[450px] overflow-y-auto px-4">
             {searchInput.value.trim() ? (
               <div className="flex flex-col gap-4 py-6">
-                {data?.songs.length !== 0 && (
+                {!!data?.songs?.length && (
                   <div>
                     <SliderTitle icon={<Musicnote />} title="Tracks" />
                     <SearchBoxTracksSlider songs={data?.songs} isPending={isPending} />
                   </div>
                 )}
-                {data?.artists.length !== 0 && (
+                {!!data?.artists?.length && (
                   <div>
                     <SliderTitle icon={<Profile2User />} title="Artists" />
                     <SearchBoxArtistsSlider artists={data?.artists} isPending={isPending} />
                   </div>
                 )}
-                {data?.albums.length !== 0 && (
+                {!!data?.albums?.length && (
                   <div>
                     <SliderTitle icon={<MusicPlaylist />} title="Albums" />
                     <SearchBoxAlbumsSlider albums={data?.albums} isPending={isPending} />
                   </div>
                 )}
-                {data?.playlists.length !== 0 && (
+                {!!data?.playlists?.length && (
                   <div>
                     <SliderTitle icon={<MusicPlaylist />} title="Playlists" />
                     <SearchBoxPlaylistsSlider playlists={data?.playlists} isPending={isPending} />
