@@ -12,6 +12,7 @@ import SearchBoxTracksSlider from './SearchBoxSliders/SearchBoxTracksSlider';
 import SearchBoxArtistsSlider from './SearchBoxSliders/SearchBoxArtistsSlider';
 import SearchBoxAlbumsSlider from './SearchBoxSliders/SearchBoxAlbumsSlider';
 import { MusicPlaylist } from 'iconsax-react';
+import SearchBoxPlaylistsSlider from './SearchBoxSliders/SearchBoxPlaylistsSlider';
 
 function DesktopSearchBox() {
   const [activeButton, setActiveButton] = useState('all');
@@ -73,6 +74,12 @@ function DesktopSearchBox() {
                     <SearchBoxAlbumsSlider albums={data?.albums} isPending={isPending} />
                   </div>
                 )}
+                {data?.playlists.length !== 0 && (
+                  <div>
+                    <SliderTitle icon={<MusicPlaylist />} title="Playlists" />
+                    <SearchBoxPlaylistsSlider playlists={data?.playlists} isPending={isPending} />
+                  </div>
+                )}
               </div>
             ) : (
               <div className="dir-ltr mt-4 flex h-[300px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
@@ -104,7 +111,7 @@ function FilterButton({ text, isActive, onClick }) {
 
 function SliderTitle({ icon, title }) {
   return (
-    <div className="mb-2 flex items-center gap-2">
+    <div className="mb-3 flex items-center gap-2">
       {icon}
       <p className="text-lg font-semibold">{title}</p>
     </div>
