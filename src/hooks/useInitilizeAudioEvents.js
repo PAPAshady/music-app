@@ -6,14 +6,21 @@ import {
   setBufferProgressPercentage,
   setCurrentSongIndex,
   next,
+  prev,
   play,
+  pause,
 } from '../redux/slices/musicPlayerSlice';
+import songDefaultCover from '../assets/images/covers/no-cover.jpg';
 
 export default function useInitilizeAudioEvents() {
   const dispatch = useDispatch();
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
+  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
+  const SMTC = 'mediaSession' in window.navigator; // SMTC (System Media Transport Controls):
+  // Lets the OS show track info (title, artist, artwork) in the volume/media overlay
+  // and handle play/pause/next/prev from hardware/media keys.
 
   const startMusicInitialLoading = useCallback(
     () => dispatch(setMusicState('initial_loading')),
@@ -21,6 +28,17 @@ export default function useInitilizeAudioEvents() {
   );
   const startMusicBuffering = useCallback(() => dispatch(setMusicState('buffering')), [dispatch]);
   const startMusicPlaying = useCallback(() => dispatch(setMusicState('playable')), [dispatch]);
+
+  useEffect(() => {
+    if (SMTC && currentMusic) {
+      window.navigator.mediaSession.metadata = new MediaMetadata({
+        title: currentMusic.title,
+        artist: currentMusic.artist ?? 'Unknown artist',
+        album: currentMusic.album ?? 'Single',
+        artwork: [{ src: currentMusic.cover ?? songDefaultCover, type: 'image/*' }],
+      });
+    }
+  }, [SMTC, currentMusic]);
 
   const getBufferedPercentage = useCallback(() => {
     const duration = music.duration;
@@ -57,12 +75,27 @@ export default function useInitilizeAudioEvents() {
       // Firefox often shows only small or partial buffered ranges, which breaks the progress calculation.
       music.addEventListener('progress', getBufferedPercentage);
     }
+
+    if (SMTC) {
+      window.navigator.mediaSession.setActionHandler('play', () => dispatch(play()));
+      window.navigator.mediaSession.setActionHandler('pause', () => dispatch(pause()));
+      window.navigator.mediaSession.setActionHandler('nexttrack', () => dispatch(next()));
+      window.navigator.mediaSession.setActionHandler('previoustrack', () => dispatch(prev()));
+    }
+
     return () => {
       music.removeEventListener('loadstart', startMusicInitialLoading);
       music.removeEventListener('waiting', startMusicBuffering);
       music.removeEventListener('canplay', startMusicPlaying);
       music.removeEventListener('ended', playStateHandler);
       music.removeEventListener('progress', getBufferedPercentage);
+
+      if (SMTC) {
+        window.navigator.mediaSession.setActionHandler('play', null);
+        window.navigator.mediaSession.setActionHandler('pause', null);
+        window.navigator.mediaSession.setActionHandler('previoustrack', null);
+        window.navigator.mediaSession.setActionHandler('nexttrack', null);
+      }
     };
   }, [
     startMusicBuffering,
@@ -70,5 +103,7 @@ export default function useInitilizeAudioEvents() {
     getBufferedPercentage,
     startMusicInitialLoading,
     playStateHandler,
+    dispatch,
+    SMTC,
   ]);
 }
