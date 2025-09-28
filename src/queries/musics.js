@@ -36,7 +36,7 @@ export const getPopularSongsByArtistIdQueryOptions = (artistId) => {
 
 export const getSongsByAlbumIdQueryOptions = (albumId) => {
   return queryOptions({
-    queryKey: ['albums', { albumId }],
+    queryKey: ['songs', { albumId }],
     queryFn: () => getSongsByAlbumId(albumId),
     staleTime: Infinity,
     retry: true,
@@ -47,7 +47,7 @@ export const getSongsByAlbumIdQueryOptions = (albumId) => {
 
 export const getSongsByPlaylistIdQueryOptions = (playlistId) => {
   return queryOptions({
-    queryKey: ['playlists', { playlistId }],
+    queryKey: ['songs', { playlistId }],
     queryFn: () => getSongsByPlaylistId(playlistId),
     staleTime: Infinity,
     retry: true,

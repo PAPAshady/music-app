@@ -4,7 +4,8 @@ export const likeSong = async (songId) => {
   const { data, error } = await supabase
     .from('likes')
     .upsert({ song_id: songId }, { onConflict: ['user_id', 'song_id'] })
-    .select();
+    .select()
+    .single();
   if (error) throw error;
   return data;
 };
@@ -13,7 +14,9 @@ export const unlikeSong = async (songId, userId) => {
   const { data, error } = await supabase
     .from('likes')
     .delete()
-    .match({ song_id: songId, user_id: userId });
+    .match({ song_id: songId, user_id: userId })
+    .select()
+    .single();
   if (error) throw error;
   return data;
 };

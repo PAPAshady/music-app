@@ -6,6 +6,9 @@ import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside
 import { formatTime } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
+import { useMutation } from '@tanstack/react-query';
+import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
+import { useSelector } from 'react-redux';
 
 const PlayBar = memo(
   ({
@@ -17,9 +20,14 @@ const PlayBar = memo(
     actionButtonClickHandler,
     isActionButtonPending,
     classNames,
+    onLikeChange,
   }) => {
+    const userId = useSelector((state) => state.auth.user.id);
     const dropDownMenu = useCloseOnClickOutside();
     const { title, id, cover, artist, duration, album, is_liked } = song;
+    const likeHandlerMutation = useMutation(
+      is_liked ? unlikeSongMutationOptions(onLikeChange) : likeSongMutationOptions(onLikeChange)
+    );
 
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',
@@ -96,6 +104,8 @@ const PlayBar = memo(
                 <LoadingSpinner />
               ) : ActionButtonIcon ? (
                 <IconButton icon={ActionButtonIcon} onClick={() => actionButtonClickHandler(id)} />
+              ) : likeHandlerMutation.isPending ? (
+                <LoadingSpinner />
               ) : (
                 <IconButton
                   icon={
@@ -103,6 +113,7 @@ const PlayBar = memo(
                       className={`transition-colors ${is_liked ? 'text-secondary-50 fill-secondary-50' : ''}`}
                     />
                   }
+                  onClick={() => likeHandlerMutation.mutate({ songId: id, userId })}
                 />
               )}
             </div>
@@ -154,6 +165,7 @@ PlayBar.propTypes = {
   ActionButtonIcon: PropTypes.node,
   actionButtonClickHandler: PropTypes.func,
   isActionButtonPending: PropTypes.bool,
+  onLikeChange: PropTypes.func,
   classNames: PropTypes.string,
 };
 

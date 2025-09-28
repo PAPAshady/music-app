@@ -1,28 +1,26 @@
 import { likeSong, unlikeSong } from '../services/likes';
 import queryClient from '../queryClient';
+import store from '../redux/store';
+import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 
-export const likeSongMutationOptions = (songId, onSuccess) => {
+export const likeSongMutationOptions = () => {
   return {
-    queryKey: ['songs', { isLiked: true }],
-    mutationFn: () => likeSong(songId),
+    queryKey: ['songs'],
+    mutationFn: ({ songId }) => likeSong(songId),
     onSuccess: () => {
-      queryClient.setQueryData(['songs', { isLiked: true }], (songs) => {
-        return songs.map((song) => (song.id === songId ? { ...song, is_liked: true } : song));
-      });
-      onSuccess?.();
+      queryClient.invalidateQueries({ queryKey: ['songs'] });
+      store.dispatch(showNewSnackbar({ message: 'Added to favorites!', type: 'success' }));
     },
   };
 };
 
-export const unlikeSongMutationOptions = (songId, userId, onSuccess) => {
+export const unlikeSongMutationOptions = () => {
   return {
-    queryKey: ['songs', { isLiked: true }],
-    mutationFn: () => unlikeSong(songId, userId),
+    queryKey: ['songs'],
+    mutationFn: ({ songId, userId }) => unlikeSong(songId, userId),
     onSuccess: () => {
-      queryClient.setQueryData(['songs', { isLiked: true }], (songs) => {
-        return songs.map((song) => (song.id === songId ? { ...song, is_liked: false } : song));
-      });
-      onSuccess?.();
+      queryClient.invalidateQueries({ queryKey: ['songs'] });
+      store.dispatch(showNewSnackbar({ message: 'Removed from favorites!', type: 'success' }));
     },
   };
 };
