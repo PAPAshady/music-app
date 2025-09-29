@@ -5,7 +5,7 @@ import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 import { setCurrentQueuelist } from '../redux/slices/playContextSlice';
 import { setCurrentMusic } from '../redux/slices/musicPlayerSlice';
 
-const onMutate = async (updatedSong, shouldLike) => {
+const onMutate = async (songId, shouldLike) => {
   // do optimistic updates on songs to have a realtime updates in UI
   await queryClient.cancelQueries({ queryKey: ['songs'] });
   const prevSongs = queryClient.getQueriesData({ queryKey: ['songs'] });
@@ -15,15 +15,13 @@ const onMutate = async (updatedSong, shouldLike) => {
       return {
         ...oldData,
         pages: oldData.pages.map((page) =>
-          page.map((song) =>
-            song.id === updatedSong.songId ? { ...song, is_liked: !song.is_liked } : song
-          )
+          page.map((song) => (song.id === songId ? { ...song, is_liked: !song.is_liked } : song))
         ),
       };
     }
 
     return oldData.map((song) =>
-      song.id === updatedSong.songId ? { ...song, is_liked: !song.is_liked } : song
+      song.id === songId ? { ...song, is_liked: !song.is_liked } : song
     );
   });
   store.dispatch(
@@ -65,7 +63,7 @@ const onError = (err, context, shouldLike) => {
 export const likeSongMutationOptions = () => {
   return {
     queryKey: ['songs'],
-    mutationFn: ({ songId }) => likeSong(songId),
+    mutationFn: (songId) => likeSong(songId),
     onMutate: (updatedSong) => onMutate(updatedSong, true),
     onError: (err, _, context) => onError(err, context, true),
     onSuccess,
@@ -73,9 +71,10 @@ export const likeSongMutationOptions = () => {
 };
 
 export const unlikeSongMutationOptions = () => {
+  const userId = store.getState().auth.user.id;
   return {
     queryKey: ['songs'],
-    mutationFn: ({ songId, userId }) => unlikeSong(songId, userId),
+    mutationFn: (songId) => unlikeSong(songId, userId),
     onMutate: (updatedSong) => onMutate(updatedSong, false),
     onError: (err, _, context) => onError(err, context, false),
     onSuccess,

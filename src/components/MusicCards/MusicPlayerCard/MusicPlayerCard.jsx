@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { formatTime } from '../../../redux/slices/musicPlayerSlice';
 import { useMutation } from '@tanstack/react-query';
 import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
-import { useSelector } from 'react-redux';
 
 export default function MusicPlayerCard({
   title,
@@ -19,7 +18,6 @@ export default function MusicPlayerCard({
   musicIndex,
   id,
 }) {
-  const userId = useSelector((state) => state.auth.user.id);
   const likeHandlerMutation = useMutation(
     is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
@@ -53,7 +51,7 @@ export default function MusicPlayerCard({
           <span className="text-primary-100 text-sm">{formatTime(duration)}</span>
           <IconButton
             icon={<Heart className={is_liked ? 'fill-secondary-50 text-secondary-50' : ''} />}
-            onClick={() => likeHandlerMutation.mutate({ songId: id, userId })}
+            onClick={() => likeHandlerMutation.mutate(id)}
           />
         </div>
       </div>

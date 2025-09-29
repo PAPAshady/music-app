@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { useMutation } from '@tanstack/react-query';
 import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 
 const PlayBar = memo(
   ({
@@ -21,7 +21,7 @@ const PlayBar = memo(
     isActionButtonPending,
     classNames,
   }) => {
-    const userId = useSelector((state) => state.auth.user.id);
+    // const userId = useSelector((state) => state.auth.user.id);
     const dropDownMenu = useCloseOnClickOutside();
     const { title, id, cover, artist, duration, album, is_liked } = song;
     const likeHandlerMutation = useMutation(
@@ -110,7 +110,7 @@ const PlayBar = memo(
                       className={`transition-colors ${is_liked ? 'text-secondary-50 fill-secondary-50' : ''}`}
                     />
                   }
-                  onClick={() => likeHandlerMutation.mutate({ songId: id, userId })}
+                  onClick={() => likeHandlerMutation.mutate(id)}
                 />
               )}
             </div>

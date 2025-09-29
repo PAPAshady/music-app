@@ -78,7 +78,6 @@ export default function SongSidebar() {
   const lineRefs = useRef([]);
   const containerRef = useRef(null);
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
-  const userId = useSelector((state) => state.auth.user.id);
   const likeHandlerMutation = useMutation(
     song.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
@@ -130,7 +129,7 @@ export default function SongSidebar() {
               </IconButton>
               <IconButton
                 label={song?.is_liked ? 'Unlike' : 'Like'}
-                onClick={() => likeHandlerMutation.mutate({ songId: song.id, userId })}
+                onClick={() => likeHandlerMutation.mutate(song.id)}
                 disabled={likeHandlerMutation.isPending}
               >
                 <Heart
