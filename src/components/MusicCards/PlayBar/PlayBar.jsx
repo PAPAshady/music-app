@@ -20,13 +20,12 @@ const PlayBar = memo(
     actionButtonClickHandler,
     isActionButtonPending,
     classNames,
-    onLikeChange,
   }) => {
     const userId = useSelector((state) => state.auth.user.id);
     const dropDownMenu = useCloseOnClickOutside();
     const { title, id, cover, artist, duration, album, is_liked } = song;
     const likeHandlerMutation = useMutation(
-      is_liked ? unlikeSongMutationOptions(onLikeChange) : likeSongMutationOptions(onLikeChange)
+      is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
     );
 
     const musicTitleSizes = {
@@ -104,8 +103,6 @@ const PlayBar = memo(
                 <LoadingSpinner />
               ) : ActionButtonIcon ? (
                 <IconButton icon={ActionButtonIcon} onClick={() => actionButtonClickHandler(id)} />
-              ) : likeHandlerMutation.isPending ? (
-                <LoadingSpinner />
               ) : (
                 <IconButton
                   icon={
