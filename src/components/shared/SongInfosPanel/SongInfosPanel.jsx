@@ -4,11 +4,12 @@ import { Play, Pause, Heart, Menu } from 'iconsax-react';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 import defaultArtistCover from '../../../assets/images/Avatar/no-avatar.png';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import { AnimatePresence, motion } from 'framer-motion';
+import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
 import {
   getPopularSongsByArtistIdQueryOptions,
   getRelatedSongsBySongDataQueryOptions,
@@ -26,12 +27,13 @@ import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 import useLyrics from '../../../hooks/useLyrics';
 
-function IconButton({ children, label, onClick, className = '', title }) {
+function IconButton({ children, label, onClick, className = '', title, disabled }) {
   return (
     <button
       aria-label={label}
       title={title || label}
       onClick={onClick}
+      disabled={disabled}
       className={
         'flex items-center justify-center rounded-lg p-2 transition hover:bg-white/6 focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:outline-none ' +
         className
@@ -76,6 +78,10 @@ export default function SongSidebar() {
   const lineRefs = useRef([]);
   const containerRef = useRef(null);
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
+  const userId = useSelector((state) => state.auth.user.id);
+  const likeHandlerMutation = useMutation(
+    song.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
+  );
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -122,7 +128,11 @@ export default function SongSidebar() {
               >
                 {isPlaying ? <Pause size={20} /> : <Play size={20} />}
               </IconButton>
-              <IconButton label={song?.is_liked ? 'Unlike' : 'Like'}>
+              <IconButton
+                label={song?.is_liked ? 'Unlike' : 'Like'}
+                onClick={() => likeHandlerMutation.mutate({ songId: song.id, userId })}
+                disabled={likeHandlerMutation.isPending}
+              >
                 <Heart
                   size={20}
                   className={`transition-colors ${song?.is_liked ? 'fill-secondary-50 text-secondary-50' : 'fill-transparent text-white'}`}
@@ -342,6 +352,7 @@ IconButton.propTypes = {
   onClick: PropTypes.func,
   className: PropTypes.string,
   title: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 TabButton.propTypes = {

@@ -2,6 +2,8 @@ import { likeSong, unlikeSong } from '../services/likes';
 import queryClient from '../queryClient';
 import store from '../redux/store';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
+import { setCurrentQueuelist } from '../redux/slices/playContextSlice';
+import { setCurrentMusic } from '../redux/slices/musicPlayerSlice';
 
 const onMutate = async (updatedSong, shouldLike) => {
   // do optimistic updates on songs to have a realtime updates in UI
@@ -33,6 +35,19 @@ const onMutate = async (updatedSong, shouldLike) => {
   return { prevSongs };
 };
 
+const onSuccess = (updatedSong) => {
+  // sync redux store with server
+  const currentQueuelist = store.getState().playContext.currentQueuelist;
+  const updatedQueuelist = currentQueuelist.map((song) =>
+    song.id === updatedSong.song_id ? { ...song, is_liked: !song.is_liked } : song
+  );
+  store.dispatch(setCurrentQueuelist(updatedQueuelist));
+
+  const currentMusic = store.getState().musicPlayer.currentMusic;
+  if (currentMusic?.id === updatedSong.song_id)
+    store.dispatch(setCurrentMusic({ ...currentMusic, is_liked: !currentMusic.is_liked }));
+};
+
 const onError = (err, context, shouldLike) => {
   // revert back the changes in case of an error
   context.prevSongs.forEach(([key, data]) => {
@@ -53,6 +68,7 @@ export const likeSongMutationOptions = () => {
     mutationFn: ({ songId }) => likeSong(songId),
     onMutate: (updatedSong) => onMutate(updatedSong, true),
     onError: (err, _, context) => onError(err, context, true),
+    onSuccess,
   };
 };
 
@@ -62,5 +78,6 @@ export const unlikeSongMutationOptions = () => {
     mutationFn: ({ songId, userId }) => unlikeSong(songId, userId),
     onMutate: (updatedSong) => onMutate(updatedSong, false),
     onError: (err, _, context) => onError(err, context, false),
+    onSuccess,
   };
 };
