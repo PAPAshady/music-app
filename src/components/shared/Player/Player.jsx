@@ -50,7 +50,7 @@ export default function Player({ classNames, isPlayerPage }) {
   const disabled = !queuelist?.length;
   const isLargeMobile = useMediaQuery('(max-width: 639px)');
   const likeHandlerMutation = useMutation(
-    currentMusic.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
+    currentMusic?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
 
   useEffect(() => {
