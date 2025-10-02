@@ -8,6 +8,7 @@ import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
+import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 import { openModal as openConfirmModal } from '../../../redux/slices/confirmModalSlice';
 import {
   getSongsByAlbumIdQueryOptions,
@@ -20,7 +21,6 @@ import {
   setCurrentSongIndex,
   formatTime,
 } from '../../../redux/slices/musicPlayerSlice';
-import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import usePlayBar from '../../../hooks/usePlayBar';
 
@@ -28,7 +28,7 @@ const SidebarPlaylist = memo(() => {
   const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
-  const { data: selectedPlaylistSongs, isLoading } = useQuery(
+  const { data: selectedPlaylistSongs, isPending } = useQuery(
     selectedTracklist.tracklistType === 'album'
       ? getSongsByAlbumIdQueryOptions(selectedTracklist.id)
       : getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
@@ -147,41 +147,47 @@ const SidebarPlaylist = memo(() => {
             </div>
 
             <div className="my-6 flex gap-2">
-              <div className="group relative overflow-hidden rounded-[10px]">
-                <img
-                  src={playlistCover}
-                  alt={selectedTracklist.title || 'Select a playlist'}
-                  className="size-32 object-cover xl:size-[140px]"
-                />
-                <div
-                  className={`absolute inset-0 flex size-full items-center justify-center p-3 transition-opacity duration-300 ${isLoading && 'bg-black/50'} ${
-                    !isPlayingPlaylistSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'
-                  }`}
-                >
-                  {isLoading ? (
-                    <LoadingSpinner size="lg" />
-                  ) : selectedPlaylistSongs?.length ? (
-                    <button
-                      className="bg-primary-500/80 flex size-15 items-center justify-center rounded-full border"
-                      onClick={playPauseButtonHandler}
-                    >
-                      <span className="text-secondary-50 block size-7">
-                        {isPlaying && isPlayingPlaylistSelected ? (
-                          <Pause size="100%" />
-                        ) : (
-                          <Play size="100%" />
-                        )}
-                      </span>
-                    </button>
-                  ) : (
-                    ''
-                  )}
+              {isPending ? (
+                <div className="relative size-32 overflow-hidden rounded-[10px] bg-gray-600/60 xl:size-[140px]">
+                  <ShimmerOverlay />
                 </div>
-              </div>
-              <div className="flex flex-col">
-                {playlistInfosArray.map((info) => (
-                  <PlaylistInfo key={info.id} {...info} />
-                ))}
+              ) : (
+                <div className="group relative overflow-hidden rounded-[10px]">
+                  <img
+                    src={playlistCover}
+                    alt={selectedTracklist.title || 'Select a playlist'}
+                    className="size-32 object-cover xl:size-[140px]"
+                  />
+                  <div
+                    className={`absolute inset-0 flex size-full items-center justify-center p-3 transition-opacity duration-300 ${
+                      !isPlayingPlaylistSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'
+                    }`}
+                  >
+                    {!!selectedPlaylistSongs?.length && (
+                      <button
+                        className="bg-primary-500/80 flex size-15 items-center justify-center rounded-full border"
+                        onClick={playPauseButtonHandler}
+                      >
+                        <span className="text-secondary-50 block size-7">
+                          {isPlaying && isPlayingPlaylistSelected ? (
+                            <Pause size="100%" />
+                          ) : (
+                            <Play size="100%" />
+                          )}
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+              <div className="flex grow flex-col">
+                {playlistInfosArray.map((info) =>
+                  isPending ? (
+                    <PlaylistInfoSkeleton key={info.id} />
+                  ) : (
+                    <PlaylistInfo key={info.id} {...info} />
+                  )
+                )}
               </div>
             </div>
           </motion.div>
@@ -193,9 +199,9 @@ const SidebarPlaylist = memo(() => {
             initial="hidden"
             animate="show"
             exit="hidden"
-            className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${selectedPlaylistSongs?.length || isLoading ? 'overflow-y-auto' : 'overflow-visible'}`}
+            className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${selectedPlaylistSongs?.length || isPending ? 'overflow-y-auto' : 'overflow-visible'}`}
           >
-            {isLoading ? (
+            {isPending ? (
               Array(10)
                 .fill()
                 .map((_, index) => (
@@ -203,8 +209,8 @@ const SidebarPlaylist = memo(() => {
                     <PlayBarSkeleton size="sm" />
                   </motion.div>
                 ))
-            ) : selectedPlaylistSongs?.length ? (
-              selectedPlaylistSongs?.map((song, index) => (
+            ) : selectedPlaylistSongs.length ? (
+              selectedPlaylistSongs.map((song, index) => (
                 <motion.div key={song.id} variants={itemVariants}>
                   <PlayBar size="sm" index={index} song={song} onPlay={playTracklist} />
                 </motion.div>
@@ -234,6 +240,21 @@ function PlaylistInfo({ title, icon }) {
     <div className="flex grow items-center gap-1">
       {styledIcon}
       <span className="max-w-[90px] truncate text-sm xl:text-base">{title}</span>
+    </div>
+  );
+}
+
+function PlaylistInfoSkeleton() {
+  return (
+    <div className="flex w-full grow items-center gap-1">
+      <div className="relative size-[20px] min-h-[20px] min-w-[20px] overflow-hidden rounded-md bg-gray-600/60">
+        <ShimmerOverlay />
+      </div>
+      {/* {styledIcon} */}
+      <div className="relative w-full grow overflow-hidden rounded-full bg-gray-600/60">
+        <ShimmerOverlay />
+        <div className="h-2.5 w-1/2 max-w-[90px]"></div>
+      </div>
     </div>
   );
 }
