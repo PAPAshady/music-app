@@ -75,3 +75,12 @@ export const getRelatedSongsBySongData = async (song) => {
   const relatedSongs = shuffleArray([...(artistRes.data || []), ...(genresRes.data || [])]);
   return [song, ...relatedSongs];
 };
+
+export const getFavoriteSongs = async () => {
+  const { data, error } = await supabase
+    .from('songs_with_user_data')
+    .select('*')
+    .eq('is_liked', true);
+  if (error) throw error;
+  return data;
+};

@@ -5,6 +5,7 @@ import {
   getSongsByPlaylistId,
   getPopularSongsByArtistId,
   getRelatedSongsBySongData,
+  getFavoriteSongs,
 } from '../services/songs';
 
 export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
@@ -64,5 +65,15 @@ export const getRelatedSongsBySongDataQueryOptions = (song) => {
     retry: true,
     retryDelay: 5000,
     enabled: !!song.id,
+  });
+};
+
+export const getFavoriteSongsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['songs', { is_liked: true }],
+    queryFn: getFavoriteSongs,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
   });
 };

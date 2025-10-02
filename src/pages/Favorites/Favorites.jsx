@@ -1,21 +1,20 @@
 import bannerBg from '../../assets/images/backgrounds/player-and-settings-page.png';
-import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
-import useMediaQuery from '../../hooks/useMediaQuery';
 import { songs } from '../../data';
 import { useQuery } from '@tanstack/react-query';
 import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import 'swiper/css';
 import 'swiper/css/pagination';
-
-import usePlayBar from '../../hooks/usePlayBar';
+import { getFavoriteSongsQueryOptions } from '../../queries/musics';
+import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
 
 export default function Favorites() {
   const albums = useQuery(getAllAlbumsQueryOptions());
-  const isTablet = useMediaQuery('(min-width: 480px)');
-  const { playSingleSong } = usePlayBar();
+  const { data: favoriteSongs, isPending: isFavoriteSongsPending } = useQuery(
+    getFavoriteSongsQueryOptions()
+  );
 
   return (
     <>
@@ -32,17 +31,7 @@ export default function Favorites() {
           </p>
         </div>
       </div>
-      <div className="sm: flex max-h-[280px] flex-col gap-3 overflow-y-auto px-3 sm:max-h-[360px] lg:max-h-[414px] lg:gap-4">
-        {songs.map((song) => (
-          <PlayBar
-            key={song.id}
-            size={isTablet ? 'lg' : 'md'}
-            song={song}
-            onPlay={playSingleSong}
-            classNames="!max-w-full"
-          />
-        ))}
-      </div>
+      <PlayBarSlider songs={favoriteSongs} isPending={isFavoriteSongsPending} />
       <div>
         <SectionTitle title="Seggestions for you" />
         <TracksSlider songs={songs} />
