@@ -59,7 +59,6 @@ export default function useInitilizeAudioEvents() {
       do {
         randomIndex = Math.floor(Math.random() * queuelist.length);
       } while (randomIndex === currentSongIndex);
-      console.log(randomIndex);
       dispatch(setCurrentSongIndex(randomIndex));
     } else {
       dispatch(next());
