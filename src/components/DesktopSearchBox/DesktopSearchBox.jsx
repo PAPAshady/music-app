@@ -64,19 +64,19 @@ function DesktopSearchBox() {
                 )}
                 {(isPending || !!data.artists.length) && (
                   <div>
-                    <SliderTitle icon={<Musicnote />} title="Artists" />
+                    <SliderTitle icon={<Profile2User />} title="Artists" />
                     <SearchBoxArtistsSlider artists={data?.artists} isPending={isPending} />
                   </div>
                 )}
                 {(isPending || !!data.albums.length) && (
                   <div>
-                    <SliderTitle icon={<Musicnote />} title="Albums" />
+                    <SliderTitle icon={<MusicPlaylist />} title="Albums" />
                     <SearchBoxAlbumsSlider albums={data?.albums} isPending={isPending} />
                   </div>
                 )}
                 {(isPending || !!data.playlists.length) && (
                   <div>
-                    <SliderTitle icon={<Musicnote />} title="Playlists" />
+                    <SliderTitle icon={<MusicPlaylist />} title="Playlists" />
                     <SearchBoxPlaylistsSlider playlists={data?.playlists} isPending={isPending} />
                   </div>
                 )}
