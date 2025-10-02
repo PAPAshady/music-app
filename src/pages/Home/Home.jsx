@@ -18,6 +18,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
+import { Like1 } from 'iconsax-react';
 
 export default function Home() {
   const albums = useQuery(getAllAlbumsQueryOptions());
@@ -28,8 +29,12 @@ export default function Home() {
 
   return (
     <>
-      <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
-        {genres.slice(0, 3).map((track) => (
+      <div className="xs:w-full mx-auto grid w-[90%] grid-cols-1 gap-4 min-[480px]:grid-cols-3">
+        <div className="hover:outline-primary-50 flex h-[28dvw] w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg bg-gradient-to-br from-[#822F6A] via-[#434EAA] to-[#005E4B] outline outline-transparent transition-colors duration-300 lg:max-h-[100px]">
+          <Like1 size={50} />
+          <p>Your Favorites</p>
+        </div>
+        {genres.slice(0, 2).map((track) => (
           <div key={track.id} className="flex w-full justify-center">
             <TracksCard {...track} />
           </div>
