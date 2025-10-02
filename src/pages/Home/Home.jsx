@@ -19,6 +19,7 @@ import 'swiper/css/scrollbar';
 import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
 import { Like1 } from 'iconsax-react';
+import usePlayBar from '../../hooks/usePlayBar';
 
 export default function Home() {
   const albums = useQuery(getAllAlbumsQueryOptions());
@@ -26,6 +27,7 @@ export default function Home() {
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
   const publicPlaylists = useQuery(getAllPublicPlaylistsQueryOptions());
   const allSongs = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 20 }));
+  const { playSingleSong } = usePlayBar();
 
   return (
     <>
@@ -54,7 +56,7 @@ export default function Home() {
       </div>
       <div className="-mt-11">
         <SectionHeader title="Daily Picks" />
-        <PlayBarSlider songs={allSongs.data?.pages.flat()} isPending={allSongs.isPending} />
+        <PlayBarSlider songs={allSongs.data?.pages.flat()} isPending={allSongs.isPending} onPlay={playSingleSong} />
       </div>
       <div>
         <SectionHeader title="Artists You Follow" />
@@ -79,7 +81,7 @@ export default function Home() {
       </div>
       <div className="-mt-8">
         <SectionHeader title="Trending Now" />
-        <PlayBarSlider songs={allSongs.data?.pages.flat()} isPending={allSongs.isPending} />
+        <PlayBarSlider songs={allSongs.data?.pages.flat()} isPending={allSongs.isPending} onPlay={playSingleSong} />
       </div>
       <div>
         <SectionHeader title="Recently Seen" />

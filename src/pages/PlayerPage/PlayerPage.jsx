@@ -21,7 +21,10 @@ import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
 } from '../../queries/musics';
-import { getPopularSongsByArtistIdQueryOptions } from '../../queries/musics';
+import {
+  getPopularSongsByArtistIdQueryOptions,
+  getFavoriteSongsQueryOptions,
+} from '../../queries/musics';
 import 'swiper/css';
 import './PlayerPage.css';
 
@@ -45,7 +48,9 @@ export default function PlayerPage() {
         ? getSongsByPlaylistIdQueryOptions(playingTracklist.id)
         : queuelistType === 'album'
           ? getSongsByAlbumIdQueryOptions(playingTracklist.id)
-          : getPopularSongsByArtistIdQueryOptions(currentMusic?.artist_id)
+          : queuelistType === 'artist_popular_songs'
+            ? getPopularSongsByArtistIdQueryOptions(currentMusic?.artist_id)
+            : getFavoriteSongsQueryOptions()
   );
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);

@@ -8,7 +8,7 @@ const playContextSlice = createSlice({
     currentCollection: {},
     singleSong: {},
     currentQueuelist: [],
-    queuelistType: null, // could be on of the followings: [null, 'album', 'playlist', 'related_songs', 'artist_popular_songs']
+    queuelistType: null, // could be on of the followings: [null, 'album', 'playlist', 'related_songs', 'artist_popular_songs', 'favorite_songs']
   },
   reducers: {
     setIsSingleSong(state, action) {

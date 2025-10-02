@@ -9,12 +9,14 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { getFavoriteSongsQueryOptions } from '../../queries/musics';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
+import usePlayBar from '../../hooks/usePlayBar';
 
 export default function Favorites() {
   const albums = useQuery(getAllAlbumsQueryOptions());
   const { data: favoriteSongs, isPending: isFavoriteSongsPending } = useQuery(
     getFavoriteSongsQueryOptions()
   );
+  const { playFavoriteSongs } = usePlayBar();
 
   return (
     <>
@@ -31,7 +33,11 @@ export default function Favorites() {
           </p>
         </div>
       </div>
-      <PlayBarSlider songs={favoriteSongs} isPending={isFavoriteSongsPending} />
+      <PlayBarSlider
+        songs={favoriteSongs}
+        isPending={isFavoriteSongsPending}
+        onPlay={playFavoriteSongs}
+      />
       <div>
         <SectionTitle title="Seggestions for you" />
         <TracksSlider songs={songs} />
