@@ -32,7 +32,7 @@ function DesktopSearchBox() {
     { id: 4, text: 'albums' },
     { id: 5, text: 'playlists' },
   ];
-  
+
   return (
     <div className="relative w-full">
       <div
@@ -56,27 +56,27 @@ function DesktopSearchBox() {
           <div className="max-h-[450px] overflow-y-auto px-4">
             {searchInput.value.trim() ? (
               <div className="flex flex-col gap-4 py-6">
-                {!!data?.songs?.length && (
+                {(isPending || !!data.songs.length) && (
                   <div>
                     <SliderTitle icon={<Musicnote />} title="Tracks" />
                     <SearchBoxTracksSlider songs={data?.songs} isPending={isPending} />
                   </div>
                 )}
-                {!!data?.artists?.length && (
+                {(isPending || !!data.artists.length) && (
                   <div>
-                    <SliderTitle icon={<Profile2User />} title="Artists" />
+                    <SliderTitle icon={<Musicnote />} title="Artists" />
                     <SearchBoxArtistsSlider artists={data?.artists} isPending={isPending} />
                   </div>
                 )}
-                {!!data?.albums?.length && (
+                {(isPending || !!data.albums.length) && (
                   <div>
-                    <SliderTitle icon={<MusicPlaylist />} title="Albums" />
+                    <SliderTitle icon={<Musicnote />} title="Albums" />
                     <SearchBoxAlbumsSlider albums={data?.albums} isPending={isPending} />
                   </div>
                 )}
-                {!!data?.playlists?.length && (
+                {(isPending || !!data.playlists.length) && (
                   <div>
-                    <SliderTitle icon={<MusicPlaylist />} title="Playlists" />
+                    <SliderTitle icon={<Musicnote />} title="Playlists" />
                     <SearchBoxPlaylistsSlider playlists={data?.playlists} isPending={isPending} />
                   </div>
                 )}
