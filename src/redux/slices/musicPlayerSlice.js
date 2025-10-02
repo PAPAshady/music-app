@@ -48,7 +48,7 @@ export const prev = createAsyncThunk('musicPlayer/prev', (_, { getState, dispatc
   }
 });
 
-// an utility function to convert milliseconds into currect time format to in the UI
+// an utility function to convert milliseconds into currect time format
 export const formatTime = (time) => {
   const hours = Math.floor(time / 3600);
   const mins = Math.floor((time % 3600) / 60);

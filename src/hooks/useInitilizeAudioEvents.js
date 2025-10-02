@@ -15,7 +15,7 @@ import songDefaultCover from '../assets/images/covers/no-cover.jpg';
 export default function useInitilizeAudioEvents() {
   const dispatch = useDispatch();
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
-  const playingTracklist = useSelector((state) => state.playContext.currentCollection);
+  const queuelist = useSelector((state) => state.playContext.currentQueuelist);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const SMTC = 'mediaSession' in window.navigator; // SMTC (System Media Transport Controls):
@@ -50,20 +50,21 @@ export default function useInitilizeAudioEvents() {
   }, [dispatch]);
 
   const playStateHandler = useCallback(() => {
-    if (playingState === 'repeat_one' || playingTracklist.musics?.length === 1) {
+    if (playingState === 'repeat_one' || queuelist.length === 1) {
       // replay the current song if playlist has only one song or if it is on 'reoeat_one'.
       dispatch(play());
     } else if (playingState === 'shuffle') {
       // get a random index other than the current song
       let randomIndex = null;
       do {
-        randomIndex = Math.floor(Math.random() * playingTracklist.musics?.length);
+        randomIndex = Math.floor(Math.random() * queuelist.length);
       } while (randomIndex === currentSongIndex);
+      console.log(randomIndex);
       dispatch(setCurrentSongIndex(randomIndex));
     } else {
       dispatch(next());
     }
-  }, [dispatch, currentSongIndex, playingState, playingTracklist]);
+  }, [dispatch, currentSongIndex, playingState, queuelist]);
 
   useEffect(() => {
     music.addEventListener('loadstart', startMusicInitialLoading);
