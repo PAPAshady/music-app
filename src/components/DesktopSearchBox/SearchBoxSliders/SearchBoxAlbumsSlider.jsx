@@ -7,10 +7,19 @@ import AlbumCardSkeleton from '../../MusicCards/AlbumCard/AlbumCardSkeleton';
 function SearchBoxAlbumsSlider({ albums, isPending }) {
   return (
     <Swiper
-      slidesPerView={2.2}
+      slidesPerView={1.3}
       spaceBetween={16}
       modules={[Pagination]}
       pagination={{ clickable: true }}
+      breakpoints={{
+        1120: {
+          slidesPerView: 1.6,
+        },
+        1200: {
+          slidesPerView: 2,
+        },
+        1300: { slidesPerView: 2.2 },
+      }}
     >
       {isPending
         ? Array(10)
@@ -20,7 +29,7 @@ function SearchBoxAlbumsSlider({ albums, isPending }) {
                 <AlbumCardSkeleton size="md" classNames="!max-w-full" />
               </SwiperSlide>
             ))
-        : albums.map((album) => (
+        : [...albums, ...albums, ...albums].map((album) => (
             <SwiperSlide key={album.id} className="pb-11">
               <AlbumCard size="md" album={album} classNames="!max-w-full" />
             </SwiperSlide>
