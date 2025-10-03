@@ -37,7 +37,7 @@ function DesktopSearchBox() {
     <div className="relative w-full">
       <div
         ref={desktopSearchBoxRef}
-        className={`relative transition-all ease-in-out ${isDesktopSearchBoxOpen ? 'z-[30] w-[65%]' : 'w-[315px]'}`}
+        className={`relative transition-all ease-in-out ${isDesktopSearchBoxOpen ? 'z-[30] w-[80%] min-[1200px]:w-[75%] min-[1400px]:w-[65%]' : 'w-[315px]'}`}
       >
         <SearchInput {...searchInput} onFocus={() => setIsDesktopSearchBoxOpen(true)} />
         <div

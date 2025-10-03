@@ -7,18 +7,18 @@ import AlbumCardSkeleton from '../../MusicCards/AlbumCard/AlbumCardSkeleton';
 function SearchBoxAlbumsSlider({ albums, isPending }) {
   return (
     <Swiper
-      slidesPerView={1.3}
+      slidesPerView={2}
       spaceBetween={16}
       modules={[Pagination]}
       pagination={{ clickable: true }}
       breakpoints={{
         1120: {
-          slidesPerView: 1.6,
+          slidesPerView: 2.2,
         },
         1200: {
           slidesPerView: 2,
         },
-        1300: { slidesPerView: 2.2 },
+        1280: { slidesPerView: 2.2 },
       }}
     >
       {isPending
