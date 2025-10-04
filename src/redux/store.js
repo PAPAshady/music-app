@@ -10,6 +10,7 @@ import artistReducer from '../redux/slices/artistSlice';
 import sidebarPanelTypeReducer from '../redux/slices/sidebarTypeSlice';
 import playContextReducer from '../redux/slices/playContextSlice';
 import mobilePanelReducer from './slices/mobilePanelSlice';
+import MobileSearchPanelReducer from './slices/mobileSearchPanelSlice';
 
 export default configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export default configureStore({
     sidebarPanelType: sidebarPanelTypeReducer,
     playContext: playContextReducer,
     mobilePanel: mobilePanelReducer,
+    mobileSearchPanel: MobileSearchPanelReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().prepend(listenerMiddleware.middleware);

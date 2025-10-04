@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import ConfirmModal from '../../../ConfirmModal/ConfirmModal';
 import ArtistInfosPanel from '../../ArtistInfosPanel/ArtistInfosPanel';
 import SongInfosPanel from '../../SongInfosPanel/SongInfosPanel';
+import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
@@ -96,6 +97,7 @@ export default function MainLayout() {
         <HamburgerMenu />
         {isDesktop && <MobilePanel />}
         <ConfirmModal />
+        <MobileSearchPanel />
       </div>
       <PlaylistInfosModal />
     </>

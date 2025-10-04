@@ -1,21 +1,19 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
-import useInput from '../../../hooks/useInput';
 import Logo from '../../Logo/Logo';
-import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import Avatar from '../../Avatar/Avatar';
 import NotificationMenu from '../NotificationMenu/NotificationMenu';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import SettingsMenu from '../SettingsMenu/SettingsMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
 import { useDispatch } from 'react-redux';
+import { openMobileSearchPanel } from '../../../redux/slices/mobileSearchPanelSlice';
 import { setIsHamburgerMenuOpen } from '../../../redux/slices/hamburgerMenuSlice';
 import DesktopSearchBox from '../../DesktopSearchBox/DesktopSearchBox';
 
 export default memo(function Header() {
   const dispatch = useDispatch();
-  const searchInput = useInput();
   const notificationMenu = useCloseOnClickOutside();
   const mobileSearchBox = useCloseOnClickOutside();
   const settingsMenu = useCloseOnClickOutside();
@@ -31,14 +29,8 @@ export default memo(function Header() {
           <div className="relative" ref={mobileSearchBox.ref}>
             <IconButton
               icon={<SearchNormal1 />}
-              onClick={() => mobileSearchBox.setIsVisible((prev) => !prev)}
-              isActive={mobileSearchBox.isVisible}
+              onClick={() => dispatch(openMobileSearchPanel())}
             />
-            <div
-              className={`absolute z-10 transition-all duration-300 ${mobileSearchBox.isVisible ? 'visible top-[110%] opacity-100' : 'invisible top-[150%] opacity-0'}`}
-            >
-              <SearchInput classNames="backdrop-blur-sm" {...searchInput} />
-            </div>
           </div>
         </div>
         <div>
