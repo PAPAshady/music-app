@@ -6,7 +6,7 @@ import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 import usePlayBar from '../../../hooks/usePlayBar';
 
-function SearchBoxTracksSlider({ songs, isPending }) {
+function  SearchBoxTracksSlider({ songs, isPending }) {
   const { playSingleSong } = usePlayBar();
 
   return (

@@ -8,13 +8,14 @@ import { Music, ArrowLeft } from 'iconsax-react';
 import AlbumCard from '../MusicCards/AlbumCard/AlbumCard';
 import AlbumCardSkeleton from '../MusicCards/AlbumCard/AlbumCardSkeleton';
 import PropTypes from 'prop-types';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { globalSearchQueryOptions } from '../../queries/globalSearch';
 import useDebounce from '../../hooks/useDebounce';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeMobileSearchPanel } from '../../redux/slices/mobileSearchPanelSlice';
 import SmallArtistCard from '../MusicCards/SmallArtistCard/SmallArtistCard';
 import SmallArtistCardSkeleton from '../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
+import usePlayBar from '../../hooks/usePlayBar';
 
 export default function MobileSearchPanel() {
   const dispatch = useDispatch();
@@ -24,7 +25,16 @@ export default function MobileSearchPanel() {
   const { data, isPending } = useQuery(globalSearchQueryOptions(query.trim(), activeFilter));
   const isOpen = useSelector((state) => state.mobileSearchPanel.isOpen);
   const hasData = Object.entries(data ?? {}).some((data) => data[1].length);
+  const { playSingleSong } = usePlayBar();
   const inputRef = useRef(null);
+
+  const onPlayTrack = useCallback(
+    (song) => {
+      playSingleSong(song);
+      dispatch(closeMobileSearchPanel());
+    },
+    [dispatch, playSingleSong]
+  );
 
   const filterButtons = [
     { id: 1, text: 'all' },
@@ -88,7 +98,12 @@ export default function MobileSearchPanel() {
                             .fill()
                             .map((_, index) => <SongCardSkeleton key={index} />)
                         : data.songs.map((song, index) => (
-                            <SongCard key={song.id} song={song} index={index} />
+                            <SongCard
+                              key={song.id}
+                              song={song}
+                              index={index}
+                              onPlay={onPlayTrack}
+                            />
                           ))}
                     </div>
                   </div>

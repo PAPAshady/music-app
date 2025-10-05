@@ -49,7 +49,7 @@ export default function MobilePanel() {
 
   return createPortal(
     <div
-      className={`bg-primary-800 fixed inset-0 z-10 min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isMobilePanelOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+      className={`bg-primary-800 fixed inset-0 z-[11] min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isMobilePanelOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div
         className="absolute size-full bg-cover bg-center bg-no-repeat opacity-15 blur-md"
