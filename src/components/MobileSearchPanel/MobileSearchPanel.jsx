@@ -13,6 +13,8 @@ import { globalSearchQueryOptions } from '../../queries/globalSearch';
 import useDebounce from '../../hooks/useDebounce';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeMobileSearchPanel } from '../../redux/slices/mobileSearchPanelSlice';
+import SmallArtistCard from '../MusicCards/SmallArtistCard/SmallArtistCard';
+import SmallArtistCardSkeleton from '../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
 
 export default function MobileSearchPanel() {
   const dispatch = useDispatch();
@@ -85,7 +87,7 @@ export default function MobileSearchPanel() {
                         ? Array(4)
                             .fill()
                             .map((_, index) => <SongCardSkeleton key={index} />)
-                        : data?.songs.map((song, index) => (
+                        : data.songs.map((song, index) => (
                             <SongCard key={song.id} song={song} index={index} />
                           ))}
                     </div>
@@ -99,13 +101,27 @@ export default function MobileSearchPanel() {
                         ? Array(4)
                             .fill()
                             .map((_, index) => <AlbumCardSkeleton key={index} size="md" />)
-                        : data?.albums.map((album) => (
+                        : data.albums.map((album) => (
                             <AlbumCard
                               size="md"
                               key={album.id}
                               album={album}
                               classNames="!max-w-none"
                             />
+                          ))}
+                    </div>
+                  </div>
+                )}
+                {(isPending || !!data.artists?.length) && (
+                  <div>
+                    <p className="mb-3 text-2xl font-bold">Artists</p>
+                    <div className="grid grid-cols-3 gap-4 px-1 min-[500px]:grid-cols-4 min-[900px]:!grid-cols-6 sm:grid-cols-5">
+                      {isPending
+                        ? Array(6)
+                            .fill()
+                            .map((_, index) => <SmallArtistCardSkeleton key={index} size="md" />)
+                        : data?.artists.map((artist) => (
+                            <SmallArtistCard size="md" key={artist.id} artist={artist} />
                           ))}
                     </div>
                   </div>
