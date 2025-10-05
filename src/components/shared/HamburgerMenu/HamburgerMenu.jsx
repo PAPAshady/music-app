@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 
 const HamburgerMenu = memo(() => {
   const isHamburgerMenuOpen = useSelector((state) => state.hamburgerMenu.isOpen);
+  const userFullName = useSelector((state) => state.auth.user?.user_metadata.full_name);
   const dispatch = useDispatch();
   const mobileNavLinks = [
     { id: 1, title: 'Home', icon: <Home2 />, href: '/' },
@@ -45,7 +46,7 @@ const HamburgerMenu = memo(() => {
               <Notification size={24} />
             </button>
           </div>
-          <p className="text-white-50 text-lg">Olivia Rhye</p>
+          <p className="text-white-50 text-lg">{userFullName}</p>
 
           <div className="my-9 flex flex-col gap-10">
             <div className="flex flex-col gap-7">
