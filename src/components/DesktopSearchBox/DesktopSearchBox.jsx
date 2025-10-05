@@ -7,11 +7,10 @@ import useDebounce from '../../hooks/useDebounce';
 import useInput from '../../hooks/useInput';
 import { useQuery } from '@tanstack/react-query';
 import { globalSearchQueryOptions } from '../../queries/globalSearch';
-import { Musicnote, Profile2User } from 'iconsax-react';
+import { Musicnote, Profile2User, MusicPlaylist } from 'iconsax-react';
 import SearchBoxTracksSlider from './SearchBoxSliders/SearchBoxTracksSlider';
 import SearchBoxArtistsSlider from './SearchBoxSliders/SearchBoxArtistsSlider';
 import SearchBoxAlbumsSlider from './SearchBoxSliders/SearchBoxAlbumsSlider';
-import { MusicPlaylist } from 'iconsax-react';
 import SearchBoxPlaylistsSlider from './SearchBoxSliders/SearchBoxPlaylistsSlider';
 
 function DesktopSearchBox() {

@@ -4,7 +4,7 @@ import useInput from '../../hooks/useInput';
 import { useQuery } from '@tanstack/react-query';
 import SongCardSkeleton from '../MusicCards/SongCard/SongCardSkeleton';
 import SongCard from '../MusicCards/SongCard/SongCard';
-import { Music, ArrowLeft } from 'iconsax-react';
+import { Musicnote, Profile2User, MusicPlaylist, Music, ArrowLeft } from 'iconsax-react';
 import AlbumCard from '../MusicCards/AlbumCard/AlbumCard';
 import AlbumCardSkeleton from '../MusicCards/AlbumCard/AlbumCardSkeleton';
 import PropTypes from 'prop-types';
@@ -88,10 +88,10 @@ export default function MobileSearchPanel() {
                 </p>
               </div>
             ) : (
-              <>
+              <div className='flex flex-col gap-10 mt-2'>
                 {(isPending || !!data.songs?.length) && (
                   <div>
-                    <p className="mb-2 text-2xl font-bold">Songs</p>
+                    <SectionTitle title="Songs" icon={<Musicnote />} />
                     <div className="grid grid-cols-1 gap-3 px-1 min-[992px]:!grid-cols-3 sm:grid-cols-2">
                       {isPending
                         ? Array(4)
@@ -110,7 +110,7 @@ export default function MobileSearchPanel() {
                 )}
                 {(isPending || !!data.albums?.length) && (
                   <div>
-                    <p className="mb-2 text-2xl font-bold">Albums</p>
+                    <SectionTitle title="Albums" icon={<MusicPlaylist />} />
                     <div className="grid grid-cols-1 gap-3 px-1 sm:grid-cols-2">
                       {isPending
                         ? Array(4)
@@ -129,7 +129,7 @@ export default function MobileSearchPanel() {
                 )}
                 {(isPending || !!data.artists?.length) && (
                   <div>
-                    <p className="mb-3 text-2xl font-bold">Artists</p>
+                    <SectionTitle title="Artists" icon={<Profile2User />} />
                     <div className="grid grid-cols-3 gap-4 px-1 min-[500px]:grid-cols-4 min-[900px]:!grid-cols-6 sm:grid-cols-5">
                       {isPending
                         ? Array(6)
@@ -141,7 +141,7 @@ export default function MobileSearchPanel() {
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             )
           ) : (
             <div className="mt-4 flex grow flex-col items-center justify-center gap-3 rounded-md px-8 text-center">
@@ -168,8 +168,22 @@ function FilterButton({ text, isActive, onClick }) {
   );
 }
 
+function SectionTitle({ title, icon }) {
+  return (
+    <div className="mb-4 flex items-center gap-2">
+      {icon}
+      <p className="text-2xl font-bold">{title}</p>
+    </div>
+  );
+}
+
 FilterButton.propTypes = {
   text: PropTypes.string.isRequired,
   isActive: PropTypes.bool,
   onClick: PropTypes.func,
+};
+
+SectionTitle.propTypes = {
+  title: PropTypes.string.isRequired,
+  icon: PropTypes.node.isRequired,
 };
