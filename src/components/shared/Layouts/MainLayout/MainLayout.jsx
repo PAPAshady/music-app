@@ -26,6 +26,7 @@ export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
+  const isMobile = useMediaQuery('(max-width: 1024px)');
   const sidebarPanelType = useSelector((state) => state.sidebarPanelType);
 
   useEffect(() => {
@@ -96,8 +97,8 @@ export default function MainLayout() {
         </main>
         <HamburgerMenu />
         {isDesktop && <MobilePanel />}
+        {isMobile && <MobileSearchPanel />}
         <ConfirmModal />
-        <MobileSearchPanel />
       </div>
       <PlaylistInfosModal />
     </>
