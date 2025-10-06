@@ -16,6 +16,10 @@ import { closeMobileSearchPanel } from '../../redux/slices/mobileSearchPanelSlic
 import SmallArtistCard from '../MusicCards/SmallArtistCard/SmallArtistCard';
 import SmallArtistCardSkeleton from '../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
 import usePlayBar from '../../hooks/usePlayBar';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper/modules';
+import PlaylistCard from '../MusicCards/PlaylistCard/PlaylistCard';
+import PlaylistCardSkeleton from '../MusicCards/PlaylistCard/PlaylistCardSkeleton';
 
 export default function MobileSearchPanel() {
   const dispatch = useDispatch();
@@ -88,7 +92,7 @@ export default function MobileSearchPanel() {
                 </p>
               </div>
             ) : (
-              <div className='flex flex-col gap-10 mt-2'>
+              <div className="mt-2 flex flex-col gap-10">
                 {(isPending || !!data.songs?.length) && (
                   <div>
                     <SectionTitle title="Songs" icon={<Musicnote />} />
@@ -139,6 +143,32 @@ export default function MobileSearchPanel() {
                             <SmallArtistCard size="md" key={artist.id} artist={artist} />
                           ))}
                     </div>
+                  </div>
+                )}
+                {(isPending || !!data.playlists?.length) && (
+                  <div>
+                    <SectionTitle title="Playlists" icon={<MusicPlaylist />} />
+                    <Swiper
+                      spaceBetween={20}
+                      slidesPerView="auto"
+                      modules={[Pagination]}
+                      pagination={{ clickable: true }}
+                      className="!m-0 !max-w-full"
+                    >
+                      {isPending
+                        ? Array(8)
+                            .fill()
+                            .map((_, index) => (
+                              <SwiperSlide key={index} className="!w-auto !pb-11">
+                                <PlaylistCardSkeleton classNames="!h-48" />
+                              </SwiperSlide>
+                            ))
+                        : data.playlists.map((playlist) => (
+                            <SwiperSlide key={playlist.id} className="!w-auto !pb-11">
+                              <PlaylistCard {...playlist} classNames="!h-48" />
+                            </SwiperSlide>
+                          ))}
+                    </Swiper>
                   </div>
                 )}
               </div>

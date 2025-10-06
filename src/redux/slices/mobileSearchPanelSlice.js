@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const mobileSearchPanelSlice = createSlice({
   name: 'mobileSearchPanel',
   initialState: {
-    isOpen: false,
+    isOpen: true,
   },
   reducers: {
     openMobileSearchPanel: (state) => {
