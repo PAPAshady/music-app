@@ -18,6 +18,7 @@ function DesktopSearchBox() {
   const searchInput = useInput();
   const query = useDebounce(searchInput.value, 500);
   const { data, isPending } = useQuery(globalSearchQueryOptions(query.trim(), activeButton));
+  const hasData = Object.entries(data ?? {}).some((data) => data[1].length);
   const {
     isVisible: isDesktopSearchBoxOpen,
     setIsVisible: setIsDesktopSearchBoxOpen,
@@ -54,32 +55,41 @@ function DesktopSearchBox() {
           </div>
           <div className="max-h-[450px] overflow-y-auto px-4">
             {searchInput.value.trim() ? (
-              <div className="flex flex-col gap-4 py-6">
-                {(isPending || !!data.songs.length) && (
-                  <div>
-                    <SliderTitle icon={<Musicnote />} title="Tracks" />
-                    <SearchBoxTracksSlider songs={data?.songs} isPending={isPending} />
-                  </div>
-                )}
-                {(isPending || !!data.artists.length) && (
-                  <div>
-                    <SliderTitle icon={<Profile2User />} title="Artists" />
-                    <SearchBoxArtistsSlider artists={data?.artists} isPending={isPending} />
-                  </div>
-                )}
-                {(isPending || !!data.albums.length) && (
-                  <div>
-                    <SliderTitle icon={<MusicPlaylist />} title="Albums" />
-                    <SearchBoxAlbumsSlider albums={data?.albums} isPending={isPending} />
-                  </div>
-                )}
-                {(isPending || !!data.playlists.length) && (
-                  <div>
-                    <SliderTitle icon={<MusicPlaylist />} title="Playlists" />
-                    <SearchBoxPlaylistsSlider playlists={data?.playlists} isPending={isPending} />
-                  </div>
-                )}
-              </div>
+              !isPending && !hasData ? (
+                <div className="mt-4 flex grow h-[300px] flex-col items-center justify-center gap-3 rounded-md px-8 text-center">
+                  <Music size={72} />
+                  <p className="max-w-[500px] text-2xl font-semibold">
+                    Couldn&apos;t find anyting. Try searching for something else.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 py-6">
+                  {(isPending || !!data.songs.length) && (
+                    <div>
+                      <SliderTitle icon={<Musicnote />} title="Tracks" />
+                      <SearchBoxTracksSlider songs={data?.songs} isPending={isPending} />
+                    </div>
+                  )}
+                  {(isPending || !!data.artists.length) && (
+                    <div>
+                      <SliderTitle icon={<Profile2User />} title="Artists" />
+                      <SearchBoxArtistsSlider artists={data?.artists} isPending={isPending} />
+                    </div>
+                  )}
+                  {(isPending || !!data.albums.length) && (
+                    <div>
+                      <SliderTitle icon={<MusicPlaylist />} title="Albums" />
+                      <SearchBoxAlbumsSlider albums={data?.albums} isPending={isPending} />
+                    </div>
+                  )}
+                  {(isPending || !!data.playlists.length) && (
+                    <div>
+                      <SliderTitle icon={<MusicPlaylist />} title="Playlists" />
+                      <SearchBoxPlaylistsSlider playlists={data?.playlists} isPending={isPending} />
+                    </div>
+                  )}
+                </div>
+              )
             ) : (
               <div className="dir-ltr mt-4 flex h-[300px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
                 <Music size={72} />
