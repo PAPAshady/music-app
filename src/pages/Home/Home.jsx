@@ -1,4 +1,3 @@
-import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionHeader from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
@@ -18,7 +17,6 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
-import { Like1 } from 'iconsax-react';
 import usePlayBar from '../../hooks/usePlayBar';
 
 export default function Home() {
@@ -31,17 +29,6 @@ export default function Home() {
 
   return (
     <>
-      <div className="xs:w-full mx-auto grid w-[90%] grid-cols-1 gap-4 min-[480px]:grid-cols-3">
-        <div className="hover:outline-primary-50 flex h-[28dvw] w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg bg-gradient-to-br from-[#822F6A] via-[#434EAA] to-[#005E4B] outline outline-transparent transition-colors duration-300 lg:max-h-[100px]">
-          <Like1 size={50} />
-          <p>Your Favorites</p>
-        </div>
-        {genres.slice(0, 2).map((track) => (
-          <div key={track.id} className="flex w-full justify-center">
-            <TracksCard {...track} />
-          </div>
-        ))}
-      </div>
       <div>
         <SectionHeader title="Playlists Tailored for You" />
         <PlaylistsSlider playlists={publicPlaylists.data} isLoading={publicPlaylists.isLoading} />
@@ -56,7 +43,11 @@ export default function Home() {
       </div>
       <div className="-mt-11">
         <SectionHeader title="Daily Picks" />
-        <PlayBarSlider songs={allSongs.data?.pages.flat()} isPending={allSongs.isPending} onPlay={playSingleSong} />
+        <PlayBarSlider
+          songs={allSongs.data?.pages.flat()}
+          isPending={allSongs.isPending}
+          onPlay={playSingleSong}
+        />
       </div>
       <div>
         <SectionHeader title="Artists You Follow" />
@@ -81,7 +72,11 @@ export default function Home() {
       </div>
       <div className="-mt-8">
         <SectionHeader title="Trending Now" />
-        <PlayBarSlider songs={allSongs.data?.pages.flat()} isPending={allSongs.isPending} onPlay={playSingleSong} />
+        <PlayBarSlider
+          songs={allSongs.data?.pages.flat()}
+          isPending={allSongs.isPending}
+          onPlay={playSingleSong}
+        />
       </div>
       <div>
         <SectionHeader title="Recently Seen" />
