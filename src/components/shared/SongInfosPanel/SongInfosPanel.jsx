@@ -26,6 +26,7 @@ import usePlayBar from '../../../hooks/usePlayBar';
 import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 import useLyrics from '../../../hooks/useLyrics';
+import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 
 function IconButton({ children, label, onClick, className = '', title, disabled }) {
   return (
@@ -60,14 +61,16 @@ function TabButton({ active, onClick, children, id }) {
   );
 }
 
-export default function SongSidebar() {
+export default function SongInfosPanel() {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('lyrics');
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const song = useSelector((state) => state.musicPlayer.currentMusic);
   const selectedSong = useSelector((state) => state.playContext.singleSong);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
-  const { data: artist } = useQuery(getArtistByIdQueryOptions(song.artist_id));
+  const { data: artist, isPending: isArtistPending } = useQuery(
+    getArtistByIdQueryOptions(song.artist_id)
+  );
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery(
     getPopularSongsByArtistIdQueryOptions(song.artist_id)
   );
@@ -306,19 +309,51 @@ export default function SongSidebar() {
                 exit: { opacity: 0, y: 15 },
               }}
             >
-              <div className="flex items-center gap-3">
-                <img
-                  src={artist?.image || defaultArtistCover}
-                  alt={artist?.name}
-                  className="h-14 w-14 rounded-full object-cover"
-                />
+              {isArtistPending ? (
                 <div>
-                  <div className="text-lg font-semibold">{artist?.name}</div>
-                  <div className="text-sm text-slate-300">Artist</div>
-                </div>
-              </div>
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-14 w-14 overflow-hidden rounded-full bg-gray-600/60">
+                      <ShimmerOverlay />
+                    </div>
+                    <div className="grow">
+                      <div className="relative mb-2 h-2 w-[60%] overflow-hidden rounded-full bg-gray-600/60">
+                        <ShimmerOverlay />
+                      </div>
+                      <div className="relative h-2 w-1/2 overflow-hidden rounded-full bg-gray-600/60">
+                        <ShimmerOverlay />
+                      </div>
+                    </div>
+                  </div>
 
-              <p className="text-sm text-slate-300">{artist?.bio}</p>
+                  <div className="flex flex-col gap-2 ps-1 pt-3">
+                    <div className="relative h-2 w-[90%] overflow-hidden rounded-full bg-gray-600/60">
+                      <ShimmerOverlay />
+                    </div>
+                    <div className="relative h-2 w-[85%] overflow-hidden rounded-full bg-gray-600/60">
+                      <ShimmerOverlay />
+                    </div>
+                    <div className="relative h-2 w-[80%] overflow-hidden rounded-full bg-gray-600/60">
+                      <ShimmerOverlay />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={artist?.image || defaultArtistCover}
+                      alt={artist?.name}
+                      className="h-14 w-14 rounded-full object-cover"
+                    />
+                    <div>
+                      <div className="text-lg font-semibold">{artist?.name}</div>
+                      <div className="text-sm text-slate-300">Artist</div>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-slate-300">{artist?.bio}</p>
+                </>
+              )}
 
               <div>
                 <div className="mb-2 text-sm text-slate-300">Top tracks</div>
