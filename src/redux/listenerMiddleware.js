@@ -5,6 +5,7 @@ import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
   getRelatedSongsBySongDataQueryOptions,
+  getFavoriteSongsQueryOptions,
 } from '../queries/musics';
 import { setUser } from './slices/authSlice';
 import { getUserAvatar } from './slices/authSlice';
@@ -61,7 +62,9 @@ listenerMiddleware.startListening({
     const songs = await queryClient.fetchQuery(
       song.tracklistType === 'album'
         ? getSongsByAlbumIdQueryOptions(song.id)
-        : getSongsByPlaylistIdQueryOptions(song.id)
+        : song.tracklistType === 'playlist'
+          ? getSongsByPlaylistIdQueryOptions(song.id)
+          : getFavoriteSongsQueryOptions()
     );
 
     // we store the songs of the selected tracklist to keep track of them and do some things like

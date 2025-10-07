@@ -6,12 +6,40 @@ import PlaylistCardSkeleton from '../../MusicCards/PlaylistCard/PlaylistCardSkel
 import 'swiper/css';
 import AddPlaylistButton from '../../AddPlaylistButton/AddPlaylistButton';
 import { Like1 } from 'iconsax-react';
+import { useDispatch } from 'react-redux';
+import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
+import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
+import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
+import favoriteSongsCover from '../../../assets/images/covers/favorites-cover.png';
 
 export default function PlaylistsSlider({
   playlists,
   isLoading,
   numberOfPlaylists = playlists?.length,
 }) {
+  const dispatch = useDispatch();
+
+  const showFavoriteSongs = () => {
+    const favoriteSongsInfos = {
+      title: 'Favorite songs',
+      cover: favoriteSongsCover,
+      description: 'A collection of your favorite songs!',
+      tracklistType: 'favorites',
+      id: 'favorites',
+    };
+
+    dispatch(setSelectedCollection(favoriteSongsInfos));
+    dispatch(
+      openMobilePanel({
+        type: 'tracklist',
+        title: favoriteSongsInfos.title,
+        image: favoriteSongsInfos.cover,
+        description: favoriteSongsInfos.description,
+      })
+    );
+    dispatch(setSidebarPanelType('tracklist_panel'));
+  };
+
   return (
     <div className="mx-auto w-[95%] max-w-[940px]">
       <Swiper
@@ -53,7 +81,10 @@ export default function PlaylistsSlider({
                   <AddPlaylistButton />
                 ) : playlist.type === 'favorite-songs' ? (
                   // render a button to show favorite musics onClick
-                  <div className="hover:border-secondary-50 flex h-36 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-transparent bg-gradient-to-br from-[#822F6A] via-[#434EAA] to-[#005E4B] transition-colors lg:h-48 lg:gap-3">
+                  <div
+                    className="hover:border-secondary-50 flex h-36 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-transparent bg-gradient-to-br from-[#822F6A] via-[#434EAA] to-[#005E4B] transition-colors lg:h-48 lg:gap-3"
+                    onClick={showFavoriteSongs}
+                  >
                     <div className="size-16">
                       <Like1 size="100%" />
                     </div>

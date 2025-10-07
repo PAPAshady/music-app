@@ -21,6 +21,7 @@ import { setCurrentSongIndex, play, pause } from '../../../redux/slices/musicPla
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import DropDownList from '../../DropDownList/DropDownList';
 import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
+import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
 import {
   Heart,
   Trash,
@@ -73,7 +74,9 @@ function MobileTracklistPanel() {
   const { data: selectedPlaylistSongs, isLoading: isPlaylistSongsLoading } = useQuery(
     selectedTracklist.tracklistType === 'playlist'
       ? getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
-      : getSongsByAlbumIdQueryOptions(selectedTracklist.id)
+      : selectedTracklist.tracklistType === 'album'
+        ? getSongsByAlbumIdQueryOptions(selectedTracklist.id)
+        : getFavoriteSongsQueryOptions()
   );
   const addSongMutation = useMutation(
     addSongToPrivatePlaylistMutationOptions(selectedTracklist.id)

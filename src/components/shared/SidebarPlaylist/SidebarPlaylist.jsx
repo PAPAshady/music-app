@@ -23,6 +23,7 @@ import {
 } from '../../../redux/slices/musicPlayerSlice';
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import usePlayBar from '../../../hooks/usePlayBar';
+import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
 
 const SidebarPlaylist = memo(() => {
   const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
@@ -31,7 +32,9 @@ const SidebarPlaylist = memo(() => {
   const { data: selectedPlaylistSongs, isPending } = useQuery(
     selectedTracklist.tracklistType === 'album'
       ? getSongsByAlbumIdQueryOptions(selectedTracklist.id)
-      : getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
+      : selectedTracklist.tracklistType === 'playlist'
+        ? getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
+        : getFavoriteSongsQueryOptions()
   );
   const dispatch = useDispatch();
   const playlistCover = selectedTracklist.cover ? selectedTracklist.cover : defaultCover;
