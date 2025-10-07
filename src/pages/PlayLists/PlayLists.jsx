@@ -10,15 +10,14 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllPrivatePlaylistsQueryOptions } from '../../queries/playlists';
 import PropTypes from 'prop-types';
 import usePlayBar from '../../hooks/usePlayBar';
+import AddPlaylistButton from '../../components/AddPlaylistButton/AddPlaylistButton';
 
 export default function PlayLists() {
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
   const { playSingleSong } = usePlayBar();
 
   // Render the "Add New Playlist" button as the first item in the playlists list.
-  const privatePlaylists = userPlaylists.data
-    ? [{ id: 0, isAddPlaylistButton: true }, ...userPlaylists.data]
-    : [{ id: 0, isAddPlaylistButton: true }];
+  const privatePlaylists = [{ id: 0, type: 'add-playlist-button' }, ...(userPlaylists.data ?? [])];
 
   const playlistsSections = [
     {
@@ -113,9 +112,13 @@ function PlaylistsContainer({
                 ))
             : playlists
                 .slice(0, numberOfPlayLists)
-                .map((playList) => (
-                  <PlaylistCard key={playList.id} {...playList} classNames={classNames} />
-                ))}
+                .map((playList) =>
+                  playList.type === 'add-playlist-button' ? (
+                    <AddPlaylistButton key={playList.id} classNames={classNames} />
+                  ) : (
+                    <PlaylistCard key={playList.id} {...playList} classNames={classNames} />
+                  )
+                )}
         </div>
       ) : (
         <PlaylistsSlider

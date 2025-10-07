@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper/modules';
 import PlaylistCardSkeleton from '../../MusicCards/PlaylistCard/PlaylistCardSkeleton';
 import 'swiper/css';
+import AddPlaylistButton from '../../AddPlaylistButton/AddPlaylistButton';
 
 export default function PlaylistsSlider({
   playlists,
@@ -47,7 +48,11 @@ export default function PlaylistsSlider({
                 key={playlist.id}
                 className="xs:max-w-[295px] p-[1px] min-[480px]:max-w-[226px] sm:max-w-[190px] md:max-w-[205px] lg:p-0 xl:max-w-[190px]"
               >
-                <PlaylistCard {...playlist} />
+                {playlist.type === 'add-playlist-button' ? (
+                  <AddPlaylistButton />
+                ) : (
+                  <PlaylistCard {...playlist} />
+                )}
               </SwiperSlide>
             ))}
       </Swiper>

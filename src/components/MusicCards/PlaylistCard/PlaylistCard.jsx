@@ -1,15 +1,13 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
-import addPlaylistImg from '../../../assets/images/covers/add-playlist.jpg';
-import { Heart, Play, AddCircle } from 'iconsax-react';
+import { Heart, Play } from 'iconsax-react';
 import { useDispatch } from 'react-redux';
-import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 
-const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
+const PlaylistCard = memo((playlist) => {
   const dispatch = useDispatch();
   const { title, totaltracks, cover, isFavorite, classNames, description } = playlist;
 
@@ -18,26 +16,6 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
     dispatch(openMobilePanel({ type: 'tracklist', title, image: cover, description }));
     dispatch(setSidebarPanelType('tracklist_panel'));
   };
-
-  // if 'isAddPlaylistButton' is true render a button that adds playlist. This button is only being rendered on the playlists page to add a new playlist.
-  if (isAddPlaylistButton) {
-    return (
-      <button
-        onClick={() =>
-          dispatch(openModal({ title: 'Create new playlist.', actionType: 'create_playlist' }))
-        }
-        className={`h-36 w-full overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[0_8px_16px_2px] shadow-[black]/25 lg:h-48 ${classNames}`}
-        style={{ backgroundImage: `url(${addPlaylistImg})` }}
-      >
-        <div className="flex size-full flex-col items-center justify-center gap-2 bg-[black]/35 p-2 lg:gap-3">
-          <span className="size-12 lg:size-15">
-            <AddCircle size="100%" />
-          </span>
-          <p className="text-primary-50 text-lg font-semibold lg:text-xl">Add New Playlist</p>
-        </div>
-      </button>
-    );
-  }
 
   return (
     <div
@@ -73,7 +51,6 @@ const PlaylistCard = memo(({ isAddPlaylistButton, ...playlist }) => {
   );
 });
 PlaylistCard.propTypes = {
-  isAddPlaylistButton: PropTypes.bool,
   title: PropTypes.string,
   totaltracks: PropTypes.number,
   cover: PropTypes.string,
