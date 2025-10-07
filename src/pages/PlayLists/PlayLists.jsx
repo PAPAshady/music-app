@@ -15,10 +15,9 @@ import AddPlaylistButton from '../../components/AddPlaylistButton/AddPlaylistBut
 export default function PlayLists() {
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
   const { playSingleSong } = usePlayBar();
-
+  const isSmallTablet = useMediaQuery('(min-width: 480px)');
   // Render the "Add New Playlist" button as the first item in the playlists list.
   const privatePlaylists = [{ id: 0, type: 'add-playlist-button' }, ...(userPlaylists.data ?? [])];
-
   const playlistsSections = [
     {
       id: 1,
@@ -72,7 +71,7 @@ export default function PlayLists() {
             <PlayBar
               onPlay={playSingleSong}
               key={song.id}
-              size="lg"
+              size={isSmallTablet ? 'lg' : 'sm'}
               classNames="!max-w-none"
               song={song}
             />
