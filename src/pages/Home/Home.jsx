@@ -35,7 +35,10 @@ export default function Home() {
       </div>
       <div>
         <SectionHeader title="Your Personal Music Space" />
-        <PlaylistsSlider isLoading={userPlaylists.isLoading} playlists={userPlaylists.data} />
+        <PlaylistsSlider
+          isLoading={userPlaylists.isLoading}
+          playlists={[{ id: 0, type: 'favorite-songs' }, ...(userPlaylists.data ?? [])]}
+        />
       </div>
       <div>
         <SectionHeader title="Updates from Followed Artists" />
