@@ -24,11 +24,11 @@ export const getArtistByIdQueryOptions = (artistId) => {
 
 export const getRelatedArtistsQueryOptions = (artist) => {
   return queryOptions({
-    queryKey: ['artists', { relation: artist.id }],
+    queryKey: ['artists', { relation: artist?.id }],
     queryFn: () => getRelatedArtists(artist),
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
-    enabled: !!artist.id,
+    enabled: !!artist?.id,
   });
 };

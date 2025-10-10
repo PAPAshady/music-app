@@ -2,16 +2,16 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import noAvatarImg from '../../../assets/images/Avatar/no-avatar.png';
 import { useDispatch } from 'react-redux';
-import { setSelectedArtist } from '../../../redux/slices/artistSlice';
-import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
+import useQueryState from '../../../hooks/useQueryState';
 
 const ArtistCard = memo((artist) => {
+  const { setQuery } = useQueryState();
   const dispatch = useDispatch();
 
   const showArtistInfosInSidebar = () => {
-    dispatch(setSelectedArtist(artist));
-    dispatch(setSidebarPanelType('artist_panel'));
+    setQuery('type', 'artist');
+    setQuery('id', artist.id);
     dispatch(
       openMobilePanel({
         type: 'artist',

@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux';
 import noImage from '../../../assets/images/Avatar/no-avatar.png';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
@@ -13,11 +12,16 @@ import { getRelatedArtistsQueryOptions } from '../../../queries/artists';
 import SmallArtistCardSkeleton from '../../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
 import { useEffect, useRef } from 'react';
 import SmallArtistCard from '../../MusicCards/SmallArtistCard/SmallArtistCard';
+import useQueryState from '../../../hooks/useQueryState';
+import { getArtistByIdQueryOptions } from '../../../queries/artists';
+import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 
 function ArtistInfosPanel() {
-  const selectedArtist = useSelector((state) => state.artist);
+  const { getQuery } = useQueryState();
+  const artistId = getQuery('id');
+  const { data: selectedArtist, isPending } = useQuery(getArtistByIdQueryOptions(artistId));
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery({
-    ...getPopularSongsByArtistIdQueryOptions(selectedArtist.id),
+    ...getPopularSongsByArtistIdQueryOptions(selectedArtist?.id),
     select: (popularSongs) => popularSongs.slice(0, 4),
   });
   const { data: albums, isPending: isAlbumsPending } = useQuery(
@@ -44,7 +48,7 @@ function ArtistInfosPanel() {
             <span className="block text-center text-lg font-semibold">About Artist</span>
             <AnimatePresence mode="wait">
               <motion.div
-                key={selectedArtist.id}
+                key={artistId}
                 variants={{
                   initial: { opacity: 0, y: 15 },
                   animate: { opacity: 1, y: 0 },
@@ -56,26 +60,53 @@ function ArtistInfosPanel() {
                 exit="exit"
                 transition={{ duration: 0.2 }}
               >
-                <div className="mx-auto h-[190px] w-[190px] overflow-hidden p-3">
-                  <img
-                    src={selectedArtist.image || noImage}
-                    alt={selectedArtist.name}
-                    className="size-full rounded-2xl object-cover"
-                  />
-                </div>
+                {isPending ? (
+                  <div className="mx-auto h-[190px] w-[190px] p-3">
+                    <div className="relative size-full overflow-hidden rounded-2xl bg-gray-600/60">
+                      <ShimmerOverlay />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mx-auto h-[190px] w-[190px] overflow-hidden p-3">
+                    <img
+                      src={selectedArtist.image || noImage}
+                      alt={selectedArtist.name}
+                      className="size-full rounded-2xl object-cover"
+                    />
+                  </div>
+                )}
                 <div className="h-full px-2">
                   <div className="mb-4 flex flex-col items-center gap-2 text-center">
-                    <div className="w-full overflow-hidden">
-                      <p
-                        className="text-secondary-100 truncate text-lg font-semibold"
-                        title={selectedArtist.full_name}
-                      >
-                        {selectedArtist.full_name}
-                      </p>
-                    </div>
-                    <p className="text-[13px]" title={selectedArtist.bio}>
-                      {selectedArtist.bio}
-                    </p>
+                    {isPending ? (
+                      <>
+                        <div className="relative mt-1 mb-2 h-3 w-1/2 overflow-hidden rounded-full bg-gray-600/60">
+                          <ShimmerOverlay />
+                        </div>
+                        <div className="relative mt-0.5 h-2 w-3/4 overflow-hidden rounded-full bg-gray-600/60">
+                          <ShimmerOverlay />
+                        </div>
+                        <div className="relative mt-0.5 h-2 w-2/3 overflow-hidden rounded-full bg-gray-600/60">
+                          <ShimmerOverlay />
+                        </div>
+                        <div className="relative mt-0.5 h-2 w-4/5 overflow-hidden rounded-full bg-gray-600/60">
+                          <ShimmerOverlay />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-full overflow-hidden">
+                          <p
+                            className="text-secondary-100 truncate text-lg font-semibold"
+                            title={selectedArtist?.full_name}
+                          >
+                            {selectedArtist?.full_name}
+                          </p>
+                        </div>
+                        <p className="text-[13px]" title={selectedArtist?.bio}>
+                          {selectedArtist?.bio}
+                        </p>
+                      </>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -87,7 +118,7 @@ function ArtistInfosPanel() {
 
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={selectedArtist.id}
+                  key={artistId}
                   variants={{
                     show: {
                       transition: {
