@@ -9,8 +9,8 @@ import { Like1 } from 'iconsax-react';
 import { useDispatch } from 'react-redux';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
-import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import favoriteSongsCover from '../../../assets/images/covers/favorites-cover.png';
+import useQueryState from '../../../hooks/useQueryState';
 
 export default function PlaylistsSlider({
   playlists,
@@ -18,6 +18,7 @@ export default function PlaylistsSlider({
   numberOfPlaylists = playlists?.length,
 }) {
   const dispatch = useDispatch();
+  const { setQuery } = useQueryState();
 
   const showFavoriteSongs = () => {
     const favoriteSongsInfos = {
@@ -37,7 +38,8 @@ export default function PlaylistsSlider({
         description: favoriteSongsInfos.description,
       })
     );
-    dispatch(setSidebarPanelType('tracklist_panel'));
+    setQuery('type', 'favorites');
+    setQuery('id', null);
   };
 
   return (

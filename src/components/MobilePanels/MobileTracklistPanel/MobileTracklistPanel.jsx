@@ -88,12 +88,8 @@ function MobileTracklistPanel() {
         ? getSongsByAlbumIdQueryOptions(tracklistId)
         : getFavoriteSongsQueryOptions()
   );
-  const addSongMutation = useMutation(
-    addSongToPrivatePlaylistMutationOptions(tracklistId)
-  );
-  const removeSongMutation = useMutation(
-    removeSongFromPrivatePlaylistMutationOptions(tracklistId)
-  );
+  const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(tracklistId));
+  const removeSongMutation = useMutation(removeSongFromPrivatePlaylistMutationOptions(tracklistId));
   const searchedValue = searchInput.value.toLowerCase().trim();
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));

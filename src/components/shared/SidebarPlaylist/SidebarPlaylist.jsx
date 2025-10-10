@@ -5,6 +5,7 @@ import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import DropDownList from '../../DropDownList/DropDownList';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
+import favoritesCover from '../../../assets/images/covers/favorites-cover.png';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
@@ -32,7 +33,7 @@ const SidebarPlaylist = memo(() => {
   const { getQuery } = useQueryState();
   const tracklistType = getQuery('type');
   const tracklistId = getQuery('id');
-  const { data: selectedTracklist } = useQuery(
+  const { data: selectedTracklist, isPending: isSelectedTracklistPending } = useQuery(
     tracklistType === 'album'
       ? getAlbumByIdQueryOptions(tracklistId)
       : getPlaylistByIdQueryOptions(tracklistId)
@@ -47,7 +48,8 @@ const SidebarPlaylist = memo(() => {
         : getFavoriteSongsQueryOptions()
   );
   const dispatch = useDispatch();
-  const playlistCover = selectedTracklist?.cover ? selectedTracklist?.cover : defaultCover;
+  const playlistCover =
+    tracklistType === 'favorites' ? favoritesCover : selectedTracklist?.cover || defaultCover;
   const isPlayingPlaylistSelected =
     playingTracklist.id === selectedTracklist?.id &&
     playingTracklist.title === selectedTracklist?.title;
@@ -153,17 +155,23 @@ const SidebarPlaylist = memo(() => {
             transition={{ duration: 0.2 }}
           >
             <div className="flex items-center justify-between gap-1">
-              <p
-                className="text-white-50 subheading-3 truncate"
-                title={selectedTracklist?.title || 'Select a playlist'}
-              >
-                {selectedTracklist?.title || 'Select a playlist'}
-              </p>
+              {isSelectedTracklistPending && tracklistType !== 'favorites' ? (
+                <div className="relative h-2.5 w-1/2 overflow-hidden rounded-full bg-gray-600/60">
+                  <ShimmerOverlay />
+                </div>
+              ) : (
+                <p
+                  className="text-white-50 subheading-3 truncate"
+                  title={tracklistType === 'favorites' ? 'Your Favorites' : selectedTracklist.title}
+                >
+                  {tracklistType === 'favorites' ? 'Your Favorites' : selectedTracklist.title}
+                </p>
+              )}
               <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
             </div>
 
             <div className="my-6 flex gap-2">
-              {isPending ? (
+              {isSelectedTracklistPending && tracklistType !== 'favorites' ? (
                 <div className="relative size-32 overflow-hidden rounded-[10px] bg-gray-600/60 xl:size-[140px]">
                   <ShimmerOverlay />
                 </div>
@@ -171,7 +179,9 @@ const SidebarPlaylist = memo(() => {
                 <div className="group relative overflow-hidden rounded-[10px]">
                   <img
                     src={playlistCover}
-                    alt={selectedTracklist?.title || 'Select a playlist'}
+                    alt={
+                      tracklistType === 'favorites' ? 'Your Favorites' : selectedTracklist?.title
+                    }
                     className="size-32 object-cover xl:size-[140px]"
                   />
                   <div

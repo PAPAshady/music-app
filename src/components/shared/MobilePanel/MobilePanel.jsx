@@ -9,8 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { closePanel, closeMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import MobileTracklistPanel from '../../MobilePanels/MobileTracklistPanel/MobileTracklistPanel';
 import MobileArtistPanel from '../../MobilePanels/MobileArtistPanel/MobileArtistPanel';
+import useQueryState from '../../../hooks/useQueryState';
+import favoritesCover from '../../../assets/images/covers/favorites-cover.png';
 
 export default function MobilePanel() {
+  const { getQuery } = useQueryState();
+  const panelType = getQuery('type');
   const { isMobilePanelOpen, title, description, image, type } = useSelector(
     (state) => state.mobilePanel
   );
@@ -71,20 +75,24 @@ export default function MobilePanel() {
             <p
               className={`transition-opacity duration-300 lg:text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
             >
-              {title}
+              {panelType === 'favorites' ? 'Your Favorites' : title}
             </p>
           </div>
         </div>
 
         <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center min-[360px]:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
           <img
-            src={image ?? defaultImage}
+            src={panelType === 'favorites' ? favoritesCover : image || defaultImage}
             className="size-46 rounded-md object-cover sm:size-56 md:size-64 lg:size-80"
-            alt={title}
+            alt={panelType === 'favorites' ? 'Your Favorites' : title}
           />
-          <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">{title}</p>
+          <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
+            {panelType === 'favorites' ? 'Your Favorites' : title}
+          </p>
           <p className="w-[90%] text-sm sm:text-base lg:text-lg">
-            {description || 'No Description for this playlist.'}
+            {panelType === 'favorites'
+              ? 'A collection of your favorite songs!'
+              : description || 'No Description for this playlist.'}
           </p>
 
           {type === 'tracklist' && <MobileTracklistPanel />}
