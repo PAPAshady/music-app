@@ -16,18 +16,20 @@ import { useLocation, Outlet, Link } from 'react-router-dom';
 import SidebarPlaylist from '../../SidebarPlaylist/SidebarPlaylist';
 import SidebarWelcomePanel from '../../SidebarWelcomePanel/SidebarWelcomePanel';
 import PlaylistInfosModal from '../../../PlaylistInfosModal/PlaylistInfosModal';
-import { useSelector } from 'react-redux';
 import ConfirmModal from '../../../ConfirmModal/ConfirmModal';
 import ArtistInfosPanel from '../../ArtistInfosPanel/ArtistInfosPanel';
 import SongInfosPanel from '../../SongInfosPanel/SongInfosPanel';
 import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
+import useQueryState from '../../../../hooks/useQueryState';
+
+const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'song'];
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const isMobile = useMediaQuery('(max-width: 1024px)');
-  const sidebarPanelType = useSelector((state) => state.sidebarPanelType);
+  const sidebarType = useQueryState().getQuery('type');
 
   useEffect(() => {
     function handleScroll() {
@@ -86,10 +88,16 @@ export default function MainLayout() {
               <div className="flex grow flex-col gap-8 pt-8 lg:gap-11">
                 <Outlet />
               </div>
-              {sidebarPanelType === 'welcome_panel' && <SidebarWelcomePanel />}
-              {sidebarPanelType === 'tracklist_panel' && <SidebarPlaylist />}
-              {sidebarPanelType === 'artist_panel' && <ArtistInfosPanel />}
-              {sidebarPanelType === 'song_panel' && <SongInfosPanel />}
+
+              {sidebarType && validSidebarTypes.includes(sidebarType) ? (
+                <>
+                  {['album', 'playlist', 'favorites'].includes(sidebarType) && <SidebarPlaylist />}
+                  {sidebarType === 'artist' && <ArtistInfosPanel />}
+                  {sidebarType === 'song' && <SongInfosPanel />}
+                </>
+              ) : (
+                <SidebarWelcomePanel />
+              )}
             </div>
             <Player />
             <Footer />

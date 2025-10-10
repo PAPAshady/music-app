@@ -9,11 +9,18 @@ export const getAllAlbums = async () => {
   return data;
 };
 
-export const getAlbumsByArtistId = async (artistId) => {
+export const getAlbumById = async (albumId) => {
   const { data, error } = await supabase
-    .from('albums')
+    .from('album_with_total_tracks')
     .select('*')
-    .eq('artist_id', artistId);
+    .eq('id', albumId)
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const getAlbumsByArtistId = async (artistId) => {
+  const { data, error } = await supabase.from('albums').select('*').eq('artist_id', artistId);
   if (error) throw error;
   return data;
 };

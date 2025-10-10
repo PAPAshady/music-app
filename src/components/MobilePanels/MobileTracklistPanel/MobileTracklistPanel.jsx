@@ -44,14 +44,24 @@ import {
   getSongsByPlaylistIdQueryOptions,
 } from '../../../queries/musics';
 import usePlayBar from '../../../hooks/usePlayBar';
+import useQueryState from '../../../hooks/useQueryState';
+import { getAlbumByIdQueryOptions } from '../../../queries/albums';
+import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
 
 function MobileTracklistPanel() {
+  const { getQuery } = useQueryState();
+  const tracklistType = getQuery('type');
+  const tracklistId = getQuery('id');
   const searchInput = useInput();
   const dispatch = useDispatch();
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const [pendingSongId, setPendingSongId] = useState(null);
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
-  const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
+  const { data: selectedTracklist } = useQuery(
+    tracklistType === 'album'
+      ? getAlbumByIdQueryOptions(tracklistId)
+      : getPlaylistByIdQueryOptions(tracklistId)
+  );
   const isMobilePanelOpen = useSelector((state) => state.mobilePanel.isMobilePanelOpen);
   const isTablet = useMediaQuery('(min-width: 768px)');
   const playingState = useSelector((state) => state.musicPlayer.playingState);
@@ -72,17 +82,17 @@ function MobileTracklistPanel() {
     },
   });
   const { data: selectedPlaylistSongs, isLoading: isPlaylistSongsLoading } = useQuery(
-    selectedTracklist.tracklistType === 'playlist'
-      ? getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
-      : selectedTracklist.tracklistType === 'album'
-        ? getSongsByAlbumIdQueryOptions(selectedTracklist.id)
+    tracklistType === 'playlist'
+      ? getSongsByPlaylistIdQueryOptions(tracklistId)
+      : tracklistType === 'album'
+        ? getSongsByAlbumIdQueryOptions(tracklistId)
         : getFavoriteSongsQueryOptions()
   );
   const addSongMutation = useMutation(
-    addSongToPrivatePlaylistMutationOptions(selectedTracklist.id)
+    addSongToPrivatePlaylistMutationOptions(tracklistId)
   );
   const removeSongMutation = useMutation(
-    removeSongFromPrivatePlaylistMutationOptions(selectedTracklist.id)
+    removeSongFromPrivatePlaylistMutationOptions(tracklistId)
   );
   const searchedValue = searchInput.value.toLowerCase().trim();
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
@@ -93,7 +103,7 @@ function MobileTracklistPanel() {
   const { playTracklist } = usePlayBar();
 
   const playPauseButtonHandler = () => {
-    if (playingTracklist.id !== selectedTracklist.id) {
+    if (playingTracklist.id !== selectedTracklist?.id) {
       dispatch(setCurrentCollection(selectedTracklist));
       dispatch(setCurrentSongIndex(0));
     } else {
@@ -158,7 +168,7 @@ function MobileTracklistPanel() {
       icon: <Edit />,
       onClick: () =>
         dispatch(
-          openModal({ title: `Edit ${selectedTracklist.title}`, actionType: 'edit_playlist' })
+          openModal({ title: `Edit ${selectedTracklist?.title}`, actionType: 'edit_playlist' })
         ),
     },
     { id: 2, icon: <Additem />, onClick: () => setIsAddMenuOpen(true) },
@@ -171,7 +181,7 @@ function MobileTracklistPanel() {
       title: 'Edit playlist',
       onClick: () =>
         dispatch(
-          openModal({ title: `Edit ${selectedTracklist.title}`, actionType: 'edit_playlist' })
+          openModal({ title: `Edit ${selectedTracklist?.title}`, actionType: 'edit_playlist' })
         ),
     },
     {
@@ -181,7 +191,7 @@ function MobileTracklistPanel() {
       onClick: () =>
         dispatch(
           openConfirmModal({
-            title: `Delete "${selectedTracklist.title}" playlist.`,
+            title: `Delete "${selectedTracklist?.title}" playlist.`,
             message: 'Are you sure you want to delete this playlist ?',
             buttons: { confirm: true, cancel: true },
             buttonsClassNames: { confirm: '!bg-red !inset-shadow-none' },
@@ -198,11 +208,11 @@ function MobileTracklistPanel() {
         <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
           <button className="border-primary-200 h-10 w-8 rounded-sm border p-[2px] sm:h-12 sm:w-9">
             <img
-              src={selectedTracklist.cover ?? playlistDefaultCover}
+              src={selectedTracklist?.cover ?? playlistDefaultCover}
               className="size-full rounded-sm object-cover"
             />
           </button>
-          {!selectedTracklist.is_public && selectedTracklist.tracklistType !== 'album' && (
+          {!selectedTracklist?.is_public && selectedTracklist?.tracklistType !== 'album' && (
             <>
               {playButtons.map((button) => (
                 <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
@@ -240,7 +250,7 @@ function MobileTracklistPanel() {
       </div>
 
       {isPlaylistSongsLoading ? (
-        Array(8)
+        Array(5)
           .fill()
           .map((_, index) => (
             <PlayBarSkeleton
@@ -252,7 +262,7 @@ function MobileTracklistPanel() {
       ) : !selectedPlaylistSongs?.length ? (
         <div className="my-2 w-full">
           <p className="text-gray-400 md:text-lg">
-            No tracks in this {selectedTracklist.tracklistType} yet
+            No tracks in this {selectedTracklist?.tracklistType} yet
           </p>
         </div>
       ) : (
@@ -265,9 +275,9 @@ function MobileTracklistPanel() {
                 index={index}
                 onPlay={playTracklist}
                 classNames="!w-full text-start !max-w-none"
-                ActionButtonIcon={selectedTracklist.is_public ? <Heart /> : <Trash />}
+                ActionButtonIcon={selectedTracklist?.is_public ? <Heart /> : <Trash />}
                 actionButtonClickHandler={
-                  selectedTracklist.tracklistType === 'playlist' ? removeSongHandler : undefined
+                  selectedTracklist?.tracklistType === 'playlist' ? removeSongHandler : undefined
                 }
                 isActionButtonPending={pendingSongId === song.id}
                 song={song}
@@ -280,7 +290,7 @@ function MobileTracklistPanel() {
         </>
       )}
 
-      {!selectedTracklist.is_public && selectedTracklist.tracklistType === 'playlist' && (
+      {!selectedTracklist?.is_public && selectedTracklist?.tracklistType === 'playlist' && (
         <>
           <div className="mt-6 mb-4 w-full text-start">
             <p className="mb-4 text-xl font-bold">Suggestions</p>
@@ -317,7 +327,7 @@ function MobileTracklistPanel() {
         </>
       )}
 
-      {isMobilePanelOpen && !selectedTracklist.is_public && (
+      {isMobilePanelOpen && !selectedTracklist?.is_public && (
         <div
           className={`text-secondary-50 bg-primary-800 fixed inset-0 z-[10] size-full pb-4 text-start transition-all duration-300 ${isAddMenuOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
         >

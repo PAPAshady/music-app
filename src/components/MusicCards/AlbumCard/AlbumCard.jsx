@@ -5,18 +5,20 @@ import { Heart, Music, Share } from 'iconsax-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
-import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
+import useQueryState from '../../../hooks/useQueryState';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
   const { cover, totalTracks, artist, title, description, id } = album;
   const dispatch = useDispatch();
   const playingTracklistId = useSelector((state) => state.playContext.currentCollection?.id);
   const isCurrentAlbumPlaying = id === playingTracklistId;
+  const { setQuery } = useQueryState();
 
   const openMobilePanelHandler = () => {
     dispatch(setSelectedCollection(album));
     dispatch(openMobilePanel({ type: 'tracklist', title, image: cover, description }));
-    dispatch(setSidebarPanelType('tracklist_panel'));
+    setQuery('type', 'album');
+    setQuery('id', album.id);
   };
 
   return (

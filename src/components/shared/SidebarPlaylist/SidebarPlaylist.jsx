@@ -24,23 +24,33 @@ import {
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import usePlayBar from '../../../hooks/usePlayBar';
 import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
+import useQueryState from '../../../hooks/useQueryState';
+import { getAlbumByIdQueryOptions } from '../../../queries/albums';
+import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
 
 const SidebarPlaylist = memo(() => {
-  const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
+  const { getQuery } = useQueryState();
+  const tracklistType = getQuery('type');
+  const tracklistId = getQuery('id');
+  const { data: selectedTracklist } = useQuery(
+    tracklistType === 'album'
+      ? getAlbumByIdQueryOptions(tracklistId)
+      : getPlaylistByIdQueryOptions(tracklistId)
+  );
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const { data: selectedPlaylistSongs, isPending } = useQuery(
-    selectedTracklist.tracklistType === 'album'
-      ? getSongsByAlbumIdQueryOptions(selectedTracklist.id)
-      : selectedTracklist.tracklistType === 'playlist'
-        ? getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
+    tracklistType === 'album'
+      ? getSongsByAlbumIdQueryOptions(tracklistId)
+      : tracklistType === 'playlist'
+        ? getSongsByPlaylistIdQueryOptions(tracklistId)
         : getFavoriteSongsQueryOptions()
   );
   const dispatch = useDispatch();
-  const playlistCover = selectedTracklist.cover ? selectedTracklist.cover : defaultCover;
+  const playlistCover = selectedTracklist?.cover ? selectedTracklist?.cover : defaultCover;
   const isPlayingPlaylistSelected =
-    playingTracklist.id === selectedTracklist.id &&
-    playingTracklist.title === selectedTracklist.title;
+    playingTracklist.id === selectedTracklist?.id &&
+    playingTracklist.title === selectedTracklist?.title;
   const totalTracklistTime = selectedPlaylistSongs?.reduce((acc, next) => acc + next.duration, 0);
   const { playTracklist } = usePlayBar();
 
@@ -87,11 +97,11 @@ const SidebarPlaylist = memo(() => {
       title: selectedPlaylistSongs ? formatTime(totalTracklistTime) : '00:00',
       icon: <Timer />,
     },
-    { id: 3, title: selectedTracklist.artist ?? 'No Artist', icon: <User /> },
+    { id: 3, title: selectedTracklist?.artist ?? 'No Artist', icon: <User /> },
   ];
 
   const playlistDropDownListItems =
-    selectedTracklist.is_public || selectedTracklist.tracklistType === 'album'
+    selectedTracklist?.is_public || selectedTracklist?.tracklistType === 'album'
       ? [
           {
             id: 1,
@@ -107,7 +117,10 @@ const SidebarPlaylist = memo(() => {
             title: 'Edit playlist',
             onClick: () =>
               dispatch(
-                openModal({ title: `Edit ${selectedTracklist.title}`, actionType: 'edit_playlist' })
+                openModal({
+                  title: `Edit ${selectedTracklist?.title}`,
+                  actionType: 'edit_playlist',
+                })
               ),
           },
           {
@@ -117,7 +130,7 @@ const SidebarPlaylist = memo(() => {
             onClick: () =>
               dispatch(
                 openConfirmModal({
-                  title: `Delete "${selectedTracklist.title}" playlist.`,
+                  title: `Delete "${selectedTracklist?.title}" playlist.`,
                   message: 'Are you sure you want to delete this playlist ?',
                   buttons: { confirm: true, cancel: true },
                   buttonsClassNames: { confirm: '!bg-red !inset-shadow-none' },
@@ -132,7 +145,7 @@ const SidebarPlaylist = memo(() => {
       <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
         <AnimatePresence mode="wait">
           <motion.div
-            key={`playlist-header-${selectedTracklist.title}-${selectedTracklist.id}`}
+            key={`playlist-header-${tracklistId}`}
             variants={headerVariants}
             initial="initial"
             animate="animate"
@@ -142,9 +155,9 @@ const SidebarPlaylist = memo(() => {
             <div className="flex items-center justify-between gap-1">
               <p
                 className="text-white-50 subheading-3 truncate"
-                title={selectedTracklist.title || 'Select a playlist'}
+                title={selectedTracklist?.title || 'Select a playlist'}
               >
-                {selectedTracklist.title || 'Select a playlist'}
+                {selectedTracklist?.title || 'Select a playlist'}
               </p>
               <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
             </div>
@@ -158,7 +171,7 @@ const SidebarPlaylist = memo(() => {
                 <div className="group relative overflow-hidden rounded-[10px]">
                   <img
                     src={playlistCover}
-                    alt={selectedTracklist.title || 'Select a playlist'}
+                    alt={selectedTracklist?.title || 'Select a playlist'}
                     className="size-32 object-cover xl:size-[140px]"
                   />
                   <div
@@ -197,7 +210,7 @@ const SidebarPlaylist = memo(() => {
         </AnimatePresence>
         <AnimatePresence mode="wait">
           <motion.div
-            key={`${selectedTracklist.title}-${selectedTracklist.id}`}
+            key={tracklistId}
             variants={listVariants}
             initial="hidden"
             animate="show"
@@ -225,7 +238,7 @@ const SidebarPlaylist = memo(() => {
               >
                 <Music size={68} className="text-secondary-300" />
                 <p className="mt-2 text-xl font-semibold text-white">
-                  This {selectedTracklist.tracklistType} is empty
+                  This {selectedTracklist?.tracklistType} is empty
                 </p>
                 <p>Let the music begin...</p>
               </motion.div>

@@ -29,6 +29,16 @@ export const getAllPrivatePlaylists = async () => {
   return data;
 };
 
+export const getPlaylistById = async (playlistId) => {
+  const { data, error } = await supabase
+    .from('playlists_with_count')
+    .select('*')
+    .eq('id', playlistId)
+    .single();
+  if (error) throw error;
+  return data;
+};
+
 export const createNewPrivatePlaylist = async (playlistInfos) => {
   const newPlaylist = {
     is_public: false,

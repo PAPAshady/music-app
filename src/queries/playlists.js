@@ -16,6 +16,7 @@ import {
   addSongToPrivatePlaylist,
   removeSongFromPrivatePlaylist,
   deletePrivatePlaylist,
+  getPlaylistById,
 } from '../services/playlists';
 import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
 
@@ -46,6 +47,17 @@ export const getAllPrivatePlaylistsQueryOptions = () => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+  });
+};
+
+export const getPlaylistByIdQueryOptions = (playlistId) => {
+  return queryOptions({
+    queryKey: ['playlists', { playlistId }],
+    queryFn: () => getPlaylistById(playlistId),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!playlistId,
   });
 };
 

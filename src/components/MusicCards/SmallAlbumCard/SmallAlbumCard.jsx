@@ -1,18 +1,20 @@
 import { useDispatch } from 'react-redux';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
-import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 import PropTypes from 'prop-types';
+import useQueryState from '../../../hooks/useQueryState';
 
 function SmallAlbumCard(album) {
   const dispatch = useDispatch();
   const { title, cover, description } = album;
+  const { setQuery } = useQueryState();
 
   const showAlbumInfos = () => {
     dispatch(setSelectedCollection(album));
     dispatch(openMobilePanel({ type: 'tracklist', title, image: cover, description }));
-    dispatch(setSidebarPanelType('tracklist_panel'));
+    setQuery('type', 'album');
+    setQuery('id', album.id);
   };
 
   return (

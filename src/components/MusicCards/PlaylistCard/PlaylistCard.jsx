@@ -4,17 +4,19 @@ import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Play } from 'iconsax-react';
 import { useDispatch } from 'react-redux';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
-import { setSidebarPanelType } from '../../../redux/slices/sidebarTypeSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
+import useQueryState from '../../../hooks/useQueryState';
 
 const PlaylistCard = memo((playlist) => {
   const dispatch = useDispatch();
   const { title, totaltracks, cover, isFavorite, classNames, description } = playlist;
+  const { setQuery } = useQueryState();
 
   const showSelectedPlaylist = () => {
     dispatch(setSelectedCollection(playlist));
     dispatch(openMobilePanel({ type: 'tracklist', title, image: cover, description }));
-    dispatch(setSidebarPanelType('tracklist_panel'));
+    setQuery('type', 'playlist');
+    setQuery('id', playlist.id);
   };
 
   return (
