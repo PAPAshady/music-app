@@ -10,16 +10,8 @@ function SmallArtistCard({ artist, size = 'sm', classNames }) {
   const dispatch = useDispatch();
 
   const showArtistInfos = () => {
-    setQuery('type', 'artist');
-    setQuery('id', artist.id);
-    dispatch(
-      openMobilePanel({
-        type: 'artist',
-        title: artist.name,
-        description: artist.bio,
-        image: artist.image,
-      })
-    );
+    setQuery({ type: 'artist', id: artist.id });
+    dispatch(openMobilePanel('artist'));
   };
 
   return (

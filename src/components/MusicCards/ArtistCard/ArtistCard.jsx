@@ -10,16 +10,8 @@ const ArtistCard = memo((artist) => {
   const dispatch = useDispatch();
 
   const showArtistInfosInSidebar = () => {
-    setQuery('type', 'artist');
-    setQuery('id', artist.id);
-    dispatch(
-      openMobilePanel({
-        type: 'artist',
-        title: artist.name,
-        description: artist.bio,
-        image: artist.image,
-      })
-    );
+    setQuery({ type: 'artist', id: artist.id });
+    dispatch(openMobilePanel('artist'));
   };
 
   return (

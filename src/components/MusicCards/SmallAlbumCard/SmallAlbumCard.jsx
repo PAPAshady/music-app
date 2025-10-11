@@ -7,14 +7,13 @@ import useQueryState from '../../../hooks/useQueryState';
 
 function SmallAlbumCard(album) {
   const dispatch = useDispatch();
-  const { title, cover, description } = album;
+  const { title, cover } = album;
   const { setQuery } = useQueryState();
 
   const showAlbumInfos = () => {
     dispatch(setSelectedCollection(album));
-    dispatch(openMobilePanel({ type: 'tracklist', title, image: cover, description }));
-    setQuery('type', 'album');
-    setQuery('id', album.id);
+    dispatch(openMobilePanel('album'));
+    setQuery({ type: 'album', id: album.id });
   };
 
   return (

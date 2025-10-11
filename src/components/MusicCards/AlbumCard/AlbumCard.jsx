@@ -8,7 +8,7 @@ import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import useQueryState from '../../../hooks/useQueryState';
 
 const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
-  const { cover, totalTracks, artist, title, description, id } = album;
+  const { cover, totalTracks, artist, title, id } = album;
   const dispatch = useDispatch();
   const playingTracklistId = useSelector((state) => state.playContext.currentCollection?.id);
   const isCurrentAlbumPlaying = id === playingTracklistId;
@@ -16,9 +16,8 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
 
   const openMobilePanelHandler = () => {
     dispatch(setSelectedCollection(album));
-    dispatch(openMobilePanel({ type: 'tracklist', title, image: cover, description }));
-    setQuery('type', 'album');
-    setQuery('id', album.id);
+    dispatch(openMobilePanel('album'));
+    setQuery({ type: 'album', id: album.id });
   };
 
   return (

@@ -30,16 +30,8 @@ export default function PlaylistsSlider({
     };
 
     dispatch(setSelectedCollection(favoriteSongsInfos));
-    dispatch(
-      openMobilePanel({
-        type: 'tracklist',
-        title: favoriteSongsInfos.title,
-        image: favoriteSongsInfos.cover,
-        description: favoriteSongsInfos.description,
-      })
-    );
-    setQuery('type', 'favorites');
-    setQuery('id', null);
+    dispatch(openMobilePanel('favorites'));
+    setQuery({ type: 'favorites', id: null });
   };
 
   return (

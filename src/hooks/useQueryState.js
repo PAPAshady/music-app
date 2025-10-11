@@ -3,14 +3,27 @@ import { useSearchParams } from 'react-router-dom';
 function useQueryState() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const setQuery = (key, value = '') => {
-    searchParams.set(key, value);
-    setSearchParams(searchParams);
+  // ✅ set one or multiple query params
+  const setQuery = (key, value) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (typeof key === 'object') {
+      // If an object is passed → set multiple keys
+      Object.entries(key).forEach(([key, value]) => {
+        params.set(key, value);
+      });
+    } else {
+      // Otherwise, set a single key
+      params.set(key, value);
+    }
+
+    setSearchParams(params);
   };
 
   const removeQuery = (key) => {
-    searchParams.delete(key);
-    setSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams);
+    params.delete(key);
+    setSearchParams(params);
   };
 
   const getQuery = (key) => {

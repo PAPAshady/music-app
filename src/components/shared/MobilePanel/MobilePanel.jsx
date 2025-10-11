@@ -11,16 +11,42 @@ import MobileTracklistPanel from '../../MobilePanels/MobileTracklistPanel/Mobile
 import MobileArtistPanel from '../../MobilePanels/MobileArtistPanel/MobileArtistPanel';
 import useQueryState from '../../../hooks/useQueryState';
 import favoritesCover from '../../../assets/images/covers/favorites-cover.png';
+import { useQuery } from '@tanstack/react-query';
+import { getAlbumByIdQueryOptions } from '../../../queries/albums';
+import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
+import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
+import { getArtistByIdQueryOptions } from '../../../queries/artists';
+import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 
 export default function MobilePanel() {
   const { getQuery } = useQueryState();
   const panelType = getQuery('type');
-  const { isMobilePanelOpen, title, description, image, type } = useSelector(
-    (state) => state.mobilePanel
+  const id = getQuery('id');
+  const { data, isPending } = useQuery(
+    panelType === 'album'
+      ? getAlbumByIdQueryOptions(id)
+      : panelType === 'playlist'
+        ? getPlaylistByIdQueryOptions(id)
+        : panelType === 'artist'
+          ? getArtistByIdQueryOptions(id)
+          : getFavoriteSongsQueryOptions()
   );
+  const image =
+    panelType === 'favorites'
+      ? favoritesCover
+      : panelType === 'artist'
+        ? data?.image || artistDefaultImage
+        : data?.cover || tracklistDefaultCover;
+  const title = panelType === 'favorites' ? 'Your Favorites' : data?.title || data?.name;
+  const description =
+    panelType === 'favorites'
+      ? 'A collection of your favorite songs!'
+      : panelType === 'artist'
+        ? data?.bio || 'No bio for this artist.'
+        : data?.description || `No Description for this ${data?.tracklistType}.`;
+  const { isMobilePanelOpen } = useSelector((state) => state.mobilePanel);
   const dispatch = useDispatch();
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
-  const defaultImage = type === 'artist' ? artistDefaultImage : tracklistDefaultCover;
 
   // if user clicks on back button of their device, mobilePanel will close
   useEffect(() => {
@@ -72,31 +98,54 @@ export default function MobilePanel() {
             <button className="size-6 sm:size-8" onClick={() => dispatch(closeMobilePanel())}>
               <ArrowLeft size="100%" />
             </button>
-            <p
-              className={`transition-opacity duration-300 lg:text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
-            >
-              {panelType === 'favorites' ? 'Your Favorites' : title}
-            </p>
+            {isPending ? (
+              <div
+                className={`relative h-2.5 w-32 overflow-hidden rounded-full bg-gray-600/60 transition-opacity duration-300 lg:text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <ShimmerOverlay />
+              </div>
+            ) : (
+              <p
+                className={`transition-opacity duration-300 lg:text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
+              >
+                {title}
+              </p>
+            )}
           </div>
         </div>
 
         <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center min-[360px]:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
-          <img
-            src={panelType === 'favorites' ? favoritesCover : image || defaultImage}
-            className="size-46 rounded-md object-cover sm:size-56 md:size-64 lg:size-80"
-            alt={panelType === 'favorites' ? 'Your Favorites' : title}
-          />
-          <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
-            {panelType === 'favorites' ? 'Your Favorites' : title}
-          </p>
-          <p className="w-[90%] text-sm sm:text-base lg:text-lg">
-            {panelType === 'favorites'
-              ? 'A collection of your favorite songs!'
-              : description || 'No Description for this playlist.'}
-          </p>
+          {isPending ? (
+            <>
+              <div className="relative size-46 overflow-hidden rounded-md bg-gray-600/60 sm:size-56 md:size-64 lg:size-80">
+                <ShimmerOverlay />
+              </div>
+              <div className="relative h-3 w-[40%] overflow-hidden rounded-full bg-gray-600/60">
+                <ShimmerOverlay />
+              </div>
+              <div className="mt-2 flex w-full flex-col items-center justify-center gap-2.5">
+                <div className="relative h-2 w-[45%] overflow-hidden rounded-full bg-gray-600/60">
+                  <ShimmerOverlay />
+                </div>
+                <div className="relative h-2 w-1/3 overflow-hidden rounded-full bg-gray-600/60">
+                  <ShimmerOverlay />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <img
+                src={image}
+                className="size-46 rounded-md object-cover sm:size-56 md:size-64 lg:size-80"
+                alt={title}
+              />
+              <p className="text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">{title}</p>
+              <p className="w-[90%] text-sm sm:text-base lg:text-lg">{description}</p>
+            </>
+          )}
 
-          {type === 'tracklist' && <MobileTracklistPanel />}
-          {type === 'artist' && <MobileArtistPanel />}
+          {['album', 'playlist', 'favorites'].includes(panelType) && <MobileTracklistPanel />}
+          {panelType === 'artist' && <MobileArtistPanel />}
 
           {/*
               conditionally rendering the <Player> component based on `isMobilePanelOpen` improves performance by preventing unnecessary re-renders when mobilePanel is closed and is not visible by user.

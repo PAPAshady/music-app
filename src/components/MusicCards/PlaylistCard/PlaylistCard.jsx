@@ -9,14 +9,13 @@ import useQueryState from '../../../hooks/useQueryState';
 
 const PlaylistCard = memo((playlist) => {
   const dispatch = useDispatch();
-  const { title, totaltracks, cover, isFavorite, classNames, description } = playlist;
+  const { title, totaltracks, cover, isFavorite, classNames } = playlist;
   const { setQuery } = useQueryState();
 
   const showSelectedPlaylist = () => {
     dispatch(setSelectedCollection(playlist));
-    dispatch(openMobilePanel({ type: 'tracklist', title, image: cover, description }));
-    setQuery('type', 'playlist');
-    setQuery('id', playlist.id);
+    dispatch(openMobilePanel('playlist'));
+    setQuery({ type: 'playlist', id: playlist.id });
   };
 
   return (
