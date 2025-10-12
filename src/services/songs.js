@@ -17,6 +17,16 @@ export const getAllSongs = async ({ limit, cursor }) => {
   return data;
 };
 
+export const getSongById = async (songId) => {
+  const { data, error } = await supabase
+    .from('songs_with_user_data')
+    .select('*')
+    .eq('id', songId)
+    .single();
+  if (error) throw error;
+  return data;
+};
+
 export const getSongsByAlbumId = async (albumId) => {
   const { data, error } = await supabase
     .from('songs_with_user_data')
