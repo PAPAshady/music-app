@@ -27,6 +27,8 @@ import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 import useLyrics from '../../../hooks/useLyrics';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
+import { getSongByIdQueryOptions } from '../../../queries/musics';
+import useQueryState from '../../../hooks/useQueryState';
 
 function IconButton({ children, label, onClick, className = '', title, disabled }) {
   return (
@@ -62,17 +64,18 @@ function TabButton({ active, onClick, children, id }) {
 }
 
 export default function SongInfosPanel() {
+  const songId = useQueryState().getQuery('id');
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('lyrics');
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
-  const song = useSelector((state) => state.musicPlayer.currentMusic);
+  const { data: song } = useQuery(getSongByIdQueryOptions(songId));
   const selectedSong = useSelector((state) => state.playContext.singleSong);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
   const { data: artist, isPending: isArtistPending } = useQuery(
-    getArtistByIdQueryOptions(song.artist_id)
+    getArtistByIdQueryOptions(song?.artist_id)
   );
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery(
-    getPopularSongsByArtistIdQueryOptions(song.artist_id)
+    getPopularSongsByArtistIdQueryOptions(song?.artist_id)
   );
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
     getRelatedSongsBySongDataQueryOptions(selectedSong)
@@ -82,7 +85,7 @@ export default function SongInfosPanel() {
   const containerRef = useRef(null);
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
   const likeHandlerMutation = useMutation(
-    song.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
+    song?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
 
   return (
@@ -106,19 +109,19 @@ export default function SongInfosPanel() {
           >
             <div className="flex items-center gap-4">
               <img
-                src={song.cover || defaultSongCover}
-                alt={`${song.title} cover`}
+                src={song?.cover || defaultSongCover}
+                alt={`${song?.title} cover`}
                 className="h-20 w-20 rounded-md object-cover shadow-md"
               />
               <div className="flex-1">
                 <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">
-                  {song.title}
+                  {song?.title}
                 </h3>
                 <button
                   className="mt-1 text-sm text-slate-300 hover:underline"
                   onClick={() => setActiveTab('artist')}
                 >
-                  {song.artist}
+                  {song?.artist}
                 </button>
               </div>
             </div>
@@ -132,7 +135,7 @@ export default function SongInfosPanel() {
               </IconButton>
               <IconButton
                 label={song?.is_liked ? 'Unlike' : 'Like'}
-                onClick={() => likeHandlerMutation.mutate(song.id)}
+                onClick={() => likeHandlerMutation.mutate(song?.id)}
                 disabled={likeHandlerMutation.isPending}
               >
                 <Heart
@@ -146,7 +149,7 @@ export default function SongInfosPanel() {
               </IconButton>
 
               <div className="ml-auto text-sm text-slate-400">
-                {formatTime(song.duration)} • {song.release_date?.split('-')[0]}
+                {formatTime(song?.duration)} • {song?.release_date?.split('-')[0]}
               </div>
             </div>
             {/* Tabs */}
@@ -181,7 +184,7 @@ export default function SongInfosPanel() {
         {activeTab === 'lyrics' && (
           <AnimatePresence mode="wait">
             <motion.div
-              key={song.id}
+              key={song?.id}
               initial="initial"
               animate="animate"
               exit="exit"
@@ -208,7 +211,7 @@ export default function SongInfosPanel() {
                 </div>
               </div>
               <div className="h-full grow overflow-auto pr-2 pb-2" ref={containerRef}>
-                {song.lyrics ? (
+                {song?.lyrics ? (
                   <div className="space-y-4">
                     {song.lyrics.map((lyric, index) => (
                       <p
@@ -298,7 +301,7 @@ export default function SongInfosPanel() {
         {activeTab === 'artist' && (
           <AnimatePresence mode="wait">
             <motion.div
-              key={song.artist_id}
+              key={song?.artist_id}
               initial="initial"
               exit="exit"
               animate="animate"
