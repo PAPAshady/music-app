@@ -6,7 +6,6 @@ import authReducer from '../redux/slices/authSlice';
 import playlistInfosModalReducer from '../redux/slices/playlistInfosModalSlice';
 import musicPlayerReducer from '../redux/slices/musicPlayerSlice';
 import confirmModalReducer from '../redux/slices/confirmModalSlice';
-import artistReducer from '../redux/slices/artistSlice';
 import sidebarPanelTypeReducer from '../redux/slices/sidebarTypeSlice';
 import playContextReducer from '../redux/slices/playContextSlice';
 import mobilePanelReducer from './slices/mobilePanelSlice';
@@ -20,7 +19,6 @@ export default configureStore({
     playlistInfosModal: playlistInfosModalReducer,
     musicPlayer: musicPlayerReducer,
     confirmModal: confirmModalReducer,
-    artist: artistReducer,
     sidebarPanelType: sidebarPanelTypeReducer,
     playContext: playContextReducer,
     mobilePanel: mobilePanelReducer,
