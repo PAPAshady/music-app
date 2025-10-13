@@ -68,7 +68,7 @@ export default function SongInfosPanel() {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('lyrics');
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
-  const { data: song } = useQuery(getSongByIdQueryOptions(songId));
+  const { data: song, isPending } = useQuery(getSongByIdQueryOptions(songId));
   const selectedSong = useSelector((state) => state.playContext.singleSong);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
   const { data: artist, isPending: isArtistPending } = useQuery(
@@ -108,22 +108,40 @@ export default function SongInfosPanel() {
             }}
           >
             <div className="flex items-center gap-4">
-              <img
-                src={song?.cover || defaultSongCover}
-                alt={`${song?.title} cover`}
-                className="h-20 w-20 rounded-md object-cover shadow-md"
-              />
-              <div className="flex-1">
-                <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">
-                  {song?.title}
-                </h3>
-                <button
-                  className="mt-1 text-sm text-slate-300 hover:underline"
-                  onClick={() => setActiveTab('artist')}
-                >
-                  {song?.artist}
-                </button>
-              </div>
+              {isPending ? (
+                <>
+                  <div className="relative size-20 overflow-hidden rounded-md bg-gray-600/60 shadow-md">
+                    <ShimmerOverlay />
+                  </div>
+                  <div className="flex-1">
+                    <div className="relative mb-3 h-3.5 w-3/4 overflow-hidden rounded-full bg-gray-600/60">
+                      <ShimmerOverlay />
+                    </div>
+                    <div className="relative h-2.5 w-1/2 overflow-hidden rounded-full bg-gray-600/60">
+                      <ShimmerOverlay />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <img
+                    src={song.cover || defaultSongCover}
+                    alt={`${song.title} cover`}
+                    className="h-20 w-20 rounded-md object-cover shadow-md"
+                  />
+                  <div className="flex-1">
+                    <h3 className="line-clamp-2 text-[22px] leading-tight font-semibold">
+                      {song.title}
+                    </h3>
+                    <button
+                      className="mt-1 text-sm text-slate-300 hover:underline"
+                      onClick={() => setActiveTab('artist')}
+                    >
+                      {song.artist}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
             <div className="mt-3 flex items-center gap-2">
               <IconButton
@@ -136,7 +154,7 @@ export default function SongInfosPanel() {
               <IconButton
                 label={song?.is_liked ? 'Unlike' : 'Like'}
                 onClick={() => likeHandlerMutation.mutate(song?.id)}
-                disabled={likeHandlerMutation.isPending}
+                disabled={likeHandlerMutation.isPending || !isPending}
               >
                 <Heart
                   size={20}
@@ -148,9 +166,21 @@ export default function SongInfosPanel() {
                 <Menu size={20} />
               </IconButton>
 
-              <div className="ml-auto text-sm text-slate-400">
-                {formatTime(song?.duration)} • {song?.release_date?.split('-')[0]}
-              </div>
+              {isPending ? (
+                <div className="ml-auto flex items-center gap-2">
+                  <div className="relative h-2 w-8 overflow-hidden rounded-full bg-gray-600/60">
+                    <ShimmerOverlay />
+                  </div>
+                  <span className="pb-1 text-slate-400">•</span>
+                  <div className="relative h-2 w-8 overflow-hidden rounded-full bg-gray-600/60">
+                    <ShimmerOverlay />
+                  </div>
+                </div>
+              ) : (
+                <div className="ml-auto text-sm text-slate-400">
+                  {formatTime(song.duration)} • {song.release_date?.split('-')[0]}
+                </div>
+              )}
             </div>
             {/* Tabs */}
             <div className="mt-5">
