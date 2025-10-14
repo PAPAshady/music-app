@@ -21,7 +21,6 @@ import ArtistInfosPanel from '../../ArtistInfosPanel/ArtistInfosPanel';
 import SongInfosPanel from '../../SongInfosPanel/SongInfosPanel';
 import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
 import useQueryState from '../../../../hooks/useQueryState';
-import useMusicQueryToRedux from '../../../../hooks/useMusicQueryToRedux';
 
 const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track'];
 
@@ -31,9 +30,6 @@ export default function MainLayout() {
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const isMobile = useMediaQuery('(max-width: 1024px)');
   const sidebarType = useQueryState().getQuery('type');
-  //fetch music data based on query strings
-  // and store it in Redux as the initial state after page load
-  useMusicQueryToRedux();
 
   useEffect(() => {
     function handleScroll() {

@@ -25,6 +25,11 @@ const actions = {
   track: setSingleSong,
 };
 
+const dummyQueryOptions = {
+  queryKey: ['dummy'],
+  queryFn: () => {},
+};
+
 // Custom hook to fetch music data based on query strings
 // and store it in Redux as the initial state after page load
 export default function useMusicQueryToRedux() {
@@ -36,7 +41,8 @@ export default function useMusicQueryToRedux() {
 
   // Fetch initial media data (playlist, album, or single track)
   const { data } = useQuery({
-    ...queryOptions[queryType]?.(id),
+    // set dummy query option if query type is not found to avoid react query error
+    ...(queryOptions[queryType]?.(id) || dummyQueryOptions),
     enabled: !!queryOptions[queryType],
   });
 
