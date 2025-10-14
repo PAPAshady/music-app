@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getPlaylistByIdQueryOptions } from '../queries/playlists';
 import { getAlbumByIdQueryOptions } from '../queries/albums';
 import { getSongByIdQueryOptions } from '../queries/musics';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import useQueryState from './useQueryState';
 import { useDispatch } from 'react-redux';
 import {
@@ -10,7 +10,7 @@ import {
   setSelectedCollectionTracks,
 } from '../redux/slices/playContextSlice';
 import { setSingleSong } from '../redux/slices/playContextSlice';
-import { setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
+import { pause, setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
 import { getRelatedSongsBySongDataQueryOptions } from '../queries/musics';
 
 const queryOptions = {
@@ -32,6 +32,7 @@ export default function useMusicQueryToRedux() {
   const { getQuery } = useQueryState();
   const queryType = getQuery('type');
   const id = getQuery('id');
+  const isInitialPageLoad = useRef(true);
 
   // Fetch initial media data (playlist, album, or single track)
   const { data } = useQuery({
@@ -54,8 +55,12 @@ export default function useMusicQueryToRedux() {
       if (queryType === 'track') {
         relatedSongs && dispatch(setSelectedCollectionTracks(relatedSongs));
         dispatch(setCurrentSongIndex(0));
+        // dont play the song if this is the initial page load.
+        if (isInitialPageLoad.current && relatedSongs) {
+          dispatch(pause());
+          isInitialPageLoad.current = false;
+        }
       }
     }
   }, [data, dispatch, queryType, relatedSongs]);
 }
-
