@@ -10,7 +10,7 @@ import {
   setSelectedCollectionTracks,
 } from '../redux/slices/playContextSlice';
 import { setSingleSong } from '../redux/slices/playContextSlice';
-import { pause, setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
+import { setCurrentMusic, music } from '../redux/slices/musicPlayerSlice';
 import { getRelatedSongsBySongDataQueryOptions } from '../queries/musics';
 
 const queryOptions = {
@@ -57,15 +57,13 @@ export default function useMusicQueryToRedux() {
       const action = actions[queryType];
       dispatch(action(data));
 
-      // For single tracks, also save related songs and play the song.
-      if (queryType === 'track') {
-        relatedSongs && dispatch(setSelectedCollectionTracks(relatedSongs));
-        dispatch(setCurrentSongIndex(0));
-        // dont play the song if this is the initial page load.
-        if (isInitialPageLoad.current && relatedSongs) {
-          dispatch(pause());
-          isInitialPageLoad.current = false;
-        }
+      // For single tracks, also save related songs and play the song. also dont play the song on initial page load. on initial load it is better to user him self play the song.
+      // thats why we're manipulating music.src and currentMusic directly instead of dispatching setCurrentSongIndex
+      if (queryType === 'track' && relatedSongs && isInitialPageLoad.current) {
+        dispatch(setSelectedCollectionTracks(relatedSongs));
+        music.src = data.song_url;
+        dispatch(setCurrentMusic(data));
+        isInitialPageLoad.current = false;
       }
     }
   }, [data, dispatch, queryType, relatedSongs]);
