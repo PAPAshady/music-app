@@ -11,6 +11,8 @@ const onMutate = async (songId, shouldLike) => {
   const prevSongs = queryClient.getQueriesData({ queryKey: ['songs'] });
   queryClient.setQueriesData({ queryKey: ['songs'] }, (oldData) => {
     if (!oldData) return oldData;
+
+    // if data is paginated
     if (oldData.pages) {
       return {
         ...oldData,
@@ -20,6 +22,13 @@ const onMutate = async (songId, shouldLike) => {
       };
     }
 
+    // if data is a single song
+    if (oldData.constructor === Object) {
+      if (songId === oldData.id) return { ...oldData, is_liked: !oldData.is_liked };
+      return oldData;
+    }
+
+    // if data is an array
     return oldData.map((song) =>
       song.id === songId ? { ...song, is_liked: !song.is_liked } : song
     );
