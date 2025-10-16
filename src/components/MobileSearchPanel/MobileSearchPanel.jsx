@@ -153,7 +153,7 @@ export default function MobileSearchPanel() {
                       slidesPerView="auto"
                       modules={[Pagination]}
                       pagination={{ clickable: true }}
-                      className="!m-0 !max-w-full"
+                      className="!m-0 !max-w-full !p-[1px]"
                     >
                       {isPending
                         ? Array(8)
