@@ -29,7 +29,7 @@ function SearchBoxAlbumsSlider({ albums, isPending }) {
                 <AlbumCardSkeleton size="md" classNames="!max-w-full" />
               </SwiperSlide>
             ))
-        : [...albums, ...albums, ...albums].map((album) => (
+        : albums.map((album) => (
             <SwiperSlide key={album.id} className="pb-11">
               <AlbumCard size="md" album={album} classNames="!max-w-full" />
             </SwiperSlide>
