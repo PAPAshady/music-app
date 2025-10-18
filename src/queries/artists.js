@@ -16,8 +16,6 @@ export const getArtistByIdQueryOptions = (artistId) => {
     queryKey: ['artists', { artistId }],
     queryFn: () => getArtistById(artistId),
     staleTime: Infinity,
-    retry: true,
-    retryDelay: 5000,
     enabled: !!artistId,
   });
 };

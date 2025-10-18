@@ -16,8 +16,6 @@ export const getAlbumByIdQueryOptions = (albumId) => {
     queryKey: ['albums', { albumId }],
     queryFn: () => getAlbumById(albumId),
     staleTime: Infinity,
-    retryDelay: 5000,
-    retry: true,
     enabled: !!albumId,
   });
 };

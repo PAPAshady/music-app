@@ -28,12 +28,18 @@ import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
 import useQueryState from '../../../hooks/useQueryState';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
+import ErrorPanel from '../ErrorPanel/ErrorPanel';
 
 const SidebarPlaylist = memo(() => {
   const { getQuery } = useQueryState();
   const tracklistType = getQuery('type');
   const tracklistId = getQuery('id');
-  const { data: selectedTracklist, isPending: isSelectedTracklistPending } = useQuery(
+  const {
+    data: selectedTracklist,
+    isPending: isSelectedTracklistPending,
+    isError,
+    error,
+  } = useQuery(
     tracklistType === 'album'
       ? getAlbumByIdQueryOptions(tracklistId)
       : getPlaylistByIdQueryOptions(tracklistId)
@@ -142,6 +148,9 @@ const SidebarPlaylist = memo(() => {
           },
           { id: 3, icon: <Heart />, title: 'Add to favorite playlists' },
         ];
+
+  if (isError) return <ErrorPanel error={error} />;
+
   return (
     <div className="sticky top-10 hidden xl:block">
       <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">

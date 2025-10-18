@@ -15,11 +15,17 @@ import SmallArtistCard from '../../MusicCards/SmallArtistCard/SmallArtistCard';
 import useQueryState from '../../../hooks/useQueryState';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
+import ErrorPanel from '../ErrorPanel/ErrorPanel';
 
 function ArtistInfosPanel() {
   const { getQuery } = useQueryState();
   const artistId = getQuery('id');
-  const { data: selectedArtist, isPending } = useQuery(getArtistByIdQueryOptions(artistId));
+  const {
+    data: selectedArtist,
+    isPending,
+    isError,
+    error,
+  } = useQuery(getArtistByIdQueryOptions(artistId));
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery({
     ...getPopularSongsByArtistIdQueryOptions(selectedArtist?.id),
     select: (popularSongs) => popularSongs.slice(0, 4),
@@ -39,6 +45,8 @@ function ArtistInfosPanel() {
   useEffect(() => {
     containerRef.current.scrollTop = 0;
   }, [selectedArtist]);
+
+  if (isError) return <ErrorPanel error={error} />;
 
   return (
     <div className="sticky top-10 hidden xl:block">

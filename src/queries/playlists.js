@@ -55,8 +55,6 @@ export const getPlaylistByIdQueryOptions = (playlistId) => {
     queryKey: ['playlists', { playlistId }],
     queryFn: () => getPlaylistById(playlistId),
     staleTime: Infinity,
-    retry: true,
-    retryDelay: 5000,
     enabled: !!playlistId,
   });
 };

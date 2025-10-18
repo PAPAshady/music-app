@@ -30,8 +30,6 @@ export const getSongByIdQueryOptions = (songId) => {
     queryKey: ['songs', { songId }],
     queryFn: () => getSongById(songId),
     staleTime: Infinity,
-    retry: true,
-    retryDelay: 5000,
     enabled: !!songId,
   });
 };
