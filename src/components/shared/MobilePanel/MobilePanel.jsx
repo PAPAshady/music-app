@@ -17,12 +17,13 @@ import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
 import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
+import { Navigate } from 'react-router-dom';
 
 export default function MobilePanel() {
   const { getQuery } = useQueryState();
   const panelType = getQuery('type');
   const id = getQuery('id');
-  const { data, isPending } = useQuery(
+  const { data, isPending, error } = useQuery(
     panelType === 'album'
       ? getAlbumByIdQueryOptions(id)
       : panelType === 'playlist'
@@ -76,6 +77,9 @@ export default function MobilePanel() {
       setIsTopbarVisible(true);
     }
   };
+
+  // in case if "id" is invalid or of no such media exists, redirect to 404
+  if (error?.code === '22P02' || error?.code === 'PGRST116') return <Navigate to="/404" replace />;
 
   return createPortal(
     <div
