@@ -96,7 +96,7 @@ export default function PlayerPanel() {
 
   return (
     <div
-      className={`fixed inset-0 transition-all duration-200 ${isOpen ? 'z-10 translate-y-0 opacity-100' : 'z-[-1] translate-y-full opacity-0'}`}
+      className={`fixed inset-0 transition-all duration-300 will-change-transform ${isOpen ? 'z-10 translate-y-0 opacity-100' : 'z-[-1] translate-y-full opacity-0'}`}
     >
       <div
         className="relative min-h-[100dvh] overflow-y-auto bg-cover bg-center bg-no-repeat"

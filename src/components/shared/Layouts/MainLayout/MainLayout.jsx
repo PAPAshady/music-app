@@ -22,6 +22,7 @@ import SongInfosPanel from '../../SongInfosPanel/SongInfosPanel';
 import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
 import useQueryState from '../../../../hooks/useQueryState';
 import PlayerPanel from '../../PlayerPanel/PlayerPanel';
+import { useSelector } from 'react-redux';
 
 const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track'];
 
@@ -31,6 +32,7 @@ export default function MainLayout() {
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const isMobile = useMediaQuery('(max-width: 1024px)');
   const sidebarType = useQueryState().getQuery('type');
+  const isPlayerPanelOpen = useSelector((state) => state.playerPanel.isOpen);
 
   useEffect(() => {
     function handleScroll() {
@@ -100,7 +102,7 @@ export default function MainLayout() {
                 <SidebarWelcomePanel />
               )}
             </div>
-            <Player />
+            {!isPlayerPanelOpen && <Player />}
             <Footer />
           </div>
         </main>
