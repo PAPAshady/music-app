@@ -10,6 +10,7 @@ import sidebarPanelTypeReducer from '../redux/slices/sidebarTypeSlice';
 import playContextReducer from '../redux/slices/playContextSlice';
 import mobilePanelReducer from './slices/mobilePanelSlice';
 import MobileSearchPanelReducer from './slices/mobileSearchPanelSlice';
+import PlayerPanelReducer from './slices/playerPanelSlice';
 
 export default configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export default configureStore({
     playContext: playContextReducer,
     mobilePanel: mobilePanelReducer,
     mobileSearchPanel: MobileSearchPanelReducer,
+    playerPanel: PlayerPanelReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().prepend(listenerMiddleware.middleware);

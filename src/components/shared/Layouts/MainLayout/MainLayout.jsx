@@ -21,6 +21,7 @@ import ArtistInfosPanel from '../../ArtistInfosPanel/ArtistInfosPanel';
 import SongInfosPanel from '../../SongInfosPanel/SongInfosPanel';
 import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
 import useQueryState from '../../../../hooks/useQueryState';
+import PlayerPanel from '../../PlayerPanel/PlayerPanel';
 
 const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track'];
 
@@ -106,6 +107,7 @@ export default function MainLayout() {
         <HamburgerMenu />
         {isDesktop && <MobilePanel />}
         {isMobile && <MobileSearchPanel />}
+        <PlayerPanel />
         <ConfirmModal />
       </div>
       <PlaylistInfosModal />
