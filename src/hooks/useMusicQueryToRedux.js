@@ -3,7 +3,6 @@ import { getPlaylistByIdQueryOptions } from '../queries/playlists';
 import { getAlbumByIdQueryOptions } from '../queries/albums';
 import { getSongByIdQueryOptions } from '../queries/musics';
 import { useEffect } from 'react';
-import useQueryState from './useQueryState';
 import { useDispatch } from 'react-redux';
 import {
   setSelectedCollection,
@@ -35,9 +34,8 @@ const dummyQueryOptions = {
 // and store it in Redux as the initial state after page load
 export default function useMusicQueryToRedux() {
   const dispatch = useDispatch();
-  const { getQuery } = useQueryState();
-  const queryType = getQuery('type');
-  const id = getQuery('id');
+  const queryType = useSelector(state => state.queryState.type);
+  const id = useSelector(state => state.queryState.id);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
 
   // Fetch initial media data (playlist, album, or single track)

@@ -16,12 +16,11 @@ import AlbumsSlider from '../../Sliders/AlbumsSlider/AlbumsSlider';
 import { getAlbumsByArtistIdQueryOptions } from '../../../queries/albums';
 import { getRelatedArtistsQueryOptions } from '../../../queries/artists';
 import ArtistsSlider from '../../Sliders/ArtistsSlider/ArtistsSlider';
-import useQueryState from '../../../hooks/useQueryState';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 
 function MobileArtistPanel() {
   const dispatch = useDispatch();
-  const artistId = useQueryState().getQuery('id');
+  const artistId = useSelector((state) => state.queryState.id);
   const { data: artist } = useQuery(getArtistByIdQueryOptions(artistId));
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);

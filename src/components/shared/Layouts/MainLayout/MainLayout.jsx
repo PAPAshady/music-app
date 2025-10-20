@@ -20,7 +20,6 @@ import ConfirmModal from '../../../ConfirmModal/ConfirmModal';
 import ArtistInfosPanel from '../../ArtistInfosPanel/ArtistInfosPanel';
 import SongInfosPanel from '../../SongInfosPanel/SongInfosPanel';
 import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
-import useQueryState from '../../../../hooks/useQueryState';
 import PlayerPanel from '../../PlayerPanel/PlayerPanel';
 import { useSelector } from 'react-redux';
 
@@ -31,7 +30,7 @@ export default function MainLayout() {
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const isMobile = useMediaQuery('(max-width: 1024px)');
-  const sidebarType = useQueryState().getQuery('type');
+  const sidebarType = useSelector((state) => state.queryState.type);
   const isPlayerPanelOpen = useSelector((state) => state.playerPanel.isOpen);
 
   useEffect(() => {

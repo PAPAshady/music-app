@@ -2,15 +2,14 @@ import { useDispatch } from 'react-redux';
 import artistDefaultCover from '../../../assets/images/Avatar/no-avatar.png';
 import PropTypes from 'prop-types';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
-import useQueryState from '../../../hooks/useQueryState';
+import { setQueries } from '../../../redux/slices/queryStateSlice';
 
 function SmallArtistCard({ artist, size = 'sm', classNames }) {
   const { image, name } = artist;
-  const { setQuery } = useQueryState();
   const dispatch = useDispatch();
 
   const showArtistInfos = () => {
-    setQuery({ type: 'artist', id: artist.id });
+    dispatch(setQueries({ type: 'artist', id: artist.id }));
     dispatch(openMobilePanel('artist'));
   };
 

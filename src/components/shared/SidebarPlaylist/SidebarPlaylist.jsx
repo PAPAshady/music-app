@@ -25,15 +25,14 @@ import {
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import usePlayBar from '../../../hooks/usePlayBar';
 import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
-import useQueryState from '../../../hooks/useQueryState';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
 import ErrorPanel from '../ErrorPanel/ErrorPanel';
 
 const SidebarPlaylist = memo(() => {
-  const { getQuery } = useQueryState();
-  const tracklistType = getQuery('type');
-  const tracklistId = getQuery('id');
+  useSelector((state) => state.queryState.type);
+  const tracklistType = useSelector((state) => state.queryState.type);
+  const tracklistId = useSelector((state) => state.queryState.id);
   const {
     data: selectedTracklist,
     isPending: isSelectedTracklistPending,

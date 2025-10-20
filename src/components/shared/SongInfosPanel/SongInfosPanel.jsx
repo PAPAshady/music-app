@@ -28,7 +28,6 @@ import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 import useLyrics from '../../../hooks/useLyrics';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 import { getSongByIdQueryOptions } from '../../../queries/musics';
-import useQueryState from '../../../hooks/useQueryState';
 import ErrorPanel from '../ErrorPanel/ErrorPanel';
 
 function IconButton({ children, label, onClick, className = '', title, disabled }) {
@@ -65,7 +64,7 @@ function TabButton({ active, onClick, children, id }) {
 }
 
 export default function SongInfosPanel() {
-  const songId = useQueryState().getQuery('id');
+  const songId = useSelector((state) => state.queryState.id);
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('lyrics');
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);

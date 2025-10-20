@@ -11,6 +11,7 @@ import playContextReducer from '../redux/slices/playContextSlice';
 import mobilePanelReducer from './slices/mobilePanelSlice';
 import MobileSearchPanelReducer from './slices/mobileSearchPanelSlice';
 import PlayerPanelReducer from './slices/playerPanelSlice';
+import QueryStateReducer from './slices/queryStateSlice';
 
 export default configureStore({
   reducer: {
@@ -25,6 +26,7 @@ export default configureStore({
     mobilePanel: mobilePanelReducer,
     mobileSearchPanel: MobileSearchPanelReducer,
     playerPanel: PlayerPanelReducer,
+    queryState: QueryStateReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().prepend(listenerMiddleware.middleware);

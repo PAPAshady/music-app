@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { closePanel, closeMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import MobileTracklistPanel from '../../MobilePanels/MobileTracklistPanel/MobileTracklistPanel';
 import MobileArtistPanel from '../../MobilePanels/MobileArtistPanel/MobileArtistPanel';
-import useQueryState from '../../../hooks/useQueryState';
 import favoritesCover from '../../../assets/images/covers/favorites-cover.png';
 import { useQuery } from '@tanstack/react-query';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
@@ -20,9 +19,8 @@ import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 import { Navigate } from 'react-router-dom';
 
 export default function MobilePanel() {
-  const { getQuery } = useQueryState();
-  const panelType = getQuery('type');
-  const id = getQuery('id');
+  const panelType = useSelector((state) => state.queryState.type);
+  const id = useSelector((state) => state.queryState.id);
   const { data, isPending, error } = useQuery(
     panelType === 'album'
       ? getAlbumByIdQueryOptions(id)

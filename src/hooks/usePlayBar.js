@@ -10,8 +10,8 @@ import { setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
 import { getPopularSongsByArtistIdQueryOptions } from '../queries/musics';
 import { useQuery } from '@tanstack/react-query';
 import { getFavoriteSongsQueryOptions } from '../queries/musics';
-import useQueryState from './useQueryState';
 import { openPanel as openPlayerPanel } from '../redux/slices/playerPanelSlice';
+import { setQueries } from '../redux/slices/queryStateSlice';
 
 function usePlayBar(artistId) {
   const dispatch = useDispatch();
@@ -20,7 +20,6 @@ function usePlayBar(artistId) {
   const currentMusicId = useSelector((state) => state.musicPlayer.currentMusic?.id);
   const { data: artistPopularSongs } = useQuery(getPopularSongsByArtistIdQueryOptions(artistId));
   const { data: favoriteSongs } = useQuery(getFavoriteSongsQueryOptions());
-  const { setQuery } = useQueryState();
 
   const playSingleSong = useCallback(
     (song) => {
@@ -28,9 +27,9 @@ function usePlayBar(artistId) {
       dispatch(setCurrentQueuelist([song]));
       dispatch(setCurrentSongIndex(0));
       dispatch(openPlayerPanel());
-      setQuery({ type: 'track', id: song.id });
+      dispatch(setQueries({ type: 'track', id: song.id }));
     },
-    [dispatch, setQuery]
+    [dispatch]
   );
 
   const playTracklist = useCallback(

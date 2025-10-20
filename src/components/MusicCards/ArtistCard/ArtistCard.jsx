@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import noAvatarImg from '../../../assets/images/Avatar/no-avatar.png';
 import { useDispatch } from 'react-redux';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
-import useQueryState from '../../../hooks/useQueryState';
+import { setQueries } from '../../../redux/slices/queryStateSlice';
 
 const ArtistCard = memo((artist) => {
-  const { setQuery } = useQueryState();
   const dispatch = useDispatch();
 
   const showArtistInfosInSidebar = () => {
-    setQuery({ type: 'artist', id: artist.id });
+    dispatch(setQueries({ type: 'artist', id: artist.id }));
     dispatch(openMobilePanel('artist'));
   };
 

@@ -5,17 +5,16 @@ import { Heart, Play } from 'iconsax-react';
 import { useDispatch } from 'react-redux';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
-import useQueryState from '../../../hooks/useQueryState';
+import { setQueries } from '../../../redux/slices/queryStateSlice';
 
 const PlaylistCard = memo((playlist) => {
   const dispatch = useDispatch();
   const { title, totaltracks, cover, isFavorite, classNames } = playlist;
-  const { setQuery } = useQueryState();
 
   const showSelectedPlaylist = () => {
     dispatch(setSelectedCollection(playlist));
     dispatch(openMobilePanel('playlist'));
-    setQuery({ type: 'playlist', id: playlist.id });
+    dispatch(setQueries({ type: 'playlist', id: playlist.id }));
   };
 
   return (

@@ -12,14 +12,13 @@ import { getRelatedArtistsQueryOptions } from '../../../queries/artists';
 import SmallArtistCardSkeleton from '../../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
 import { useEffect, useRef } from 'react';
 import SmallArtistCard from '../../MusicCards/SmallArtistCard/SmallArtistCard';
-import useQueryState from '../../../hooks/useQueryState';
+import { useSelector } from 'react-redux';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 import ErrorPanel from '../ErrorPanel/ErrorPanel';
 
 function ArtistInfosPanel() {
-  const { getQuery } = useQueryState();
-  const artistId = getQuery('id');
+  const artistId = useSelector((state) => state.queryState.id);
   const {
     data: selectedArtist,
     isPending,

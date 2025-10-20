@@ -44,14 +44,12 @@ import {
   getSongsByPlaylistIdQueryOptions,
 } from '../../../queries/musics';
 import usePlayBar from '../../../hooks/usePlayBar';
-import useQueryState from '../../../hooks/useQueryState';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
 
 function MobileTracklistPanel() {
-  const { getQuery } = useQueryState();
-  const tracklistType = getQuery('type');
-  const tracklistId = getQuery('id');
+  const tracklistType = useSelector((state) => state.queryState.type);
+  const tracklistId = useSelector((state) => state.queryState.id);
   const searchInput = useInput();
   const dispatch = useDispatch();
   const isLargeMobile = useMediaQuery('(min-width: 420px)');

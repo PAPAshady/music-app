@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import favoriteSongsCover from '../../../assets/images/covers/favorites-cover.png';
-import useQueryState from '../../../hooks/useQueryState';
+import { setQueries } from '../../../redux/slices/queryStateSlice';
 
 export default function PlaylistsSlider({
   playlists,
@@ -18,7 +18,6 @@ export default function PlaylistsSlider({
   numberOfPlaylists = playlists?.length,
 }) {
   const dispatch = useDispatch();
-  const { setQuery } = useQueryState();
 
   const showFavoriteSongs = () => {
     const favoriteSongsInfos = {
@@ -31,7 +30,7 @@ export default function PlaylistsSlider({
 
     dispatch(setSelectedCollection(favoriteSongsInfos));
     dispatch(openMobilePanel('favorites'));
-    setQuery({ type: 'favorites', id: null });
+    dispatch(setQueries({ type: 'favorites', id: null }));
   };
 
   return (
