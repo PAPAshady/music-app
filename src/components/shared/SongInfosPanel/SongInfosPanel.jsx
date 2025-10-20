@@ -78,7 +78,7 @@ export default function SongInfosPanel() {
     getPopularSongsByArtistIdQueryOptions(song?.artist_id)
   );
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
-    getRelatedSongsBySongDataQueryOptions(selectedSong)
+    getRelatedSongsBySongDataQueryOptions(song)
   );
   const { playTracklist, playArtistSongs } = usePlayBar(song?.artist_id);
   const lineRefs = useRef([]);

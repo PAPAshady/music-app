@@ -12,6 +12,7 @@ import { setSingleSong } from '../redux/slices/playContextSlice';
 import { setCurrentMusic, music } from '../redux/slices/musicPlayerSlice';
 import { getRelatedSongsBySongDataQueryOptions } from '../queries/musics';
 import { useSelector } from 'react-redux';
+import { setQueries } from '../redux/slices/queryStateSlice';
 
 const queryOptions = {
   playlist: getPlaylistByIdQueryOptions,
@@ -34,8 +35,8 @@ const dummyQueryOptions = {
 // and store it in Redux as the initial state after page load
 export default function useMusicQueryToRedux() {
   const dispatch = useDispatch();
-  const queryType = useSelector(state => state.queryState.type);
-  const id = useSelector(state => state.queryState.id);
+  const queryType = useSelector((state) => state.queryState.type);
+  const id = useSelector((state) => state.queryState.id);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
 
   // Fetch initial media data (playlist, album, or single track)
@@ -65,4 +66,11 @@ export default function useMusicQueryToRedux() {
       }
     }
   }, [data, dispatch, queryType, relatedSongs, currentMusic]);
+
+  // if a single track is playing, update the query state and url if user changes the track
+  useEffect(() => {
+    if (queryType === 'track' && currentMusic) {
+      dispatch(setQueries({ id: currentMusic.id }));
+    }
+  }, [currentMusic, queryType, dispatch]);
 }
