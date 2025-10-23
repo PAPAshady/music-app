@@ -102,7 +102,7 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { playlistId }],
   mutationFn: (songId) => addSongToPrivatePlaylist(playlistId, songId),
   onSuccess: async () => {
-    await queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
+    await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId }] });
 
     // update playlists cache to show the new value of totaltracks field
     queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
@@ -113,7 +113,7 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
       );
     });
 
-    const updatedPlaylistSongs = queryClient.getQueryData(['playlists', { playlistId }]);
+    const updatedPlaylistSongs = queryClient.getQueryData(['songs', { playlistId }]);
     const playingTracklist = store.getState().playContext.currentCollection; // the playlist which is currently playing
     // sync with redux
     store.dispatch(setSelectedCollectionTracks(updatedPlaylistSongs));
@@ -129,7 +129,7 @@ export const removeSongFromPrivatePlaylistMutationOptions = (playlistId) => ({
   mutationFn: (songId) => removeSongFromPrivatePlaylist(playlistId, songId),
   onSuccess: async (_, songId) => {
     const updatedPlaylistSongs = queryClient.setQueryData(
-      ['playlists', { playlistId }],
+      ['songs', { playlistId }],
       (prevPlaylistSongs) => {
         if (!prevPlaylistSongs) return [];
         return prevPlaylistSongs.filter((song) => song.id !== songId);
