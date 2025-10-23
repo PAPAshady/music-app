@@ -183,7 +183,12 @@ const SidebarPlaylist = memo(() => {
                   {tracklistType === 'favorites' ? 'Your Favorites' : selectedTracklist.title}
                 </p>
               )}
-              <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom end" />
+              {tracklistType !== 'favorites' && (
+                <DropDownList
+                  menuItems={playlistDropDownListItems}
+                  dropDownPlacement="bottom end"
+                />
+              )}
             </div>
 
             <div className="my-6 flex gap-2">

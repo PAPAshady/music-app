@@ -30,6 +30,7 @@ import { getSongsByPlaylistIdQueryOptions } from '../../queries/musics';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import PropTypes from 'prop-types';
 import MainButton from '../Buttons/MainButton/MainButton';
+import { getPlaylistByIdQueryOptions } from '../../queries/playlists';
 
 const schema = z.object({
   description: z.string().optional(),
@@ -53,21 +54,22 @@ export default function PlaylistInfosModal() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 6 }));
-  const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
+  const playlistId = useSelector((state) => state.queryState.id);
+  const { data: selectedTracklist } = useQuery(getPlaylistByIdQueryOptions(playlistId));
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const { targetRef: triggerElem } = useIntersectionObserver({ onIntersect });
   const addSongMutation = useMutation(
-    addSongToPrivatePlaylistMutationOptions(selectedTracklist.id)
+    addSongToPrivatePlaylistMutationOptions(selectedTracklist?.id)
   );
   const removeSongMutation = useMutation(
-    removeSongFromPrivatePlaylistMutationOptions(selectedTracklist.id)
+    removeSongFromPrivatePlaylistMutationOptions(selectedTracklist?.id)
   );
   const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistMutationOptions());
   const updatePlaylistMutation = useMutation(
-    updatePrivatePlaylistMutationOptions(selectedTracklist.id)
+    updatePrivatePlaylistMutationOptions(selectedTracklist?.id)
   );
   const { data: selectedPlaylistSongs } = useQuery(
-    getSongsByPlaylistIdQueryOptions(selectedTracklist.id)
+    getSongsByPlaylistIdQueryOptions(selectedTracklist?.id)
   );
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
@@ -82,8 +84,8 @@ export default function PlaylistInfosModal() {
     formState: { isSubmitting, errors, dirtyFields, isDirty },
   } = useForm({
     defaultValues: {
-      description: selectedTracklist.description || '',
-      title: selectedTracklist.title,
+      description: selectedTracklist?.description || '',
+      title: selectedTracklist?.title,
     },
     resolver: zodResolver(schema),
   });
@@ -106,12 +108,12 @@ export default function PlaylistInfosModal() {
   */
   useEffect(() => {
     reset({
-      description: actionType === 'edit_playlist' ? selectedTracklist.description : '',
-      title: actionType === 'edit_playlist' ? selectedTracklist.title : '',
+      description: actionType === 'edit_playlist' ? selectedTracklist?.description : '',
+      title: actionType === 'edit_playlist' ? selectedTracklist?.title : '',
     });
     setPlaylistCover(
-      actionType === 'edit_playlist' && selectedTracklist.cover
-        ? selectedTracklist.cover
+      actionType === 'edit_playlist' && selectedTracklist?.cover
+        ? selectedTracklist?.cover
         : playlistDefaultCover
     );
   }, [reset, selectedTracklist, isOpen, actionType]);
@@ -347,7 +349,7 @@ export default function PlaylistInfosModal() {
               <img
                 className="size-full object-cover"
                 src={playlistCover}
-                alt={selectedTracklist.title}
+                alt={selectedTracklist?.title}
               />
               <label
                 className="absolute inset-0 size-full bg-black/30 sm:bg-transparent"
@@ -399,8 +401,8 @@ export default function PlaylistInfosModal() {
           </div>
         </div>
 
-        {selectedTracklist.tracklistType === 'playlist' &&
-          !selectedTracklist.is_public &&
+        {selectedTracklist?.tracklistType === 'playlist' &&
+          !selectedTracklist?.is_public &&
           actionType === 'edit_playlist' &&
           !isDesktop && (
             <div className="flex flex-col gap-4">
