@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import favoriteSongsCover from '../../assets/images/covers/favorites-cover.png'
 
 const playContextSlice = createSlice({
   name: 'playContext',
@@ -46,6 +47,14 @@ const playContextSlice = createSlice({
     },
   },
 });
+
+export const favoriteSongsInfos = {
+  title: 'Favorite songs',
+  cover: favoriteSongsCover,
+  description: 'A collection of your favorite songs!',
+  tracklistType: 'favorites',
+  id: 'favorites',
+};
 
 export const {
   setIsSingleSong,

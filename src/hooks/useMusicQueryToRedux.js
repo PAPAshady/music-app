@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { getPlaylistByIdQueryOptions } from '../queries/playlists';
 import { getAlbumByIdQueryOptions } from '../queries/albums';
-import { getSongByIdQueryOptions } from '../queries/musics';
+import { getSongByIdQueryOptions, getFavoriteSongsQueryOptions } from '../queries/musics';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
+  setCurrentQueuelist,
   setSelectedCollection,
   setSelectedCollectionTracks,
 } from '../redux/slices/playContextSlice';
@@ -13,6 +14,7 @@ import { setCurrentMusic, music } from '../redux/slices/musicPlayerSlice';
 import { getRelatedSongsBySongDataQueryOptions } from '../queries/musics';
 import { useSelector } from 'react-redux';
 import { setQueries } from '../redux/slices/queryStateSlice';
+import { favoriteSongsInfos } from '../redux/slices/playContextSlice';
 
 const queryOptions = {
   playlist: getPlaylistByIdQueryOptions,
@@ -52,8 +54,14 @@ export default function useMusicQueryToRedux() {
     enabled: !!data?.id && queryType === 'track',
   });
 
+  const { data: favoriteSongs } = useQuery({
+    ...getFavoriteSongsQueryOptions(),
+    enabled: queryType === 'favorites',
+  });
+
   useEffect(() => {
     if (data) {
+      // if data exists it means its a playlist, album or a single track. so we dispatch the corresponding actions
       const action = actions[queryType];
       dispatch(action(data));
 
@@ -64,8 +72,14 @@ export default function useMusicQueryToRedux() {
         music.src = data.song_url;
         dispatch(setCurrentMusic(data));
       }
+    } else if (queryType === 'favorites' && favoriteSongs && !currentMusic) {
+      // if data does not exist it means its favorite songs. so we dispatch the corresponding actions
+      dispatch(setSelectedCollection(favoriteSongsInfos));
+      dispatch(setCurrentQueuelist(favoriteSongs));
+      dispatch(setCurrentMusic(favoriteSongs[0]));
+      music.src = favoriteSongs[0].song_url;
     }
-  }, [data, dispatch, queryType, relatedSongs, currentMusic]);
+  }, [data, dispatch, queryType, relatedSongs, currentMusic, favoriteSongs]);
 
   // if a single track is playing, update the query state and url if user changes the track
   useEffect(() => {

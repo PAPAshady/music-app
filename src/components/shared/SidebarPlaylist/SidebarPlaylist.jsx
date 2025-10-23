@@ -28,6 +28,7 @@ import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
 import ErrorPanel from '../ErrorPanel/ErrorPanel';
+import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';
 
 const SidebarPlaylist = memo(() => {
   useSelector((state) => state.queryState.type);
@@ -41,7 +42,9 @@ const SidebarPlaylist = memo(() => {
   } = useQuery(
     tracklistType === 'album'
       ? getAlbumByIdQueryOptions(tracklistId)
-      : getPlaylistByIdQueryOptions(tracklistId)
+      : tracklistType === 'playlist'
+        ? getPlaylistByIdQueryOptions(tracklistId)
+        : { queryKey: ['favorites'], queryFn: () => favoriteSongsInfos }
   );
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
@@ -52,6 +55,7 @@ const SidebarPlaylist = memo(() => {
         ? getSongsByPlaylistIdQueryOptions(tracklistId)
         : getFavoriteSongsQueryOptions()
   );
+
   const dispatch = useDispatch();
   const playlistCover =
     tracklistType === 'favorites' ? favoritesCover : selectedTracklist?.cover || defaultCover;
@@ -62,12 +66,16 @@ const SidebarPlaylist = memo(() => {
   const { playTracklist } = usePlayBar();
 
   const playPauseButtonHandler = () => {
-    if (!isPlayingPlaylistSelected) {
-      dispatch(setCurrentCollection(selectedTracklist));
+    if (isPlayingPlaylistSelected) {
+      dispatch(isPlaying ? pause() : play());
+    } else {
+      if (tracklistType === 'favorites') {
+        dispatch(setCurrentCollection(favoriteSongsInfos));
+      } else {
+        dispatch(setCurrentCollection(selectedTracklist));
+      }
       dispatch(setCurrentSongIndex(0));
-      return;
     }
-    dispatch(isPlaying ? pause() : play());
   };
 
   const headerVariants = {
@@ -194,7 +202,7 @@ const SidebarPlaylist = memo(() => {
                   />
                   <div
                     className={`absolute inset-0 flex size-full items-center justify-center p-3 transition-opacity duration-300 ${
-                      !isPlayingPlaylistSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'
+                      isPlayingPlaylistSelected ? 'opacity-0 hover:opacity-100' : 'opacity-100'
                     }`}
                   >
                     {!!selectedPlaylistSongs?.length && (

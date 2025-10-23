@@ -9,7 +9,7 @@ import { Like1 } from 'iconsax-react';
 import { useDispatch } from 'react-redux';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
-import favoriteSongsCover from '../../../assets/images/covers/favorites-cover.png';
+import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';
 import { setQueries } from '../../../redux/slices/queryStateSlice';
 
 export default function PlaylistsSlider({
@@ -20,14 +20,6 @@ export default function PlaylistsSlider({
   const dispatch = useDispatch();
 
   const showFavoriteSongs = () => {
-    const favoriteSongsInfos = {
-      title: 'Favorite songs',
-      cover: favoriteSongsCover,
-      description: 'A collection of your favorite songs!',
-      tracklistType: 'favorites',
-      id: 'favorites',
-    };
-
     dispatch(setSelectedCollection(favoriteSongsInfos));
     dispatch(openMobilePanel('favorites'));
     dispatch(setQueries({ type: 'favorites', id: null }));
