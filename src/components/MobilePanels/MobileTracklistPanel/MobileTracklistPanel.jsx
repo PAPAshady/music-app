@@ -206,17 +206,19 @@ function MobileTracklistPanel() {
               className="size-full rounded-sm object-cover"
             />
           </button>
-          {!selectedTracklist?.is_public && selectedTracklist?.tracklistType !== 'album' && (
-            <>
-              {playButtons.map((button) => (
-                <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
-              ))}
-              <DropDownList
-                menuItems={playlistDropDownListItems}
-                dropDownPlacement="bottom start"
-              />
-            </>
-          )}
+          {!selectedTracklist?.is_public &&
+            selectedTracklist?.tracklistType !== 'album' &&
+            tracklistType !== 'favorites' && (
+              <>
+                {playButtons.map((button) => (
+                  <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
+                ))}
+                <DropDownList
+                  menuItems={playlistDropDownListItems}
+                  dropDownPlacement="bottom start"
+                />
+              </>
+            )}
         </div>
         <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
           <IconButton
