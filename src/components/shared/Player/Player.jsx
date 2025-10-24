@@ -20,6 +20,7 @@ import { Range } from 'react-range';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleMobilePanel } from '../../../redux/slices/mobilePanelSlice';
+import PlayerProgressBar from '../../PlayerProgressBar/PlayerProgressBar';
 import {
   formatTime,
   music,
@@ -124,10 +125,10 @@ export default function Player({ classNames, isPlayerPage }) {
               ))}
             </div>
             <span className="text-primary-100 hidden w-[42px] text-end text-sm md:block">
-              {formatTime(currentMusic?.duration) ?? '0:00'}
+              {formatTime(currentMusic?.duration) ?? '00:00'}
             </span>
           </div>
-          {!disabled && <ProgressBar disabled={disabled || musicState === 'initial_loading'} />}
+          <PlayerProgressBar disabled={disabled} />
         </div>
         <div className="ms-4 hidden items-center gap-4 md:flex">
           <div title={playingState}>
@@ -245,63 +246,6 @@ function PlayButton({ icon, onClick, disabled }) {
   );
 }
 
-function ProgressBar({ disabled }) {
-  const [musicProgress, setMusicProgress] = useState([0]);
-  const bufferProgressPercentage = useSelector(
-    (state) => state.musicPlayer.bufferProgressPercentage
-  );
-
-  useEffect(() => {
-    const updateProgressBar = () => {
-      setMusicProgress([Math.floor((music.currentTime / music.duration) * 100)]);
-    };
-    music.addEventListener('timeupdate', updateProgressBar);
-    return () => {
-      music.removeEventListener('timeupdate', updateProgressBar);
-    };
-  }, []);
-
-  return (
-    <Range
-      values={musicProgress}
-      disabled={disabled}
-      onChange={(values) => {
-        music.currentTime = (values[0] / 100) * music.duration;
-        setMusicProgress(values);
-      }}
-      min={0}
-      max={100}
-      renderTrack={({ props, children }) => (
-        <div
-          {...props}
-          className={`relative flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${disabled ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
-        >
-          {/* Buffer bar is disabled in Firefox due to inconsistent `audio.buffered` reporting. */}
-          {/* Firefox often shows only small or partial buffered ranges, which breaks the progress calculation. */}
-          {!disabled && !/Firefox/i.test(navigator.userAgent) && (
-            <div
-              className="absolute h-1.5 rounded-3xl bg-white/30 transition sm:h-2"
-              style={{ width: `${bufferProgressPercentage}%` }}
-            ></div>
-          )}
-          <div
-            className={`relative h-1.5 rounded-3xl border transition sm:h-2 ${disabled ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
-            style={{ width: `${musicProgress[0]}%` }}
-          ></div>
-          {children}
-        </div>
-      )}
-      renderThumb={({ props }) => (
-        <div
-          className={`bg-primary-300 top-0 size-3 rounded-full transition outline-none sm:size-4 ${disabled ? 'hidden' : ''}`}
-          {...props}
-          key={1}
-        ></div>
-      )}
-    />
-  );
-}
-
 function CurrentTimeNumber() {
   const [currentTime, setCurrentTime] = useState('0:00');
 
@@ -329,8 +273,4 @@ PlayButton.propTypes = {
 Player.propTypes = {
   classNames: PropTypes.string,
   isPlayerPage: PropTypes.bool,
-};
-
-ProgressBar.propTypes = {
-  disabled: PropTypes.bool.isRequired,
 };
