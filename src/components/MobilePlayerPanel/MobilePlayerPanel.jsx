@@ -43,14 +43,14 @@ function MobilePlayerPanel() {
     {
       id: 1,
       icon: <Like1 variant={song?.is_liked ? 'Bold' : 'Linear'} />,
-      classNames: `size-6 sm:size-8 transition-colors duration-300 ${song?.is_liked ? 'text-primary-50 fill-primary-50' : ''}`,
+      classNames: `size-8 sm:size-10 transition-colors duration-300 ${song?.is_liked ? 'text-primary-50 fill-primary-50' : ''}`,
       onClick: () => likeHandlerMutation.mutate(song?.id),
     },
     { id: 2, icon: <Previous />, classNames: 'size-8 sm:size-10', onClick: () => dispatch(prev()) },
     {
       id: 3,
       icon: isPlaying ? <Pause /> : <Play />,
-      classNames: 'size-8 sm:size-10',
+      classNames: 'size-10 sm:size-12',
       onClick: () => dispatch(isPlaying ? pause() : play()),
     },
     { id: 4, icon: <Next />, classNames: 'size-8 sm:size-10', onClick: () => dispatch(next()) },
@@ -64,7 +64,7 @@ function MobilePlayerPanel() {
         ) : (
           <RepeateMusic />
         ),
-      classNames: 'size-6 sm:size-8',
+      classNames: 'size-8 sm:size-10',
       onClick: () => dispatch(togglePlayState()),
     },
   ];
@@ -88,11 +88,11 @@ function MobilePlayerPanel() {
       </div>
       <div className="flex w-full flex-col gap-4 px-4 text-start sm:w-[95%]">
         {isPending ? (
-          <div className="sm:mb-2 flex gap-3 flex-col">
-            <p className="relative bg-gray-600/60 h-3.5 w-2/3 overflow-hidden rounded-full">
+          <div className="flex flex-col gap-3 sm:mb-2">
+            <p className="relative h-3.5 w-2/3 overflow-hidden rounded-full bg-gray-600/60">
               <ShimmerOverlay />
             </p>
-            <p className="relative bg-gray-600/60 h-2.5 w-1/3 overflow-hidden rounded-full">
+            <p className="relative h-2.5 w-1/3 overflow-hidden rounded-full bg-gray-600/60">
               <ShimmerOverlay />
             </p>
           </div>
@@ -109,7 +109,7 @@ function MobilePlayerPanel() {
             <span className="text-primary-100 text-sm">{formatTime(currentMusic?.duration)}</span>
           </div>
         </div>
-        <div className="text-secondary-100 flex items-center justify-between sm:px-4">
+        <div className="text-secondary-100 flex items-center justify-between px-2 min-[380px]:px-4">
           {playButtons.map((button) => (
             <PlayButton key={button.id} {...button} />
           ))}
