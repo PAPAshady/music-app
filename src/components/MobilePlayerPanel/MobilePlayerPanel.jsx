@@ -25,10 +25,12 @@ import {
   togglePlayState,
 } from '../../redux/slices/musicPlayerSlice';
 import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../queries/likes';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import ShimmerOverlay from '../ShimmerOverlay/ShimmerOverlay';
 
 function MobilePlayerPanel() {
   const songId = useSelector((state) => state.queryState.id);
-  const { data: song } = useQuery(getSongByIdQueryOptions(songId));
+  const { data: song, isPending } = useQuery(getSongByIdQueryOptions(songId));
   const dispatch = useDispatch();
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
@@ -70,18 +72,36 @@ function MobilePlayerPanel() {
   return (
     <div className="flex min-h-full grow flex-col items-center justify-center gap-8">
       <div className="flex w-full grow items-center justify-center pt-20">
-        <div>
+        <div className="relative overflow-hidden">
           <img
             src={song?.cover || musicCover}
             className="aspect-square w-[85vw] rounded-xl object-cover min-[500px]:max-w-[420px] min-[500px]:rounded-3xl sm:w-[70vw] sm:max-w-none md:max-w-[650px]"
+            alt={song?.title}
           />
+          <div
+            className={`absolute inset-0 flex size-full items-center justify-center transition-opacity ${isPending ? 'opacity-100' : 'opacity-0'}`}
+          >
+            {isPending && <LoadingSpinner classNames="z-[1]" size="lg" />}
+            <div className="absolute size-full bg-[#000]/50"></div>
+          </div>
         </div>
       </div>
       <div className="flex w-full flex-col gap-4 px-4 text-start sm:w-[95%]">
-        <div className="sm:mb-2">
-          <p className="text-secondary-50 text-2xl font-bold sm:text-4xl">{song?.title}</p>
-          <p className="text-secondary-200 mt-1 text-sm sm:mt-4 sm:text-xl">{song?.artist}</p>
-        </div>
+        {isPending ? (
+          <div className="sm:mb-2 flex gap-3 flex-col">
+            <p className="relative bg-gray-600/60 h-3.5 w-2/3 overflow-hidden rounded-full">
+              <ShimmerOverlay />
+            </p>
+            <p className="relative bg-gray-600/60 h-2.5 w-1/3 overflow-hidden rounded-full">
+              <ShimmerOverlay />
+            </p>
+          </div>
+        ) : (
+          <div className="sm:mb-2">
+            <p className="text-secondary-50 text-2xl font-bold sm:text-4xl">{song?.title}</p>
+            <p className="text-secondary-200 mt-1 text-sm sm:mt-4 sm:text-xl">{song?.artist}</p>
+          </div>
+        )}
         <div className="text-secondary-100">
           <PlayerProgressBar />
           <div className="mt-3 flex items-center justify-between text-xs">
