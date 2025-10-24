@@ -34,7 +34,7 @@ export const getPlaylistById = async (playlistId) => {
     .from('playlists_with_count')
     .select('*')
     .eq('id', playlistId)
-    .single();
+    .maybeSingle();
   if (error) throw error;
   return data;
 };

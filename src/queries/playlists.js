@@ -72,6 +72,7 @@ export const createNewPrivatePlaylistMutationOptions = () => {
 export const updatePrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { is_public: false, playlistId }],
   mutationFn: (newData) => updatePrivatePlaylist(playlistId, newData),
+  enabled: !!playlistId,
   onSuccess: (updatedPlaylist) => {
     queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
       if (!prevPlaylists) return [];
@@ -90,6 +91,7 @@ export const updatePrivatePlaylistMutationOptions = (playlistId) => ({
 export const deletePrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { is_public: false }],
   mutationFn: () => deletePrivatePlaylist(playlistId),
+  enabled: !!playlistId,
   onSuccess: () => {
     queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
       if (!prevPlaylists?.length) return [];
@@ -101,6 +103,7 @@ export const deletePrivatePlaylistMutationOptions = (playlistId) => ({
 export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { playlistId }],
   mutationFn: (songId) => addSongToPrivatePlaylist(playlistId, songId),
+  enabled: !!playlistId,
   onSuccess: async () => {
     await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId }] });
 
@@ -127,6 +130,7 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
 export const removeSongFromPrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { playlistId }],
   mutationFn: (songId) => removeSongFromPrivatePlaylist(playlistId, songId),
+  enabled: !!playlistId,
   onSuccess: async (_, songId) => {
     const updatedPlaylistSongs = queryClient.setQueryData(
       ['songs', { playlistId }],
