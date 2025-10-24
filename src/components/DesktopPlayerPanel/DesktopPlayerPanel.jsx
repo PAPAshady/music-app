@@ -11,7 +11,7 @@ import useMediaQuery from '../../hooks/useMediaQuery';
 import useLyrics from '../../hooks/useLyrics';
 import noMusicCover from '../../assets/images/covers/no-cover.jpg';
 import { closePanel as closePlayerPanel } from '../../redux/slices/playerPanelSlice';
-import { ArrowLeft } from 'iconsax-react';
+import { ArrowDown2 } from 'iconsax-react';
 import PropTypes from 'prop-types';
 
 function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
@@ -66,7 +66,7 @@ function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
         className="text-secondary-200 hover:text-secondary-50 hidden items-center gap-2 p-1 text-lg transition-colors lg:flex"
       >
         <span className="flex size-10 cursor-pointer">
-          <ArrowLeft size="100%" />
+          <ArrowDown2 size="100%" />
         </span>
         <span>Back</span>
       </button>

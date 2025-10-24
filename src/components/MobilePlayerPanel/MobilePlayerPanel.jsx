@@ -1,6 +1,7 @@
 import musicCover from '../../assets/images/covers/no-cover.jpg';
 import { Play, Next, Previous, RepeateOne, Shuffle } from 'iconsax-react';
 import PropTypes from 'prop-types';
+import PlayerProgressBar from '../PlayerProgressBar/PlayerProgressBar';
 
 function MobilePlayerPanel() {
   return (
@@ -19,9 +20,7 @@ function MobilePlayerPanel() {
           <p className="text-secondary-200 mt-1 text-sm sm:mt-4 sm:text-xl">Taylor Swift</p>
         </div>
         <div className="text-secondary-100">
-          <div className="h-1 overflow-hidden rounded-full bg-white">
-            <div className="h-full w-1/2 bg-blue-400"></div>
-          </div>
+          <PlayerProgressBar />
           <div className="mt-1 flex items-center justify-between text-xs">
             <span>0:00</span>
             <span>0:00</span>
