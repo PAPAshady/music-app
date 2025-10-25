@@ -10,20 +10,28 @@ import HamburgerMenu from '../../HamburgerMenu/HamburgerMenu';
 import Player from '../../Player/Player';
 import Footer from '../../Footer/Footer';
 import Logo from '../../../Logo/Logo';
-import MobilePlaylist from '../../MobilePlaylist/MobilePlaylist';
+import MobilePanel from '../../MobilePanel/MobilePanel';
 import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { useLocation, Outlet, Link } from 'react-router-dom';
 import SidebarPlaylist from '../../SidebarPlaylist/SidebarPlaylist';
-import MusicPlayerContext from '../../../../contexts/MusicPlayerContext';
-import useSafeContext from '../../../../hooks/useSafeContext';
 import SidebarWelcomePanel from '../../SidebarWelcomePanel/SidebarWelcomePanel';
 import PlaylistInfosModal from '../../../PlaylistInfosModal/PlaylistInfosModal';
+import ConfirmModal from '../../../ConfirmModal/ConfirmModal';
+import ArtistInfosPanel from '../../ArtistInfosPanel/ArtistInfosPanel';
+import SongInfosPanel from '../../SongInfosPanel/SongInfosPanel';
+import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
+import PlayerPanel from '../../PlayerPanel/PlayerPanel';
+import { useSelector } from 'react-redux';
+
+const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track'];
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
-  const { selectedPlaylist } = useSafeContext(MusicPlayerContext);
+  const isMobile = useMediaQuery('(max-width: 1024px)');
+  const sidebarType = useSelector((state) => state.queryState.type);
+  const isPlayerPanelOpen = useSelector((state) => state.playerPanel.isOpen);
 
   useEffect(() => {
     function handleScroll() {
@@ -79,15 +87,29 @@ export default function MainLayout() {
           </div>
           <div className="flex grow flex-col items-start gap-12 pt-6 pb-32 lg:pb-10">
             <div className="flex w-full items-start gap-6">
-              <Outlet />
-              {Object.keys(selectedPlaylist).length ? <SidebarPlaylist /> : <SidebarWelcomePanel />}
+              <div className="flex grow flex-col gap-8 pt-8 lg:gap-11">
+                <Outlet />
+              </div>
+
+              {sidebarType && validSidebarTypes.includes(sidebarType) ? (
+                <>
+                  {['album', 'playlist', 'favorites'].includes(sidebarType) && <SidebarPlaylist />}
+                  {sidebarType === 'artist' && <ArtistInfosPanel />}
+                  {sidebarType === 'track' && <SongInfosPanel />}
+                </>
+              ) : (
+                <SidebarWelcomePanel />
+              )}
             </div>
-            <Player />
+            {!isPlayerPanelOpen && <Player />}
             <Footer />
           </div>
         </main>
         <HamburgerMenu />
-        {isDesktop && <MobilePlaylist />}
+        {isDesktop && <MobilePanel />}
+        {isMobile && <MobileSearchPanel />}
+        <PlayerPanel />
+        <ConfirmModal />
       </div>
       <PlaylistInfosModal />
     </>

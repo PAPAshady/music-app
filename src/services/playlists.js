@@ -1,33 +1,89 @@
-import api from './api';
+import supabase from './supabaseClient';
 
-export const addPlaylist = async (playlistData) => {
-  const playlist = new FormData();
-  for (let prop in playlistData) {
-    if (prop === 'music_id') {
-      playlistData[prop].map((musicId) => playlist.append(prop, musicId));
-    } else {
-      playlist.append(prop, playlistData[prop]);
-    }
-  }
-  const { data } = await api.post('/playlist/add/', playlist);
+export const getAllPlaylists = async () => {
+  const { data, error } = await supabase
+    .from('playlists_with_count')
+    .select('*')
+    .order('title', { ascending: true });
+  if (error) throw error; // other errors will be handled with react query or another try-catch block.
   return data;
 };
 
-export const getUserPlaylists = async () => {
-  const { data } = await api.get('/playlist/playlists/');
+export const getAllPublicPlaylists = async () => {
+  const { data, error } = await supabase
+    .from('playlists_with_count')
+    .select('*')
+    .eq('is_public', true)
+    .order('title', { ascending: true });
+  if (error) throw error;
   return data;
 };
 
-export const addMusicToPlaylist = async ({ playlistId, musicId }) => {
-  const newMusicInfos = new FormData();
-  newMusicInfos.append('id', playlistId);
-  newMusicInfos.append('music_id', musicId);
-  return await api.patch('/playlist/addmusic/', newMusicInfos);
+export const getAllPrivatePlaylists = async () => {
+  const { data, error } = await supabase
+    .from('playlists_with_count')
+    .select('*')
+    .eq('is_public', false)
+    .order('title', { ascending: true });
+  if (error) throw error;
+  return data;
 };
 
-export const removeMusicFromPlaylist = async ({ playlistId, musicId }) => {
-  const newMusicInfos = new FormData();
-  newMusicInfos.append('id', playlistId);
-  newMusicInfos.append('music_id', musicId);
-  return await api.patch('/playlist/removemusic/', newMusicInfos);
+export const getPlaylistById = async (playlistId) => {
+  const { data, error } = await supabase
+    .from('playlists_with_count')
+    .select('*')
+    .eq('id', playlistId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+};
+
+export const createNewPrivatePlaylist = async (playlistInfos) => {
+  const newPlaylist = {
+    is_public: false,
+    tracklistType: 'playlist',
+    ...playlistInfos,
+  };
+
+  const { data, error } = await supabase.from('playlists').insert(newPlaylist).select();
+  if (error) throw error; // other errors will be handled with react query or another try-catch block.
+  return data;
+};
+
+export const updatePrivatePlaylist = async (playlistId, newData) => {
+  const { data, error } = await supabase
+    .from('playlists')
+    .update(newData)
+    .eq('id', playlistId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const deletePrivatePlaylist = async (playlistId) => {
+  const { data, error } = await supabase.from('playlists').delete().eq('id', playlistId).select();
+  if (error) throw error;
+  return data;
+};
+
+export const addSongToPrivatePlaylist = async (playlist_id, song_id) => {
+  const { data, error } = await supabase
+    .from('playlist_songs')
+    .insert({ playlist_id, song_id })
+    .select();
+  if (error) throw error;
+  return data;
+};
+
+export const removeSongFromPrivatePlaylist = async (playlistId, songId) => {
+  const { data, error } = await supabase
+    .from('playlist_songs')
+    .delete()
+    .eq('song_id', songId)
+    .eq('playlist_id', playlistId)
+    .select();
+  if (error) throw error;
+  return data;
 };

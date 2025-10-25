@@ -5,13 +5,15 @@ export default function LoadingSpinner({ size = 'sm', classNames }) {
   const width = {
     xs: 20,
     sm: 30,
-    md: 50,
+    md: 40,
+    lg: 50,
   };
 
   const thickness = {
     xs: 4,
     sm: 5,
-    md: 8,
+    md: 7,
+    lg: 8,
   };
 
   return (

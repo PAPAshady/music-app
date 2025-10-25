@@ -2,7 +2,7 @@ import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import SettingsPagesSectionHeader from '../../components/SettingsPagesSectionHeader/SettingsPagesSectionHeader';
 import { songs, usageChartData } from '../../data';
-import { artistsQueryOptions } from '../../queries/artists';
+import { getArtistsQueryOptions } from '../../queries/artists';
 import { useQuery } from '@tanstack/react-query';
 import {
   LineChart,
@@ -16,11 +16,11 @@ import {
 import useMediaQuery from '../../hooks/useMediaQuery';
 
 export default function Analytics() {
-  const artists = useQuery(artistsQueryOptions());
+  const artists = useQuery(getArtistsQueryOptions());
   const isTablet = useMediaQuery('(min-width: 640px)');
 
   return (
-    <div className="flex flex-col gap-8 pt-8 lg:gap-12">
+    <>
       <div className="mb-4 text-center">
         <p className="mb-4 text-2xl font-bold md:text-4xl">Your Activity</p>
         <p className="text-primary-200 md:text-xl">
@@ -61,6 +61,6 @@ export default function Analytics() {
           </LineChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </>
   );
 }

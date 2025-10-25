@@ -10,15 +10,23 @@ import ForgotPassword from './pages/Auth/ForgotPassword/ForgotPassword';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import PlayLists from './pages/PlayLists/PlayLists';
 import Browse from './pages/Browse/Browse';
-import PlayerPage from './pages/PlayerPage/PlayerPage';
 import Permium from './pages/Permium/Permium';
 import SettingsLayout from './components/shared/Layouts/SettingsLayout/SettingsLayout';
 import Profile from './pages/Profile/Profile';
 import Analytics from './pages/Analytics/Analytics';
 import ContactUs from './pages/ContactUs/ContactUs';
 import FAQ from './pages/FAQ/FAQ';
+import NotFoundPage from './pages/404/404';
 
 const routes = [
+  {
+    path: '*',
+    element: (
+      <ProtectedRoute>
+        <NotFoundPage />
+      </ProtectedRoute>
+    ),
+  },
   {
     path: '/',
 
@@ -45,14 +53,6 @@ const routes = [
         ],
       },
     ],
-  },
-  {
-    path: '/player',
-    element: (
-      <ProtectedRoute>
-        <PlayerPage />
-      </ProtectedRoute>
-    ),
   },
   {
     path: '/auth',

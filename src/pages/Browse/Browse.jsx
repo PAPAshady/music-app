@@ -3,7 +3,7 @@ import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
-import { artistsQueryOptions } from '../../queries/artists';
+import { getArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
@@ -11,19 +11,19 @@ import MainButton from '../../components/Buttons/MainButton/MainButton';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import sectionBgImage from '../../assets/images/backgrounds/section-bg-2.jpg';
 import { useQuery } from '@tanstack/react-query';
-import { albumsQueryOptions } from '../../queries/albums';
+import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import { songs, playlists, genres } from '../../data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 
 export default function Browse() {
-  const albums = useQuery(albumsQueryOptions());
-  const artists = useQuery(artistsQueryOptions());
+  const albums = useQuery(getAllAlbumsQueryOptions());
+  const artists = useQuery(getArtistsQueryOptions());
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   return (
-    <div className="flex grow flex-col gap-8 lg:gap-10">
+    <>
       <div>
         <SectionTitle title="Tranding Tracks" />
         <TracksSlider songs={songs} />
@@ -133,6 +133,6 @@ export default function Browse() {
         <SectionTitle title="Meet the Top New Singers of 2024" />
         <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
       </div>
-    </div>
+    </>
   );
 }

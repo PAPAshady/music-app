@@ -1,21 +1,25 @@
 import bannerBg from '../../assets/images/backgrounds/player-and-settings-page.png';
-import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
-import useMediaQuery from '../../hooks/useMediaQuery';
 import { songs } from '../../data';
 import { useQuery } from '@tanstack/react-query';
-import { albumsQueryOptions } from '../../queries/albums';
+import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { getFavoriteSongsQueryOptions } from '../../queries/musics';
+import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
+import usePlayBar from '../../hooks/usePlayBar';
 
 export default function Favorites() {
-  const albums = useQuery(albumsQueryOptions());
-  const isTablet = useMediaQuery('(min-width: 480px)');
+  const albums = useQuery(getAllAlbumsQueryOptions());
+  const { data: favoriteSongs, isPending: isFavoriteSongsPending } = useQuery(
+    getFavoriteSongsQueryOptions()
+  );
+  const { playFavoriteSongs } = usePlayBar();
 
   return (
-    <div className="flex grow flex-col gap-8 lg:gap-10">
+    <>
       <div
         className="border-primary-300 relative overflow-hidden rounded-4xl border bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${bannerBg})` }}
@@ -29,11 +33,11 @@ export default function Favorites() {
           </p>
         </div>
       </div>
-      <div className="sm: flex max-h-[280px] flex-col gap-3 overflow-y-auto px-3 sm:max-h-[360px] lg:max-h-[414px] lg:gap-4">
-        {songs.map((song) => (
-          <PlayBar key={song.id} size={isTablet ? 'lg' : 'md'} {...song} classNames="!max-w-full" />
-        ))}
-      </div>
+      <PlayBarSlider
+        songs={favoriteSongs}
+        isPending={isFavoriteSongsPending}
+        onPlay={playFavoriteSongs}
+      />
       <div>
         <SectionTitle title="Seggestions for you" />
         <TracksSlider songs={songs} />
@@ -47,6 +51,6 @@ export default function Favorites() {
           albumCardStyles="!max-w-none"
         />
       </div>
-    </div>
+    </>
   );
 }

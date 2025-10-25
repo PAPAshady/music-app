@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 
-export default function AlbumCardSkeleton({ size }) {
+export default function AlbumCardSkeleton({ size, classNames }) {
   return (
     <div
-      className={`relative w-full overflow-hidden rounded-lg bg-gray-600/60 shadow-[1px_1px_8px_rgba(0,0,0,.5)] ${size === 'md' && 'lg:max-w-[328px]'}`}
+      className={`relative w-full overflow-hidden rounded-lg bg-gray-600/60 shadow-[1px_1px_8px_rgba(0,0,0,.5)] ${size === 'md' && 'lg:max-w-[328px]'} ${classNames}`}
     >
       <ShimmerOverlay />
       <div className="flex items-center lg:p-3">
@@ -36,4 +36,7 @@ export default function AlbumCardSkeleton({ size }) {
   );
 }
 
-AlbumCardSkeleton.propTypes = { size: PropTypes.oneOf(['md', 'lg']).isRequired };
+AlbumCardSkeleton.propTypes = {
+  size: PropTypes.oneOf(['md', 'lg']).isRequired,
+  classNames: PropTypes.string,
+};

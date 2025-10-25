@@ -1,5 +1,6 @@
 import { Dialog, DialogPanel, DialogTitle, DialogBackdrop } from '@headlessui/react';
 import MainButton from '../Buttons/MainButton/MainButton';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { CloseCircle } from 'iconsax-react';
 import PropTypes from 'prop-types';
 
@@ -9,9 +10,14 @@ export default function Modal({
   children,
   onClose,
   onConfirm,
+  onCancel,
   confirmButton,
   cancelButton,
   confirmButtonTitle = 'Confirm',
+  confirmButtonDisabled,
+  confirmButtonClassNames,
+  cancelButtonClassNames,
+  isSubmitting,
 }) {
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
@@ -37,17 +43,26 @@ export default function Modal({
                 size="sm"
                 type="outline"
                 variant="secondary"
-                onClick={onClose}
+                onClick={onCancel}
+                classNames={cancelButtonClassNames}
+                disabled={isSubmitting}
               />
             )}
-            {confirmButton && (
-              <MainButton
-                title={confirmButtonTitle}
-                size="sm"
-                variant="secondary"
-                onClick={onConfirm}
-              />
-            )}
+            {confirmButton &&
+              (isSubmitting ? (
+                <div className="border-red bg-red rounded-lg border px-7 py-2">
+                  <LoadingSpinner size="xs" />
+                </div>
+              ) : (
+                <MainButton
+                  title={confirmButtonTitle}
+                  size="sm"
+                  variant="secondary"
+                  onClick={onConfirm}
+                  classNames={confirmButtonClassNames}
+                  disabled={confirmButtonDisabled}
+                />
+              ))}
           </div>
         </DialogPanel>
       </div>
@@ -61,7 +76,12 @@ Modal.propTypes = {
   children: PropTypes.element.isRequired,
   onClose: PropTypes.func,
   onConfirm: PropTypes.func,
+  onCancel: PropTypes.func,
   confirmButton: PropTypes.bool,
   cancelButton: PropTypes.bool,
   confirmButtonTitle: PropTypes.string,
+  confirmButtonDisabled: PropTypes.bool,
+  confirmButtonClassNames: PropTypes.string,
+  cancelButtonClassNames: PropTypes.string,
+  isSubmitting: PropTypes.bool,
 };

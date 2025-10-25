@@ -37,7 +37,7 @@ export default function ArtistsSlider({ artists, isLoading }) {
                   <ArtistCardSkeleton />
                 </SwiperSlide>
               ))
-          : artists?.data.map((artist) => (
+          : artists?.map((artist) => (
               <SwiperSlide key={artist.id} className="pb-11">
                 <ArtistCard {...artist} />
               </SwiperSlide>
@@ -48,6 +48,6 @@ export default function ArtistsSlider({ artists, isLoading }) {
 }
 
 ArtistsSlider.propTypes = {
-  artists: PropTypes.object,
+  artists: PropTypes.array,
   isLoading: PropTypes.bool,
 };

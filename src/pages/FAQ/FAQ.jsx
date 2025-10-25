@@ -7,7 +7,7 @@ import { faqQuestions, contactInfos } from '../../data';
 export default function FAQ() {
   const isTablet = useMediaQuery('(min-width: 540px)');
   return (
-    <div className="flex flex-col gap-8 pt-8 lg:gap-12">
+    <>
       <div>
         <SettingsPagesSectionHeader
           title="Ask Us Anything"
@@ -30,7 +30,7 @@ export default function FAQ() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

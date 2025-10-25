@@ -20,7 +20,7 @@ export default function Permium() {
   ];
 
   return (
-    <div className="flex grow flex-col gap-8 lg:gap-10">
+    <>
       <div className="mb-4 pt-4 text-center">
         <h4 className="text-white-200 mb-5 text-3xl font-semibold sm:text-4xl lg:text-4xl 2xl:!text-5xl">
           Unlock Your Music Potential
@@ -51,6 +51,6 @@ export default function Permium() {
           ))}
         </Swiper>
       )}
-    </div>
+    </>
   );
 }

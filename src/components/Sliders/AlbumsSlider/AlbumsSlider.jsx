@@ -38,7 +38,7 @@ export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', 
                 </div>
               </SwiperSlide>
             ))
-          : chunkArray(albums?.data ?? [], 3).map((albumsArray, index) => (
+          : chunkArray(albums ?? [], 3).map((albumsArray, index) => (
               <SwiperSlide key={index} className="p-[1px] pb-11">
                 <div className="flex flex-col gap-4">
                   {albumsArray.map((album) => (
@@ -58,7 +58,7 @@ export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', 
 }
 
 AlbumsSlider.propTypes = {
-  albums: PropTypes.object,
+  albums: PropTypes.array,
   isLoading: PropTypes.bool.isRequired,
   albumCardSize: PropTypes.oneOf(['md', 'lg']),
   albumCardStyles: PropTypes.string,
