@@ -18,14 +18,16 @@ import PropTypes from 'prop-types';
 import DesktopPlayerPanel from '../../DesktopPlayerPanel/DesktopPlayerPanel';
 import MobilePlayerPanel from '../../MobilePlayerPanel/MobilePlayerPanel';
 import useMediaQuery from '../../../hooks/useMediaQuery';
+import { getSongByIdQueryOptions } from '../../../queries/musics';
 
 export default function PlayerPanel() {
+  const songId = useSelector((state) => state.queryState.id);
   const isOpen = useSelector((state) => state.playerPanel.isOpen);
   const isMobile = useMediaQuery('(max-width: 1023px)');
   const dispatch = useDispatch();
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const selectedSingleSong = useSelector((state) => state.playContext.singleSong);
-  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
+  const { data: song } = useQuery(getSongByIdQueryOptions(songId));
   const queuelistType = useSelector((state) => state.playContext.queuelistType);
   const { data, isPending } = useQuery(
     queuelistType === 'related_songs'
@@ -35,7 +37,7 @@ export default function PlayerPanel() {
         : queuelistType === 'album'
           ? getSongsByAlbumIdQueryOptions(playingTracklist.id)
           : queuelistType === 'artist_popular_songs'
-            ? getPopularSongsByArtistIdQueryOptions(currentMusic?.artist_id)
+            ? getPopularSongsByArtistIdQueryOptions(song?.artist_id)
             : getFavoriteSongsQueryOptions()
   );
 
