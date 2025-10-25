@@ -1,93 +1,130 @@
 import useMediaQuery from '../../hooks/useMediaQuery';
-import SidebarPlaylist from '../../components/SidebarPlaylist/SidebarPlaylist';
 import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
+import PlaylistCardSkeleton from '../../components/MusicCards/PlaylistCard/PlaylistCardSkeleton';
 import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
-import { shuffleArray } from '../../utils/arrayUtils';
-import { songs, genres, playlists as allPlaylists } from '../../data';
+import { songs, genres, playlists } from '../../data';
+import { useQuery } from '@tanstack/react-query';
+import { getAllPrivatePlaylistsQueryOptions } from '../../queries/playlists';
 import PropTypes from 'prop-types';
+import usePlayBar from '../../hooks/usePlayBar';
+import AddPlaylistButton from '../../components/AddPlaylistButton/AddPlaylistButton';
 
 export default function PlayLists() {
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
-
+  const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
+  const { playSingleSong } = usePlayBar();
+  const isSmallTablet = useMediaQuery('(min-width: 480px)');
+  // Render the "Add New Playlist" button as the first item in the playlists list.
+  const privatePlaylists = [{ id: 0, type: 'add-playlist-button' }, ...(userPlaylists.data ?? [])];
   const playlistsSections = [
-    // { id: 1, title: 'Your Playlists', numberOfPlayLists: 8 },
-    { id: 1, title: 'Updated Playlists', numberOfPlayLists: 2 },
-    { id: 2, title: 'Subscribed playlists' },
-    { id: 3, title: 'Popular playlists based on you', numberOfPlayLists: 5 },
+    {
+      id: 1,
+      title: 'Your Playtlists',
+      playlists: privatePlaylists,
+      isLoading: userPlaylists.isLoading,
+    },
+    {
+      id: 2,
+      title: 'Updated Playlists',
+      playlists: userPlaylists.data?.playlist,
+      isLoading: userPlaylists.isLoading,
+    },
+    {
+      id: 3,
+      title: 'Subscribed playlists',
+      playlists: userPlaylists.data,
+      isLoading: userPlaylists.isLoading,
+    },
+    {
+      id: 4,
+      title: 'Popular playlists based on you',
+      playlists,
+      numberOfPlayLists: 5,
+    },
   ];
 
   return (
-    <div className="flex w-full items-start gap-6">
-      <div className="flex grow flex-col gap-8 lg:gap-10">
-        <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
-          {genres.slice(0, 3).map((track) => (
-            <div key={track.id} className="flex w-full justify-center">
-              <TracksCard {...track} />
-            </div>
-          ))}
-        </div>
-        <div>
-          <SectionTitle title="Your Playlists" />
-          {/* Render the "Add New Playlist" button as the first item in the playlists list. */}
-          {isDesktop ? (
-            <div className="flex flex-wrap gap-6">
-              {[{ id: 0, isAddPlaylistButton: true }, ...allPlaylists]
-                .slice(0, 8)
-                .map((playList) => (
-                  <PlaylistCard key={playList.id} {...playList} classNames="grow !max-w-[170px]" />
-                ))}
-            </div>
-          ) : (
-            <PlaylistsSlider
-              playlists={[{ id: 0, isAddPlaylistButton: true }, ...allPlaylists]}
-              numberOfPlaylists={8}
-            />
-          )}
-        </div>
-        {playlistsSections.map(({ id, title, numberOfPlayLists }) => (
-          <div key={id}>
-            <SectionTitle title={title} />
-            <PlaylistsContainer numberOfPlayLists={numberOfPlayLists} />
+    <>
+      <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
+        {genres.slice(0, 3).map((track) => (
+          <div key={track.id} className="flex w-full justify-center">
+            <TracksCard {...track} />
           </div>
         ))}
-        <div>
-          <SectionTitle title="Add Tracks to your playlists" />
-          <div className="flex flex-col gap-4">
-            {songs.slice(0, 4).map((song) => (
-              <PlayBar key={song.id} size="lg" classNames="!max-w-none" {...song} />
-            ))}
-          </div>
+      </div>
+      {playlistsSections.map(({ id, title, playlists, numberOfPlayLists, isLoading }) => (
+        <div key={id}>
+          <SectionTitle title={title} />
+          <PlaylistsContainer
+            playlists={playlists}
+            isLoading={isLoading}
+            numberOfPlayLists={numberOfPlayLists}
+          />
         </div>
-        <div>
-          <SectionTitle title="Playlists You Recently Seen" />
-          <PlaylistsContainer numberOfPlayLists={5} />
+      ))}
+      <div>
+        <SectionTitle title="Add Tracks to your playlists" />
+        <div className="flex flex-col gap-4">
+          {songs.slice(0, 4).map((song) => (
+            <PlayBar
+              onPlay={playSingleSong}
+              key={song.id}
+              size={isSmallTablet ? 'lg' : 'sm'}
+              classNames="!max-w-none"
+              song={song}
+            />
+          ))}
         </div>
       </div>
-      <SidebarPlaylist playList={songs} />
-    </div>
+      <div>
+        <SectionTitle title="Playlists You Recently Seen" />
+        <PlaylistsContainer
+          playlists={userPlaylists.data}
+          isLoading={userPlaylists.isLoading}
+          numberOfPlayLists={5}
+        />
+      </div>
+    </>
   );
 }
 
 function PlaylistsContainer({
-  playlists = allPlaylists,
-  numberOfPlayLists = playlists.length,
+  playlists = [],
+  numberOfPlayLists = playlists?.length,
   classNames = 'grow !max-w-[170px]',
+  isLoading,
 }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const shuffledPlaylists = shuffleArray(playlists);
   return (
     <>
       {isDesktop ? (
         <div className="flex flex-wrap gap-6">
-          {shuffledPlaylists.slice(0, numberOfPlayLists).map((playList) => (
-            <PlaylistCard key={playList.id} {...playList} classNames={classNames} />
-          ))}
+          {isLoading
+            ? Array(7)
+                .fill()
+                .map((_, index) => (
+                  <div key={index} className="w-[170px] max-w-[170px]">
+                    <PlaylistCardSkeleton />
+                  </div>
+                ))
+            : playlists
+                .slice(0, numberOfPlayLists)
+                .map((playList) =>
+                  playList.type === 'add-playlist-button' ? (
+                    <AddPlaylistButton key={playList.id} classNames={classNames} />
+                  ) : (
+                    <PlaylistCard key={playList.id} {...playList} classNames={classNames} />
+                  )
+                )}
         </div>
       ) : (
-        <PlaylistsSlider playlists={shuffledPlaylists} numberOfPlaylists={numberOfPlayLists} />
+        <PlaylistsSlider
+          isLoading={isLoading}
+          playlists={playlists}
+          numberOfPlaylists={numberOfPlayLists}
+        />
       )}
     </>
   );
@@ -96,5 +133,6 @@ function PlaylistsContainer({
 PlaylistsContainer.propTypes = {
   playlists: PropTypes.array,
   numberOfPlayLists: PropTypes.number,
+  isLoading: PropTypes.bool,
   classNames: PropTypes.string,
 };

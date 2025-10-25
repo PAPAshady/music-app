@@ -3,21 +3,28 @@ import { Heart, Menu, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
+import { formatTime } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
+import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
+import { useMutation } from '@tanstack/react-query';
+import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
 
 const PlayBar = memo(
   ({
     size,
-    title,
-    cover = noCoverImg,
-    artist = 'Unknown artist',
-    time,
-    album = 'Unknown album',
-    isFavorite,
-    clickHandler,
+    index: songIndex,
+    song,
+    onPlay,
+    ActionButtonIcon,
+    actionButtonClickHandler,
+    isActionButtonPending,
     classNames,
   }) => {
     const dropDownMenu = useCloseOnClickOutside();
+    const { title, id, cover, artist, duration, album, is_liked } = song;
+    const likeHandlerMutation = useMutation(
+      is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
+    );
 
     const musicTitleSizes = {
       lg: 'text-base lg:text-xl',
@@ -45,9 +52,14 @@ const PlayBar = memo(
         >
           <button
             className="relative size-14 min-h-14 min-w-14 overflow-hidden rounded-md"
-            onClick={clickHandler}
+            onClick={() => onPlay(song, songIndex)}
           >
-            <img src={cover} className="size-full object-cover" alt={title} />
+            <img
+              src={cover ? cover : noCoverImg}
+              className="size-full object-cover"
+              alt={title}
+              loading="lazy"
+            />
             <span
               className={`absolute top-1/2 left-1/2 flex size-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition-all duration-300 group-hover:bg-black/60 group-hover:opacity-100`}
             >
@@ -59,7 +71,7 @@ const PlayBar = memo(
           <div className="flex flex-col overflow-hidden">
             <button
               className={`text-white-50 grow truncate text-start ${musicTitleSizes[size]}`}
-              onClick={clickHandler}
+              onClick={() => onPlay(song, songIndex)}
               title={title}
             >
               {title}
@@ -79,20 +91,26 @@ const PlayBar = memo(
               <span
                 className={`text-secondary-200 pe-3 text-xs lg:p-0 ${size === 'lg' ? 'lg:text-sm' : 'hidden lg:block'}`}
               >
-                {time}
+                {formatTime(duration)}
               </span>
             </>
           )}
           <div className={`flex items-center gap-2 ${size !== 'sm' ? 'lg:gap-4' : ''}`}>
             <div className={` ${size === 'md' ? 'block lg:hidden' : 'block'}`}>
-              <IconButton
-                icon={
-                  <Heart
-                    size={size === 'sm' ? 16 : 24}
-                    className={`transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : ''}`}
-                  />
-                }
-              />
+              {isActionButtonPending ? (
+                <LoadingSpinner />
+              ) : ActionButtonIcon ? (
+                <IconButton icon={ActionButtonIcon} onClick={() => actionButtonClickHandler(id)} />
+              ) : (
+                <IconButton
+                  icon={
+                    <Heart
+                      className={`transition-colors ${is_liked ? 'text-secondary-50 fill-secondary-50' : ''}`}
+                    />
+                  }
+                  onClick={() => likeHandlerMutation.mutate(id)}
+                />
+              )}
             </div>
             <div
               className={`${size === 'md' ? 'hidden lg:block' : ''} ${size === 'sm' ? 'hidden lg:block' : ''}`}
@@ -136,13 +154,13 @@ function DropDownMenuItem({ icon, title, onClick }) {
 
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
-  title: PropTypes.string.isRequired,
-  cover: PropTypes.string,
-  artist: PropTypes.string,
-  time: PropTypes.string.isRequired,
-  album: PropTypes.string,
-  clickHandler: PropTypes.func,
-  isFavorite: PropTypes.bool,
+  index: PropTypes.number,
+  song: PropTypes.object,
+  onPlay: PropTypes.func,
+  ActionButtonIcon: PropTypes.node,
+  actionButtonClickHandler: PropTypes.func,
+  isActionButtonPending: PropTypes.bool,
+  onLikeChange: PropTypes.func,
   classNames: PropTypes.string,
 };
 

@@ -1,80 +1,96 @@
 import supabase from './supabaseClient';
+import { shuffleArray } from '../utils/arrayUtils';
 
-const handleSongsErrors = (err) => {
-  if (err.code === 'PGRST116') {
-    return { status: 'not_found', success: true, songs: [] };
-  } else {
-    throw err; // other errors will be handled with react query or another try-catch block.
+export const getAllSongs = async ({ limit, cursor }) => {
+  let query = supabase
+    .from('songs_with_user_data')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (cursor) {
+    query = query.lt('created_at', cursor);
   }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
 };
 
-export const getAllSongs = async () => {
-  try {
-    const { data: songs, error } = await supabase.from('songs').select('*');
-    if (error) throw error;
-    return { status: 'success', success: true, songs };
-  } catch (err) {
-    return handleSongsErrors(err);
-  }
+export const getSongById = async (songId) => {
+  const { data, error } = await supabase
+    .from('songs_with_user_data')
+    .select('*')
+    .eq('id', songId)
+    .single();
+  if (error) throw error;
+  return data;
 };
 
-export const getSongsByAlbum = async (albumName, artist) => {
-  try {
-    const { error, data: songs } = await supabase
-      .from('songs')
+export const getSongsByAlbumId = async (albumId) => {
+  const { data, error } = await supabase
+    .from('songs_with_user_data')
+    .select('*')
+    .eq(`album_id`, albumId)
+    .order('track_number', { ascending: true });
+  if (error) throw error;
+  return data;
+};
+
+export const getSongsByPlaylistId = async (playlistId) => {
+  const { data, error } = await supabase
+    .from('playlist_songs')
+    .select('songs(*)')
+    .eq('playlist_id', playlistId);
+  if (error) throw error;
+  return data.map((data) => data.songs);
+};
+
+export const getPopularSongsByArtistId = async (artistId) => {
+  const { data, error } = await supabase
+    .from('songs_with_user_data')
+    .select('*')
+    .eq('artist_id', artistId)
+    .order('play_count', { ascending: false })
+    .limit(10);
+  if (error) throw error;
+  return data;
+};
+
+export const getRelatedSongsBySongData = async (song) => {
+  const [artistRes, genresRes] = await Promise.all([
+    supabase
+      .from('songs_with_user_data')
       .select('*')
-      .eq('artist', artist)
-      .eq('album', albumName);
-    if (error) throw error;
-    return { status: 'success', success: true, songs };
-  } catch (err) {
-    return handleSongsErrors(err);
-  }
-};
-
-// Fetch songs that contain at least one of the specified genres in their genre array.
-export const getSongsByGenres = async (genresArray) => {
-  if (!genresArray || !genresArray.length) {
-    return { status: 'no_genres_provided', success: false, songs: null };
-  }
-
-  try {
-    const { error, data: songs } = await supabase
-      .from('songs')
+      .eq('artist_id', song.artist_id)
+      .neq('id', song.id)
+      .limit(10),
+    supabase
+      .from('songs_with_user_data')
       .select('*')
-      .or(genresArray.map((genre) => `genres.cs.{${genre.toLowerCase()}}`).join(','));
-    if (error) throw error;
-    return { status: 'success', success: true, songs };
-  } catch (err) {
-    return handleSongsErrors(err);
+      .overlaps('genres', song.genres)
+      .neq('id', song.id)
+      .neq('artist_id', song.artist_id)
+      .limit(10),
+  ]);
+
+  if (artistRes.error) {
+    console.error('Error getting related songs by artist : ', artistRes.error);
+    throw artistRes.error;
+  } else if (genresRes.error) {
+    console.error('Error getting related songs by genre : ', genresRes.error);
+    throw genresRes.error;
   }
+
+  const relatedSongs = shuffleArray([...(artistRes.data || []), ...(genresRes.data || [])]);
+  return [song, ...relatedSongs];
 };
 
-export const getSongsBy = async (queryObject) => {
-  try {
-    const { error, data: songs } = await supabase.from('songs').select('*').match(queryObject);
-    if (error) throw error;
-    return { status: 'success', success: true, songs };
-  } catch (err) {
-    return handleSongsErrors(err);
-  }
-};
-
-export const getSingleSong = async (queryObject) => {
-  try {
-    const { error, data } = await supabase.from('songs').select('*').match(queryObject).single();
-    if (error) throw error;
-    return { status: 'success', success: true, song: data };
-  } catch (err) {
-    // expected 1 result, but found none/multiple result(s)
-    if (err.code === 'PGRST116') {
-      if (err.details === 'The result contains 0 rows') {
-        return { status: 'not_found', success: true, song: null };
-      } else {
-        return { status: 'multiple_results', success: false, song: null };
-      }
-    } else {
-      throw err;
-    }
-  }
+export const getFavoriteSongs = async () => {
+  const { data, error } = await supabase
+    .from('songs_with_user_data')
+    .select('*')
+    .eq('is_liked', true);
+  if (error) throw error;
+  return data;
 };

@@ -8,11 +8,12 @@ import MainButton from '../../components/Buttons/MainButton/MainButton';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useAuth from '../../hooks/useAuth';
 import supabase from '../../services/supabaseClient';
 import { updateUser } from '../../services/users';
 import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/storage';
-import useSnackbar from '../../hooks/useSnackbar';
+import { useDispatch } from 'react-redux';
+import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
+import { useSelector } from 'react-redux';
 
 const formSchema = z.object({
   avatar: z.any().optional(),
@@ -23,10 +24,9 @@ const formSchema = z.object({
 });
 
 export default function Profile() {
-  const { user, avatar: userAvatar } = useAuth();
-  const { user_name, full_name, bio } = user.user_metadata;
+  const userAvatar = useSelector((state) => state.auth.avatar);
+  const user = useSelector((state) => state.auth.user);
   const [avatar, setAvatar] = useState(null);
-  const { showNewSnackbar } = useSnackbar();
   const isTablet = useMediaQuery('(min-width: 640px)');
   const {
     register,
@@ -39,13 +39,14 @@ export default function Profile() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      full_name,
-      user_name,
-      email: user.email,
-      bio: bio || '',
+      full_name: user?.user_metadata.full_name ?? '',
+      user_name: user?.user_metadata.user_name ?? '',
+      email: user?.email ?? '',
+      bio: user?.user_metadata.bio ?? '',
     },
     resolver: zodResolver(formSchema),
   });
+  const dispatch = useDispatch();
 
   // update avatar after it is fetched in authProvider
   useEffect(() => setAvatar(userAvatar), [userAvatar]);
@@ -99,11 +100,21 @@ export default function Profile() {
           const { error } = await uploadFile('avatars', `${user.id}/avatar`, avatar);
           if (error) {
             console.error('Error uploading avatar: ', error);
-            showNewSnackbar('Unexpected error occurred while updating avatar.', 'error');
+            dispatch(
+              showNewSnackbar({
+                message: 'Unexpected error occurred while updating avatar.',
+                type: 'error',
+              })
+            );
           }
         } else {
           console.error('Error deleting avatars folder: ', error);
-          showNewSnackbar('Unexpected error occurred while updating avatar.', 'error');
+          dispatch(
+            showNewSnackbar({
+              message: 'Unexpected error occurred while updating avatar.',
+              type: 'error',
+            })
+          );
         }
       }
 
@@ -124,7 +135,9 @@ export default function Profile() {
         console.error('An error occurred while updating user in database => ', err);
         setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
       }
-      showNewSnackbar('Your profile has been updated successfully!', 'success');
+      dispatch(
+        showNewSnackbar({ message: 'Your profile has been updated successfully!', type: 'success' })
+      );
     } catch (err) {
       if (err.message === 'NetworkError when attempting to fetch resource.') {
         setError('root', { message: 'Network error, please check your connection.' });
@@ -157,7 +170,7 @@ export default function Profile() {
   };
 
   return (
-    <form className="flex flex-col gap-8 lg:gap-10" onSubmit={handleSubmit(submitHandler)}>
+    <form onSubmit={handleSubmit(submitHandler)}>
       <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6 md:pt-8">
         <label
           htmlFor="file-input"
@@ -178,9 +191,11 @@ export default function Profile() {
         <div className="text-center md:text-start">
           <p className="text-red mb-3 text-center text-sm md:hidden">{errors.avatar?.message}</p>
           <p className="text-primary-50 font-semibold sm:text-lg md:mb-2 md:text-2xl">
-            {full_name}
+            {user?.user_metadata.full_name}
           </p>
-          <span className="text-primary-100 text-sm sm:text-base md:text-xl">@{user_name}</span>
+          <span className="text-primary-100 text-sm sm:text-base md:text-xl">
+            @{user?.user_metadata.user_name}
+          </span>
         </div>
       </div>
       <div className="container flex !max-w-[720px] flex-col gap-6">

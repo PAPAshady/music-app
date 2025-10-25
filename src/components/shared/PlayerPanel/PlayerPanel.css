@@ -1,0 +1,11 @@
+.lyrics-wrapper {
+  scrollbar-gutter: stable;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+}

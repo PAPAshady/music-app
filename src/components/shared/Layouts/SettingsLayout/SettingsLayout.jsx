@@ -1,6 +1,4 @@
-import SidebarPlaylist from '../../../SidebarPlaylist/SidebarPlaylist';
 import { Outlet, NavLink } from 'react-router-dom';
-import { songs } from '../../../../data';
 
 export default function SettingsLayout() {
   const navLinks = [
@@ -11,24 +9,21 @@ export default function SettingsLayout() {
   ];
 
   return (
-    <div className="flex w-full items-start gap-6">
-      <div className="grow">
-        <div className="xs:gap-2 mb-8 flex items-center gap-1 min-[480px]:gap-3">
-          {navLinks.map((link) => (
-            <NavLink
-              className={({ isActive }) =>
-                `xs:text-sm rounded-md p-2 px-3 text-xs transition-colors duration-300 font-semibold sm:text-base lg:text-base ${isActive ? 'text-white-50 bg-secondary-300/64' : 'text-primary-100'}`
-              }
-              key={link.id}
-              to={link.href}
-            >
-              {link.title}
-            </NavLink>
-          ))}
-        </div>
-        <Outlet />
+    <div className="grow">
+      <div className="xs:gap-2 mb-8 flex items-center gap-1 min-[480px]:gap-3">
+        {navLinks.map((link) => (
+          <NavLink
+            className={({ isActive }) =>
+              `xs:text-sm rounded-md p-2 px-3 text-xs font-semibold transition-colors duration-300 sm:text-base lg:text-base ${isActive ? 'text-white-50 bg-secondary-300/64' : 'text-primary-100'}`
+            }
+            key={link.id}
+            to={link.href}
+          >
+            {link.title}
+          </NavLink>
+        ))}
       </div>
-      <SidebarPlaylist playList={songs} />
+      <Outlet />
     </div>
   );
 }

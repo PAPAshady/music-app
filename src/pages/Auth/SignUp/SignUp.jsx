@@ -2,18 +2,20 @@ import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSignUpButton';
 import { User, Sms, Lock } from 'iconsax-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useAuth from '../../../hooks/useAuth';
 import { z } from 'zod';
-import useSnackbar from '../../../hooks/useSnackbar';
+import { useNavigate } from 'react-router-dom';
+import { signUp } from '../../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
 const formSchema = z.object({
   first_name: z.string().min(1, { message: 'Firstname is required' }),
   last_name: z.string().min(1, { message: 'Lastname is required' }),
-  user_name: z.string().min(1, { message: 'Username is required' }),
+  username: z.string().min(1, { message: 'Username is required' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z
     .string()
@@ -22,9 +24,8 @@ const formSchema = z.object({
 });
 
 export default function SignUp() {
-  const { showNewSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const { signUp } = useAuth();
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     register,
@@ -35,29 +36,51 @@ export default function SignUp() {
     defaultValues: {
       first_name: '',
       last_name: '',
-      user_name: '',
+      username: '',
       email: '',
       password: '',
     },
     resolver: zodResolver(formSchema),
   });
 
-  const submitHandler = async (formData) => {
+  const submitHandler = async (userInfo) => {
     try {
-      await signUp(formData);
-      showNewSnackbar('Welcome to VioTune!', 'success');
+      await dispatch(signUp(userInfo));
+      dispatch(showNewSnackbar({ message: 'Welcome to VioTune!', type: 'success' }));
       navigate('/');
     } catch (err) {
-      switch (err.code) {
-        case 'user_already_exists':
-          setError('email', { message: 'This email already exists. Please login.' });
-          break;
-        case 'over_request_rate_limit':
-          setError('root', 'Too many attempts. Please wait and try again later.');
-          break;
-        default:
-          setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
-          break;
+      const res = err.response.data;
+      if (err.code === 'ERR_NETWORK') {
+        setError('root', {
+          message: 'Network error. Please check your connection and try again.',
+        });
+      } else if (res.status === 302) {
+        // email or username already exists
+        res.msg.includes('email')
+          ? setError('email', { message: res.msg })
+          : setError('username', { message: res.msg });
+      } else if (res.status === 400) {
+        // invalid fields
+        const errors = res.error;
+        if (res.msg.includes('Email')) {
+          setError('email', { message: res.msg });
+        }
+        if (errors?.username?.[0]) {
+          setError('username', {
+            message:
+              'Invalid username. It may contain only letters, numbers, and @/./+/-/_ characters.',
+          });
+        }
+        if (errors?.password?.[0]) {
+          setError('password', { message: errors.password[0] });
+        }
+        console.log(res);
+      } else {
+        // default error
+        setError('root', {
+          message: 'An unexpected error occurred. Please try again.',
+        });
+        console.log('error in register user => ', err);
       }
     }
   };
@@ -80,7 +103,7 @@ export default function SignUp() {
     {
       id: 3,
       type: 'text',
-      name: 'user_name',
+      name: 'username',
       placeholder: 'Username',
       icon: <User />,
     },
@@ -107,7 +130,7 @@ export default function SignUp() {
         <p className="text-lg">Welcome To VioTune</p>
       </div>
       <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
-        <p className="text-red mb-2 text-lg font-semibold">{errors.root?.message}</p>
+        <p className="text-red mt-5 mb-8 text-lg font-semibold">{errors.root?.message}</p>
         <div className="mb-4 flex flex-col gap-9">
           <div className="flex flex-col gap-4 sm:flex-row">
             {formInputs.slice(0, 2).map((input) => (

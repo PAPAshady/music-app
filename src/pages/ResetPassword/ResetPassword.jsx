@@ -2,10 +2,8 @@ import TextField from '../../components/Inputs/TextField/TextField';
 import { useForm } from 'react-hook-form';
 import LoginButton from '../../components/Buttons/LoginButton/LoginButton';
 import { zodResolver } from '@hookform/resolvers/zod';
-import supabase from '../../services/supabaseClient';
 import { z } from 'zod';
 import { Lock } from 'iconsax-react';
-import { useNavigate } from 'react-router-dom';
 
 const passwordSchema = z
   .string()
@@ -23,12 +21,10 @@ const formSchema = z
   });
 
 export default function ResetPassword() {
-  const navigate = useNavigate();
   const {
     register,
     watch,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -39,18 +35,7 @@ export default function ResetPassword() {
   });
 
   const submitHandler = async ({ password }) => {
-    try {
-      const { error } = supabase.auth.updateUser({ password });
-      if (error) throw error;
-      navigate('/', { replace: true });
-    } catch (err) {
-      if (err.code === 'over_request_rate_limit') {
-        setError('root', { message: 'Too many attempts. Please wait and try again later.' });
-      } else {
-        setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
-        console.error('An error occured while sending password reset link => ', err);
-      }
-    }
+    console.log('Password reseted successfully!!! => ', password);
   };
 
   const inputFields = [

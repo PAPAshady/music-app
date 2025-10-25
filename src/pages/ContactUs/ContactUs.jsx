@@ -17,7 +17,7 @@ export default function ContactUs() {
   const messageInput = useInput();
 
   return (
-    <div className="flex flex-col gap-8 pt-8 lg:gap-12">
+    <div>
       <div>
         <SettingsPagesSectionHeader
           title="Contact Us"

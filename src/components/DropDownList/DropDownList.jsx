@@ -42,7 +42,7 @@ function DropDownListItem({ icon, title, onClick }) {
     <MenuItem>
       {({ close }) => (
         <button
-          className="hover:bg-primary-400/60 cursor-default"
+          className="hover:bg-primary-400/60 cursor-default min-w-[130px]"
           onClick={(e) => clickHandler(e, close)}
         >
           <div className="flex items-center text-start gap-2 p-2 text-sm">

@@ -1,4 +1,5 @@
 import AlbumCard from '../../MusicCards/AlbumCard/AlbumCard';
+import AlbumCardSkeleton from '../../MusicCards/AlbumCard/AlbumCardSkeleton';
 import { chunkArray } from '../../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
@@ -6,7 +7,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import PropTypes from 'prop-types';
 
-export default function AlbumsSlider({ albums, albumCardSize = 'lg', albumCardStyles }) {
+export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', albumCardStyles }) {
   return (
     <div className="mx-auto w-[95%] xl:max-w-[940px]">
       <Swiper
@@ -27,27 +28,38 @@ export default function AlbumsSlider({ albums, albumCardSize = 'lg', albumCardSt
           },
         }}
       >
-        {chunkArray(albums, 3).map((albumsArray, index) => (
-          <SwiperSlide key={index} className="p-[1px] pb-11">
-            <div className="flex flex-col gap-4">
-              {albumsArray.map((album) => (
-                <AlbumCard
-                  key={album.id}
-                  size={albumCardSize}
-                  {...album}
-                  classNames={albumCardStyles}
-                />
-              ))}
-            </div>
-          </SwiperSlide>
-        ))}
+        {isLoading
+          ? chunkArray(Array(9).fill(0), 3).map((skeletonCardsArray, index) => (
+              <SwiperSlide key={index} className="p-[1px] pb-11">
+                <div className="flex flex-col gap-4">
+                  {skeletonCardsArray.map((_, index) => (
+                    <AlbumCardSkeleton size={albumCardSize} key={index} />
+                  ))}
+                </div>
+              </SwiperSlide>
+            ))
+          : chunkArray(albums ?? [], 3).map((albumsArray, index) => (
+              <SwiperSlide key={index} className="p-[1px] pb-11">
+                <div className="flex flex-col gap-4">
+                  {albumsArray.map((album) => (
+                    <AlbumCard
+                      key={album.id}
+                      size={albumCardSize}
+                      classNames={albumCardStyles}
+                      album={album}
+                    />
+                  ))}
+                </div>
+              </SwiperSlide>
+            ))}
       </Swiper>
     </div>
   );
 }
 
 AlbumsSlider.propTypes = {
-  albums: PropTypes.array.isRequired,
+  albums: PropTypes.array,
+  isLoading: PropTypes.bool.isRequired,
   albumCardSize: PropTypes.oneOf(['md', 'lg']),
   albumCardStyles: PropTypes.string,
 };

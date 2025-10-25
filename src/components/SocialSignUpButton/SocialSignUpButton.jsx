@@ -1,20 +1,12 @@
 import PropTypes from 'prop-types';
-import useAuth from '../../hooks/useAuth';
+import { useDispatch } from 'react-redux';
+import { signInWithOAuth } from '../../redux/slices/authSlice';
 
-export default function SocialSignUpButton({ imageSrc, provider, onError }) {
-  const { signInWithOAuth } = useAuth();
-
-  const handleOAuth = async (provider) => {
-    try {
-      await signInWithOAuth(provider);
-    } catch (err) {
-      onError?.(err);
-      console.error(`${provider} auth error:`, err);
-    }
-  };
+export default function SocialSignUpButton({ imageSrc, provider }) {
+  const dispatch = useDispatch();
 
   return (
-    <button onClick={() => handleOAuth(provider)}>
+    <button onClick={() => dispatch(signInWithOAuth(provider))}>
       <img
         className="size-10 transition-transform hover:scale-110"
         src={imageSrc}
