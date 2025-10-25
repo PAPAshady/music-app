@@ -33,9 +33,8 @@ function MobilePlayerPanel() {
   const { data: song, isPending } = useQuery(getSongByIdQueryOptions(songId));
   const dispatch = useDispatch();
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
-  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const likeHandlerMutation = useMutation(
-    currentMusic?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
+    song?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
   const playingState = useSelector((state) => state.musicPlayer.playingState);
 
@@ -67,6 +66,12 @@ function MobilePlayerPanel() {
       classNames: 'size-8 sm:size-10',
       onClick: () => dispatch(togglePlayState()),
     },
+  ];
+
+  const tabButtons = [
+    { id: 1, title: 'UP NEXT' },
+    { id: 2, title: 'LYRICS' },
+    { id: 3, title: 'RELATED' },
   ];
 
   return (
@@ -106,7 +111,7 @@ function MobilePlayerPanel() {
           <PlayerProgressBar />
           <div className="mt-3 flex items-center justify-between text-xs">
             <CurrentTimeNumber />
-            <span className="text-primary-100 text-sm">{formatTime(currentMusic?.duration)}</span>
+            <span className="text-primary-100 text-sm">{formatTime(song?.duration || 0)}</span>
           </div>
         </div>
         <div className="text-secondary-100 flex items-center justify-between px-2 min-[380px]:px-4">
@@ -115,13 +120,17 @@ function MobilePlayerPanel() {
           ))}
         </div>
         <div className="text-secondary-50 mt-2 flex items-center">
-          <button className="grow cursor-pointer px-2 py-6 md:py-8 md:text-lg">UP NEXT</button>
-          <button className="grow cursor-pointer px-2 py-6 md:py-8 md:text-lg">LYRICS</button>
-          <button className="grow cursor-pointer px-2 py-6 md:py-8 md:text-lg">RELATED</button>
+          {tabButtons.map((button) => (
+            <TabButton key={button.id} {...button} />
+          ))}
         </div>
       </div>
     </div>
   );
+}
+
+function TabButton({ title }) {
+  return <button className="grow cursor-pointer px-2 py-6 md:py-8 md:text-lg">{title}</button>;
 }
 
 function PlayButton({ icon, onClick, classNames }) {
@@ -160,6 +169,10 @@ PlayButton.propTypes = {
 MobilePlayerPanel.propTypes = {
   songs: PropTypes.array,
   isPending: PropTypes.bool,
+};
+
+TabButton.propTypes = {
+  title: PropTypes.string.isRequired,
 };
 
 export default MobilePlayerPanel;

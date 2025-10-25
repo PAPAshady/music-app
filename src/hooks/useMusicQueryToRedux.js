@@ -15,6 +15,8 @@ import { getRelatedSongsBySongDataQueryOptions } from '../queries/musics';
 import { useSelector } from 'react-redux';
 import { setQueries } from '../redux/slices/queryStateSlice';
 import { favoriteSongsInfos } from '../redux/slices/playContextSlice';
+import { openPanel } from '../redux/slices/playerPanelSlice';
+import useMediaQuery from './useMediaQuery';
 
 const queryOptions = {
   playlist: getPlaylistByIdQueryOptions,
@@ -40,6 +42,7 @@ export default function useMusicQueryToRedux() {
   const queryType = useSelector((state) => state.queryState.type);
   const id = useSelector((state) => state.queryState.id);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
+  const isMobile = useMediaQuery('(max-width: 1023px)');
 
   // Fetch initial media data (playlist, album, or single track)
   const { data } = useQuery({
@@ -71,6 +74,7 @@ export default function useMusicQueryToRedux() {
         dispatch(setSelectedCollectionTracks(relatedSongs));
         music.src = data.song_url;
         dispatch(setCurrentMusic(data));
+        isMobile && dispatch(openPanel()); // open player panel on mobile if a single track is selected.
       }
     } else if (queryType === 'favorites' && favoriteSongs && !currentMusic) {
       // if data does not exist it means its favorite songs. so we dispatch the corresponding actions
@@ -79,7 +83,7 @@ export default function useMusicQueryToRedux() {
       dispatch(setCurrentMusic(favoriteSongs[0]));
       music.src = favoriteSongs[0].song_url;
     }
-  }, [data, dispatch, queryType, relatedSongs, currentMusic, favoriteSongs]);
+  }, [data, dispatch, queryType, relatedSongs, currentMusic, favoriteSongs, isMobile]);
 
   // if a single track is playing, update the query state and url if user changes the track
   useEffect(() => {
