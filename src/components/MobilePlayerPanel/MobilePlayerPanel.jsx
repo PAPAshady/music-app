@@ -27,6 +27,17 @@ import {
 import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../queries/likes';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import ShimmerOverlay from '../ShimmerOverlay/ShimmerOverlay';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import SongCard from '../MusicCards/SongCard/SongCard';
+import SongCardSkeleton from '../MusicCards/SongCard/SongCardSkeleton';
+import { chunkArray } from '../../utils/arrayUtils';
+import { getRelatedSongsBySongDataQueryOptions } from '../../queries/musics';
+import { getRelatedArtistsQueryOptions } from '../../queries/artists';
+import { getArtistByIdQueryOptions } from '../../queries/artists';
+import SmallArtistCard from '../MusicCards/SmallArtistCard/SmallArtistCard';
+import SmallArtistCardSkeleton from '../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
+import { getAlbumsByArtistIdQueryOptions } from '../../queries/albums';
 
 function MobilePlayerPanel() {
   const songId = useSelector((state) => state.queryState.id);
@@ -37,6 +48,17 @@ function MobilePlayerPanel() {
     song?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
   const playingState = useSelector((state) => state.musicPlayer.playingState);
+  const [isOpen, setIsOpen] = useState(false);
+  const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
+    getRelatedSongsBySongDataQueryOptions(song)
+  );
+  const { data: artist } = useQuery(getArtistByIdQueryOptions(song?.artist_id));
+  const { data: relatedArtists, isPending: isRelatedArtistsPending } = useQuery(
+    getRelatedArtistsQueryOptions(artist)
+  );
+  const { data: albums, isPending: isAlbumsPending } = useQuery(
+    getAlbumsByArtistIdQueryOptions(song?.artist_id)
+  );
 
   const playButtons = [
     {
@@ -75,7 +97,7 @@ function MobilePlayerPanel() {
   ];
 
   return (
-    <div className="flex min-h-full grow flex-col items-center justify-center gap-8">
+    <div className="relative flex min-h-full grow flex-col items-center justify-center gap-8">
       <div className="flex w-full grow items-center justify-center pt-20">
         <div className="relative overflow-hidden">
           <img
@@ -91,7 +113,7 @@ function MobilePlayerPanel() {
           </div>
         </div>
       </div>
-      <div className="flex w-full flex-col gap-4 px-4 text-start sm:w-[95%]">
+      <div className="flex w-full flex-col gap-4 px-4 pb-20 text-start sm:w-[95%]">
         {isPending ? (
           <div className="flex flex-col gap-3 sm:mb-2">
             <p className="relative h-3.5 w-2/3 overflow-hidden rounded-full bg-gray-600/60">
@@ -119,10 +141,79 @@ function MobilePlayerPanel() {
             <PlayButton key={button.id} {...button} />
           ))}
         </div>
-        <div className="text-secondary-50 mt-2 flex items-center">
-          {tabButtons.map((button) => (
-            <TabButton key={button.id} {...button} />
-          ))}
+      </div>
+      <div
+        className={`text-secondary-50 absolute bottom-0 flex w-full flex-col overflow-hidden transition-all transition-discrete duration-300 ${isOpen ? 'z-[1] h-full bg-slate-800' : 'h-14 bg-transparent'}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="px-3">
+          <div className="border-secondary-300 flex items-center border-b">
+            {tabButtons.map((button) => (
+              <TabButton key={button.id} {...button} />
+            ))}
+          </div>
+        </div>
+
+        <div
+          className={`overflow-y-auto p-4 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+        >
+          <h2 className="mb-3 text-xl font-bold">You might also like</h2>
+          <Swiper spaceBetween={16} slidesPerView={1.15}>
+            {isRelatedSongsPending
+              ? chunkArray(Array(12).fill(), 4).map((skeletonCardsArray, index) => (
+                  <SwiperSlide key={index}>
+                    <div className="flex flex-col gap-4">
+                      {skeletonCardsArray.map((_, index) => (
+                        <SongCardSkeleton key={index} />
+                      ))}
+                    </div>
+                  </SwiperSlide>
+                ))
+              : chunkArray(relatedSongs || [], 4).map((songsArray, index) => (
+                  <SwiperSlide key={index}>
+                    <div className="flex flex-col gap-2">
+                      {songsArray.map((song) => (
+                        <SongCard key={song.id} song={song} classNames="!border-none !text-white" />
+                      ))}
+                    </div>
+                  </SwiperSlide>
+                ))}
+          </Swiper>
+
+          {/* Similar artists */}
+          <h2 className="mt-6 mb-4 text-xl font-bold">Similar artists</h2>
+          <Swiper slidesPerView={2.5}>
+            {isRelatedArtistsPending
+              ? Array(6)
+                  .fill()
+                  .map((_, index) => (
+                    <SwiperSlide key={index}>
+                      <SmallArtistCardSkeleton key={index} />
+                    </SwiperSlide>
+                  ))
+              : relatedArtists.map((artist) => (
+                  <SwiperSlide key={artist.id}>
+                    <SmallArtistCard artist={artist} size="md" />
+                  </SwiperSlide>
+                ))}
+          </Swiper>
+
+          <h2 className="mt-6 mb-4 text-xl font-bold">More from this artist</h2>
+          <Swiper spaceBetween={12} slidesPerView={2.3}>
+            {isAlbumsPending
+              ? Array(6)
+                  .fill()
+                  .map((_, index) => (
+                    <SwiperSlide key={index}>
+                      <SmallAlbumCardSkeleton />
+                    </SwiperSlide>
+                  ))
+              : [...albums, ...albums, ...albums, ...albums].map((album, i) => (
+                  <SwiperSlide key={i}>
+                    <SmallAlbumCard {...album} />
+                  </SwiperSlide>
+                ))}
+          </Swiper>
         </div>
       </div>
     </div>
@@ -130,7 +221,7 @@ function MobilePlayerPanel() {
 }
 
 function TabButton({ title }) {
-  return <button className="grow cursor-pointer px-2 py-6 md:py-8 md:text-lg">{title}</button>;
+  return <button className="grow cursor-pointer px-2 py-4 md:py-8 md:text-lg">{title}</button>;
 }
 
 function PlayButton({ icon, onClick, classNames }) {
@@ -160,6 +251,45 @@ function CurrentTimeNumber() {
   return <span className="text-primary-100 text-sm">{currentTime}</span>;
 }
 
+function SmallAlbumCard({ cover, title, release_date }) {
+  return (
+    <div className="flex w-[150px] flex-col rounded-xl p-3">
+      <img
+        src={cover || musicCover}
+        alt={title}
+        className="mb-2 h-[120px] w-full rounded-lg object-cover"
+      />
+      <h3 className="truncate text-sm font-semibold">{title}</h3>
+      <div className="mt-1 flex items-center gap-1 truncate text-xs text-gray-400">
+        <span>Album</span>
+        <span className="bg-secondary-100 size-0.75 rounded-full"></span>
+        <span>{release_date.split('-')[0]}</span>
+      </div>
+    </div>
+  );
+}
+
+function SmallAlbumCardSkeleton() {
+  return (
+    <div className="flex w-[150px] flex-col rounded-xl p-3">
+      <div className="relative mb-2 h-[120px] w-full overflow-hidden rounded-lg bg-gray-600/60">
+        <ShimmerOverlay />
+      </div>
+      <div className="relative h-2 w-3/4 overflow-hidden rounded-full bg-gray-600/60">
+        <ShimmerOverlay />
+      </div>
+      <div className="relative mt-1.5 h-1.5 w-2/3 overflow-hidden rounded-full bg-gray-600/60">
+        <ShimmerOverlay />
+      </div>
+    </div>
+  );
+}
+
+SmallAlbumCard.propTypes = {
+  cover: PropTypes.string,
+  title: PropTypes.string,
+  release_date: PropTypes.string,
+};
 PlayButton.propTypes = {
   icon: PropTypes.element.isRequired,
   onClick: PropTypes.func.isRequired,
