@@ -14,7 +14,6 @@ import {
 import 'swiper/css';
 import './PlayerPanel.css';
 import { closePanel as closePlayerPanel } from '../../../redux/slices/playerPanelSlice';
-import PropTypes from 'prop-types';
 import DesktopPlayerPanel from '../../DesktopPlayerPanel/DesktopPlayerPanel';
 import MobilePlayerPanel from '../../MobilePlayerPanel/MobilePlayerPanel';
 import useMediaQuery from '../../../hooks/useMediaQuery';
@@ -76,7 +75,3 @@ export default function PlayerPanel() {
     document.getElementById('playerPanel')
   );
 }
-
-PlayerPanel.propTypes = {
-  isDesktop: PropTypes.bool.isRequired,
-};
