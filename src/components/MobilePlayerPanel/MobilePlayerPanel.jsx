@@ -41,6 +41,7 @@ import SmallArtistCardSkeleton from '../MusicCards/SmallArtistCard/SmallArtistCa
 import { getAlbumsByArtistIdQueryOptions } from '../../queries/albums';
 import useLyrics from '../../hooks/useLyrics';
 import { setAutoLyricsTracker } from '../../redux/slices/musicPlayerSlice';
+import usePlayBar from '../../hooks/usePlayBar';
 
 function MobilePlayerPanel() {
   const songId = useSelector((state) => state.queryState.id);
@@ -67,6 +68,7 @@ function MobilePlayerPanel() {
   const [tab, setTab] = useState(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
+  const { playSingleSong } = usePlayBar();
 
   const closePanel = () => {
     setTab(null);
@@ -215,6 +217,7 @@ function MobilePlayerPanel() {
                             <SongCard
                               key={song.id}
                               song={song}
+                              onPlay={playSingleSong}
                               classNames="!border-none !text-white"
                             />
                           ))}
