@@ -208,12 +208,28 @@ function MobilePlayerPanel() {
                       <SmallAlbumCardSkeleton />
                     </SwiperSlide>
                   ))
-              : [...albums, ...albums, ...albums, ...albums].map((album, i) => (
+              : albums.map((album, i) => (
                   <SwiperSlide key={i}>
                     <SmallAlbumCard {...album} />
                   </SwiperSlide>
                 ))}
           </Swiper>
+
+          <h2 className="mt-6 mb-4 text-xl font-bold">Song details</h2>
+          <div className="flex items-center gap-3">
+            <div className="size-24 overflow-hidden rounded-xl">
+              <img src={song?.cover} alt={song?.title} className="size-full object-cover" />
+            </div>
+            <div className="flex grow flex-col gap-1">
+              <p className="font-bold">{song?.title}</p>
+              <p className="text-sm text-slate-300">
+                {song?.artist} - {formatTime(song?.duration)}
+              </p>
+              <p className="text-sm">
+                {song?.album} - {song?.release_date.split('-')[0]}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
