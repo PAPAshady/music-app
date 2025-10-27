@@ -1,5 +1,5 @@
 import musicCover from '../../assets/images/covers/no-cover.jpg';
-import { cloneElement, useEffect, useState } from 'react';
+import { cloneElement, useEffect, useState, useRef } from 'react';
 import {
   Play,
   Pause,
@@ -9,6 +9,7 @@ import {
   RepeateOne,
   RepeateMusic,
   Like1,
+  Music,
 } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlayerProgressBar from '../PlayerProgressBar/PlayerProgressBar';
@@ -38,6 +39,8 @@ import { getArtistByIdQueryOptions } from '../../queries/artists';
 import SmallArtistCard from '../MusicCards/SmallArtistCard/SmallArtistCard';
 import SmallArtistCardSkeleton from '../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
 import { getAlbumsByArtistIdQueryOptions } from '../../queries/albums';
+import useLyrics from '../../hooks/useLyrics';
+import { setAutoLyricsTracker } from '../../redux/slices/musicPlayerSlice';
 
 function MobilePlayerPanel() {
   const songId = useSelector((state) => state.queryState.id);
@@ -47,6 +50,9 @@ function MobilePlayerPanel() {
   const likeHandlerMutation = useMutation(
     song?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
+  const containerRef = useRef(null);
+  const lineRefs = useRef([]);
+  const { currentLineIndex } = useLyrics(lineRefs, containerRef);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
     getRelatedSongsBySongDataQueryOptions(song)
@@ -58,8 +64,14 @@ function MobilePlayerPanel() {
   const { data: albums, isPending: isAlbumsPending } = useQuery(
     getAlbumsByArtistIdQueryOptions(song?.artist_id)
   );
-  const [tab, setTab] = useState('RELATED');
+  const [tab, setTab] = useState(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
+
+  const closePanel = () => {
+    setTab(null);
+    setIsPanelOpen(false);
+  };
 
   const playButtons = [
     {
@@ -149,7 +161,7 @@ function MobilePlayerPanel() {
         <div>
           {isPanelOpen && (
             <div className="bg-secondary-800/50 flex origin-top items-center p-2">
-              <div className="flex grow items-center gap-2" onClick={() => setIsPanelOpen(false)}>
+              <div className="flex grow items-center gap-2" onClick={closePanel}>
                 <img
                   src={song?.cover || musicCover}
                   alt={song?.title}
@@ -262,6 +274,46 @@ function MobilePlayerPanel() {
                 </div>
               </div>
             </>
+          )}
+
+          {tab === 'LYRICS' && (
+            <div className="flex h-full flex-col">
+              <div className="border-secondary-400 mb-6 flex items-center justify-between border-b pt-2 pb-4">
+                <h2 className="text-xl font-bold">Lyrics</h2>
+                <label className="flex items-center gap-2">
+                  <span>Auto-sync</span>
+                  <input
+                    type="checkbox"
+                    checked={shouldAutoTrackLyrics}
+                    onChange={() => dispatch(setAutoLyricsTracker(!shouldAutoTrackLyrics))}
+                  />
+                </label>
+              </div>
+
+              <div className="h-full grow overflow-auto pr-2 pb-2" ref={containerRef}>
+                {song?.lyrics ? (
+                  <div className="space-y-8">
+                    {song.lyrics.map((lyric, index) => (
+                      <p
+                        ref={(el) => (lineRefs.current[index] = el)}
+                        key={index}
+                        className={`text-2xl leading-8 transition-all ${index === currentLineIndex ? 'font-semibold text-[#fff]' : 'text-slate-400'}`}
+                      >
+                        {lyric.text || '\u00A0'}
+                      </p>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border-neutral-400 pt-10 text-center">
+                    <Music size={64} className="text-secondary-300" />
+                    <p className="mt-2 px-4 text-xl font-semibold text-white">
+                      No lyrics available at the moment.
+                    </p>
+                    <p className="text-lg">Check back soon!</p>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
         </div>
       </div>
