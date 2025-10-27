@@ -48,7 +48,6 @@ function MobilePlayerPanel() {
     song?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
   const playingState = useSelector((state) => state.musicPlayer.playingState);
-  const [isOpen, setIsOpen] = useState(false);
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
     getRelatedSongsBySongDataQueryOptions(song)
   );
@@ -59,6 +58,8 @@ function MobilePlayerPanel() {
   const { data: albums, isPending: isAlbumsPending } = useQuery(
     getAlbumsByArtistIdQueryOptions(song?.artist_id)
   );
+  const [tab, setTab] = useState('RELATED');
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   const playButtons = [
     {
@@ -143,101 +144,140 @@ function MobilePlayerPanel() {
         </div>
       </div>
       <div
-        className={`text-secondary-50 absolute bottom-0 flex w-full flex-col overflow-hidden transition-all transition-discrete duration-300 ${isOpen ? 'z-[1] h-full bg-slate-800' : 'h-14 bg-transparent'}`}
-        onClick={() => setIsOpen(!isOpen)}
+        className={`text-secondary-50 absolute bottom-0 flex w-full flex-col overflow-hidden transition-all transition-discrete duration-300 ${isPanelOpen ? 'z-[1] h-full bg-slate-800' : 'h-14 bg-transparent'}`}
       >
-        <div className="px-3">
-          <div className="border-secondary-300 flex items-center border-b">
-            {tabButtons.map((button) => (
-              <TabButton key={button.id} {...button} />
-            ))}
+        <div>
+          {isPanelOpen && (
+            <div className="bg-secondary-800/50 flex origin-top items-center p-2">
+              <div className="flex grow items-center gap-2" onClick={() => setIsPanelOpen(false)}>
+                <img
+                  src={song?.cover || musicCover}
+                  alt={song?.title}
+                  className="size-11 rounded-lg"
+                />
+                <div>
+                  <p className="text-sm font-semibold">{song?.title}</p>
+                  <p className="text-xs text-slate-300">{song?.artist}</p>
+                </div>
+              </div>
+              <button onClick={() => dispatch(isPlaying ? pause() : play())} className="px-3 py-2">
+                {isPlaying ? <Pause /> : <Play />}
+              </button>
+            </div>
+          )}
+          <div onClick={() => setIsPanelOpen(true)}>
+            <div className="border-secondary-300 flex items-center border-b">
+              {tabButtons.map((button) => (
+                <TabButton
+                  key={button.id}
+                  {...button}
+                  onClick={setTab}
+                  isActive={tab === button.title}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
         <div
-          className={`overflow-y-auto p-4 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+          className={`overflow-y-auto p-4 transition-opacity duration-300 ${isPanelOpen ? 'opacity-100' : 'opacity-0'}`}
         >
-          <h2 className="mb-3 text-xl font-bold">You might also like</h2>
-          <Swiper spaceBetween={16} slidesPerView={1.15}>
-            {isRelatedSongsPending
-              ? chunkArray(Array(12).fill(), 4).map((skeletonCardsArray, index) => (
-                  <SwiperSlide key={index}>
-                    <div className="flex flex-col gap-4">
-                      {skeletonCardsArray.map((_, index) => (
-                        <SongCardSkeleton key={index} />
-                      ))}
-                    </div>
-                  </SwiperSlide>
-                ))
-              : chunkArray(relatedSongs || [], 4).map((songsArray, index) => (
-                  <SwiperSlide key={index}>
-                    <div className="flex flex-col gap-2">
-                      {songsArray.map((song) => (
-                        <SongCard key={song.id} song={song} classNames="!border-none !text-white" />
-                      ))}
-                    </div>
-                  </SwiperSlide>
-                ))}
-          </Swiper>
+          {tab === 'RELATED' && (
+            <>
+              <h2 className="mb-3 text-xl font-bold">You might also like</h2>
+              <Swiper spaceBetween={16} slidesPerView={1.15}>
+                {isRelatedSongsPending
+                  ? chunkArray(Array(12).fill(), 4).map((skeletonCardsArray, index) => (
+                      <SwiperSlide key={index}>
+                        <div className="flex flex-col gap-4">
+                          {skeletonCardsArray.map((_, index) => (
+                            <SongCardSkeleton key={index} />
+                          ))}
+                        </div>
+                      </SwiperSlide>
+                    ))
+                  : chunkArray(relatedSongs || [], 4).map((songsArray, index) => (
+                      <SwiperSlide key={index}>
+                        <div className="flex flex-col gap-2">
+                          {songsArray.map((song) => (
+                            <SongCard
+                              key={song.id}
+                              song={song}
+                              classNames="!border-none !text-white"
+                            />
+                          ))}
+                        </div>
+                      </SwiperSlide>
+                    ))}
+              </Swiper>
 
-          {/* Similar artists */}
-          <h2 className="mt-6 mb-4 text-xl font-bold">Similar artists</h2>
-          <Swiper slidesPerView={2.5}>
-            {isRelatedArtistsPending
-              ? Array(6)
-                  .fill()
-                  .map((_, index) => (
-                    <SwiperSlide key={index}>
-                      <SmallArtistCardSkeleton key={index} />
-                    </SwiperSlide>
-                  ))
-              : relatedArtists.map((artist) => (
-                  <SwiperSlide key={artist.id}>
-                    <SmallArtistCard artist={artist} size="md" />
-                  </SwiperSlide>
-                ))}
-          </Swiper>
+              {/* Similar artists */}
+              <h2 className="mt-6 mb-4 text-xl font-bold">Similar artists</h2>
+              <Swiper slidesPerView={2.5}>
+                {isRelatedArtistsPending
+                  ? Array(6)
+                      .fill()
+                      .map((_, index) => (
+                        <SwiperSlide key={index}>
+                          <SmallArtistCardSkeleton key={index} />
+                        </SwiperSlide>
+                      ))
+                  : relatedArtists.map((artist) => (
+                      <SwiperSlide key={artist.id}>
+                        <SmallArtistCard artist={artist} size="md" />
+                      </SwiperSlide>
+                    ))}
+              </Swiper>
 
-          <h2 className="mt-6 mb-4 text-xl font-bold">More from this artist</h2>
-          <Swiper spaceBetween={12} slidesPerView={2.3}>
-            {isAlbumsPending
-              ? Array(6)
-                  .fill()
-                  .map((_, index) => (
-                    <SwiperSlide key={index}>
-                      <SmallAlbumCardSkeleton />
-                    </SwiperSlide>
-                  ))
-              : albums.map((album, i) => (
-                  <SwiperSlide key={i}>
-                    <SmallAlbumCard {...album} />
-                  </SwiperSlide>
-                ))}
-          </Swiper>
+              <h2 className="mt-6 mb-4 text-xl font-bold">More from this artist</h2>
+              <Swiper spaceBetween={12} slidesPerView={2.3}>
+                {isAlbumsPending
+                  ? Array(6)
+                      .fill()
+                      .map((_, index) => (
+                        <SwiperSlide key={index}>
+                          <SmallAlbumCardSkeleton />
+                        </SwiperSlide>
+                      ))
+                  : albums.map((album, i) => (
+                      <SwiperSlide key={i}>
+                        <SmallAlbumCard {...album} />
+                      </SwiperSlide>
+                    ))}
+              </Swiper>
 
-          <h2 className="mt-6 mb-4 text-xl font-bold">Song details</h2>
-          <div className="flex items-center gap-3">
-            <div className="size-24 overflow-hidden rounded-xl">
-              <img src={song?.cover} alt={song?.title} className="size-full object-cover" />
-            </div>
-            <div className="flex grow flex-col gap-1">
-              <p className="font-bold">{song?.title}</p>
-              <p className="text-sm text-slate-300">
-                {song?.artist} - {formatTime(song?.duration)}
-              </p>
-              <p className="text-sm">
-                {song?.album} - {song?.release_date.split('-')[0]}
-              </p>
-            </div>
-          </div>
+              <h2 className="mt-6 mb-4 text-xl font-bold">Song details</h2>
+              <div className="flex items-center gap-3">
+                <div className="size-24 overflow-hidden rounded-xl">
+                  <img src={song?.cover} alt={song?.title} className="size-full object-cover" />
+                </div>
+                <div className="flex grow flex-col gap-1">
+                  <p className="font-bold">{song?.title}</p>
+                  <p className="text-sm text-slate-300">
+                    {song?.artist} - {formatTime(song?.duration)}
+                  </p>
+                  <p className="text-sm">
+                    {song?.album} - {song?.release_date.split('-')[0]}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function TabButton({ title }) {
-  return <button className="grow cursor-pointer px-2 py-4 md:py-8 md:text-lg">{title}</button>;
+function TabButton({ title, onClick, isActive }) {
+  return (
+    <button
+      className={`grow cursor-pointer border-b px-2 py-4 transition-colors md:py-8 md:text-lg ${isActive ? 'border-secondary-200' : 'border-transparent'}`}
+      onClick={() => onClick(title)}
+    >
+      {title}
+    </button>
+  );
 }
 
 function PlayButton({ icon, onClick, classNames }) {
@@ -319,6 +359,8 @@ MobilePlayerPanel.propTypes = {
 
 TabButton.propTypes = {
   title: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired,
 };
 
 export default MobilePlayerPanel;
