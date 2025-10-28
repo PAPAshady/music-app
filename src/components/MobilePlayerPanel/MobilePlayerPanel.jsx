@@ -42,6 +42,10 @@ import { getAlbumsByArtistIdQueryOptions } from '../../queries/albums';
 import useLyrics from '../../hooks/useLyrics';
 import { setAutoLyricsTracker } from '../../redux/slices/musicPlayerSlice';
 import usePlayBar from '../../hooks/usePlayBar';
+import { closePanel as closePlayerPanel } from '../../redux/slices/playerPanelSlice';
+import { setSelectedCollection } from '../../redux/slices/playContextSlice';
+import { setQueries } from '../../redux/slices/queryStateSlice';
+import { openMobilePanel } from '../../redux/slices/mobilePanelSlice';
 
 function MobilePlayerPanel() {
   const songId = useSelector((state) => state.queryState.id);
@@ -257,7 +261,11 @@ function MobilePlayerPanel() {
                       ))
                   : relatedArtists.map((artist) => (
                       <SwiperSlide key={artist.id}>
-                        <SmallArtistCard artist={artist} size="md" />
+                        <SmallArtistCard
+                          artist={artist}
+                          size="md"
+                          onClick={() => dispatch(closePlayerPanel())} // close player panel before opening artist panel
+                        />
                       </SwiperSlide>
                     ))}
               </Swiper>
@@ -380,15 +388,25 @@ function CurrentTimeNumber() {
   return <span className="text-primary-100 text-sm">{currentTime}</span>;
 }
 
-function SmallAlbumCard({ cover, title, release_date }) {
+function SmallAlbumCard(album) {
+  const { cover, title, release_date } = album;
+  const dispatch = useDispatch();
+
+  const onClick = () => {
+    dispatch(setSelectedCollection(album));
+    dispatch(openMobilePanel('album'));
+    dispatch(setQueries({ type: 'album', id: album.id }));
+    dispatch(closePlayerPanel());
+  };
+
   return (
-    <div className="flex w-[150px] flex-col rounded-xl p-3">
+    <div className="flex w-[150px] flex-col rounded-xl p-3" onClick={onClick}>
       <img
         src={cover || musicCover}
         alt={title}
-        className="mb-2 h-[120px] w-full rounded-lg object-cover"
+        className="mb-2 h-[120px] w-full cursor-pointer rounded-lg object-cover"
       />
-      <h3 className="truncate text-sm font-semibold">{title}</h3>
+      <h3 className="cursor-pointer truncate text-sm font-semibold">{title}</h3>
       <div className="mt-1 flex items-center gap-1 truncate text-xs text-gray-400">
         <span>Album</span>
         <span className="bg-secondary-100 size-0.75 rounded-full"></span>
