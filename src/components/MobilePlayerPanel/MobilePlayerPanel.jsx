@@ -42,7 +42,7 @@ import { getAlbumsByArtistIdQueryOptions } from '../../queries/albums';
 import useLyrics from '../../hooks/useLyrics';
 import { setAutoLyricsTracker } from '../../redux/slices/musicPlayerSlice';
 import usePlayBar from '../../hooks/usePlayBar';
-import { closePanel as closePlayerPanel } from '../../redux/slices/playerPanelSlice';
+import { closePanel } from '../../redux/slices/playerPanelSlice';
 import { setSelectedCollection } from '../../redux/slices/playContextSlice';
 import { setQueries } from '../../redux/slices/queryStateSlice';
 import { openMobilePanel } from '../../redux/slices/mobilePanelSlice';
@@ -70,13 +70,20 @@ function MobilePlayerPanel() {
     getAlbumsByArtistIdQueryOptions(song?.artist_id)
   );
   const [tab, setTab] = useState(null);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isContentPanelOpen, setIsContentPanelOpen] = useState(false);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
   const { playSingleSong } = usePlayBar();
 
-  const closePanel = () => {
+  const closeContentPanel = () => {
+    // close only the content panel. (if called singlely, playerPanel will stay open)
     setTab(null);
-    setIsPanelOpen(false);
+    setIsContentPanelOpen(false);
+  };
+
+  const closePlayerPanel = () => {
+    // close the whole player panel
+    closeContentPanel();
+    dispatch(closePanel());
   };
 
   const playButtons = [
@@ -162,12 +169,12 @@ function MobilePlayerPanel() {
         </div>
       </div>
       <div
-        className={`text-secondary-50 absolute bottom-0 flex w-full flex-col overflow-hidden transition-all transition-discrete duration-300 ${isPanelOpen ? 'z-[1] h-full bg-slate-800' : 'h-14 bg-transparent'}`}
+        className={`text-secondary-50 absolute bottom-0 flex w-full flex-col overflow-hidden transition-all transition-discrete duration-300 ${isContentPanelOpen ? 'z-[1] h-full bg-slate-800' : 'h-14 bg-transparent'}`}
       >
         <div>
-          {isPanelOpen && (
+          {isContentPanelOpen && (
             <div className="bg-secondary-800/50 flex origin-top items-center p-2">
-              <div className="flex grow items-center gap-2" onClick={closePanel}>
+              <div className="flex grow items-center gap-2" onClick={closeContentPanel}>
                 {isPending ? (
                   <>
                     <div className="relative size-11 overflow-hidden rounded-lg bg-gray-600/60">
@@ -201,7 +208,7 @@ function MobilePlayerPanel() {
               </button>
             </div>
           )}
-          <div onClick={() => setIsPanelOpen(true)}>
+          <div onClick={() => setIsContentPanelOpen(true)}>
             <div className="border-secondary-300 flex items-center border-b">
               {tabButtons.map((button) => (
                 <TabButton
@@ -216,7 +223,7 @@ function MobilePlayerPanel() {
         </div>
 
         <div
-          className={`overflow-y-auto p-4 transition-opacity duration-300 ${isPanelOpen ? 'opacity-100' : 'opacity-0'}`}
+          className={`overflow-y-auto p-4 transition-opacity duration-300 ${isContentPanelOpen ? 'opacity-100' : 'opacity-0'}`}
         >
           {tab === 'RELATED' && (
             <>
@@ -264,7 +271,7 @@ function MobilePlayerPanel() {
                         <SmallArtistCard
                           artist={artist}
                           size="md"
-                          onClick={() => dispatch(closePlayerPanel())} // close player panel before opening artist panel
+                          onClick={closePlayerPanel} // close player panel before opening artist panel
                         />
                       </SwiperSlide>
                     ))}
@@ -282,7 +289,7 @@ function MobilePlayerPanel() {
                       ))
                   : albums.map((album, i) => (
                       <SwiperSlide key={i}>
-                        <SmallAlbumCard {...album} />
+                        <SmallAlbumCard album={album} onClick={closePlayerPanel} />
                       </SwiperSlide>
                     ))}
               </Swiper>
@@ -388,19 +395,19 @@ function CurrentTimeNumber() {
   return <span className="text-primary-100 text-sm">{currentTime}</span>;
 }
 
-function SmallAlbumCard(album) {
+function SmallAlbumCard({ album, onClick }) {
   const { cover, title, release_date } = album;
   const dispatch = useDispatch();
 
-  const onClick = () => {
+  const clickHandler = () => {
     dispatch(setSelectedCollection(album));
     dispatch(openMobilePanel('album'));
     dispatch(setQueries({ type: 'album', id: album.id }));
-    dispatch(closePlayerPanel());
+    onClick?.();
   };
 
   return (
-    <div className="flex w-[150px] flex-col rounded-xl p-3" onClick={onClick}>
+    <div className="flex w-[150px] flex-col rounded-xl p-3" onClick={clickHandler}>
       <img
         src={cover || musicCover}
         alt={title}
@@ -433,9 +440,8 @@ function SmallAlbumCardSkeleton() {
 }
 
 SmallAlbumCard.propTypes = {
-  cover: PropTypes.string,
-  title: PropTypes.string,
-  release_date: PropTypes.string,
+  album: PropTypes.object,
+  onClick: PropTypes.func,
 };
 PlayButton.propTypes = {
   icon: PropTypes.element.isRequired,
