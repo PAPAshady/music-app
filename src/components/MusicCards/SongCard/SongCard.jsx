@@ -2,11 +2,11 @@ import { formatTime } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 
-function Song({ song, index: songIndex, onPlay }) {
+function Song({ song, index: songIndex, onPlay, classNames }) {
   const { cover, title, artist, duration } = song;
   return (
     <div
-      className="flex cursor-pointer gap-3 rounded-md border p-2 hover:bg-white/3"
+      className={`flex cursor-pointer gap-3 rounded-md border p-2 hover:bg-white/30 ${classNames}`}
       onClick={() => onPlay(song, songIndex)}
     >
       <img
@@ -30,6 +30,7 @@ Song.propTypes = {
   song: PropTypes.object,
   index: PropTypes.number,
   onPlay: PropTypes.func,
+  classNames: PropTypes.string,
 };
 
 export default Song;
