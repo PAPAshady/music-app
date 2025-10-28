@@ -30,7 +30,7 @@ function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
   useEffect(() => {
     if (swiperRef.current) {
       const isCurrentSlideVisible =
-        swiperRef.current.slides[currentSongIndex].classList.contains('swiper-slide-visible');
+        swiperRef.current.slides[currentSongIndex]?.classList.contains('swiper-slide-visible');
       // slide to current song if its not visible in slider
       if (!isCurrentSlideVisible) {
         // slide one by one instead of all at once

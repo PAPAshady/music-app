@@ -9,8 +9,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { signIn } from '../../../redux/slices/authSlice';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
+import supabase from '../../../services/supabaseClient';
+import { setUser } from '../../../redux/slices/authSlice';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -44,9 +45,12 @@ export default function SignIn() {
 
   const submitHandler = async (userInfo) => {
     try {
-      await dispatch(signIn(userInfo));
-      dispatch(showNewSnackbar({ message: 'Welcome back to VioTune!', type: 'success' }));
-      navigate('/');
+      const { data, error } = await supabase.auth.signInWithPassword({ ...userInfo });
+      if (data) {
+        dispatch(setUser(data.user));
+        dispatch(showNewSnackbar({ message: 'Welcome back to VioTune!', type: 'success' }));
+        navigate('/');
+      } else throw error;
     } catch (err) {
       const { status } = err.response;
       let errorMsg = '';

@@ -8,9 +8,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
-import { signUp } from '../../../redux/slices/authSlice';
+import { setUser } from '../../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
+import supabase from '../../../services/supabaseClient';
 
 const formSchema = z.object({
   first_name: z.string().min(1, { message: 'Firstname is required' }),
@@ -43,11 +44,18 @@ export default function SignUp() {
     resolver: zodResolver(formSchema),
   });
 
-  const submitHandler = async (userInfo) => {
+  const submitHandler = async ({ email, password, username: user_name, first_name, last_name }) => {
     try {
-      await dispatch(signUp(userInfo));
-      dispatch(showNewSnackbar({ message: 'Welcome to VioTune!', type: 'success' }));
-      navigate('/');
+      const { error, data } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { user_name, full_name: `${first_name} ${last_name}` } },
+      });
+      if (data) {
+        dispatch(setUser(data.user));
+        dispatch(showNewSnackbar({ message: 'Welcome to VioTune!', type: 'success' }));
+        navigate('/');
+      } else throw error;
     } catch (err) {
       const res = err.response.data;
       if (err.code === 'ERR_NETWORK') {

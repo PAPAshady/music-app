@@ -2,23 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getUserAvatarUrl } from '../../services/users';
 import supabase from '../../services/supabaseClient';
 
-export const signUp = createAsyncThunk(
-  'auth/signUp',
-  async ({ email, password, user_name, first_name, last_name }) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { user_name, full_name: `${first_name} ${last_name}` } },
-    });
-    if (error) throw error;
-  }
-);
-
-export const signIn = createAsyncThunk('auth/signIn', async (formData) => {
-  const { error } = await supabase.auth.signInWithPassword({ ...formData });
-  if (error) throw error;
-});
-
 export const signInWithOAuth = createAsyncThunk('auth/signInWithOAuth', async (provider) => {
   const { error } = await supabase.auth.signInWithOAuth({ provider });
   if (error) throw error;
