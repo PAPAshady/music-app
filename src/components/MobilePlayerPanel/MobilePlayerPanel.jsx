@@ -164,15 +164,33 @@ function MobilePlayerPanel() {
           {isPanelOpen && (
             <div className="bg-secondary-800/50 flex origin-top items-center p-2">
               <div className="flex grow items-center gap-2" onClick={closePanel}>
-                <img
-                  src={song?.cover || musicCover}
-                  alt={song?.title}
-                  className="size-11 rounded-lg"
-                />
-                <div>
-                  <p className="text-sm font-semibold">{song?.title}</p>
-                  <p className="text-xs text-slate-300">{song?.artist}</p>
-                </div>
+                {isPending ? (
+                  <>
+                    <div className="relative size-11 overflow-hidden rounded-lg bg-gray-600/60">
+                      <ShimmerOverlay />
+                    </div>
+                    <div className="flex grow flex-col gap-2">
+                      <div className="relative h-2 w-1/2 overflow-hidden rounded-full bg-gray-600/60">
+                        <ShimmerOverlay />
+                      </div>
+                      <div className="relative h-2 w-1/3 overflow-hidden rounded-full bg-gray-600/60">
+                        <ShimmerOverlay />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <img
+                      src={song?.cover || musicCover}
+                      alt={song?.title}
+                      className="size-11 rounded-lg object-cover"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold">{song?.title}</p>
+                      <p className="text-xs text-slate-300">{song?.artist}</p>
+                    </div>
+                  </>
+                )}
               </div>
               <button onClick={() => dispatch(isPlaying ? pause() : play())} className="px-3 py-2">
                 {isPlaying ? <Pause /> : <Play />}
