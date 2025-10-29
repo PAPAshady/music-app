@@ -80,8 +80,8 @@ export default function useMusicQueryToRedux() {
       // if data does not exist it means its favorite songs. so we dispatch the corresponding actions
       dispatch(setSelectedCollection(favoriteSongsInfos));
       dispatch(setCurrentQueuelist(favoriteSongs));
-      dispatch(setCurrentMusic(favoriteSongs[0]));
-      music.src = favoriteSongs[0].song_url;
+      dispatch(setCurrentMusic(favoriteSongs?.[0]));
+      music.src = favoriteSongs[0]?.song_url;
     }
   }, [data, dispatch, queryType, relatedSongs, currentMusic, favoriteSongs, isMobile]);
 
