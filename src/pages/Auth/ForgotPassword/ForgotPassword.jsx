@@ -5,6 +5,7 @@ import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import supabase from '../../../services/supabaseClient';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -16,16 +17,27 @@ export default function ForgotPassword() {
     watch,
     register,
     formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
   } = useForm({
     defaultValues: { email: '' },
     resolver: zodResolver(formSchema),
   });
-
+  const url = import.meta.env.VITE_BASE_URL;
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); // check if the success message is visible or not.
 
-  const sendCodeHandler = async (data) => {
-    console.log('success!!! => ', data);
-    setShowSuccessMessage(true);
+  const sendCodeHandler = async ({ email }) => {
+    try {
+      clearErrors();
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${url}/auth/reset-pass`,
+      });
+      if (error) throw error;
+      setShowSuccessMessage(true);
+    } catch (err) {
+      console.error('Error sending password reset code: ', err);
+      setError('email', { message: 'An unexpected error occurred. Please try again.' });
+    }
   };
 
   return (

@@ -4,6 +4,11 @@ import LoginButton from '../../components/Buttons/LoginButton/LoginButton';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Lock } from 'iconsax-react';
+import supabase from '../../services/supabaseClient';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slices/authSlice';
+import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
+import { useNavigate } from 'react-router-dom';
 
 const passwordSchema = z
   .string()
@@ -21,11 +26,15 @@ const formSchema = z
   });
 
 export default function ResetPassword() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     watch,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
   } = useForm({
     defaultValues: {
       password: '',
@@ -35,7 +44,19 @@ export default function ResetPassword() {
   });
 
   const submitHandler = async ({ password }) => {
-    console.log('Password reseted successfully!!! => ', password);
+    try {
+      clearErrors('root');
+      const { data, error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      if (data) {
+        dispatch(setUser(data.user));
+        dispatch(showNewSnackbar({ message: 'Password updated successfully', type: 'success' }));
+        setTimeout(() => navigate('/'), 2000);
+      }
+    } catch (err) {
+      console.error('Error resetting password: ', err);
+      setError('root', { message: 'An unexpected error occurred. Please try again.' });
+    }
   };
 
   const inputFields = [
