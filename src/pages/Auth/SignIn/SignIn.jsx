@@ -52,16 +52,15 @@ export default function SignIn() {
         navigate('/');
       } else throw error;
     } catch (err) {
-      const status = err?.response?.status;
+      const error = Object.fromEntries(Object.entries(err));
       let errorMsg = '';
-
-      if (err.code === 'ERR_NETWORK') {
+      if (error.code === 'ERR_NETWORK') {
         errorMsg = 'Network error. Please check your connection and try again.';
-      } else if (status === 404 || status === 400) {
+      } else if (error.status === 404 || error.status === 400) {
         errorMsg = 'Incorrect email or password. Please try again.';
       } else {
         errorMsg = 'An unexpected error occurred. Please try again.';
-        console.log('error in login user => ', err);
+        console.log('error in login user => ', error);
       }
 
       setError('root', { message: errorMsg });
