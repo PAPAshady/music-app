@@ -46,13 +46,13 @@ export default function SignIn() {
   const submitHandler = async (userInfo) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ ...userInfo });
-      if (data) {
+      if (data.user) {
         dispatch(setUser(data.user));
         dispatch(showNewSnackbar({ message: 'Welcome back to VioTune!', type: 'success' }));
         navigate('/');
       } else throw error;
     } catch (err) {
-      const { status } = err.response;
+      const status = err?.response?.status;
       let errorMsg = '';
 
       if (err.code === 'ERR_NETWORK') {
