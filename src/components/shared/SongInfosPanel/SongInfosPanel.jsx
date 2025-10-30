@@ -156,7 +156,7 @@ export default function SongInfosPanel() {
               <IconButton
                 label={song?.is_liked ? 'Unlike' : 'Like'}
                 onClick={() => likeHandlerMutation.mutate(song?.id)}
-                disabled={likeHandlerMutation.isPending || !isPending}
+                disabled={likeHandlerMutation.isPending || isPending}
               >
                 <Heart
                   size={20}

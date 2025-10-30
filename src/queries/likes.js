@@ -1,11 +1,11 @@
-import { likeSong, unlikeSong } from '../services/likes';
+import { likeSong, unlikeSong, likePlaylist, unlikePlaylist } from '../services/likes';
 import queryClient from '../queryClient';
 import store from '../redux/store';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 import { setCurrentQueuelist } from '../redux/slices/playContextSlice';
 import { setCurrentMusic } from '../redux/slices/musicPlayerSlice';
 
-const onMutate = async (songId, shouldLike) => {
+const onSongMutate = async (songId, shouldLike) => {
   // do optimistic updates on songs to have a realtime updates in UI
   await queryClient.cancelQueries({ queryKey: ['songs'] });
   const prevSongs = queryClient.getQueriesData({ queryKey: ['songs'] });
@@ -42,20 +42,20 @@ const onMutate = async (songId, shouldLike) => {
   return { prevSongs };
 };
 
-const onSuccess = (updatedSong) => {
+const onSongSuccess = (updatedSong) => {
   // sync redux store with server
   const currentQueuelist = store.getState().playContext.currentQueuelist;
   const updatedQueuelist = currentQueuelist.map((song) =>
-    song.id === updatedSong.song_id ? { ...song, is_liked: !song.is_liked } : song
+    song.id === updatedSong.target_id ? { ...song, is_liked: !song.is_liked } : song
   );
   store.dispatch(setCurrentQueuelist(updatedQueuelist));
 
   const currentMusic = store.getState().musicPlayer.currentMusic;
-  if (currentMusic?.id === updatedSong.song_id)
+  if (currentMusic?.id === updatedSong.target_id)
     store.dispatch(setCurrentMusic({ ...currentMusic, is_liked: !currentMusic.is_liked }));
 };
 
-const onError = (err, context, shouldLike) => {
+const onSongError = (err, context, shouldLike) => {
   // revert back the changes in case of an error
   context.prevSongs.forEach(([key, data]) => {
     queryClient.setQueryData(key, data);
@@ -69,13 +69,51 @@ const onError = (err, context, shouldLike) => {
   console.error(`Error ${shouldLike ? 'liking' : 'unliking'} song : `, err);
 };
 
+const onPlaylistMutate = async (updatedPlaylistId, shouldLike) => {
+  await queryClient.cancelQueries({ queryKey: ['playlists'] });
+  const prevPlaylists = queryClient.getQueriesData({ queryKey: ['playlists'] });
+  queryClient.setQueriesData({ queryKey: ['playlists'] }, (prevPlaylists) => {
+    if (!prevPlaylists) return prevPlaylists;
+    return prevPlaylists.map((playlist) => {
+      if (playlist.id === updatedPlaylistId) {
+        return { ...playlist, is_liked: shouldLike };
+      }
+      return playlist;
+    });
+  });
+  return { prevPlaylists };
+};
+
+const onPlaylistError = (err, context, shouldLike) => {
+  console.error(`Error ${shouldLike ? 'liking' : 'unliking'} playlist : `, err);
+  // revert back the changes in case of an error
+  context.prevPlaylists.forEach(([key, data]) => {
+    queryClient.setQueryData(key, data);
+  });
+  store.dispatch(
+    showNewSnackbar({
+      message: `Error while ${shouldLike ? 'adding' : 'removing'} playlist ${shouldLike ? 'to' : 'from'} favorites. Try again`,
+      type: 'error',
+    })
+  );
+};
+
+const onPlaylistSuccess = (shouldLike) => {
+  store.dispatch(
+    showNewSnackbar({
+      message: `${shouldLike ? 'Added to' : 'Removed from'} favorites!`,
+      type: 'success',
+    })
+  );
+};
+
 export const likeSongMutationOptions = () => {
   return {
     queryKey: ['songs'],
     mutationFn: (songId) => likeSong(songId),
-    onMutate: (updatedSong) => onMutate(updatedSong, true),
-    onError: (err, _, context) => onError(err, context, true),
-    onSuccess,
+    onMutate: (updatedSong) => onSongMutate(updatedSong, true),
+    onError: (err, _, context) => onSongError(err, context, true),
+    onSuccess: (updatedSong) => onSongSuccess(updatedSong),
   };
 };
 
@@ -84,8 +122,29 @@ export const unlikeSongMutationOptions = () => {
   return {
     queryKey: ['songs'],
     mutationFn: (songId) => unlikeSong(songId, userId),
-    onMutate: (updatedSong) => onMutate(updatedSong, false),
-    onError: (err, _, context) => onError(err, context, false),
-    onSuccess,
+    onMutate: (updatedSong) => onSongMutate(updatedSong, false),
+    onError: (err, _, context) => onSongError(err, context, false),
+    onSuccess: (updatedSong) => onSongSuccess(updatedSong),
+  };
+};
+
+export const likePlaylistMutationOptions = () => {
+  return {
+    queryKey: ['playlists'],
+    mutationFn: (playlistId) => likePlaylist(playlistId),
+    onMutate: (target_id) => onPlaylistMutate(target_id, true),
+    onError: (err, _, context) => onPlaylistError(err, context, true),
+    onSuccess: () => onPlaylistSuccess(false),
+  };
+};
+
+export const unlikePlaylistMutationOptions = () => {
+  const userId = store.getState().auth.user.id;
+  return {
+    queryKey: ['playlists'],
+    mutationFn: (playlistId) => unlikePlaylist(playlistId, userId),
+    onMutate: (target_id) => onPlaylistMutate(target_id, false),
+    onError: (err, _, context) => onPlaylistError(err, context, false),
+    onSuccess: () => onPlaylistSuccess(true),
   };
 };

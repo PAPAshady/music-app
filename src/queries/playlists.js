@@ -17,6 +17,7 @@ import {
   removeSongFromPrivatePlaylist,
   deletePrivatePlaylist,
   getPlaylistById,
+  getFavoritePlaylists
 } from '../services/playlists';
 import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
 
@@ -179,3 +180,13 @@ export const removeSongFromPrivatePlaylistMutationOptions = (playlistId) => ({
     }
   },
 });
+
+export const getFavoritePlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_liked: true }],
+    queryFn: getFavoritePlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
