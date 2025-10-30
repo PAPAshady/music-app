@@ -46,10 +46,12 @@ export default function Favorites() {
           />
         </div>
       )}
-      <div>
-        <SectionTitle title="Your beloved playlists" />
-        <PlaylistsSlider playlists={favoritePlaylists} isLoading={isFavoritePlaylistsPending} />
-      </div>
+      {!isFavoritePlaylistsPending && !!favoritePlaylists.length && (
+        <div>
+          <SectionTitle title="Your beloved playlists" />
+          <PlaylistsSlider playlists={favoritePlaylists} isLoading={isFavoritePlaylistsPending} />
+        </div>
+      )}
       <div className="-mt-8">
         <SectionTitle title="You Might Also Like" />
         <AlbumsSlider
