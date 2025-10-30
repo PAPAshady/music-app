@@ -46,12 +46,12 @@ const onSuccess = (updatedSong) => {
   // sync redux store with server
   const currentQueuelist = store.getState().playContext.currentQueuelist;
   const updatedQueuelist = currentQueuelist.map((song) =>
-    song.id === updatedSong.song_id ? { ...song, is_liked: !song.is_liked } : song
+    song.id === updatedSong.target_id ? { ...song, is_liked: !song.is_liked } : song
   );
   store.dispatch(setCurrentQueuelist(updatedQueuelist));
 
   const currentMusic = store.getState().musicPlayer.currentMusic;
-  if (currentMusic?.id === updatedSong.song_id)
+  if (currentMusic?.id === updatedSong.target_id)
     store.dispatch(setCurrentMusic({ ...currentMusic, is_liked: !currentMusic.is_liked }));
 };
 
