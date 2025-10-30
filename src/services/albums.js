@@ -2,7 +2,7 @@ import supabase from './supabaseClient';
 
 export const getAllAlbums = async () => {
   const { data, error } = await supabase
-    .from('album_with_total_tracks')
+    .from('albums_extended')
     .select('*')
     .order('title', { ascending: true });
   if (error) throw error; // other errors will be handled with react query or another try-catch block.
@@ -11,7 +11,7 @@ export const getAllAlbums = async () => {
 
 export const getAlbumById = async (albumId) => {
   const { data, error } = await supabase
-    .from('album_with_total_tracks')
+    .from('albums_extended')
     .select('*')
     .eq('id', albumId)
     .single();
