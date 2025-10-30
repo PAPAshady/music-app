@@ -5,7 +5,7 @@ import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 import { setCurrentQueuelist } from '../redux/slices/playContextSlice';
 import { setCurrentMusic } from '../redux/slices/musicPlayerSlice';
 
-const onMutate = async (songId, shouldLike) => {
+const onSongMutate = async (songId, shouldLike) => {
   // do optimistic updates on songs to have a realtime updates in UI
   await queryClient.cancelQueries({ queryKey: ['songs'] });
   const prevSongs = queryClient.getQueriesData({ queryKey: ['songs'] });
@@ -42,7 +42,7 @@ const onMutate = async (songId, shouldLike) => {
   return { prevSongs };
 };
 
-const onSuccess = (updatedSong) => {
+const onSongSuccess = (updatedSong) => {
   // sync redux store with server
   const currentQueuelist = store.getState().playContext.currentQueuelist;
   const updatedQueuelist = currentQueuelist.map((song) =>
@@ -55,7 +55,7 @@ const onSuccess = (updatedSong) => {
     store.dispatch(setCurrentMusic({ ...currentMusic, is_liked: !currentMusic.is_liked }));
 };
 
-const onError = (err, context, shouldLike) => {
+const onSongError = (err, context, shouldLike) => {
   // revert back the changes in case of an error
   context.prevSongs.forEach(([key, data]) => {
     queryClient.setQueryData(key, data);
@@ -111,9 +111,9 @@ export const likeSongMutationOptions = () => {
   return {
     queryKey: ['songs'],
     mutationFn: (songId) => likeSong(songId),
-    onMutate: (updatedSong) => onMutate(updatedSong, true),
-    onError: (err, _, context) => onError(err, context, true),
-    onSuccess,
+    onMutate: (updatedSong) => onSongMutate(updatedSong, true),
+    onError: (err, _, context) => onSongError(err, context, true),
+    onSuccess: (updatedSong) => onSongSuccess(updatedSong),
   };
 };
 
@@ -122,9 +122,9 @@ export const unlikeSongMutationOptions = () => {
   return {
     queryKey: ['songs'],
     mutationFn: (songId) => unlikeSong(songId, userId),
-    onMutate: (updatedSong) => onMutate(updatedSong, false),
-    onError: (err, _, context) => onError(err, context, false),
-    onSuccess,
+    onMutate: (updatedSong) => onSongMutate(updatedSong, false),
+    onError: (err, _, context) => onSongError(err, context, false),
+    onSuccess: (updatedSong) => onSongSuccess(updatedSong),
   };
 };
 
