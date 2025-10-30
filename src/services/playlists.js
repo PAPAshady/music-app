@@ -2,7 +2,7 @@ import supabase from './supabaseClient';
 
 export const getAllPlaylists = async () => {
   const { data, error } = await supabase
-    .from('playlists_with_count')
+    .from('playlists_extended')
     .select('*')
     .order('title', { ascending: true });
   if (error) throw error; // other errors will be handled with react query or another try-catch block.
@@ -11,7 +11,7 @@ export const getAllPlaylists = async () => {
 
 export const getAllPublicPlaylists = async () => {
   const { data, error } = await supabase
-    .from('playlists_with_count')
+    .from('playlists_extended')
     .select('*')
     .eq('is_public', true)
     .order('title', { ascending: true });
@@ -21,7 +21,7 @@ export const getAllPublicPlaylists = async () => {
 
 export const getAllPrivatePlaylists = async () => {
   const { data, error } = await supabase
-    .from('playlists_with_count')
+    .from('playlists_extended')
     .select('*')
     .eq('is_public', false)
     .order('title', { ascending: true });
@@ -31,7 +31,7 @@ export const getAllPrivatePlaylists = async () => {
 
 export const getPlaylistById = async (playlistId) => {
   const { data, error } = await supabase
-    .from('playlists_with_count')
+    .from('playlists_extended')
     .select('*')
     .eq('id', playlistId)
     .maybeSingle();
@@ -84,6 +84,15 @@ export const removeSongFromPrivatePlaylist = async (playlistId, songId) => {
     .eq('song_id', songId)
     .eq('playlist_id', playlistId)
     .select();
+  if (error) throw error;
+  return data;
+};
+
+export const getFavoritePlaylists = async () => {
+  const { data, error } = await supabase
+    .from('playlists_extended')
+    .select('*')
+    .eq('is_liked', true);
   if (error) throw error;
   return data;
 };
