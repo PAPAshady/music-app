@@ -6,15 +6,25 @@ import { useDispatch } from 'react-redux';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { setQueries } from '../../../redux/slices/queryStateSlice';
+import { useMutation } from '@tanstack/react-query';
+import { likePlaylistMutationOptions, unlikePlaylistMutationOptions } from '../../../queries/likes';
 
 const PlaylistCard = memo((playlist) => {
   const dispatch = useDispatch();
-  const { title, totaltracks, cover, isFavorite, classNames } = playlist;
+  const { title, totaltracks, cover, classNames, is_liked, id } = playlist;
+  const { mutate, isPending } = useMutation(
+    is_liked ? unlikePlaylistMutationOptions() : likePlaylistMutationOptions()
+  );
 
   const showSelectedPlaylist = () => {
     dispatch(setSelectedCollection(playlist));
     dispatch(openMobilePanel('playlist'));
     dispatch(setQueries({ type: 'playlist', id: playlist.id }));
+  };
+
+  const onLikeChange = (e) => {
+    e.stopPropagation();
+    mutate(id);
   };
 
   return (
@@ -26,10 +36,10 @@ const PlaylistCard = memo((playlist) => {
     >
       <div className="flex size-full flex-col justify-between bg-gradient-to-t from-[rgba(0,0,0,.7)] to-transparent p-2">
         <div className="p-1 text-end">
-          <button className="size-6 lg:size-[26px]">
+          <button className="size-8 lg:size-[26px]" disabled={isPending} onClick={onLikeChange}>
             <Heart
               size="100%"
-              className={`transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : ''}`}
+              className={`transition-colors duration-300 ${is_liked ? 'fill-secondary-50 text-secondary-50' : ''}`}
             />
           </button>
         </div>
@@ -54,7 +64,7 @@ PlaylistCard.propTypes = {
   title: PropTypes.string,
   totaltracks: PropTypes.number,
   cover: PropTypes.string,
-  isFavorite: PropTypes.bool,
+  is_liked: PropTypes.bool,
   classNames: PropTypes.string,
 };
 
