@@ -1,4 +1,11 @@
-import { likeSong, unlikeSong, likePlaylist, unlikePlaylist } from '../services/likes';
+import {
+  likeSong,
+  unlikeSong,
+  likePlaylist,
+  unlikePlaylist,
+  likeAlbum,
+  unlikeAlbum,
+} from '../services/likes';
 import queryClient from '../queryClient';
 import store from '../redux/store';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
@@ -43,6 +50,7 @@ const onSongMutate = async (songId, shouldLike) => {
 };
 
 const onSongSuccess = (updatedSong) => {
+  queryClient.invalidateQueries({ queryKey: ['songs', { is_liked: true }] });
   // sync redux store with server
   const currentQueuelist = store.getState().playContext.currentQueuelist;
   const updatedQueuelist = currentQueuelist.map((song) =>
@@ -105,6 +113,46 @@ const onPlaylistSuccess = (shouldLike) => {
       type: 'success',
     })
   );
+  queryClient.invalidateQueries({ queryKey: ['playlists', { is_liked: true }] });
+};
+
+const onAlbumMutate = async (updatedAlbumId, shouldLike) => {
+  const prevAlbums = queryClient.getQueriesData({ queryKey: ['albums'] });
+  await queryClient.cancelQueries({ queryKey: ['albums'] });
+  queryClient.setQueriesData({ queryKey: ['albums'] }, (prevAlbums) => {
+    if (!prevAlbums) return prevAlbums;
+    return prevAlbums.map((album) => {
+      if (album.id === updatedAlbumId) {
+        return { ...album, is_liked: shouldLike };
+      }
+      return album;
+    });
+  });
+  return { prevAlbums };
+};
+
+const onAlbumError = async (err, context, shouldLike) => {
+  console.error(`Error ${shouldLike ? 'liking' : 'unliking'} album : `, err);
+  // revert back the changes in case of an error
+  context.prevAlbums.forEach(([key, data]) => {
+    queryClient.setQueryData(key, data);
+  });
+  store.dispatch(
+    showNewSnackbar({
+      message: `Error while ${shouldLike ? 'adding' : 'removing'} album ${shouldLike ? 'to' : 'from'} favorites. Try again`,
+      type: 'error',
+    })
+  );
+};
+
+const onAlbumSuccess = (shouldLike) => {
+  store.dispatch(
+    showNewSnackbar({
+      message: `${shouldLike ? 'Added album to' : 'Removed album from'} favorites!`,
+      type: 'success',
+    })
+  );
+  queryClient.invalidateQueries({ queryKey: ['albums', { is_liked: true }] });
 };
 
 export const likeSongMutationOptions = () => {
@@ -146,5 +194,26 @@ export const unlikePlaylistMutationOptions = () => {
     onMutate: (target_id) => onPlaylistMutate(target_id, false),
     onError: (err, _, context) => onPlaylistError(err, context, false),
     onSuccess: () => onPlaylistSuccess(true),
+  };
+};
+
+export const likeAlbumMutationOptions = () => {
+  return {
+    queryKey: ['albums', { is_liked: true }],
+    mutationFn: (albumId) => likeAlbum(albumId),
+    onMutate: (albumId) => onAlbumMutate(albumId, true),
+    onError: (err, _, context) => onAlbumError(err, context, true),
+    onSuccess: () => onAlbumSuccess(false),
+  };
+};
+
+export const unlikeAlbumMutationOptions = () => {
+  const userId = store.getState().auth.user.id;
+  return {
+    queryKey: ['albums', { is_liked: true }],
+    mutationFn: (albumId) => unlikeAlbum(albumId, userId),
+    onMutate: (albumId) => onAlbumMutate(albumId, false),
+    onError: (err, _, context) => onAlbumError(err, context, false),
+    onSuccess: () => onAlbumSuccess(true),
   };
 };

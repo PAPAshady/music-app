@@ -1,22 +1,27 @@
 import bannerBg from '../../assets/images/backgrounds/player-and-settings-page.png';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
-import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
-import { songs } from '../../data';
 import { useQuery } from '@tanstack/react-query';
-import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { getFavoriteSongsQueryOptions } from '../../queries/musics';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
 import usePlayBar from '../../hooks/usePlayBar';
+import { getFavoritePlaylistsQueryOptions } from '../../queries/playlists';
+import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
+import { getFavoriteAlbumsQueryOptions } from '../../queries/albums';
 
 export default function Favorites() {
-  const albums = useQuery(getAllAlbumsQueryOptions());
+  const { data: favoriteAlbums, isPending: isFavoriteAlbumsPending } = useQuery(
+    getFavoriteAlbumsQueryOptions()
+  );
   const { data: favoriteSongs, isPending: isFavoriteSongsPending } = useQuery(
     getFavoriteSongsQueryOptions()
   );
   const { playFavoriteSongs } = usePlayBar();
+  const { data: favoritePlaylists, isPending: isFavoritePlaylistsPending } = useQuery(
+    getFavoritePlaylistsQueryOptions()
+  );
 
   return (
     <>
@@ -33,24 +38,33 @@ export default function Favorites() {
           </p>
         </div>
       </div>
-      <PlayBarSlider
-        songs={favoriteSongs}
-        isPending={isFavoriteSongsPending}
-        onPlay={playFavoriteSongs}
-      />
-      <div>
-        <SectionTitle title="Seggestions for you" />
-        <TracksSlider songs={songs} />
-      </div>
-      <div className="-mt-8">
-        <SectionTitle title="You Might Also Like" />
-        <AlbumsSlider
-          albums={albums.data}
-          isLoading={albums.isLoading}
-          albumCardSize="md"
-          albumCardStyles="!max-w-none"
-        />
-      </div>
+      {!isFavoriteSongsPending && !!favoriteSongs.length && (
+        <div>
+          <SectionTitle title="Your favorite tracks" />
+          <PlayBarSlider
+            songs={favoriteSongs}
+            isPending={isFavoriteSongsPending}
+            onPlay={playFavoriteSongs}
+          />
+        </div>
+      )}
+      {!isFavoritePlaylistsPending && !!favoritePlaylists.length && (
+        <div>
+          <SectionTitle title="Your beloved playlists" />
+          <PlaylistsSlider playlists={favoritePlaylists} isLoading={isFavoritePlaylistsPending} />
+        </div>
+      )}
+      {!isFavoriteAlbumsPending && !!favoriteAlbums.length && (
+        <div>
+          <SectionTitle title="Albums you loved" />
+          <AlbumsSlider
+            albums={favoriteAlbums}
+            isLoading={isFavoriteAlbumsPending}
+            albumCardSize="md"
+            albumCardStyles="!max-w-none"
+          />
+        </div>
+      )}
     </>
   );
 }

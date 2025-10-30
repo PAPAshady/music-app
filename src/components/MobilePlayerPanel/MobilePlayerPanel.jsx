@@ -142,12 +142,12 @@ function MobilePlayerPanel() {
       <div className="flex w-full flex-col gap-4 px-4 pb-20 text-start sm:w-[95%]">
         {isPending ? (
           <div className="flex flex-col gap-3 sm:mb-2">
-            <p className="relative h-3.5 w-2/3 overflow-hidden rounded-full bg-gray-600/60">
+            <div className="relative h-3.5 w-2/3 overflow-hidden rounded-full bg-gray-600/60">
               <ShimmerOverlay />
-            </p>
-            <p className="relative h-2.5 w-1/3 overflow-hidden rounded-full bg-gray-600/60">
+            </div>
+            <div className="relative h-2.5 w-1/3 overflow-hidden rounded-full bg-gray-600/60">
               <ShimmerOverlay />
-            </p>
+            </div>
           </div>
         ) : (
           <div className="sm:mb-2">

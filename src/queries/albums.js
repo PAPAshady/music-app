@@ -1,5 +1,10 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getAllAlbums, getAlbumsByArtistId, getAlbumById } from '../services/albums';
+import {
+  getAllAlbums,
+  getAlbumsByArtistId,
+  getAlbumById,
+  getFavoriteAlbums,
+} from '../services/albums';
 
 export const getAllAlbumsQueryOptions = () => {
   return queryOptions({
@@ -28,5 +33,15 @@ export const getAlbumsByArtistIdQueryOptions = (artistId) => {
     retryDelay: 5000,
     retry: true,
     enabled: !!artistId,
+  });
+};
+
+export const getFavoriteAlbumsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['albums', { is_liked: true }],
+    queryFn: getFavoriteAlbums,
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
   });
 };

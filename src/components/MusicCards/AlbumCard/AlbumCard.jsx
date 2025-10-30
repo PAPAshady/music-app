@@ -6,17 +6,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { setQueries } from '../../../redux/slices/queryStateSlice';
+import { useMutation } from '@tanstack/react-query';
+import { likeAlbumMutationOptions, unlikeAlbumMutationOptions } from '../../../queries/likes';
 
-const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
-  const { cover, totalTracks, artist, title, id } = album;
+const AlbumCard = memo(({ size, album, classNames }) => {
+  const { cover, totaltracks, artist, is_liked, title, id } = album;
   const dispatch = useDispatch();
   const playingTracklistId = useSelector((state) => state.playContext.currentCollection?.id);
   const isCurrentAlbumPlaying = id === playingTracklistId;
+  const { mutate, isPending } = useMutation(
+    is_liked ? unlikeAlbumMutationOptions() : likeAlbumMutationOptions()
+  );
 
   const openMobilePanelHandler = () => {
     dispatch(setSelectedCollection(album));
     dispatch(openMobilePanel('album'));
     dispatch(setQueries({ type: 'album', id: album.id }));
+  };
+
+  const onLikeChangeHandler = (e) => {
+    e.stopPropagation();
+    mutate(id);
   };
 
   return (
@@ -63,28 +73,43 @@ const AlbumCard = memo(({ size, isFavorite, album, classNames }) => {
               <p className="flex items-center gap-1">
                 <Music size={18} className="text-primary-50" />
                 <span className="text-xs text-white">
-                  {totalTracks ? `${totalTracks} Track${totalTracks > 1 && 's'}` : 'No tracks'}
+                  {totaltracks ? `${totaltracks} Track${totaltracks > 1 && 's'}` : 'No tracks'}
                 </span>
               </p>
               <div className="text-primary-50 flex items-center gap-2">
                 <button className="hover:scale-110">
                   <Share size={18} />
                 </button>
-                <button className="hover:scale-110">
-                  <Heart size={18} className={isFavorite ? 'fill-red-500 text-red-500' : ''} />
+                <button
+                  className="hover:scale-110"
+                  disabled={isPending}
+                  onClick={onLikeChangeHandler}
+                >
+                  <Heart
+                    size={18}
+                    className={`transition-colors duration-300 ${is_liked ? 'fill-secondary-50 text-secondary-50' : ''}`}
+                  />
                 </button>
               </div>
             </div>
           )}
-          <button className="text-white-50 p-1 lg:hidden">
-            <Heart className={isFavorite ? 'fill-red-500 text-red-500' : ''} />
+          <button
+            className="text-white-50 p-1 lg:hidden"
+            disabled={isPending}
+            onClick={onLikeChangeHandler}
+          >
+            <Heart className={is_liked ? 'fill-secondary-50 text-secondary-50' : ''} />
           </button>
         </div>
       </div>
       {size === 'lg' && (
-        <button className="absolute top-2 right-2 hidden p-1 lg:block">
+        <button
+          className="absolute top-2 right-2 hidden p-1 lg:block"
+          disabled={isPending}
+          onClick={onLikeChangeHandler}
+        >
           <Heart
-            className={`transition-all duration-300 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`}
+            className={`transition-all duration-300 ${is_liked ? 'fill-secondary-50 text-secondary-50' : ''}`}
           />
         </button>
       )}
@@ -96,7 +121,7 @@ AlbumCard.displayName = 'AlbumCard';
 
 AlbumCard.propTypes = {
   size: PropTypes.oneOf(['md', 'lg']).isRequired,
-  isFavorite: PropTypes.bool,
+  is_liked: PropTypes.bool,
   album: PropTypes.object.isRequired,
   classNames: PropTypes.string,
 };
