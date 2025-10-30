@@ -43,6 +43,7 @@ const onSongMutate = async (songId, shouldLike) => {
 };
 
 const onSongSuccess = (updatedSong) => {
+  queryClient.invalidateQueries({ queryKey: ['songs', { is_liked: true }] });
   // sync redux store with server
   const currentQueuelist = store.getState().playContext.currentQueuelist;
   const updatedQueuelist = currentQueuelist.map((song) =>
@@ -105,6 +106,7 @@ const onPlaylistSuccess = (shouldLike) => {
       type: 'success',
     })
   );
+  queryClient.invalidateQueries({ queryKey: ['playlists', { is_liked: true }] });
 };
 
 export const likeSongMutationOptions = () => {

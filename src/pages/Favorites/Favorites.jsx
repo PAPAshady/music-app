@@ -1,8 +1,6 @@
 import bannerBg from '../../assets/images/backgrounds/player-and-settings-page.png';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
-import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
-import { songs } from '../../data';
 import { useQuery } from '@tanstack/react-query';
 import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import 'swiper/css';
@@ -10,6 +8,8 @@ import 'swiper/css/pagination';
 import { getFavoriteSongsQueryOptions } from '../../queries/musics';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
 import usePlayBar from '../../hooks/usePlayBar';
+import { getFavoritePlaylistsQueryOptions } from '../../queries/playlists';
+import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 
 export default function Favorites() {
   const albums = useQuery(getAllAlbumsQueryOptions());
@@ -17,6 +17,9 @@ export default function Favorites() {
     getFavoriteSongsQueryOptions()
   );
   const { playFavoriteSongs } = usePlayBar();
+  const { data: favoritePlaylists, isPending: isFavoritePlaylistsPending } = useQuery(
+    getFavoritePlaylistsQueryOptions()
+  );
 
   return (
     <>
@@ -33,14 +36,19 @@ export default function Favorites() {
           </p>
         </div>
       </div>
-      <PlayBarSlider
-        songs={favoriteSongs}
-        isPending={isFavoriteSongsPending}
-        onPlay={playFavoriteSongs}
-      />
+      {!isFavoriteSongsPending && !!favoriteSongs.length && (
+        <div>
+          <SectionTitle title="Your favorite tracks" />
+          <PlayBarSlider
+            songs={favoriteSongs}
+            isPending={isFavoriteSongsPending}
+            onPlay={playFavoriteSongs}
+          />
+        </div>
+      )}
       <div>
-        <SectionTitle title="Seggestions for you" />
-        <TracksSlider songs={songs} />
+        <SectionTitle title="Your beloved playlists" />
+        <PlaylistsSlider playlists={favoritePlaylists} isLoading={isFavoritePlaylistsPending} />
       </div>
       <div className="-mt-8">
         <SectionTitle title="You Might Also Like" />
