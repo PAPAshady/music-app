@@ -237,7 +237,11 @@ function MobileTracklistPanel() {
           <MainButton
             classNames="size-12 sm:size-14 md:size-20 !rounded-full flex justify-center items-center"
             title={
-              isPlaying ? <Pause size={isTablet ? 32 : 24} /> : <Play size={isTablet ? 32 : 24} />
+              isPlaying && playingTracklist.id === selectedTracklist?.id ? (
+                <Pause size={isTablet ? 32 : 24} />
+              ) : (
+                <Play size={isTablet ? 32 : 24} />
+              )
             }
             onClick={playPauseButtonHandler}
             disabled={!selectedPlaylistSongs?.length}
