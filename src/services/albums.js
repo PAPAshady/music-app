@@ -24,3 +24,9 @@ export const getAlbumsByArtistId = async (artistId) => {
   if (error) throw error;
   return data;
 };
+
+export const getFavoriteAlbums = async () => {
+  const { data, error } = await supabase.from('albums_extended').select('*').eq('is_liked', true);
+  if (error) throw error;
+  return data;
+};

@@ -2,7 +2,6 @@ import bannerBg from '../../assets/images/backgrounds/player-and-settings-page.p
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import { useQuery } from '@tanstack/react-query';
-import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { getFavoriteSongsQueryOptions } from '../../queries/musics';
@@ -10,9 +9,12 @@ import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider'
 import usePlayBar from '../../hooks/usePlayBar';
 import { getFavoritePlaylistsQueryOptions } from '../../queries/playlists';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
+import { getFavoriteAlbumsQueryOptions } from '../../queries/albums';
 
 export default function Favorites() {
-  const albums = useQuery(getAllAlbumsQueryOptions());
+  const { data: favoriteAlbums, isPending: isFavoriteAlbumsPending } = useQuery(
+    getFavoriteAlbumsQueryOptions()
+  );
   const { data: favoriteSongs, isPending: isFavoriteSongsPending } = useQuery(
     getFavoriteSongsQueryOptions()
   );
@@ -52,15 +54,17 @@ export default function Favorites() {
           <PlaylistsSlider playlists={favoritePlaylists} isLoading={isFavoritePlaylistsPending} />
         </div>
       )}
-      <div className="-mt-8">
-        <SectionTitle title="You Might Also Like" />
-        <AlbumsSlider
-          albums={albums.data}
-          isLoading={albums.isLoading}
-          albumCardSize="md"
-          albumCardStyles="!max-w-none"
-        />
-      </div>
+      {!isFavoriteAlbumsPending && !!favoriteAlbums.length && (
+        <div>
+          <SectionTitle title="Albums you loved" />
+          <AlbumsSlider
+            albums={favoriteAlbums}
+            isLoading={isFavoriteAlbumsPending}
+            albumCardSize="md"
+            albumCardStyles="!max-w-none"
+          />
+        </div>
+      )}
     </>
   );
 }
