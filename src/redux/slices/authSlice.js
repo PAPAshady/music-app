@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getUserAvatarUrl } from '../../services/users';
 import supabase from '../../services/supabaseClient';
+import queryClient from '../../queryClient';
 
 export const signInWithOAuth = createAsyncThunk('auth/signInWithOAuth', async (provider) => {
   const { error } = await supabase.auth.signInWithOAuth({ provider });
@@ -8,6 +9,7 @@ export const signInWithOAuth = createAsyncThunk('auth/signInWithOAuth', async (p
 });
 
 export const signOut = createAsyncThunk('auth/signOut', async () => {
+  queryClient.invalidateQueries()
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
 });
