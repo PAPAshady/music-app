@@ -54,11 +54,6 @@ listenerMiddleware.startListening({
         _target_id: queuelist[currentSongIndex].id,
         _target_type: 'song',
       });
-
-      // update play_count globally
-      await supabase.rpc('increment_play', {
-        song_id: queuelist[currentSongIndex].id,
-      });
     }
   },
 });
