@@ -17,7 +17,9 @@ import {
   removeSongFromPrivatePlaylist,
   deletePrivatePlaylist,
   getPlaylistById,
-  getFavoritePlaylists
+  getFavoritePlaylists,
+  getTrendingPlaylists,
+  getRecommendedPlaylists,
 } from '../services/playlists';
 import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
 
@@ -185,6 +187,26 @@ export const getFavoritePlaylistsQueryOptions = () => {
   return queryOptions({
     queryKey: ['playlists', { is_liked: true }],
     queryFn: getFavoritePlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const getTrendingPlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_trending: true }],
+    queryFn: getTrendingPlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const getRecommendedPlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_recommended: true }],
+    queryFn: getRecommendedPlaylists,
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,

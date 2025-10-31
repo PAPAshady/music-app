@@ -10,7 +10,8 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import {
   getAllPrivatePlaylistsQueryOptions,
-  getAllPublicPlaylistsQueryOptions,
+  getTrendingPlaylistsQueryOptions,
+  getRecommendedPlaylistsQueryOptions,
 } from '../../queries/playlists';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -23,23 +24,42 @@ export default function Home() {
   const albums = useQuery(getAllAlbumsQueryOptions());
   const artists = useQuery(getArtistsQueryOptions());
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
-  const publicPlaylists = useQuery(getAllPublicPlaylistsQueryOptions());
   const allSongs = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 20 }));
   const { playSingleSong } = usePlayBar();
+  const userHasPlaylists = userPlaylists.data?.length > 0;
+  const { data: trendingPlaylists, isPending: isTrendingPlaylistsPending } = useQuery({
+    ...getTrendingPlaylistsQueryOptions(),
+    enabled: !userHasPlaylists,
+  });
+  const { data: recommendedPlaylists, isPending: isRecommendedPlaylistsPending } = useQuery(
+    getRecommendedPlaylistsQueryOptions()
+  );
 
   return (
     <>
-      <div>
-        <SectionHeader title="Playlists Tailored for You" />
-        <PlaylistsSlider playlists={publicPlaylists.data} isLoading={publicPlaylists.isLoading} />
-      </div>
-      <div>
-        <SectionHeader title="Your Personal Music Space" />
-        <PlaylistsSlider
-          isLoading={userPlaylists.isLoading}
-          playlists={[{ id: 0, type: 'favorite-songs' }, ...(userPlaylists.data ?? [])]}
-        />
-      </div>
+      {userHasPlaylists ? (
+        <div>
+          <SectionHeader title="Your Personal Music Space" />
+          <PlaylistsSlider
+            isLoading={userPlaylists.isLoading}
+            playlists={[{ id: 0, type: 'favorite-songs' }, ...(userPlaylists.data ?? [])]}
+          />
+        </div>
+      ) : (
+        <div>
+          <SectionHeader title="Trending playlists you might like" />
+          <PlaylistsSlider isLoading={isTrendingPlaylistsPending} playlists={trendingPlaylists} />
+        </div>
+      )}
+      {(isRecommendedPlaylistsPending || !!recommendedPlaylists?.length) && (
+        <div>
+          <SectionHeader title="Playlists Tailored for You" />
+          <PlaylistsSlider
+            playlists={recommendedPlaylists}
+            isLoading={isRecommendedPlaylistsPending}
+          />
+        </div>
+      )}
       <div>
         <SectionHeader title="Updates from Followed Artists" />
         <AlbumsSlider albums={albums.data} isLoading={albums.isLoading} />
