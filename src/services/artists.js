@@ -13,7 +13,6 @@ export const getArtistById = async (artistId) => {
 };
 
 export const getRelatedArtists = async (artist) => {
-  console.log(artist);
   const { data, error } = await supabase
     .from('artists')
     .select('*')
