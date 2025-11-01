@@ -30,3 +30,15 @@ export const getFavoriteAlbums = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getTrendingAlbums = async () => {
+  const { data, error } = await supabase.from('most_played_albums').select('*').limit(10);
+  if (error) throw error;
+  return data;
+};
+
+export const recommendAlbums = async () => {
+  const { data, error } = await supabase.from('recommended_albums').select('*').limit(10);
+  if (error) throw error;
+  return data;
+};

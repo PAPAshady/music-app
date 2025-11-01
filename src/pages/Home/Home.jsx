@@ -7,7 +7,11 @@ import { getArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import { genres, playlists } from '../../data';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { getAllAlbumsQueryOptions } from '../../queries/albums';
+import {
+  getAllAlbumsQueryOptions,
+  getTrendingAlbumsQueryOptions,
+  getRecommendedAlbumsQueryOptions,
+} from '../../queries/albums';
 import {
   getAllPrivatePlaylistsQueryOptions,
   getTrendingPlaylistsQueryOptions,
@@ -34,36 +38,57 @@ export default function Home() {
   const { data: recommendedPlaylists, isPending: isRecommendedPlaylistsPending } = useQuery(
     getRecommendedPlaylistsQueryOptions()
   );
+  const { data: recommendedAlbums, isPending: isRecommendedAlbumsPending } = useQuery(
+    getRecommendedAlbumsQueryOptions()
+  );
+  const { data: trendingAlbums, isPending: isTrendingAlbumsPending } = useQuery({
+    ...getTrendingAlbumsQueryOptions(),
+    enabled: !recommendedAlbums?.length,
+  });
 
   return (
     <>
-      {userHasPlaylists ? (
-        <div>
-          <SectionHeader title="Your Personal Music Space" />
-          <PlaylistsSlider
-            isLoading={userPlaylists.isLoading}
-            playlists={[{ id: 0, type: 'favorite-songs' }, ...(userPlaylists.data ?? [])]}
-          />
-        </div>
-      ) : (
-        <div>
-          <SectionHeader title="Trending playlists you might like" />
-          <PlaylistsSlider isLoading={isTrendingPlaylistsPending} playlists={trendingPlaylists} />
-        </div>
-      )}
+      <div>
+        <SectionHeader
+          isPending={userPlaylists.isPending}
+          title={
+            userHasPlaylists ? 'Your Personal Music Space' : 'Trending playlists you might like'
+          }
+        />
+        <PlaylistsSlider
+          isLoading={userPlaylists.isPending || isTrendingPlaylistsPending}
+          playlists={
+            userHasPlaylists
+              ? [{ id: 0, type: 'favorite-songs' }, ...userPlaylists.data]
+              : trendingPlaylists
+          }
+        />
+      </div>
+
       {(isRecommendedPlaylistsPending || !!recommendedPlaylists?.length) && (
         <div>
-          <SectionHeader title="Playlists Tailored for You" />
+          <SectionHeader
+            title="Playlists Tailored for You"
+            isPending={isRecommendedPlaylistsPending}
+          />
           <PlaylistsSlider
             playlists={recommendedPlaylists}
             isLoading={isRecommendedPlaylistsPending}
           />
         </div>
       )}
+
       <div>
-        <SectionHeader title="Updates from Followed Artists" />
-        <AlbumsSlider albums={albums.data} isLoading={albums.isLoading} />
+        <SectionHeader
+          title={recommendedAlbums?.length ? 'Hot albums for you' : 'Trending albums of this week'}
+          isPending={isRecommendedAlbumsPending}
+        />
+        <AlbumsSlider
+          albums={recommendedAlbums?.length ? recommendedAlbums : trendingAlbums}
+          isLoading={isRecommendedAlbumsPending || isTrendingAlbumsPending}
+        />
       </div>
+
       <div className="-mt-11">
         <SectionHeader title="Daily Picks" />
         <PlayBarSlider
