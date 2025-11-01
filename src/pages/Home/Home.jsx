@@ -23,6 +23,10 @@ import 'swiper/css/scrollbar';
 import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
 import usePlayBar from '../../hooks/usePlayBar';
+import {
+  getRecommendedSongsQueryOptions,
+  getTrendingSongsQueryOptions,
+} from '../../queries/musics';
 
 export default function Home() {
   const albums = useQuery(getAllAlbumsQueryOptions());
@@ -45,6 +49,15 @@ export default function Home() {
     ...getTrendingAlbumsQueryOptions(),
     enabled: !recommendedAlbums?.length,
   });
+  const { data: recommendedSongs, isPending: isRecommendedSongsPending } = useQuery(
+    getRecommendedSongsQueryOptions()
+  );
+  const { data: trendingSongs, isPending: isTrendingSongsPending } = useQuery({
+    ...getTrendingSongsQueryOptions(),
+    enabled: recommendedSongs?.length < 5,
+  });
+
+  console.log(recommendedSongs, trendingSongs);
 
   return (
     <>
@@ -92,8 +105,8 @@ export default function Home() {
       <div className="-mt-11">
         <SectionHeader title="Daily Picks" />
         <PlayBarSlider
-          songs={allSongs.data?.pages.flat()}
-          isPending={allSongs.isPending}
+          songs={recommendedSongs?.length > 5 ? recommendedSongs : trendingSongs}
+          isPending={isRecommendedSongsPending || isTrendingSongsPending}
           onPlay={playSingleSong}
         />
       </div>

@@ -91,3 +91,15 @@ export const getFavoriteSongs = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getRecommendedSongs = async () => {
+  const { data, error } = await supabase.from('recommended_songs').select('*').limit(20);
+  if (error) throw error;
+  return data;
+};
+
+export const getTrendingSongs = async () => {
+  const { data, error } = await supabase.from('most_played_songs').select('*').limit(20);
+  if (error) throw error;
+  return data;
+};
