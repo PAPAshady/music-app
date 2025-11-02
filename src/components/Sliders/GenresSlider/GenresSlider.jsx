@@ -5,8 +5,9 @@ import { Pagination } from 'swiper/modules';
 import PropTypes from 'prop-types';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import TracksCardSkeleton from '../../MusicCards/TracksCard/TracksCardSkeleton';
 
-export default function GenresSlider({ genres }) {
+export default function GenresSlider({ genres, isPending }) {
   return (
     <div className="mx-auto w-[95%] max-w-[940px]">
       <Swiper
@@ -17,20 +18,31 @@ export default function GenresSlider({ genres }) {
         className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
         breakpoints={{ 360: { slidesPerView: 3 } }}
       >
-        {chunkArray(genres, 3).map((tracksArray, index) => (
-          <SwiperSlide key={index} className="mb-11 p-[1px]">
-            <div className="flex flex-col gap-4">
-              {tracksArray.map((track) => (
-                <TracksCard key={track.id} {...track} />
-              ))}
-            </div>
-          </SwiperSlide>
-        ))}
+        {isPending
+          ? chunkArray(Array(9).fill(0), 3).map((skeletonCardsArray, index) => (
+              <SwiperSlide key={index}>
+                <div className="flex flex-col gap-4">
+                  {skeletonCardsArray.map((_, index) => (
+                    <TracksCardSkeleton key={index} />
+                  ))}
+                </div>
+              </SwiperSlide>
+            ))
+          : chunkArray(genres, 3).map((tracksArray, index) => (
+              <SwiperSlide key={index} className="mb-11 p-[1px]">
+                <div className="flex flex-col gap-4">
+                  {tracksArray.map((track) => (
+                    <TracksCard key={track.id} {...track} />
+                  ))}
+                </div>
+              </SwiperSlide>
+            ))}
       </Swiper>
     </div>
   );
 }
 
 GenresSlider.propTypes = {
-  genres: PropTypes.array.isRequired,
+  genres: PropTypes.array,
+  isPending: PropTypes.bool.isRequired,
 };

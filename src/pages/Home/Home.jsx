@@ -5,7 +5,7 @@ import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsS
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import { getArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
-import { genres, playlists } from '../../data';
+import { playlists } from '../../data';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import {
   getAllAlbumsQueryOptions,
@@ -27,6 +27,7 @@ import {
   getRecommendedSongsQueryOptions,
   getTrendingSongsQueryOptions,
 } from '../../queries/musics';
+import { getUserTopGenresQueryOptions } from '../../queries/genres';
 
 export default function Home() {
   const albums = useQuery(getAllAlbumsQueryOptions());
@@ -65,6 +66,9 @@ export default function Home() {
     ? 'Your Personal Music Space'
     : 'Trending playlists you might like';
   const albumsTitle = showRecommendedAlbums ? 'Hot albums for you' : 'Trending albums of this week';
+  const { data: userTopGenres, isPending: isUserTopGenresPending } = useQuery(
+    getUserTopGenresQueryOptions()
+  );
 
   return (
     <>
@@ -126,8 +130,8 @@ export default function Home() {
         <AlbumsSlider albums={albums.data} isLoading={albums.isPending} />
       </div>
       <div>
-        <SectionHeader title="Genres You Interested In" />
-        <GenresSlider genres={genres} />
+        <SectionHeader title="Genres You might like" />
+        <GenresSlider genres={userTopGenres} isPending={isUserTopGenresPending} />
       </div>
       <div>
         <SectionHeader title="More Artists You'll Love" />
