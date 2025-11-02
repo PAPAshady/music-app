@@ -31,54 +31,58 @@ import {
 export default function Home() {
   const albums = useQuery(getAllAlbumsQueryOptions());
   const artists = useQuery(getArtistsQueryOptions());
-  const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
-  const allSongs = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 20 }));
-  const { playSingleSong } = usePlayBar();
-  const userHasPlaylists = userPlaylists.data?.length > 0;
-  const { data: trendingPlaylists, isPending: isTrendingPlaylistsPending } = useQuery({
-    ...getTrendingPlaylistsQueryOptions(),
-    enabled: !userHasPlaylists,
-  });
+  const { data: userPlaylists, isPending: isUserPlaylistsPending } = useQuery(
+    getAllPrivatePlaylistsQueryOptions()
+  );
   const { data: recommendedPlaylists, isPending: isRecommendedPlaylistsPending } = useQuery(
     getRecommendedPlaylistsQueryOptions()
   );
   const { data: recommendedAlbums, isPending: isRecommendedAlbumsPending } = useQuery(
     getRecommendedAlbumsQueryOptions()
   );
-  const { data: trendingAlbums, isPending: isTrendingAlbumsPending } = useQuery({
-    ...getTrendingAlbumsQueryOptions(),
-    enabled: !recommendedAlbums?.length,
-  });
   const { data: recommendedSongs, isPending: isRecommendedSongsPending } = useQuery(
     getRecommendedSongsQueryOptions()
   );
+  const showUserPlaylists = !!userPlaylists?.length;
+  const showRecommendedPlaylists = !!recommendedPlaylists?.length;
+  const showRecommendedAlbums = !!recommendedAlbums?.length;
+  const showRecommendedSongs = recommendedSongs?.length > 5;
+  const allSongs = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 20 }));
+  const { playSingleSong } = usePlayBar();
+  const { data: trendingPlaylists, isPending: isTrendingPlaylistsPending } = useQuery({
+    ...getTrendingPlaylistsQueryOptions(),
+    enabled: !showUserPlaylists,
+  });
+  const { data: trendingAlbums, isPending: isTrendingAlbumsPending } = useQuery({
+    ...getTrendingAlbumsQueryOptions(),
+    enabled: !showRecommendedAlbums,
+  });
   const { data: trendingSongs, isPending: isTrendingSongsPending } = useQuery({
     ...getTrendingSongsQueryOptions(),
-    enabled: recommendedSongs?.length < 5,
+    enabled: !showRecommendedSongs,
   });
-
-  console.log(recommendedSongs, trendingSongs);
+  const topPlaylistsTitle = showUserPlaylists
+    ? 'Your Personal Music Space'
+    : 'Trending playlists you might like';
+  const albumsTitle = recommendedAlbums?.length
+    ? 'Hot albums for you'
+    : 'Trending albums of this week';
 
   return (
     <>
       <div>
-        <SectionHeader
-          isPending={userPlaylists.isPending}
-          title={
-            userHasPlaylists ? 'Your Personal Music Space' : 'Trending playlists you might like'
-          }
-        />
+        <SectionHeader isPending={isUserPlaylistsPending} title={topPlaylistsTitle} />
         <PlaylistsSlider
-          isLoading={userPlaylists.isPending || isTrendingPlaylistsPending}
+          isLoading={isUserPlaylistsPending || isTrendingPlaylistsPending}
           playlists={
-            userHasPlaylists
-              ? [{ id: 0, type: 'favorite-songs' }, ...userPlaylists.data]
+            showUserPlaylists
+              ? [{ id: 0, type: 'favorite-songs' }, ...userPlaylists]
               : trendingPlaylists
           }
         />
       </div>
 
-      {(isRecommendedPlaylistsPending || !!recommendedPlaylists?.length) && (
+      {(isRecommendedPlaylistsPending || showRecommendedPlaylists) && (
         <div>
           <SectionHeader
             title="Playlists Tailored for You"
@@ -92,10 +96,7 @@ export default function Home() {
       )}
 
       <div>
-        <SectionHeader
-          title={recommendedAlbums?.length ? 'Hot albums for you' : 'Trending albums of this week'}
-          isPending={isRecommendedAlbumsPending}
-        />
+        <SectionHeader title={albumsTitle} isPending={isRecommendedAlbumsPending} />
         <AlbumsSlider
           albums={recommendedAlbums?.length ? recommendedAlbums : trendingAlbums}
           isLoading={isRecommendedAlbumsPending || isTrendingAlbumsPending}
@@ -103,16 +104,19 @@ export default function Home() {
       </div>
 
       <div className="-mt-11">
-        <SectionHeader title="Daily Picks" />
+        <SectionHeader
+          title="Daily Picks"
+          isPending={isRecommendedSongsPending || isTrendingSongsPending}
+        />
         <PlayBarSlider
-          songs={recommendedSongs?.length > 5 ? recommendedSongs : trendingSongs}
+          songs={showRecommendedSongs ? recommendedSongs : trendingSongs}
           isPending={isRecommendedSongsPending || isTrendingSongsPending}
           onPlay={playSingleSong}
         />
       </div>
       <div>
         <SectionHeader title="Artists You Follow" />
-        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
+        <ArtistsSlider artists={artists.data} isLoading={artists.isPending} />
       </div>
       <DiscoverPlaylistsSlider playlists={playlists} />
       <div>
@@ -121,7 +125,7 @@ export default function Home() {
       </div>
       <div>
         <SectionHeader title="Albums You Were Listening To" />
-        <AlbumsSlider albums={albums.data} isLoading={albums.isLoading} />
+        <AlbumsSlider albums={albums.data} isLoading={albums.isPending} />
       </div>
       <div>
         <SectionHeader title="Genres You Interested In" />
@@ -129,7 +133,7 @@ export default function Home() {
       </div>
       <div>
         <SectionHeader title="More Artists You'll Love" />
-        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
+        <ArtistsSlider artists={artists.data} isLoading={artists.isPending} />
       </div>
       <div className="-mt-8">
         <SectionHeader title="Trending Now" />
@@ -141,7 +145,7 @@ export default function Home() {
       </div>
       <div>
         <SectionHeader title="Recently Seen" />
-        <PlaylistsSlider isLoading={userPlaylists.isLoading} playlists={userPlaylists.data} />
+        <PlaylistsSlider isLoading={isUserPlaylistsPending} playlists={userPlaylists} />
       </div>
     </>
   );
