@@ -64,9 +64,7 @@ export default function Home() {
   const topPlaylistsTitle = showUserPlaylists
     ? 'Your Personal Music Space'
     : 'Trending playlists you might like';
-  const albumsTitle = recommendedAlbums?.length
-    ? 'Hot albums for you'
-    : 'Trending albums of this week';
+  const albumsTitle = showRecommendedAlbums ? 'Hot albums for you' : 'Trending albums of this week';
 
   return (
     <>

@@ -9,9 +9,9 @@ export const signInWithOAuth = createAsyncThunk('auth/signInWithOAuth', async (p
 });
 
 export const signOut = createAsyncThunk('auth/signOut', async () => {
-  queryClient.invalidateQueries()
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
+  queryClient.invalidateQueries();
 });
 
 export const getUserAvatar = createAsyncThunk('auth/getUserAvatar', async (userId) => {
