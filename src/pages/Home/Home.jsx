@@ -6,7 +6,7 @@ import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider'
 import { getTrendingArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import { playlists } from '../../data';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   getAllAlbumsQueryOptions,
   getTrendingAlbumsQueryOptions,
@@ -20,12 +20,11 @@ import {
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
-import usePlayBar from '../../hooks/usePlayBar';
 import {
   getRecommendedSongsQueryOptions,
   getTrendingSongsQueryOptions,
+  getRecentSongsQueryOptions,
 } from '../../queries/musics';
 import { getUserTopGenresQueryOptions } from '../../queries/genres';
 
@@ -46,12 +45,14 @@ export default function Home() {
   const { data: recommendedSongs, isPending: isRecommendedSongsPending } = useQuery(
     getRecommendedSongsQueryOptions()
   );
+  const { data: recentSongs, isPending: isRecentSongsPending } = useQuery(
+    getRecentSongsQueryOptions()
+  );
   const showUserPlaylists = !!userPlaylists?.length;
   const showRecommendedPlaylists = !!recommendedPlaylists?.length;
   const showRecommendedAlbums = !!recommendedAlbums?.length;
   const showRecommendedSongs = recommendedSongs?.length > 5;
-  const allSongs = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 20 }));
-  const { playSingleSong } = usePlayBar();
+  const showRecentSongs = recentSongs?.length > 5;
   const { data: trendingPlaylists, isPending: isTrendingPlaylistsPending } = useQuery({
     ...getTrendingPlaylistsQueryOptions(),
     enabled: !showUserPlaylists,
@@ -115,7 +116,6 @@ export default function Home() {
         <PlayBarSlider
           songs={showRecommendedSongs ? recommendedSongs : trendingSongs}
           isPending={isRecommendedSongsPending || isTrendingSongsPending}
-          onPlay={playSingleSong}
         />
       </div>
       <div>
@@ -135,18 +135,12 @@ export default function Home() {
         <SectionHeader title="Genres You might like" />
         <GenresSlider genres={userTopGenres} isPending={isUserTopGenresPending} />
       </div>
-      <div className="-mt-8">
-        <SectionHeader title="Trending Now" />
-        <PlayBarSlider
-          songs={allSongs.data?.pages.flat()}
-          isPending={allSongs.isPending}
-          onPlay={playSingleSong}
-        />
-      </div>
-      <div>
-        <SectionHeader title="Recently Seen" />
-        <PlaylistsSlider isLoading={isUserPlaylistsPending} playlists={userPlaylists} />
-      </div>
+      {(isRecentSongsPending || showRecentSongs) && (
+        <div className="-mt-8">
+          <SectionHeader title="Recently listened" />
+          <PlayBarSlider songs={recentSongs} isPending={isRecentSongsPending} />
+        </div>
+      )}
     </>
   );
 }

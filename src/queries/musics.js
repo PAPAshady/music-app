@@ -9,6 +9,7 @@ import {
   getFavoriteSongs,
   getRecommendedSongs,
   getTrendingSongs,
+  getRecentSongs,
 } from '../services/songs';
 
 export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
@@ -102,6 +103,16 @@ export const getTrendingSongsQueryOptions = () => {
   return queryOptions({
     queryKey: ['songs', { is_trending: true }],
     queryFn: getTrendingSongs,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const getRecentSongsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['songs', { is_recent: true }],
+    queryFn: getRecentSongs,
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,

@@ -103,3 +103,9 @@ export const getTrendingSongs = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getRecentSongs = async () => {
+  const { data, error } = await supabase.from('recent_songs').select('*').limit(20);
+  if (error) throw error;
+  return data;
+};
