@@ -3,7 +3,7 @@ import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsS
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
-import { getArtistsQueryOptions } from '../../queries/artists';
+import { getTrendingArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import { playlists } from '../../data';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
@@ -31,7 +31,9 @@ import { getUserTopGenresQueryOptions } from '../../queries/genres';
 
 export default function Home() {
   const albums = useQuery(getAllAlbumsQueryOptions());
-  const artists = useQuery(getArtistsQueryOptions());
+  const { data: trendingArtists, isPending: isTrendingArtistsPending } = useQuery(
+    getTrendingArtistsQueryOptions()
+  );
   const { data: userPlaylists, isPending: isUserPlaylistsPending } = useQuery(
     getAllPrivatePlaylistsQueryOptions()
   );
@@ -117,8 +119,8 @@ export default function Home() {
         />
       </div>
       <div>
-        <SectionHeader title="Artists You Follow" />
-        <ArtistsSlider artists={artists.data} isLoading={artists.isPending} />
+        <SectionHeader title="Popular artists" />
+        <ArtistsSlider artists={trendingArtists} isLoading={isTrendingArtistsPending} />
       </div>
       <DiscoverPlaylistsSlider playlists={playlists} />
       <div>
@@ -132,10 +134,6 @@ export default function Home() {
       <div>
         <SectionHeader title="Genres You might like" />
         <GenresSlider genres={userTopGenres} isPending={isUserTopGenresPending} />
-      </div>
-      <div>
-        <SectionHeader title="More Artists You'll Love" />
-        <ArtistsSlider artists={artists.data} isLoading={artists.isPending} />
       </div>
       <div className="-mt-8">
         <SectionHeader title="Trending Now" />

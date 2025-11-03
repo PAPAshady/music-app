@@ -22,3 +22,9 @@ export const getRelatedArtists = async (artist) => {
   if (error) throw error;
   return data;
 };
+
+export const getTrendingArtists = async () => {
+  const { data, error } = await supabase.from('trending_artists').select('*').limit(10);
+  if (error) throw error;
+  return data;
+};
