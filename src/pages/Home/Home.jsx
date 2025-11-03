@@ -16,6 +16,7 @@ import {
   getAllPrivatePlaylistsQueryOptions,
   getTrendingPlaylistsQueryOptions,
   getRecommendedPlaylistsQueryOptions,
+  getPlaylistsByGenreQueryOptions,
 } from '../../queries/playlists';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -72,6 +73,10 @@ export default function Home() {
   const { data: userTopGenres, isPending: isUserTopGenresPending } = useQuery(
     getUserTopGenresQueryOptions()
   );
+  const userMostLikedGenre = userTopGenres?.[0];
+  const { data: recommendedPlaylistsByGenre, isPending: isRecommendedPlaylistsByGenrePending } =
+    useQuery(getPlaylistsByGenreQueryOptions(userMostLikedGenre?.id));
+  const showRecommendedPlaylistsByGenre = recommendedPlaylistsByGenre?.length > 5;
 
   return (
     <>
@@ -123,10 +128,18 @@ export default function Home() {
         <ArtistsSlider artists={trendingArtists} isLoading={isTrendingArtistsPending} />
       </div>
       <DiscoverPlaylistsSlider playlists={playlists} />
-      <div>
-        <SectionHeader title="Since You Enjoy Eminem" />
-        <PlaylistsSlider playlists={[...playlists.slice(2, 7)].reverse()} />
-      </div>
+      {(showRecommendedPlaylistsByGenre || isRecommendedPlaylistsByGenrePending) && (
+        <div>
+          <SectionHeader
+            title={`Since You Enjoy ${userMostLikedGenre?.title}`}
+            isPending={isRecommendedPlaylistsByGenrePending}
+          />
+          <PlaylistsSlider
+            playlists={recommendedPlaylistsByGenre}
+            isPending={isRecommendedPlaylistsByGenrePending}
+          />
+        </div>
+      )}
       <div>
         <SectionHeader title="Albums You Were Listening To" />
         <AlbumsSlider albums={albums.data} isLoading={albums.isPending} />

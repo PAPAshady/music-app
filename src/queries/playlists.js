@@ -20,6 +20,7 @@ import {
   getFavoritePlaylists,
   getTrendingPlaylists,
   getRecommendedPlaylists,
+  getPlaylistsByGenre,
 } from '../services/playlists';
 import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
 
@@ -210,5 +211,16 @@ export const getRecommendedPlaylistsQueryOptions = () => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+  });
+};
+
+export const getPlaylistsByGenreQueryOptions = (genreId) => {
+  return queryOptions({
+    queryKey: ['playlists', { genreId }],
+    queryFn: () => getPlaylistsByGenre(genreId),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!genreId,
   });
 };

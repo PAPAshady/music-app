@@ -108,3 +108,12 @@ export const getRecommendedPlaylists = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getPlaylistsByGenre = async (genreId) => {
+  const { data, error } = await supabase
+    .from('playlists_extended')
+    .select('*')
+    .match({ genre_id: genreId, is_public: true });
+  if (error) throw error;
+  return data;
+};
