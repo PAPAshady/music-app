@@ -6,6 +6,8 @@ import {
   getFavoriteAlbums,
   getTrendingAlbums,
   recommendAlbums,
+  getRecentAlbums,
+  getNewAlbums,
 } from '../services/albums';
 
 export const getAllAlbumsQueryOptions = () => {
@@ -62,6 +64,26 @@ export const getRecommendedAlbumsQueryOptions = () => {
   return queryOptions({
     queryKey: ['albums', { is_recommended: true }],
     queryFn: recommendAlbums,
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+  });
+};
+
+export const getRecentAlbumsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['albums', { is_recent: true }],
+    queryFn: getRecentAlbums,
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+  });
+};
+
+export const getNewAlbumsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['albums', { is_new: true }],
+    queryFn: getNewAlbums,
     staleTime: Infinity,
     retryDelay: 5000,
     retry: true,

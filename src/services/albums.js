@@ -42,3 +42,19 @@ export const recommendAlbums = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getRecentAlbums = async () => {
+  const { data, error } = await supabase.from('recent_albums').select('*').limit(20);
+  if (error) throw error;
+  return data;
+};
+
+export const getNewAlbums = async () => {
+  const { data, error } = await supabase
+    .from('albums_extended')
+    .select('*')
+    .order('release_date', { ascending: false })
+    .limit(10);
+  if (error) throw error;
+  return data;
+};
