@@ -22,23 +22,33 @@ export default function Favorites() {
   const { data: favoritePlaylists, isPending: isFavoritePlaylistsPending } = useQuery(
     getFavoritePlaylistsQueryOptions()
   );
+  const noFavorites =
+    !isFavoriteAlbumsPending &&
+    !isFavoritePlaylistsPending &&
+    !isFavoriteSongsPending &&
+    !favoriteAlbums.length &&
+    !favoritePlaylists.length &&
+    !favoriteSongs.length;
 
   return (
     <>
       <div
-        className="border-primary-300 relative overflow-hidden rounded-4xl border bg-cover bg-center bg-no-repeat"
+        className="border-primary-300 relative h-full grow overflow-hidden rounded-4xl border bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${bannerBg})` }}
       >
         <div className="size-full px-4 py-10 backdrop-blur-[2px] sm:px-6 sm:py-14 lg:px-10 lg:py-16 xl:px-12 xl:py-20">
           <h3 className="text-primary-300 mb-3 text-2xl font-bold sm:text-3xl md:mb-6 lg:text-5xl">
-            Favorite Music
+            {noFavorites ? 'You haven’t liked anything yet.' : 'Favorite Music'}
           </h3>
           <p className="text-primary-200 sm:text-lg">
-            Because Favorites Deserve Their Own Space ..
+            {noFavorites
+              ? 'Your favorites are empty for now. Start liking songs, playlists, or albums to fill this space'
+              : 'Because Favorites Deserve Their Own Space...'}
           </p>
         </div>
       </div>
-      {!isFavoriteSongsPending && !!favoriteSongs.length && (
+
+      {(isFavoriteSongsPending || !!favoriteSongs?.length) && (
         <div>
           <SectionTitle title="Your favorite tracks" />
           <PlayBarSlider
@@ -48,13 +58,13 @@ export default function Favorites() {
           />
         </div>
       )}
-      {!isFavoritePlaylistsPending && !!favoritePlaylists.length && (
+      {(isFavoritePlaylistsPending || !!favoritePlaylists?.length) && (
         <div>
           <SectionTitle title="Your beloved playlists" />
           <PlaylistsSlider playlists={favoritePlaylists} isLoading={isFavoritePlaylistsPending} />
         </div>
       )}
-      {!isFavoriteAlbumsPending && !!favoriteAlbums.length && (
+      {(isFavoriteAlbumsPending || !!favoriteAlbums?.length) && (
         <div>
           <SectionTitle title="Albums you loved" />
           <AlbumsSlider

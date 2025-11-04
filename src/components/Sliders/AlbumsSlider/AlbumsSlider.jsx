@@ -33,7 +33,11 @@ export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', 
               <SwiperSlide key={index} className="p-[1px] pb-11">
                 <div className="flex flex-col gap-4">
                   {skeletonCardsArray.map((_, index) => (
-                    <AlbumCardSkeleton size={albumCardSize} key={index} />
+                    <AlbumCardSkeleton
+                      size={albumCardSize}
+                      key={index}
+                      classNames={albumCardStyles}
+                    />
                   ))}
                 </div>
               </SwiperSlide>
