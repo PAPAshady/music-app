@@ -21,12 +21,16 @@ import { getSongByIdQueryOptions } from '../../../queries/musics';
 
 export default function PlayerPanel() {
   const songId = useSelector((state) => state.queryState.id);
+  const type = useSelector((state) => state.queryState.type);
   const isOpen = useSelector((state) => state.playerPanel.isOpen);
   const isMobile = useMediaQuery('(max-width: 1023px)');
   const dispatch = useDispatch();
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const selectedSingleSong = useSelector((state) => state.playContext.singleSong);
-  const { data: song } = useQuery(getSongByIdQueryOptions(songId));
+  const { data: song } = useQuery({
+    ...getSongByIdQueryOptions(songId),
+    enabled: type === 'song' && !!songId,
+  });
   const queuelistType = useSelector((state) => state.playContext.queuelistType);
   const { data, isPending } = useQuery(
     queuelistType === 'related_songs'
