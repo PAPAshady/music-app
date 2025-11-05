@@ -1,5 +1,16 @@
 import { cloneElement, memo } from 'react';
-import { Music, Timer, User, Edit2, Trash, Heart, Play, Pause, AddCircle } from 'iconsax-react';
+import {
+  Music,
+  Timer,
+  User,
+  Edit2,
+  Trash,
+  Heart,
+  HeartSlash,
+  Play,
+  Pause,
+  AddCircle,
+} from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
@@ -15,7 +26,7 @@ import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
 } from '../../../queries/musics';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import {
   play,
   pause,
@@ -29,6 +40,12 @@ import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
 import ErrorPanel from '../ErrorPanel/ErrorPanel';
 import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';
+import {
+  unlikePlaylistMutationOptions,
+  likePlaylistMutationOptions,
+  unlikeAlbumMutationOptions,
+  likeAlbumMutationOptions,
+} from '../../../queries/likes';
 
 const SidebarPlaylist = memo(() => {
   useSelector((state) => state.queryState.type);
@@ -55,7 +72,12 @@ const SidebarPlaylist = memo(() => {
         ? getSongsByPlaylistIdQueryOptions(tracklistId)
         : getFavoriteSongsQueryOptions()
   );
-
+  const playlistLikeMutation = useMutation(
+    selectedTracklist?.is_liked ? unlikePlaylistMutationOptions() : likePlaylistMutationOptions()
+  );
+  const albumLikeMutation = useMutation(
+    selectedTracklist?.is_liked ? unlikeAlbumMutationOptions() : likeAlbumMutationOptions()
+  );
   const dispatch = useDispatch();
   const playlistCover =
     tracklistType === 'favorites' ? favoritesCover : selectedTracklist?.cover || defaultCover;
@@ -75,6 +97,17 @@ const SidebarPlaylist = memo(() => {
         dispatch(setCurrentCollection(selectedTracklist));
       }
       dispatch(setCurrentSongIndex(0));
+    }
+  };
+
+  const likeHandler = () => {
+    if (selectedTracklist) {
+      const { tracklistType, id } = selectedTracklist;
+      if (tracklistType === 'album') {
+        albumLikeMutation.mutate(id);
+      } else {
+        playlistLikeMutation.mutate(id);
+      }
     }
   };
 
@@ -123,11 +156,23 @@ const SidebarPlaylist = memo(() => {
             icon: <AddCircle />,
             title: 'Add to library',
           },
-          { id: 2, icon: <Heart />, title: 'Add to favorite playlists' },
+          {
+            id: 2,
+            icon: selectedTracklist?.is_liked ? <HeartSlash /> : <Heart />,
+            title: `${selectedTracklist?.is_liked ? 'Unlike' : 'Like'} ${selectedTracklist?.tracklistType}`,
+            onClick: likeHandler,
+          },
         ]
       : [
+          { id: 1, icon: <AddCircle />, title: 'Add to library' },
           {
-            id: 1,
+            id: 2,
+            icon: selectedTracklist?.is_liked ? <HeartSlash /> : <Heart />,
+            title: `${selectedTracklist?.is_liked ? 'Unlike' : 'Like'} ${selectedTracklist?.tracklistType}`,
+            onClick: likeHandler,
+          },
+          {
+            id: 3,
             icon: <Edit2 />,
             title: 'Edit playlist',
             onClick: () =>
@@ -139,7 +184,7 @@ const SidebarPlaylist = memo(() => {
               ),
           },
           {
-            id: 2,
+            id: 4,
             icon: <Trash />,
             title: 'Delete playlist',
             onClick: () =>
@@ -153,7 +198,6 @@ const SidebarPlaylist = memo(() => {
                 })
               ),
           },
-          { id: 3, icon: <Heart />, title: 'Add to favorite playlists' },
         ];
 
   if (isError) return <ErrorPanel error={error} />;

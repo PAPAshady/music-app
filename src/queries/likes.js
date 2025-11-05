@@ -82,6 +82,14 @@ const onPlaylistMutate = async (updatedPlaylistId, shouldLike) => {
   const prevPlaylists = queryClient.getQueriesData({ queryKey: ['playlists'] });
   queryClient.setQueriesData({ queryKey: ['playlists'] }, (prevPlaylists) => {
     if (!prevPlaylists) return prevPlaylists;
+
+    // if data is a single playlist
+    if (prevPlaylists.constructor === Object) {
+      if (updatedPlaylistId === prevPlaylists.id) return { ...prevPlaylists, is_liked: shouldLike };
+      return prevPlaylists;
+    }
+
+    // if data is an array of playlists
     return prevPlaylists.map((playlist) => {
       if (playlist.id === updatedPlaylistId) {
         return { ...playlist, is_liked: shouldLike };
@@ -121,6 +129,14 @@ const onAlbumMutate = async (updatedAlbumId, shouldLike) => {
   await queryClient.cancelQueries({ queryKey: ['albums'] });
   queryClient.setQueriesData({ queryKey: ['albums'] }, (prevAlbums) => {
     if (!prevAlbums) return prevAlbums;
+
+    // if data is a single album
+    if (prevAlbums.constructor === Object) {
+      if (updatedAlbumId === prevAlbums.id) return { ...prevAlbums, is_liked: shouldLike };
+      return prevAlbums;
+    }
+
+    // if data is an array of albums
     return prevAlbums.map((album) => {
       if (album.id === updatedAlbumId) {
         return { ...album, is_liked: shouldLike };
