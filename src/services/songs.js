@@ -3,7 +3,7 @@ import { shuffleArray } from '../utils/arrayUtils';
 
 export const getAllSongs = async ({ limit, cursor }) => {
   let query = supabase
-    .from('songs_with_user_data')
+    .from('songs_extended')
     .select('*')
     .order('created_at', { ascending: false })
     .limit(limit);
@@ -19,7 +19,7 @@ export const getAllSongs = async ({ limit, cursor }) => {
 
 export const getSongById = async (songId) => {
   const { data, error } = await supabase
-    .from('songs_with_user_data')
+    .from('songs_extended')
     .select('*')
     .eq('id', songId)
     .single();
@@ -29,7 +29,7 @@ export const getSongById = async (songId) => {
 
 export const getSongsByAlbumId = async (albumId) => {
   const { data, error } = await supabase
-    .from('songs_with_user_data')
+    .from('songs_extended')
     .select('*')
     .eq(`album_id`, albumId)
     .order('track_number', { ascending: true });
@@ -48,7 +48,7 @@ export const getSongsByPlaylistId = async (playlistId) => {
 
 export const getPopularSongsByArtistId = async (artistId) => {
   const { data, error } = await supabase
-    .from('songs_with_user_data')
+    .from('songs_extended')
     .select('*')
     .eq('artist_id', artistId)
     .order('play_count', { ascending: false })
@@ -60,15 +60,15 @@ export const getPopularSongsByArtistId = async (artistId) => {
 export const getRelatedSongsBySongData = async (song) => {
   const [artistRes, genresRes] = await Promise.all([
     supabase
-      .from('songs_with_user_data')
+      .from('songs_extended')
       .select('*')
       .eq('artist_id', song.artist_id)
       .neq('id', song.id)
       .limit(10),
     supabase
-      .from('songs_with_user_data')
+      .from('songs_extended')
       .select('*')
-      .overlaps('genres', song.genres)
+      .eq('genre_id', song.genre_id)
       .neq('id', song.id)
       .neq('artist_id', song.artist_id)
       .limit(10),
@@ -87,10 +87,25 @@ export const getRelatedSongsBySongData = async (song) => {
 };
 
 export const getFavoriteSongs = async () => {
-  const { data, error } = await supabase
-    .from('songs_with_user_data')
-    .select('*')
-    .eq('is_liked', true);
+  const { data, error } = await supabase.from('songs_extended').select('*').eq('is_liked', true);
+  if (error) throw error;
+  return data;
+};
+
+export const getRecommendedSongs = async () => {
+  const { data, error } = await supabase.from('recommended_songs').select('*').limit(20);
+  if (error) throw error;
+  return data;
+};
+
+export const getTrendingSongs = async () => {
+  const { data, error } = await supabase.from('most_played_songs').select('*').limit(20);
+  if (error) throw error;
+  return data;
+};
+
+export const getRecentSongs = async () => {
+  const { data, error } = await supabase.from('recent_songs').select('*').limit(20);
   if (error) throw error;
   return data;
 };

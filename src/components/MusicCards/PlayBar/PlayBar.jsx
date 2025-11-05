@@ -1,5 +1,5 @@
 import { memo, cloneElement } from 'react';
-import { Heart, Menu, Play, AddCircle } from 'iconsax-react';
+import { Heart, HeartSlash, Menu, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
@@ -40,7 +40,12 @@ const PlayBar = memo(
 
     const dropDownMenuItems = [
       { id: 1, title: 'Add to playlist', icon: <AddCircle /> },
-      { id: 2, title: 'Add to favorites', icon: <Heart /> },
+      {
+        id: 2,
+        title: `${is_liked ? 'Remove from' : 'Add to'} favorites`,
+        icon: is_liked ? <HeartSlash /> : <Heart />,
+        onClick: () => likeHandlerMutation.mutate(id),
+      },
     ];
 
     return (

@@ -4,6 +4,10 @@ import {
   getAlbumsByArtistId,
   getAlbumById,
   getFavoriteAlbums,
+  getTrendingAlbums,
+  recommendAlbums,
+  getRecentAlbums,
+  getNewAlbums,
 } from '../services/albums';
 
 export const getAllAlbumsQueryOptions = () => {
@@ -40,6 +44,46 @@ export const getFavoriteAlbumsQueryOptions = () => {
   return queryOptions({
     queryKey: ['albums', { is_liked: true }],
     queryFn: getFavoriteAlbums,
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+  });
+};
+
+export const getTrendingAlbumsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['albums', { is_trending: true }],
+    queryFn: getTrendingAlbums,
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+  });
+};
+
+export const getRecommendedAlbumsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['albums', { is_recommended: true }],
+    queryFn: recommendAlbums,
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+  });
+};
+
+export const getRecentAlbumsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['albums', { is_recent: true }],
+    queryFn: getRecentAlbums,
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+  });
+};
+
+export const getNewAlbumsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['albums', { is_new: true }],
+    queryFn: getNewAlbums,
     staleTime: Infinity,
     retryDelay: 5000,
     retry: true,

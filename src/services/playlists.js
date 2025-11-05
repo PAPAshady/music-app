@@ -96,3 +96,55 @@ export const getFavoritePlaylists = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getTrendingPlaylists = async () => {
+  const { data, error } = await supabase.from('most_played_playlists').select('*').limit(10);
+  if (error) throw error;
+  return data;
+};
+
+export const getRecommendedPlaylists = async () => {
+  const { data, error } = await supabase.from('recommended_playlists').select('*').limit(10);
+  if (error) throw error;
+  return data;
+};
+
+export const getPlaylistsByGenre = async (genreId) => {
+  const { data, error } = await supabase
+    .from('playlists_extended')
+    .select('*')
+    .match({ genre_id: genreId, is_public: true });
+  if (error) throw error;
+  return data;
+};
+
+export const getUserSubscribedPlaylists = async () => {
+  const { data, error } = await supabase.from('user_subscribed_playlists').select('*');
+  if (error) throw error;
+  return data;
+};
+
+export const subscribeToPlaylist = async (playlistId) => {
+  const { data, error } = await supabase
+    .from('playlist_subscriptions')
+    .insert({ playlist_id: playlistId })
+    .select();
+  if (error) throw error;
+  return data;
+};
+
+export const unsubscribeFromPlaylist = async (playlistId, userId) => {
+  const { data, error } = await supabase
+    .from('playlist_subscriptions')
+    .delete()
+    .match({ playlist_id: playlistId, user_id: userId })
+    .select();
+  if (error) throw error;
+  return data;
+};
+
+export const getRecentlyPlayedPlaylists = async () => {
+  const { data, error } = await supabase.from('recent_playlists').select('*').limit(10);
+  if (error) throw error;
+  return data;
+};

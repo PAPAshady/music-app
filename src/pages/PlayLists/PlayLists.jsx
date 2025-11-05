@@ -1,21 +1,34 @@
 import useMediaQuery from '../../hooks/useMediaQuery';
-import TracksCard from '../../components/MusicCards/TracksCard/TracksCard';
 import SectionTitle from '../../components/SectionHeader/SectionHeader';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
 import PlaylistCardSkeleton from '../../components/MusicCards/PlaylistCard/PlaylistCardSkeleton';
-import PlayBar from '../../components/MusicCards/PlayBar/PlayBar';
-import { songs, genres, playlists } from '../../data';
 import { useQuery } from '@tanstack/react-query';
-import { getAllPrivatePlaylistsQueryOptions } from '../../queries/playlists';
+import {
+  getAllPrivatePlaylistsQueryOptions,
+  getUserSubscribedPlaylistsQueryOptions,
+  getRecentlyPlayedPlaylistsQueryOptions,
+  getRecommendedPlaylistsQueryOptions,
+} from '../../queries/playlists';
+import { getTrendingSongsQueryOptions } from '../../queries/musics';
 import PropTypes from 'prop-types';
-import usePlayBar from '../../hooks/usePlayBar';
 import AddPlaylistButton from '../../components/AddPlaylistButton/AddPlaylistButton';
+import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
 
 export default function PlayLists() {
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
-  const { playSingleSong } = usePlayBar();
-  const isSmallTablet = useMediaQuery('(min-width: 480px)');
+  const { data: subscribedPlaylists, isPending: isSusbscribedPlaylistsPending } = useQuery(
+    getUserSubscribedPlaylistsQueryOptions()
+  );
+  const { data: recentlyPlayedPlaylists, isPending: isRecentlyPlayedPlaylistsPending } = useQuery(
+    getRecentlyPlayedPlaylistsQueryOptions()
+  );
+  const { data: reccomendedPlaylists, isPending: isReccomendedPlaylistsPending } = useQuery(
+    getRecommendedPlaylistsQueryOptions()
+  );
+  const { data: trendingSongs, isPending: isTrendingSongsPending } = useQuery(
+    getTrendingSongsQueryOptions()
+  );
   // Render the "Add New Playlist" button as the first item in the playlists list.
   const privatePlaylists = [{ id: 0, type: 'add-playlist-button' }, ...(userPlaylists.data ?? [])];
   const playlistsSections = [
@@ -27,33 +40,27 @@ export default function PlayLists() {
     },
     {
       id: 2,
-      title: 'Updated Playlists',
-      playlists: userPlaylists.data?.playlist,
-      isLoading: userPlaylists.isLoading,
+      title: 'Subscribed playlists',
+      playlists: subscribedPlaylists,
+      isLoading: isSusbscribedPlaylistsPending,
     },
+
     {
       id: 3,
-      title: 'Subscribed playlists',
-      playlists: userPlaylists.data,
-      isLoading: userPlaylists.isLoading,
+      title: 'Playlists You Recently Seen',
+      playlists: recentlyPlayedPlaylists,
+      isLoading: isRecentlyPlayedPlaylistsPending,
     },
     {
       id: 4,
       title: 'Popular playlists based on you',
-      playlists,
-      numberOfPlayLists: 5,
+      playlists: reccomendedPlaylists,
+      isLoading: isReccomendedPlaylistsPending,
     },
   ];
 
   return (
     <>
-      <div className="xs:flex-row xs:w-full mx-auto flex w-[90%] flex-col items-center gap-2 sm:gap-4">
-        {genres.slice(0, 3).map((track) => (
-          <div key={track.id} className="flex w-full justify-center">
-            <TracksCard {...track} />
-          </div>
-        ))}
-      </div>
       {playlistsSections.map(({ id, title, playlists, numberOfPlayLists, isLoading }) => (
         <div key={id}>
           <SectionTitle title={title} />
@@ -66,25 +73,7 @@ export default function PlayLists() {
       ))}
       <div>
         <SectionTitle title="Add Tracks to your playlists" />
-        <div className="flex flex-col gap-4">
-          {songs.slice(0, 4).map((song) => (
-            <PlayBar
-              onPlay={playSingleSong}
-              key={song.id}
-              size={isSmallTablet ? 'lg' : 'sm'}
-              classNames="!max-w-none"
-              song={song}
-            />
-          ))}
-        </div>
-      </div>
-      <div>
-        <SectionTitle title="Playlists You Recently Seen" />
-        <PlaylistsContainer
-          playlists={userPlaylists.data}
-          isLoading={userPlaylists.isLoading}
-          numberOfPlayLists={5}
-        />
+        <PlayBarSlider songs={trendingSongs} isPending={isTrendingSongsPending} />
       </div>
     </>
   );

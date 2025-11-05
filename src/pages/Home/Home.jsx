@@ -3,88 +3,157 @@ import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsS
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
-import { getArtistsQueryOptions } from '../../queries/artists';
+import { getTrendingArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
-import { genres, playlists } from '../../data';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { getAllAlbumsQueryOptions } from '../../queries/albums';
+import { playlists } from '../../data';
+import { useQuery } from '@tanstack/react-query';
+import {
+  getAllAlbumsQueryOptions,
+  getTrendingAlbumsQueryOptions,
+  getRecommendedAlbumsQueryOptions,
+} from '../../queries/albums';
 import {
   getAllPrivatePlaylistsQueryOptions,
-  getAllPublicPlaylistsQueryOptions,
+  getTrendingPlaylistsQueryOptions,
+  getRecommendedPlaylistsQueryOptions,
+  getPlaylistsByGenreQueryOptions,
 } from '../../queries/playlists';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
-import usePlayBar from '../../hooks/usePlayBar';
+import {
+  getRecommendedSongsQueryOptions,
+  getTrendingSongsQueryOptions,
+  getRecentSongsQueryOptions,
+} from '../../queries/musics';
+import { getUserTopGenresQueryOptions } from '../../queries/genres';
 
 export default function Home() {
   const albums = useQuery(getAllAlbumsQueryOptions());
-  const artists = useQuery(getArtistsQueryOptions());
-  const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
-  const publicPlaylists = useQuery(getAllPublicPlaylistsQueryOptions());
-  const allSongs = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 20 }));
-  const { playSingleSong } = usePlayBar();
+  const { data: trendingArtists, isPending: isTrendingArtistsPending } = useQuery(
+    getTrendingArtistsQueryOptions()
+  );
+  const { data: userPlaylists, isPending: isUserPlaylistsPending } = useQuery(
+    getAllPrivatePlaylistsQueryOptions()
+  );
+  const { data: recommendedPlaylists, isPending: isRecommendedPlaylistsPending } = useQuery(
+    getRecommendedPlaylistsQueryOptions()
+  );
+  const { data: recommendedAlbums, isPending: isRecommendedAlbumsPending } = useQuery(
+    getRecommendedAlbumsQueryOptions()
+  );
+  const { data: recommendedSongs, isPending: isRecommendedSongsPending } = useQuery(
+    getRecommendedSongsQueryOptions()
+  );
+  const { data: recentSongs, isPending: isRecentSongsPending } = useQuery(
+    getRecentSongsQueryOptions()
+  );
+  const showUserPlaylists = !!userPlaylists?.length;
+  const showRecommendedPlaylists = !!recommendedPlaylists?.length;
+  const showRecommendedAlbums = !!recommendedAlbums?.length;
+  const showRecommendedSongs = recommendedSongs?.length > 5;
+  const showRecentSongs = recentSongs?.length > 5;
+  const { data: trendingPlaylists, isPending: isTrendingPlaylistsPending } = useQuery({
+    ...getTrendingPlaylistsQueryOptions(),
+    enabled: !showUserPlaylists,
+  });
+  const { data: trendingAlbums, isPending: isTrendingAlbumsPending } = useQuery({
+    ...getTrendingAlbumsQueryOptions(),
+    enabled: !showRecommendedAlbums,
+  });
+  const { data: trendingSongs, isPending: isTrendingSongsPending } = useQuery({
+    ...getTrendingSongsQueryOptions(),
+    enabled: !showRecommendedSongs,
+  });
+  const topPlaylistsTitle = showUserPlaylists
+    ? 'Your Personal Music Space'
+    : 'Trending playlists you might like';
+  const albumsTitle = showRecommendedAlbums ? 'Hot albums for you' : 'Trending albums of this week';
+  const { data: userTopGenres, isPending: isUserTopGenresPending } = useQuery(
+    getUserTopGenresQueryOptions()
+  );
+  const userMostLikedGenre = userTopGenres?.[0];
+  const { data: recommendedPlaylistsByGenre, isPending: isRecommendedPlaylistsByGenrePending } =
+    useQuery(getPlaylistsByGenreQueryOptions(userMostLikedGenre?.id));
+  const showRecommendedPlaylistsByGenre = recommendedPlaylistsByGenre?.length > 5;
 
   return (
     <>
       <div>
-        <SectionHeader title="Playlists Tailored for You" />
-        <PlaylistsSlider playlists={publicPlaylists.data} isLoading={publicPlaylists.isLoading} />
-      </div>
-      <div>
-        <SectionHeader title="Your Personal Music Space" />
+        <SectionHeader isPending={isUserPlaylistsPending} title={topPlaylistsTitle} />
         <PlaylistsSlider
-          isLoading={userPlaylists.isLoading}
-          playlists={[{ id: 0, type: 'favorite-songs' }, ...(userPlaylists.data ?? [])]}
+          isLoading={isUserPlaylistsPending || isTrendingPlaylistsPending}
+          playlists={
+            showUserPlaylists
+              ? [{ id: 0, type: 'favorite-songs' }, ...userPlaylists]
+              : trendingPlaylists
+          }
         />
       </div>
+
+      {(isRecommendedPlaylistsPending || showRecommendedPlaylists) && (
+        <div>
+          <SectionHeader
+            title="Playlists Tailored for You"
+            isPending={isRecommendedPlaylistsPending}
+          />
+          <PlaylistsSlider
+            playlists={recommendedPlaylists}
+            isLoading={isRecommendedPlaylistsPending}
+          />
+        </div>
+      )}
+
       <div>
-        <SectionHeader title="Updates from Followed Artists" />
-        <AlbumsSlider albums={albums.data} isLoading={albums.isLoading} />
+        <SectionHeader title={albumsTitle} isPending={isRecommendedAlbumsPending} />
+        <AlbumsSlider
+          albums={recommendedAlbums?.length ? recommendedAlbums : trendingAlbums}
+          isLoading={isRecommendedAlbumsPending || isTrendingAlbumsPending}
+        />
       </div>
+
       <div className="-mt-11">
-        <SectionHeader title="Daily Picks" />
+        <SectionHeader
+          title="Daily Picks"
+          isPending={isRecommendedSongsPending || isTrendingSongsPending}
+        />
         <PlayBarSlider
-          songs={allSongs.data?.pages.flat()}
-          isPending={allSongs.isPending}
-          onPlay={playSingleSong}
+          songs={showRecommendedSongs ? recommendedSongs : trendingSongs}
+          isPending={isRecommendedSongsPending || isTrendingSongsPending}
         />
       </div>
       <div>
-        <SectionHeader title="Artists You Follow" />
-        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
+        <SectionHeader title="Popular artists" />
+        <ArtistsSlider artists={trendingArtists} isLoading={isTrendingArtistsPending} />
       </div>
       <DiscoverPlaylistsSlider playlists={playlists} />
-      <div>
-        <SectionHeader title="Since You Enjoy Eminem" />
-        <PlaylistsSlider playlists={[...playlists.slice(2, 7)].reverse()} />
-      </div>
+      {(showRecommendedPlaylistsByGenre || isRecommendedPlaylistsByGenrePending) && (
+        <div>
+          <SectionHeader
+            title={`Since You Enjoy ${userMostLikedGenre?.title}`}
+            isPending={isRecommendedPlaylistsByGenrePending}
+          />
+          <PlaylistsSlider
+            playlists={recommendedPlaylistsByGenre}
+            isPending={isRecommendedPlaylistsByGenrePending}
+          />
+        </div>
+      )}
       <div>
         <SectionHeader title="Albums You Were Listening To" />
-        <AlbumsSlider albums={albums.data} isLoading={albums.isLoading} />
+        <AlbumsSlider albums={albums.data} isLoading={albums.isPending} />
       </div>
       <div>
-        <SectionHeader title="Genres You Interested In" />
-        <GenresSlider genres={genres} />
+        <SectionHeader title="Genres You might like" />
+        <GenresSlider genres={userTopGenres} isPending={isUserTopGenresPending} />
       </div>
-      <div>
-        <SectionHeader title="More Artists You'll Love" />
-        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
-      </div>
-      <div className="-mt-8">
-        <SectionHeader title="Trending Now" />
-        <PlayBarSlider
-          songs={allSongs.data?.pages.flat()}
-          isPending={allSongs.isPending}
-          onPlay={playSingleSong}
-        />
-      </div>
-      <div>
-        <SectionHeader title="Recently Seen" />
-        <PlaylistsSlider isLoading={userPlaylists.isLoading} playlists={userPlaylists.data} />
-      </div>
+      {(isRecentSongsPending || showRecentSongs) && (
+        <div className="-mt-8">
+          <SectionHeader title="Recently listened" />
+          <PlayBarSlider songs={recentSongs} isPending={isRecentSongsPending} />
+        </div>
+      )}
     </>
   );
 }

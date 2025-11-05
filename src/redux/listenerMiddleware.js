@@ -12,6 +12,7 @@ import { getUserAvatar } from './slices/authSlice';
 import { setCurrentMusic } from './slices/musicPlayerSlice';
 import { music, setPrevSongIndex, setCurrentSongIndex, play } from './slices/musicPlayerSlice';
 import {
+  setCurrentCollection,
   setCurrentQueuelist,
   setSelectedCollection,
   setSelectedCollectionTracks,
@@ -46,9 +47,12 @@ listenerMiddleware.startListening({
       dispatch(setCurrentMusic(queuelist[currentSongIndex]));
       dispatch(play());
 
-      // update the play_count in database everytime a user plays the song to determine its popularity
-      await supabase.rpc('increment_play', {
-        song_id: queuelist[currentSongIndex].id,
+      const userId = getState().auth.user.id;
+      // update the play_count per user in database everytime a user plays the song to determine its popularity
+      await supabase.rpc('increment_play_per_user', {
+        _user_id: userId,
+        _target_id: queuelist[currentSongIndex].id,
+        _target_type: 'song',
       });
     }
   },
@@ -82,6 +86,21 @@ listenerMiddleware.startListening({
     );
 
     dispatch(setCurrentQueuelist(songs));
+  },
+});
+
+listenerMiddleware.startListening({
+  actionCreator: setCurrentCollection,
+  effect: async (action, { getState }) => {
+    if (action.payload.id !== 'favorites') {
+      const userId = getState().auth.user.id;
+      // update the play_count per user in database everytime a user plays a album/playlist to determine its popularity
+      await supabase.rpc('increment_play_per_user', {
+        _user_id: userId,
+        _target_id: action.payload.id,
+        _target_type: action.payload.tracklistType,
+      });
+    }
   },
 });
 

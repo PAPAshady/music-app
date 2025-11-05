@@ -17,9 +17,17 @@ import {
   removeSongFromPrivatePlaylist,
   deletePrivatePlaylist,
   getPlaylistById,
-  getFavoritePlaylists
+  getFavoritePlaylists,
+  getTrendingPlaylists,
+  getRecommendedPlaylists,
+  getPlaylistsByGenre,
+  getUserSubscribedPlaylists,
+  subscribeToPlaylist,
+  unsubscribeFromPlaylist,
+  getRecentlyPlayedPlaylists,
 } from '../services/playlists';
 import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
+import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 
 export const getAllPlaylistsQueryOptions = () => {
   return queryOptions({
@@ -185,6 +193,86 @@ export const getFavoritePlaylistsQueryOptions = () => {
   return queryOptions({
     queryKey: ['playlists', { is_liked: true }],
     queryFn: getFavoritePlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const getTrendingPlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_trending: true }],
+    queryFn: getTrendingPlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const getRecommendedPlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_recommended: true }],
+    queryFn: getRecommendedPlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const getPlaylistsByGenreQueryOptions = (genreId) => {
+  return queryOptions({
+    queryKey: ['playlists', { genreId }],
+    queryFn: () => getPlaylistsByGenre(genreId),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!genreId,
+  });
+};
+
+export const getUserSubscribedPlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_subscribed: true }],
+    queryFn: getUserSubscribedPlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const subscribeToPlaylistMutationOptions = () => {
+  return {
+    queryKey: ['playlists', { is_subscribed: true }],
+    mutationFn: subscribeToPlaylist,
+    retry: true,
+    retryDelay: 5000,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['playlists'] });
+      store.dispatch(showNewSnackbar({ message: 'Added playlist to library!', type: 'success' }));
+    },
+  };
+};
+
+export const unsubscribeFromPlaylistMutationOptions = () => {
+  const userId = store.getState().auth.user.id;
+  return {
+    queryKey: ['playlists', { is_subscribed: true }],
+    mutationFn: (playlistId) => unsubscribeFromPlaylist(playlistId, userId),
+    retry: true,
+    retryDelay: 5000,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['playlists'] });
+      store.dispatch(
+        showNewSnackbar({ message: 'Removed playlist from library!', type: 'success' })
+      );
+    },
+  };
+};
+
+export const getRecentlyPlayedPlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_recent: true }],
+    queryFn: getRecentlyPlayedPlaylists,
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
