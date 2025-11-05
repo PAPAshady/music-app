@@ -54,15 +54,15 @@ export default function Home() {
   const showRecommendedAlbums = !!recommendedAlbums?.length;
   const showRecommendedSongs = recommendedSongs?.length > 5;
   const showRecentSongs = recentSongs?.length > 5;
-  const { data: trendingPlaylists, isPending: isTrendingPlaylistsPending } = useQuery({
+  const { data: trendingPlaylists, isLoading: isTrendingPlaylistsPending } = useQuery({
     ...getTrendingPlaylistsQueryOptions(),
     enabled: !showUserPlaylists,
   });
-  const { data: trendingAlbums, isPending: isTrendingAlbumsPending } = useQuery({
+  const { data: trendingAlbums, isLoading: isTrendingAlbumsPending } = useQuery({
     ...getTrendingAlbumsQueryOptions(),
     enabled: !showRecommendedAlbums,
   });
-  const { data: trendingSongs, isPending: isTrendingSongsPending } = useQuery({
+  const { data: trendingSongs, isLoading: isTrendingSongsPending } = useQuery({
     ...getTrendingSongsQueryOptions(),
     enabled: !showRecommendedSongs,
   });
