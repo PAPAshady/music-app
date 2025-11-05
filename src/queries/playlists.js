@@ -21,8 +21,12 @@ import {
   getTrendingPlaylists,
   getRecommendedPlaylists,
   getPlaylistsByGenre,
+  getUserSubscribedPlaylists,
+  subscribeToPlaylist,
+  unsubscribeFromPlaylist,
 } from '../services/playlists';
 import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
+import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 
 export const getAllPlaylistsQueryOptions = () => {
   return queryOptions({
@@ -223,4 +227,43 @@ export const getPlaylistsByGenreQueryOptions = (genreId) => {
     retryDelay: 5000,
     enabled: !!genreId,
   });
+};
+
+export const getUserSubscribedPlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_subscribed: true }],
+    queryFn: getUserSubscribedPlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const subscribeToPlaylistMutationOptions = () => {
+  return {
+    queryKey: ['playlists', { is_subscribed: true }],
+    mutationFn: subscribeToPlaylist,
+    retry: true,
+    retryDelay: 5000,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['playlists'] });
+      store.dispatch(showNewSnackbar({ message: 'Added playlist to library!', type: 'success' }));
+    },
+  };
+};
+
+export const unsubscribeFromPlaylistMutationOptions = () => {
+  const userId = store.getState().auth.user.id;
+  return {
+    queryKey: ['playlists', { is_subscribed: true }],
+    mutationFn: (playlistId) => unsubscribeFromPlaylist(playlistId, userId),
+    retry: true,
+    retryDelay: 5000,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['playlists'] });
+      store.dispatch(
+        showNewSnackbar({ message: 'Removed playlist from library!', type: 'success' })
+      );
+    },
+  };
 };

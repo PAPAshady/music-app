@@ -10,6 +10,7 @@ import {
   Play,
   Pause,
   AddCircle,
+  MinusCirlce,
 } from 'iconsax-react';
 import PropTypes from 'prop-types';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
@@ -25,6 +26,7 @@ import { openModal as openConfirmModal } from '../../../redux/slices/confirmModa
 import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
+  getFavoriteSongsQueryOptions,
 } from '../../../queries/musics';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import {
@@ -35,9 +37,12 @@ import {
 } from '../../../redux/slices/musicPlayerSlice';
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import usePlayBar from '../../../hooks/usePlayBar';
-import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
-import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
+import {
+  getPlaylistByIdQueryOptions,
+  subscribeToPlaylistMutationOptions,
+  unsubscribeFromPlaylistMutationOptions,
+} from '../../../queries/playlists';
 import ErrorPanel from '../ErrorPanel/ErrorPanel';
 import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';
 import {
@@ -78,6 +83,12 @@ const SidebarPlaylist = memo(() => {
   const albumLikeMutation = useMutation(
     selectedTracklist?.is_liked ? unlikeAlbumMutationOptions() : likeAlbumMutationOptions()
   );
+  const playlistSubscriptionMutation = useMutation(
+    selectedTracklist?.is_subscribed
+      ? unsubscribeFromPlaylistMutationOptions()
+      : subscribeToPlaylistMutationOptions()
+  );
+
   const dispatch = useDispatch();
   const playlistCover =
     tracklistType === 'favorites' ? favoritesCover : selectedTracklist?.cover || defaultCover;
@@ -108,6 +119,16 @@ const SidebarPlaylist = memo(() => {
       } else {
         playlistLikeMutation.mutate(id);
       }
+    }
+  };
+
+  const playlistSubscriptionHandler = () => {
+    const isPublicPlaylist =
+      selectedTracklist &&
+      selectedTracklist.tracklistType === 'playlist' &&
+      selectedTracklist.is_public;
+    if (isPublicPlaylist) {
+      playlistSubscriptionMutation.mutate(selectedTracklist.id);
     }
   };
 
@@ -148,57 +169,65 @@ const SidebarPlaylist = memo(() => {
     { id: 3, title: selectedTracklist?.artist ?? 'No Artist', icon: <User /> },
   ];
 
-  const playlistDropDownListItems =
-    selectedTracklist?.is_public || selectedTracklist?.tracklistType === 'album'
-      ? [
-          {
-            id: 1,
-            icon: <AddCircle />,
-            title: 'Add to library',
-          },
-          {
-            id: 2,
-            icon: selectedTracklist?.is_liked ? <HeartSlash /> : <Heart />,
-            title: `${selectedTracklist?.is_liked ? 'Unlike' : 'Like'} ${selectedTracklist?.tracklistType}`,
-            onClick: likeHandler,
-          },
-        ]
-      : [
-          { id: 1, icon: <AddCircle />, title: 'Add to library' },
-          {
-            id: 2,
-            icon: selectedTracklist?.is_liked ? <HeartSlash /> : <Heart />,
-            title: `${selectedTracklist?.is_liked ? 'Unlike' : 'Like'} ${selectedTracklist?.tracklistType}`,
-            onClick: likeHandler,
-          },
-          {
-            id: 3,
-            icon: <Edit2 />,
-            title: 'Edit playlist',
-            onClick: () =>
-              dispatch(
-                openModal({
-                  title: `Edit ${selectedTracklist?.title}`,
-                  actionType: 'edit_playlist',
-                })
-              ),
-          },
-          {
-            id: 4,
-            icon: <Trash />,
-            title: 'Delete playlist',
-            onClick: () =>
-              dispatch(
-                openConfirmModal({
-                  title: `Delete "${selectedTracklist?.title}" playlist.`,
-                  message: 'Are you sure you want to delete this playlist ?',
-                  buttons: { confirm: true, cancel: true },
-                  buttonsClassNames: { confirm: '!bg-red !inset-shadow-none' },
-                  actionType: 'delete_playlist',
-                })
-              ),
-          },
-        ];
+  const userPlaylistsDropDownItems = [
+    {
+      id: 1,
+      icon: selectedTracklist?.is_liked ? <HeartSlash /> : <Heart />,
+      title: `${selectedTracklist?.is_liked ? 'Unlike' : 'Like'} playlist`,
+      onClick: likeHandler,
+    },
+    {
+      id: 2,
+      icon: <Edit2 />,
+      title: 'Edit playlist',
+      onClick: () =>
+        dispatch(
+          openModal({
+            title: `Edit ${selectedTracklist?.title}`,
+            actionType: 'edit_playlist',
+          })
+        ),
+    },
+    {
+      id: 3,
+      icon: <Trash />,
+      title: 'Delete playlist',
+      onClick: () =>
+        dispatch(
+          openConfirmModal({
+            title: `Delete "${selectedTracklist?.title}" playlist.`,
+            message: 'Are you sure you want to delete this playlist ?',
+            buttons: { confirm: true, cancel: true },
+            buttonsClassNames: { confirm: '!bg-red !inset-shadow-none' },
+            actionType: 'delete_playlist',
+          })
+        ),
+    },
+  ];
+
+  const albumDropDownListItems = [
+    {
+      id: 1,
+      icon: selectedTracklist?.is_liked ? <HeartSlash /> : <Heart />,
+      title: `${selectedTracklist?.is_liked ? 'Unlike' : 'Like'} album`,
+      onClick: likeHandler,
+    },
+  ];
+
+  const publicPlaylistsDropDownItems = [
+    {
+      id: 1,
+      icon: selectedTracklist?.is_liked ? <HeartSlash /> : <Heart />,
+      title: `${selectedTracklist?.is_liked ? 'Unlike' : 'Like'} playlist`,
+      onClick: likeHandler,
+    },
+    {
+      id: 2,
+      icon: selectedTracklist?.is_subscribed ? <MinusCirlce /> : <AddCircle />,
+      title: `${selectedTracklist?.is_subscribed ? 'Remove from' : 'Add to'} library`,
+      onClick: playlistSubscriptionHandler,
+    },
+  ];
 
   if (isError) return <ErrorPanel error={error} />;
 
@@ -229,7 +258,13 @@ const SidebarPlaylist = memo(() => {
               )}
               {tracklistType !== 'favorites' && (
                 <DropDownList
-                  menuItems={playlistDropDownListItems}
+                  menuItems={
+                    tracklistType === 'album'
+                      ? albumDropDownListItems
+                      : selectedTracklist?.is_public
+                        ? publicPlaylistsDropDownItems
+                        : userPlaylistsDropDownItems
+                  }
                   dropDownPlacement="bottom end"
                 />
               )}

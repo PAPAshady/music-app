@@ -117,3 +117,28 @@ export const getPlaylistsByGenre = async (genreId) => {
   if (error) throw error;
   return data;
 };
+
+export const getUserSubscribedPlaylists = async () => {
+  const { data, error } = await supabase.from('user_subscribed_playlists').select('*');
+  if (error) throw error;
+  return data;
+};
+
+export const subscribeToPlaylist = async (playlistId) => {
+  const { data, error } = await supabase
+    .from('playlist_subscriptions')
+    .insert({ playlist_id: playlistId })
+    .select();
+  if (error) throw error;
+  return data;
+};
+
+export const unsubscribeFromPlaylist = async (playlistId, userId) => {
+  const { data, error } = await supabase
+    .from('playlist_subscriptions')
+    .delete()
+    .match({ playlist_id: playlistId, user_id: userId })
+    .select();
+  if (error) throw error;
+  return data;
+};
