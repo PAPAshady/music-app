@@ -142,3 +142,9 @@ export const unsubscribeFromPlaylist = async (playlistId, userId) => {
   if (error) throw error;
   return data;
 };
+
+export const getRecentlyPlayedPlaylists = async () => {
+  const { data, error } = await supabase.from('recent_playlists').select('*').limit(10);
+  if (error) throw error;
+  return data;
+};

@@ -24,6 +24,7 @@ import {
   getUserSubscribedPlaylists,
   subscribeToPlaylist,
   unsubscribeFromPlaylist,
+  getRecentlyPlayedPlaylists,
 } from '../services/playlists';
 import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
@@ -266,4 +267,14 @@ export const unsubscribeFromPlaylistMutationOptions = () => {
       );
     },
   };
+};
+
+export const getRecentlyPlayedPlaylistsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ['playlists', { is_recent: true }],
+    queryFn: getRecentlyPlayedPlaylists,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
 };
