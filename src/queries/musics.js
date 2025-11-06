@@ -10,6 +10,7 @@ import {
   getRecommendedSongs,
   getTrendingSongs,
   getRecentSongs,
+  getSongsByGenreId,
 } from '../services/songs';
 
 export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
@@ -113,6 +114,16 @@ export const getRecentSongsQueryOptions = () => {
   return queryOptions({
     queryKey: ['songs', { is_recent: true }],
     queryFn: getRecentSongs,
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const getSongsByGenreIdQueryOptions = (genreId, { limit }) => {
+  return queryOptions({
+    queryKey: ['songs', { genreId }],
+    queryFn: () => getSongsByGenreId(genreId, limit),
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
