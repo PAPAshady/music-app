@@ -10,6 +10,7 @@ import usePlayBar from '../../hooks/usePlayBar';
 import { getFavoritePlaylistsQueryOptions } from '../../queries/playlists';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import { getFavoriteAlbumsQueryOptions } from '../../queries/albums';
+import ShimmerOverlay from '../../components/ShimmerOverlay/ShimmerOverlay';
 
 export default function Favorites() {
   const { data: favoriteAlbums, isPending: isFavoriteAlbumsPending } = useQuery(
@@ -23,12 +24,10 @@ export default function Favorites() {
     getFavoritePlaylistsQueryOptions()
   );
   const noFavorites =
-    !isFavoriteAlbumsPending &&
-    !isFavoritePlaylistsPending &&
-    !isFavoriteSongsPending &&
-    !favoriteAlbums.length &&
-    !favoritePlaylists.length &&
-    !favoriteSongs.length;
+    !favoriteAlbums?.length && !favoritePlaylists?.length && !favoriteSongs?.length;
+
+  const isPagePending =
+    isFavoriteAlbumsPending && isFavoritePlaylistsPending && isFavoriteSongsPending;
 
   return (
     <>
@@ -36,15 +35,30 @@ export default function Favorites() {
         className="border-primary-300 relative h-full grow overflow-hidden rounded-4xl border bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${bannerBg})` }}
       >
-        <div className="size-full px-4 py-10 backdrop-blur-[2px] sm:px-6 sm:py-14 lg:px-10 lg:py-16 xl:px-12 xl:py-20">
-          <h3 className="text-primary-300 mb-3 text-2xl font-bold sm:text-3xl md:mb-6 lg:text-5xl">
-            {noFavorites ? 'You haven’t liked anything yet.' : 'Favorite Music'}
-          </h3>
-          <p className="text-primary-200 sm:text-lg">
-            {noFavorites
-              ? 'Your favorites are empty for now. Start liking songs, playlists, or albums to fill this space'
-              : 'Because Favorites Deserve Their Own Space...'}
-          </p>
+        <div
+          className={`size-full px-4 py-10 backdrop-blur-[2px] sm:px-6 sm:py-14 lg:px-10 lg:py-16 xl:px-12 xl:py-20`}
+        >
+          {isPagePending ? (
+            <>
+              <div className="relative mb-4 h-6 w-2/3 overflow-hidden rounded-full bg-gray-600/60">
+                <ShimmerOverlay />
+              </div>
+              <div className="relative h-4 w-1/2 overflow-hidden rounded-full bg-gray-600/60">
+                <ShimmerOverlay />
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 className="text-primary-300 mb-3 text-2xl font-bold sm:text-3xl md:mb-6 lg:text-5xl">
+                {noFavorites ? 'You haven’t liked anything yet.' : 'Favorite Music'}
+              </h3>
+              <p className="text-primary-200 sm:text-lg">
+                {noFavorites
+                  ? 'Your favorites are empty for now. Start liking songs, playlists, or albums to fill this space'
+                  : 'Because Favorites Deserve Their Own Space...'}
+              </p>
+            </>
+          )}
         </div>
       </div>
 
