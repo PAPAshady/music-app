@@ -3,14 +3,12 @@ import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
-import { getArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import sectionBgImage from '../../assets/images/backgrounds/section-bg-2.jpg';
 import { useQuery } from '@tanstack/react-query';
-import { getAllAlbumsQueryOptions } from '../../queries/albums';
 import { playlists } from '../../data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
@@ -25,8 +23,6 @@ import { getAllGenresQueryOptions } from '../../queries/genres';
 import { getTrendingAlbumsQueryOptions } from '../../queries/albums';
 
 export default function Browse() {
-  const albums = useQuery(getAllAlbumsQueryOptions());
-  const artists = useQuery(getArtistsQueryOptions());
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const { data: trendingSongs, isPending: isTrendingSongsPending } = useQuery(
     getTrendingSongsQueryOptions()
