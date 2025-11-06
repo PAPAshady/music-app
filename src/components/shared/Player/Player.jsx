@@ -29,12 +29,11 @@ import {
   next,
   prev,
   togglePlayState,
+  setVolume,
 } from '../../../redux/slices/musicPlayerSlice';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { useMutation } from '@tanstack/react-query';
 import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
-
-const musicDefaultVolume = 70; // min: 0, max: 100
 
 export default function Player({ classNames, isPlayerPage }) {
   const dispatch = useDispatch();
@@ -43,7 +42,8 @@ export default function Player({ classNames, isPlayerPage }) {
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const musicState = useSelector((state) => state.musicPlayer.musicState);
-  const [volume, setVolume] = useState([musicDefaultVolume]);
+  const musicVolume = useSelector((state) => state.musicPlayer.volume);
+  const volume = [musicVolume];
   const verticalVolumeSlider = useCloseOnClickOutside();
 
   const disabled = !queuelist?.length;
@@ -53,12 +53,13 @@ export default function Player({ classNames, isPlayerPage }) {
   );
 
   useEffect(() => {
-    music.volume = musicDefaultVolume / 100;
-  }, []);
+    music.volume = musicVolume / 100;
+  }, [musicVolume]);
 
   const changeVolumeHandler = ([volume]) => {
     music.volume = volume / 100;
-    setVolume([volume]);
+    // setVolume([volume]);
+    dispatch(setVolume(volume));
   };
 
   const playButtons = [
