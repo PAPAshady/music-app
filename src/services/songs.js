@@ -120,3 +120,12 @@ export const getSongsByGenreId = async (genreId, limit) => {
   if (error) throw error;
   return data;
 };
+
+export const getSongsByKeyword = async (keyword) => {
+  const { data, error } = await supabase
+    .from('songs_extended')
+    .select('*')
+    .ilike('title', `%${keyword}%`);
+  if (error) throw error;
+  return data;
+};

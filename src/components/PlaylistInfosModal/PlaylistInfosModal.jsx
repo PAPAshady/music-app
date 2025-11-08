@@ -26,7 +26,11 @@ import {
   addSongToPrivatePlaylistMutationOptions,
   removeSongFromPrivatePlaylistMutationOptions,
 } from '../../queries/playlists';
-import { getSongsByPlaylistIdQueryOptions } from '../../queries/musics';
+import {
+  getSongsByPlaylistIdQueryOptions,
+  getTrendingSongsQueryOptions,
+  getSongsByKeywordQueryOptions,
+} from '../../queries/musics';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import PropTypes from 'prop-types';
 import MainButton from '../Buttons/MainButton/MainButton';
@@ -58,6 +62,7 @@ export default function PlaylistInfosModal() {
   const { data: selectedTracklist } = useQuery(getPlaylistByIdQueryOptions(playlistId));
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const { targetRef: triggerElem } = useIntersectionObserver({ onIntersect });
+  const searchValue = searchInput.value.toLowerCase().trim();
   const addSongMutation = useMutation(
     addSongToPrivatePlaylistMutationOptions(selectedTracklist?.id)
   );
@@ -71,6 +76,8 @@ export default function PlaylistInfosModal() {
   const { data: selectedPlaylistSongs } = useQuery(
     getSongsByPlaylistIdQueryOptions(selectedTracklist?.id)
   );
+  const { data: trendingSongs } = useQuery(getTrendingSongsQueryOptions());
+  const { data: searchedSongs } = useQuery(getSongsByKeywordQueryOptions(searchValue));
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
   const {
@@ -89,17 +96,17 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
-  const searchValue = searchInput.value.toLowerCase().trim();
 
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));
-  const suggestedSongs = (allSongs?.pages?.flat() ?? []).filter(
-    (song) => !playlistSongIds.has(song.id)
-  );
+  const suggestedSongs = trendingSongs?.filter((song) => !playlistSongIds.has(song.id));
 
-  const songsToRender = (
-    selectedTab === 'add' ? suggestedSongs : (selectedPlaylistSongs ?? [])
-  ).filter((song) => song.title.toLowerCase().includes(searchValue));
+  const songsToRender =
+    selectedTab === 'add'
+      ? searchValue
+        ? searchedSongs || []
+        : suggestedSongs
+      : selectedPlaylistSongs?.filter((song) => song.title.toLowerCase().includes(searchValue));
 
   /*
     since useForm hook only sets defaultValues once on the initial render and wont update them ever again,
