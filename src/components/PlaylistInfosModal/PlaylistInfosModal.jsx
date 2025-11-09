@@ -32,6 +32,7 @@ import {
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import PropTypes from 'prop-types';
 import { getPlaylistByIdQueryOptions } from '../../queries/playlists';
+import useDebounce from '../../hooks/useDebounce';
 
 const schema = z.object({
   description: z.string().optional(),
@@ -53,6 +54,7 @@ export default function PlaylistInfosModal() {
   const { data: selectedTracklist } = useQuery(getPlaylistByIdQueryOptions(playlistId));
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const searchValue = searchInput.value.toLowerCase().trim();
+  const debouncedSearchValue = useDebounce(searchValue, 500);
   const { mutateAsync: addSongToPlaylist } = useMutation(
     addSongToPrivatePlaylistMutationOptions(selectedTracklist?.id)
   );
@@ -70,7 +72,7 @@ export default function PlaylistInfosModal() {
     getTrendingSongsQueryOptions()
   );
   const { data: searchedSongs, isLoading: isSearchedSongsLoading } = useQuery(
-    getSongsByKeywordQueryOptions(searchValue)
+    getSongsByKeywordQueryOptions(debouncedSearchValue)
   );
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
@@ -94,7 +96,7 @@ export default function PlaylistInfosModal() {
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));
   const suggestedSongs = trendingSongs?.filter((song) => !playlistSongIds.has(song.id));
-  const addTabContent = (searchValue ? searchedSongs : suggestedSongs) || []; // songs to render in the add tab
+  const addTabContent = (debouncedSearchValue ? searchedSongs : suggestedSongs) || []; // songs to render in the add tab
   const viewTabContent =
     selectedPlaylistSongs?.filter((song) => song.title.toLowerCase().includes(searchValue)) || []; // songs to render in the view tab
   const addTabContentPending = isTrendingSongsLoading || isSearchedSongsLoading;
@@ -481,7 +483,6 @@ export default function PlaylistInfosModal() {
 
 const PlaylistSong = memo(
   ({ title, cover, artist = 'Unknown artist', buttonState, onClick, id }) => {
-    console.log('re-rendered');
     return (
       <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
         <div className="flex grow items-center gap-2 overflow-hidden">
