@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, memo } from 'react';
+import { useRef, useEffect, useState, memo, useCallback } from 'react';
 import { Image, Trash, Edit2, AddCircle, Play, Music } from 'iconsax-react';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
@@ -53,10 +53,10 @@ export default function PlaylistInfosModal() {
   const { data: selectedTracklist } = useQuery(getPlaylistByIdQueryOptions(playlistId));
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const searchValue = searchInput.value.toLowerCase().trim();
-  const addSongMutation = useMutation(
+  const { mutateAsync: addSongToPlaylist } = useMutation(
     addSongToPrivatePlaylistMutationOptions(selectedTracklist?.id)
   );
-  const removeSongMutation = useMutation(
+  const { mutateAsync: removeSongFromPlaylist } = useMutation(
     removeSongFromPrivatePlaylistMutationOptions(selectedTracklist?.id)
   );
   const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistMutationOptions());
@@ -227,45 +227,56 @@ export default function PlaylistInfosModal() {
     }
   };
 
-  const addSongHandler = async (songId) => {
-    const isAlreadyAdded = selectedPlaylistSongs.some((song) => song.id === songId);
+  const addSongHandler = useCallback(
+    async (songId) => {
+      const isAlreadyAdded = selectedPlaylistSongs.some((song) => song.id === songId);
 
-    if (isAlreadyAdded) {
-      dispatch(
-        showNewSnackbar({ message: 'This song already exists in your playlist.', type: 'warning' })
-      );
-      return;
-    }
+      if (isAlreadyAdded) {
+        dispatch(
+          showNewSnackbar({
+            message: 'This song already exists in your playlist.',
+            type: 'warning',
+          })
+        );
+        return;
+      }
 
-    try {
-      setPendingSongId(songId);
-      await addSongMutation.mutateAsync(songId);
-      dispatch(showNewSnackbar({ message: 'Song added succefully. Enjoy!', type: 'success' }));
-    } catch (err) {
-      dispatch(showNewSnackbar({ message: 'Error while adding new song to playlist. Try again.' }));
-      console.error('Error adding new song to playlist : ', err);
-    } finally {
-      setPendingSongId(null);
-    }
-  };
+      try {
+        setPendingSongId(songId);
+        await addSongToPlaylist(songId);
+        dispatch(showNewSnackbar({ message: 'Song added succefully. Enjoy!', type: 'success' }));
+      } catch (err) {
+        dispatch(
+          showNewSnackbar({ message: 'Error while adding new song to playlist. Try again.' })
+        );
+        console.error('Error adding new song to playlist : ', err);
+      } finally {
+        setPendingSongId(null);
+      }
+    },
+    [addSongToPlaylist, dispatch, selectedPlaylistSongs]
+  );
 
-  const removeSongHandler = async (songId) => {
-    try {
-      setPendingSongId(songId);
-      await removeSongMutation.mutateAsync(songId);
-      dispatch(showNewSnackbar({ message: 'Song removed succefully.', type: 'success' }));
-    } catch (err) {
-      dispatch(
-        showNewSnackbar({
-          message: 'Error while removing song from playlist. Try again.',
-          type: 'error',
-        })
-      );
-      console.error('Error removing song from playlist : ', err);
-    } finally {
-      setPendingSongId(null);
-    }
-  };
+  const removeSongHandler = useCallback(
+    async (songId) => {
+      try {
+        setPendingSongId(songId);
+        await removeSongFromPlaylist(songId);
+        dispatch(showNewSnackbar({ message: 'Song removed succefully.', type: 'success' }));
+      } catch (err) {
+        dispatch(
+          showNewSnackbar({
+            message: 'Error while removing song from playlist. Try again.',
+            type: 'error',
+          })
+        );
+        console.error('Error removing song from playlist : ', err);
+      } finally {
+        setPendingSongId(null);
+      }
+    },
+    [dispatch, removeSongFromPlaylist]
+  );
 
   const validateFileInput = (e) => {
     const selectedImage = e.target.files[0];
@@ -470,6 +481,7 @@ export default function PlaylistInfosModal() {
 
 const PlaylistSong = memo(
   ({ title, cover, artist = 'Unknown artist', buttonState, onClick, id }) => {
+    console.log('re-rendered');
     return (
       <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
         <div className="flex grow items-center gap-2 overflow-hidden">
