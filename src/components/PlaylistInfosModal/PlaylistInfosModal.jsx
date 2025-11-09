@@ -33,6 +33,7 @@ import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import PropTypes from 'prop-types';
 import { getPlaylistByIdQueryOptions } from '../../queries/playlists';
 import useDebounce from '../../hooks/useDebounce';
+import ShimmerOverlay from '../ShimmerOverlay/ShimmerOverlay';
 
 const schema = z.object({
   description: z.string().optional(),
@@ -438,7 +439,9 @@ export default function PlaylistInfosModal() {
                       {/* if user is on add tab, show trending/searched songs or their loading state.  */}
                       {selectedTab === 'add' &&
                         (addTabContentPending
-                          ? 'Loading...'
+                          ? Array(6)
+                              .fill()
+                              .map((_, index) => <PlaylistSongSkeleton key={index} />)
                           : addTabContent.map((song) => (
                               // if search value exists, we know that user is trying to search for a song, so we must show the search result instead of the trending songs
                               <PlaylistSong
@@ -511,6 +514,22 @@ const PlaylistSong = memo(
   }
 );
 
+const PlaylistSongSkeleton = () => {
+  return (
+    <div className="relative flex items-center justify-between gap-2 overflow-hidden rounded-sm bg-gray-600/60 py-1 ps-1">
+      <ShimmerOverlay />
+      <div className="flex grow items-center gap-2 overflow-hidden">
+        <div className="size-[45px] min-w-[45px] rounded-sm bg-gray-800/50"></div>
+        <div className="flex grow flex-col gap-1">
+          <p className="h-2 w-1/2 rounded-full bg-gray-800/50"></p>
+          <p className="h-2 w-1/3 rounded-full bg-gray-800/50"></p>
+        </div>
+      </div>
+
+      <div className="me-2 min-h-6 min-w-6 rounded-md bg-gray-800/50"></div>
+    </div>
+  );
+};
 function TabButton({ title, isActive, tabName, onClick }) {
   return (
     <button
