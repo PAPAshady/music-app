@@ -3,56 +3,78 @@ import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import PlaylistsSlider from '../../components/Sliders/PlaylistsSlider/PlaylistsSlider';
 import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsSlider/DiscoverPlaylistsSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
-import { getArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard';
-import MainButton from '../../components/Buttons/MainButton/MainButton';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import sectionBgImage from '../../assets/images/backgrounds/section-bg-2.jpg';
 import { useQuery } from '@tanstack/react-query';
-import { getAllAlbumsQueryOptions } from '../../queries/albums';
-import { songs, playlists, genres } from '../../data';
+import { playlists } from '../../data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import 'swiper/css';
+import { getTrendingSongsQueryOptions, getSongsByGenreIdQueryOptions } from '../../queries/musics';
+import {
+  getTrendingPlaylistsQueryOptions,
+  getPlaylistsByGenreQueryOptions,
+} from '../../queries/playlists';
+import { getTrendingArtistsQueryOptions } from '../../queries/artists';
+import { getAllGenresQueryOptions } from '../../queries/genres';
+import { getTrendingAlbumsQueryOptions } from '../../queries/albums';
 
 export default function Browse() {
-  const albums = useQuery(getAllAlbumsQueryOptions());
-  const artists = useQuery(getArtistsQueryOptions());
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const { data: trendingSongs, isPending: isTrendingSongsPending } = useQuery(
+    getTrendingSongsQueryOptions()
+  );
+  const { data: trendingPlaylists, isPending: isTrendingPlaylistsPending } = useQuery(
+    getTrendingPlaylistsQueryOptions()
+  );
+  const { data: tredingArtists, isPending: isTredingArtistsPending } = useQuery(
+    getTrendingArtistsQueryOptions()
+  );
+  const { data: genres, isPending: isGenresPending } = useQuery(getAllGenresQueryOptions());
+  const { data: trendingAlbums, isPending: isTrendingAlbumsPending } = useQuery(
+    getTrendingAlbumsQueryOptions()
+  );
+  const { data: happySongs, isPending: isHappySongsPending } = useQuery(
+    getSongsByGenreIdQueryOptions('040f2756-1bae-41d7-a1c1-c4a29b054979', { limit: 15 }) // get songs with 'DNB' genre
+  );
+  const { data: workoutPlaylists, isPending: isWorkoutPlaylistsPending } = useQuery(
+    getPlaylistsByGenreQueryOptions('9e504c54-f571-4a53-bace-16f3e5bbdd33') // get playlists woth 'phonk' genere
+  );
 
   return (
     <>
       <div>
         <SectionTitle title="Tranding Tracks" />
-        <TracksSlider songs={songs} />
+        <TracksSlider songs={trendingSongs} isPending={isTrendingSongsPending} />
       </div>
       <div>
         <SectionTitle title="Trending Playlists" />
-        <PlaylistsSlider playlists={playlists} />
+        <PlaylistsSlider playlists={trendingPlaylists} isLoading={isTrendingPlaylistsPending} />
       </div>
       <DiscoverPlaylistsSlider playlists={playlists} />
       <div>
         <SectionTitle title="People's Favorite Artists" />
-        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
+        <ArtistsSlider artists={tredingArtists} isLoading={isTredingArtistsPending} />
       </div>
       <div>
         <SectionTitle title="Trending Genres" />
-        <GenresSlider genres={genres} />
+        <GenresSlider genres={genres} isPending={isGenresPending} />
       </div>
       <div>
         <SectionTitle title="Trending Albums" />
         <AlbumsSlider
-          albums={albums.data}
-          isLoading={albums.isLoading}
+          albums={trendingAlbums}
+          isLoading={isTrendingAlbumsPending}
           albumCardSize="md"
           albumCardStyles="!max-w-none"
         />
       </div>
       <div>
         <SectionTitle title="Let's Party" />
-        <TracksSlider songs={songs} />
+        <TracksSlider songs={happySongs} isPending={isHappySongsPending} />
       </div>
       <div
         className="relative overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat lg:rounded-xl"
@@ -78,12 +100,7 @@ export default function Browse() {
                 )}
               </p>
             </div>
-            {isDesktop ? (
-              <div className="mt-5 mb-6 flex items-center justify-center gap-6 lg:my-7">
-                <MainButton title="Join Now" size="lg" classNames="border !border-primary" />
-                <MainButton title="Learn About" size="lg" type="text" />
-              </div>
-            ) : (
+            {!isDesktop && (
               <ul className="hidden list-inside list-disc text-sm min-[480px]:block sm:hidden sm:text-base">
                 <li>Relaxation</li>
                 <li>Focus</li>
@@ -118,20 +135,20 @@ export default function Browse() {
       </div>
       <div>
         <SectionTitle title="Workout Playlists" />
-        <PlaylistsSlider playlists={playlists} />
+        <PlaylistsSlider playlists={workoutPlaylists} isLoading={isWorkoutPlaylistsPending} />
       </div>
       <div>
-        <SectionTitle title="Best Albums Of 2024" />
+        <SectionTitle title="Best Albums Of 2025" />
         <AlbumsSlider
-          albums={albums.data}
-          isLoading={albums.isLoading}
+          albums={trendingAlbums}
+          isLoading={isTrendingAlbumsPending}
           albumCardSize="md"
           albumCardStyles="!max-w-none"
         />
       </div>
       <div>
         <SectionTitle title="Meet the Top New Singers of 2024" />
-        <ArtistsSlider artists={artists.data} isLoading={artists.isLoading} />
+        <ArtistsSlider artists={tredingArtists} isLoading={isTredingArtistsPending} />
       </div>
     </>
   );

@@ -1,5 +1,11 @@
 import supabase from './supabaseClient';
 
+export const getAllGenres = async () => {
+  const { data, error } = await supabase.from('genres').select('*');
+  if (error) throw error;
+  return data;
+};
+
 // this function returns user top genres. if user has no top genres, it will just return a list of genres with no exact oreder.
 export const getUserTopGenres = async () => {
   const { data, error } = await supabase

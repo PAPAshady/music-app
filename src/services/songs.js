@@ -109,3 +109,23 @@ export const getRecentSongs = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getSongsByGenreId = async (genreId, limit) => {
+  let query = supabase.from('songs_extended').select('*').eq('genre_id', genreId);
+
+  if (limit) query = query.limit(limit);
+
+  const { data, error } = await query;
+
+  if (error) throw error;
+  return data;
+};
+
+export const getSongsByKeyword = async (keyword) => {
+  const { data, error } = await supabase
+    .from('songs_extended')
+    .select('*')
+    .ilike('title', `%${keyword}%`);
+  if (error) throw error;
+  return data;
+};

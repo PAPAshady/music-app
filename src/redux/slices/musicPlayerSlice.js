@@ -74,6 +74,7 @@ const musicPlayerSlice = createSlice({
     playingState: 'repeat_all',
     bufferProgressPercentage: 0,
     autoLyricsTracker: true,
+    volume: 70,
   },
   reducers: {
     setIsPlaying(state, action) {
@@ -116,6 +117,9 @@ const musicPlayerSlice = createSlice({
     setAutoLyricsTracker(state, action) {
       state.autoLyricsTracker = action.payload;
     },
+    setVolume(state, action) {
+      state.volume = action.payload;
+    },
   },
 });
 
@@ -129,5 +133,6 @@ export const {
   setMusicState,
   setBufferProgressPercentage,
   setAutoLyricsTracker,
+  setVolume,
 } = musicPlayerSlice.actions;
 export default musicPlayerSlice.reducer;

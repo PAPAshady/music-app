@@ -8,9 +8,7 @@ import MainButton from '../../Buttons/MainButton/MainButton';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import useInput from '../../../hooks/useInput';
 import useMediaQuery from '../../../hooks/useMediaQuery';
-import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
-import { getAllSongsInfiniteQueryOptions } from '../../../queries/musics';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 import playlistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
 import { useCallback, useState, memo } from 'react';
@@ -22,6 +20,7 @@ import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import DropDownList from '../../DropDownList/DropDownList';
 import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
 import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
+import useDebounce from '../../../hooks/useDebounce';
 import {
   Heart,
   Trash,
@@ -34,6 +33,7 @@ import {
   Shuffle,
   RepeateOne,
   RepeateMusic,
+  Music,
 } from 'iconsax-react';
 import {
   addSongToPrivatePlaylistMutationOptions,
@@ -42,6 +42,8 @@ import {
 import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
+  getTrendingSongsQueryOptions,
+  getSongsByKeywordQueryOptions,
 } from '../../../queries/musics';
 import usePlayBar from '../../../hooks/usePlayBar';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
@@ -65,20 +67,7 @@ function MobileTracklistPanel() {
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
-  const {
-    data: allSongs,
-    isLoading: isAllSongsLoading,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-  } = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 6 }));
-  const { targetRef } = useIntersectionObserver({
-    onIntersect: () => {
-      if (hasNextPage && !isFetchingNextPage && allSongs?.pages?.length > 1) {
-        fetchNextPage();
-      }
-    },
-  });
+  const { data: trendingSongs, isTrendingSognsPending } = useQuery(getTrendingSongsQueryOptions());
   const { data: selectedPlaylistSongs, isLoading: isPlaylistSongsLoading } = useQuery(
     tracklistType === 'playlist'
       ? getSongsByPlaylistIdQueryOptions(tracklistId)
@@ -89,12 +78,17 @@ function MobileTracklistPanel() {
   const addSongMutation = useMutation(addSongToPrivatePlaylistMutationOptions(tracklistId));
   const removeSongMutation = useMutation(removeSongFromPrivatePlaylistMutationOptions(tracklistId));
   const searchedValue = searchInput.value.toLowerCase().trim();
+  const debouncedSearchValue = useDebounce(searchedValue, 500);
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));
-  const suggestedSongs = (allSongs?.pages?.flat() ?? []).filter(
-    (song) => !playlistSongIds.has(song.id)
-  );
+  const suggestedSongs = (trendingSongs ?? []).filter((song) => !playlistSongIds.has(song.id));
   const { playTracklist } = usePlayBar();
+  const { data: searchedSongs, isPending: isSearchedSongsPending } = useQuery(
+    getSongsByKeywordQueryOptions(debouncedSearchValue)
+  );
+  const hasData =
+    (searchedValue && searchedSongs?.length > 0) || (!searchedValue && trendingSongs?.length > 0);
+  const dataIsloading = isTrendingSognsPending || isSearchedSongsPending;
 
   const playPauseButtonHandler = () => {
     if (playingTracklist.id !== selectedTracklist?.id) {
@@ -290,43 +284,6 @@ function MobileTracklistPanel() {
         </>
       )}
 
-      {!selectedTracklist?.is_public && selectedTracklist?.tracklistType === 'playlist' && (
-        <>
-          <div className="mt-6 mb-4 w-full text-start">
-            <p className="mb-4 text-xl font-bold">Suggestions</p>
-            <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
-              {isAllSongsLoading
-                ? Array(6)
-                    .fill()
-                    .map((_, index) => <SuggestedSongSkeleton key={index} />)
-                : suggestedSongs.map((song) => (
-                    <SuggestedSong
-                      key={song.id}
-                      isPending={song.id === pendingSongId}
-                      onAdd={addSongHandler}
-                      {...song}
-                    />
-                  ))}
-              {isFetchingNextPage &&
-                Array(4)
-                  .fill()
-                  .map((_, index) => <SuggestedSongSkeleton key={index} />)}
-            </div>
-          </div>
-          <div>
-            <span className="block" ref={targetRef}></span>
-            {allSongs?.pages?.length === 1 && !isAllSongsLoading && (
-              <MainButton
-                size="md"
-                title={isFetchingNextPage ? 'Please wait...' : 'Load more'}
-                disabled={isFetchingNextPage}
-                onClick={fetchNextPage}
-              />
-            )}
-          </div>
-        </>
-      )}
-
       {isMobilePanelOpen && !selectedTracklist?.is_public && (
         <div
           className={`text-secondary-50 bg-primary-800 fixed inset-0 z-[10] size-full pb-4 text-start transition-all duration-300 ${isAddMenuOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
@@ -341,29 +298,60 @@ function MobileTracklistPanel() {
             <div>
               <SearchInput {...searchInput} />
             </div>
-            <div className="bg-primary-700 flex grow flex-col gap-5 overflow-y-scroll rounded-md min-[480px]:gap-7">
-              <div className="px-4 pt-4 min-[480px]:px-6 min-[480px]:pt-6">
-                <p className="text-xl font-semibold text-white min-[480px]:text-2xl">Suggested</p>
-                <p className="mt-1 text-sm min-[480px]:mt-3 min-[480px]:text-lg">
-                  Based on tracks you&apos;ve added.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
-                {!isAllSongsLoading
-                  ? Array(6)
-                      .fill()
-                      .map((_, index) => <SuggestedSongSkeleton key={index} />)
-                  : suggestedSongs
-                      .filter((song) => song.title.toLowerCase().includes(searchedValue))
-                      .map((song) => (
-                        <SuggestedSong
-                          key={song.id}
-                          isPending={song.id === pendingSongId}
-                          onAdd={addSongHandler}
-                          {...song}
-                        />
-                      ))}
-              </div>
+            <div className="bg-primary-700 flex grow flex-col gap-5 overflow-y-scroll rounded-md pb-16 min-[400px]:pb-20 min-[480px]:gap-7 sm:pb-24 md:pb-26">
+              {hasData || dataIsloading ? (
+                <>
+                  <div className="px-4 pt-4 min-[480px]:px-6 min-[480px]:pt-6">
+                    <p className="text-xl font-semibold text-white min-[480px]:text-2xl">
+                      Suggested
+                    </p>
+                    <p className="mt-1 text-sm min-[480px]:mt-3 min-[480px]:text-lg">
+                      See what&apos;s trending
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
+                    {searchedValue
+                      ? isSearchedSongsPending
+                        ? Array(6)
+                            .fill()
+                            .map((_, index) => <SuggestedSongSkeleton key={index} />)
+                        : searchedSongs
+                            .filter((song) => !playlistSongIds.has(song.id))
+                            .map((song) => (
+                              <SuggestedSong
+                                key={song.id}
+                                isPending={song.id === pendingSongId}
+                                onAdd={addSongHandler}
+                                {...song}
+                              />
+                            ))
+                      : isTrendingSognsPending
+                        ? Array(6)
+                            .fill()
+                            .map((_, index) => <SuggestedSongSkeleton key={index} />)
+                        : suggestedSongs
+                            .filter((song) => song.title.toLowerCase().includes(searchedValue))
+                            .map((song) => (
+                              <SuggestedSong
+                                key={song.id}
+                                isPending={song.id === pendingSongId}
+                                onAdd={addSongHandler}
+                                {...song}
+                              />
+                            ))}
+                  </div>
+                </>
+              ) : (
+                <div className="size-full p-4">
+                  <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed p-2 text-center">
+                    <Music size={64} className="text-secondary-300" />
+                    <p className="mt-2 px-4 font-semibold text-white">
+                      No songs found matching that keyword.
+                    </p>
+                    <p className="text-sm">Try something else</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, memo } from 'react';
+import { useRef, useEffect, useState, memo, useCallback } from 'react';
 import { Image, Trash, Edit2, AddCircle, Play, Music } from 'iconsax-react';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
@@ -6,7 +6,6 @@ import TextArea from '../Inputs/TextArea/TextArea';
 import DropDownList from '../DropDownList/DropDownList';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -14,8 +13,7 @@ import playlistDefaultCover from '../../assets/images/covers/no-cover.jpg';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import IconButton from '../Buttons/IconButton/IconButton';
-import { useQuery, useInfiniteQuery, useMutation } from '@tanstack/react-query';
-import { getAllSongsInfiniteQueryOptions } from '../../queries/musics';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import { uploadFile, getFileUrl, deleteFiles, listFiles } from '../../services/storage';
@@ -26,11 +24,16 @@ import {
   addSongToPrivatePlaylistMutationOptions,
   removeSongFromPrivatePlaylistMutationOptions,
 } from '../../queries/playlists';
-import { getSongsByPlaylistIdQueryOptions } from '../../queries/musics';
+import {
+  getSongsByPlaylistIdQueryOptions,
+  getTrendingSongsQueryOptions,
+  getSongsByKeywordQueryOptions,
+} from '../../queries/musics';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import PropTypes from 'prop-types';
-import MainButton from '../Buttons/MainButton/MainButton';
 import { getPlaylistByIdQueryOptions } from '../../queries/playlists';
+import useDebounce from '../../hooks/useDebounce';
+import ShimmerOverlay from '../ShimmerOverlay/ShimmerOverlay';
 
 const schema = z.object({
   description: z.string().optional(),
@@ -48,20 +51,15 @@ export default function PlaylistInfosModal() {
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
   const searchInput = useInput();
   const [selectedTab, setSelectedTab] = useState('view'); // could be one of the following:  [add, view]
-  const {
-    data: allSongs,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteQuery(getAllSongsInfiniteQueryOptions({ limit: 6 }));
   const playlistId = useSelector((state) => state.queryState.id);
   const { data: selectedTracklist } = useQuery(getPlaylistByIdQueryOptions(playlistId));
   const isDesktop = useMediaQuery('(max-width: 1280px)');
-  const { targetRef: triggerElem } = useIntersectionObserver({ onIntersect });
-  const addSongMutation = useMutation(
+  const searchValue = searchInput.value.toLowerCase().trim();
+  const debouncedSearchValue = useDebounce(searchValue, 500);
+  const { mutateAsync: addSongToPlaylist } = useMutation(
     addSongToPrivatePlaylistMutationOptions(selectedTracklist?.id)
   );
-  const removeSongMutation = useMutation(
+  const { mutateAsync: removeSongFromPlaylist } = useMutation(
     removeSongFromPrivatePlaylistMutationOptions(selectedTracklist?.id)
   );
   const createNewPlaylistMutation = useMutation(createNewPrivatePlaylistMutationOptions());
@@ -70,6 +68,12 @@ export default function PlaylistInfosModal() {
   );
   const { data: selectedPlaylistSongs } = useQuery(
     getSongsByPlaylistIdQueryOptions(selectedTracklist?.id)
+  );
+  const { data: trendingSongs, isLoading: isTrendingSongsLoading } = useQuery(
+    getTrendingSongsQueryOptions()
+  );
+  const { data: searchedSongs, isLoading: isSearchedSongsLoading } = useQuery(
+    getSongsByKeywordQueryOptions(debouncedSearchValue)
   );
   const [playlistCover, setPlaylistCover] = useState(playlistDefaultCover);
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
@@ -89,17 +93,15 @@ export default function PlaylistInfosModal() {
     },
     resolver: zodResolver(schema),
   });
-  const searchValue = searchInput.value.toLowerCase().trim();
 
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const playlistSongIds = new Set((selectedPlaylistSongs ?? []).map((song) => song.id));
-  const suggestedSongs = (allSongs?.pages?.flat() ?? []).filter(
-    (song) => !playlistSongIds.has(song.id)
-  );
-
-  const songsToRender = (
-    selectedTab === 'add' ? suggestedSongs : (selectedPlaylistSongs ?? [])
-  ).filter((song) => song.title.toLowerCase().includes(searchValue));
+  const suggestedSongs = trendingSongs?.filter((song) => !playlistSongIds.has(song.id));
+  const addTabContent = (debouncedSearchValue ? searchedSongs : suggestedSongs) || []; // songs to render in the add tab
+  const viewTabContent =
+    selectedPlaylistSongs?.filter((song) => song.title.toLowerCase().includes(searchValue)) || []; // songs to render in the view tab
+  const addTabContentPending = isTrendingSongsLoading || isSearchedSongsLoading;
+  const numberOfSongsToRender = (selectedTab === 'add' ? addTabContent : viewTabContent).length;
 
   /*
     since useForm hook only sets defaultValues once on the initial render and wont update them ever again,
@@ -117,12 +119,6 @@ export default function PlaylistInfosModal() {
         : playlistDefaultCover
     );
   }, [reset, selectedTracklist, isOpen, actionType]);
-
-  function onIntersect() {
-    if (!isFetchingNextPage && hasNextPage && allSongs?.pages?.length > 1) {
-      fetchNextPage();
-    }
-  }
 
   const changeTabHandler = (tabName) => {
     searchInput.reset();
@@ -234,45 +230,56 @@ export default function PlaylistInfosModal() {
     }
   };
 
-  const addSongHandler = async (songId) => {
-    const isAlreadyAdded = selectedPlaylistSongs.some((song) => song.id === songId);
+  const addSongHandler = useCallback(
+    async (songId) => {
+      const isAlreadyAdded = selectedPlaylistSongs.some((song) => song.id === songId);
 
-    if (isAlreadyAdded) {
-      dispatch(
-        showNewSnackbar({ message: 'This song already exists in your playlist.', type: 'warning' })
-      );
-      return;
-    }
+      if (isAlreadyAdded) {
+        dispatch(
+          showNewSnackbar({
+            message: 'This song already exists in your playlist.',
+            type: 'warning',
+          })
+        );
+        return;
+      }
 
-    try {
-      setPendingSongId(songId);
-      await addSongMutation.mutateAsync(songId);
-      dispatch(showNewSnackbar({ message: 'Song added succefully. Enjoy!', type: 'success' }));
-    } catch (err) {
-      dispatch(showNewSnackbar({ message: 'Error while adding new song to playlist. Try again.' }));
-      console.error('Error adding new song to playlist : ', err);
-    } finally {
-      setPendingSongId(null);
-    }
-  };
+      try {
+        setPendingSongId(songId);
+        await addSongToPlaylist(songId);
+        dispatch(showNewSnackbar({ message: 'Song added succefully. Enjoy!', type: 'success' }));
+      } catch (err) {
+        dispatch(
+          showNewSnackbar({ message: 'Error while adding new song to playlist. Try again.' })
+        );
+        console.error('Error adding new song to playlist : ', err);
+      } finally {
+        setPendingSongId(null);
+      }
+    },
+    [addSongToPlaylist, dispatch, selectedPlaylistSongs]
+  );
 
-  const removeSongHandler = async (songId) => {
-    try {
-      setPendingSongId(songId);
-      await removeSongMutation.mutateAsync(songId);
-      dispatch(showNewSnackbar({ message: 'Song removed succefully.', type: 'success' }));
-    } catch (err) {
-      dispatch(
-        showNewSnackbar({
-          message: 'Error while removing song from playlist. Try again.',
-          type: 'error',
-        })
-      );
-      console.error('Error removing song from playlist : ', err);
-    } finally {
-      setPendingSongId(null);
-    }
-  };
+  const removeSongHandler = useCallback(
+    async (songId) => {
+      try {
+        setPendingSongId(songId);
+        await removeSongFromPlaylist(songId);
+        dispatch(showNewSnackbar({ message: 'Song removed succefully.', type: 'success' }));
+      } catch (err) {
+        dispatch(
+          showNewSnackbar({
+            message: 'Error while removing song from playlist. Try again.',
+            type: 'error',
+          })
+        );
+        console.error('Error removing song from playlist : ', err);
+      } finally {
+        setPendingSongId(null);
+      }
+    },
+    [dispatch, removeSongFromPlaylist]
+  );
 
   const validateFileInput = (e) => {
     const selectedImage = e.target.files[0];
@@ -418,19 +425,35 @@ export default function PlaylistInfosModal() {
               </div>
               <SearchInput {...searchInput} />
               <div className="text-secondary-50">
-                {!!songsToRender.length && (
+                {!!numberOfSongsToRender && (
                   <p className="mb-4 font-semibold">
                     {selectedTab === 'add'
                       ? 'Recommended songs to add.'
-                      : `You have ${selectedPlaylistSongs.length} song${songsToRender.length > 1 ? 's' : ''} in this playlist`}
+                      : `You have ${selectedPlaylistSongs.length} song${numberOfSongsToRender > 1 ? 's' : ''} in this playlist`}
                   </p>
                 )}
 
                 <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
-                  {songsToRender.length ? (
-                    <>
-                      <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
-                        {songsToRender.map((song) => (
+                  {addTabContentPending || numberOfSongsToRender ? (
+                    <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
+                      {/* if user is on add tab, show trending/searched songs or their loading state.  */}
+                      {selectedTab === 'add' &&
+                        (addTabContentPending
+                          ? Array(6)
+                              .fill()
+                              .map((_, index) => <PlaylistSongSkeleton key={index} />)
+                          : addTabContent.map((song) => (
+                              // if search value exists, we know that user is trying to search for a song, so we must show the search result instead of the trending songs
+                              <PlaylistSong
+                                key={song.id}
+                                buttonState={song.id === pendingSongId ? 'pending' : selectedTab}
+                                onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
+                                {...song}
+                              />
+                            )))}
+
+                      {selectedTab === 'view' &&
+                        viewTabContent.map((song) => (
                           <PlaylistSong
                             key={song.id}
                             buttonState={song.id === pendingSongId ? 'pending' : selectedTab}
@@ -438,36 +461,15 @@ export default function PlaylistInfosModal() {
                             {...song}
                           />
                         ))}
-                      </div>
-                      <span className="-mt-10 block" ref={triggerElem}></span>
-                      <div className="mt-16 text-center">
-                        {selectedTab === 'add' &&
-                          allSongs?.pages?.length === 1 &&
-                          !isFetchingNextPage && (
-                            <MainButton
-                              classNames="!border-secondary-200"
-                              title="Load more"
-                              size="sm"
-                              onClick={fetchNextPage}
-                            />
-                          )}
-                      </div>
-                      {isFetchingNextPage && (
-                        <div className="flex justify-center pb-4">
-                          <LoadingSpinner size="md" />
-                        </div>
-                      )}
-                    </>
+                    </div>
                   ) : (
                     <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
                       <Music size={62} />
                       <p className="text-xl font-semibold">
-                        {searchInput.value.trim().length
-                          ? 'No songs found'
-                          : 'This playlist is empty :('}
+                        {searchValue.length ? 'No songs found' : 'This playlist is empty :('}
                       </p>
                       <p className="text-sm">
-                        {searchInput.value.trim().length
+                        {searchValue.length
                           ? "Oops! Couldn't find any songs with that keyword. Try searching for something else."
                           : 'Switch to "Add Songs" tab and start searching for your tunes!'}
                       </p>
@@ -512,6 +514,22 @@ const PlaylistSong = memo(
   }
 );
 
+const PlaylistSongSkeleton = () => {
+  return (
+    <div className="relative flex items-center justify-between gap-2 overflow-hidden rounded-sm bg-gray-600/60 py-1 ps-1">
+      <ShimmerOverlay />
+      <div className="flex grow items-center gap-2 overflow-hidden">
+        <div className="size-[45px] min-w-[45px] rounded-sm bg-gray-800/50"></div>
+        <div className="flex grow flex-col gap-1">
+          <p className="h-2 w-1/2 rounded-full bg-gray-800/50"></p>
+          <p className="h-2 w-1/3 rounded-full bg-gray-800/50"></p>
+        </div>
+      </div>
+
+      <div className="me-2 min-h-6 min-w-6 rounded-md bg-gray-800/50"></div>
+    </div>
+  );
+};
 function TabButton({ title, isActive, tabName, onClick }) {
   return (
     <button
@@ -528,9 +546,9 @@ PlaylistSong.propTypes = {
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
   artist: PropTypes.string,
-  buttonState: PropTypes.oneOf(['add', 'view']),
+  buttonState: PropTypes.oneOf(['add', 'view', 'pending']),
   onClick: PropTypes.func.isRequired,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 TabButton.propTypes = {

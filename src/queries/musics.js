@@ -10,6 +10,8 @@ import {
   getRecommendedSongs,
   getTrendingSongs,
   getRecentSongs,
+  getSongsByGenreId,
+  getSongsByKeyword,
 } from '../services/songs';
 
 export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
@@ -116,5 +118,26 @@ export const getRecentSongsQueryOptions = () => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+  });
+};
+
+export const getSongsByGenreIdQueryOptions = (genreId, { limit }) => {
+  return queryOptions({
+    queryKey: ['songs', { genreId }],
+    queryFn: () => getSongsByGenreId(genreId, limit),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+  });
+};
+
+export const getSongsByKeywordQueryOptions = (keyword) => {
+  return queryOptions({
+    queryKey: ['songs', { keyword }],
+    queryFn: () => getSongsByKeyword(keyword),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!keyword.trim(),
   });
 };
