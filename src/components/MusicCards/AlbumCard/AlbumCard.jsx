@@ -77,6 +77,13 @@ const AlbumCard = memo(({ size, album, classNames }) => {
                 </span>
               </p>
               <div className="text-primary-50 flex items-center gap-2">
+                {isCurrentAlbumPlaying && (
+                  <div className="flex items-center gap-1 lg:ms-auto">
+                    <div className="bg-secondary-50 animate-expand h-3 w-0.75 origin-bottom rounded-full"></div>
+                    <div className="bg-secondary-50 animate-expand h-3 w-0.75 origin-bottom rounded-full [animation-delay:250ms]"></div>
+                    <div className="bg-secondary-50 animate-expand h-3 w-0.75 origin-bottom rounded-full [animation-delay:450ms]"></div>
+                  </div>
+                )}
                 <button className="hover:scale-110">
                   <Share size={18} />
                 </button>
@@ -93,13 +100,22 @@ const AlbumCard = memo(({ size, album, classNames }) => {
               </div>
             </div>
           )}
-          <button
-            className="text-white-50 p-1 lg:hidden"
-            disabled={isPending}
-            onClick={onLikeChangeHandler}
-          >
-            <Heart className={is_liked ? 'fill-secondary-50 text-secondary-50' : ''} />
-          </button>
+          <div className="flex items-center gap-2">
+            {isCurrentAlbumPlaying && size !== 'md' && (
+              <div className="flex items-center gap-1 lg:ms-auto lg:-me-2">
+                <div className="bg-secondary-50 animate-expand h-3 w-0.75 origin-bottom rounded-full"></div>
+                <div className="bg-secondary-50 animate-expand h-3 w-0.75 origin-bottom rounded-full [animation-delay:250ms]"></div>
+                <div className="bg-secondary-50 animate-expand h-3 w-0.75 origin-bottom rounded-full [animation-delay:450ms]"></div>
+              </div>
+            )}
+            <button
+              className="text-white-50 p-1 lg:hidden"
+              disabled={isPending}
+              onClick={onLikeChangeHandler}
+            >
+              <Heart className={is_liked ? 'fill-secondary-50 text-secondary-50' : ''} />
+            </button>
+          </div>
         </div>
       </div>
       {size === 'lg' && (

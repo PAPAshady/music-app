@@ -230,6 +230,7 @@
   /* Animations */
   --animate-infinite-rotate: rotate 9s linear infinite;
   --animate-shimmer: shimmer 1.5s linear infinite;
+  --animate-expand: expand 500ms linear infinite alternate;
 
   /* Keyframes */
   @keyframes rotate {
@@ -248,5 +249,14 @@
     to {
       transform: translateX(100%);
     }
+  }
+}
+
+@keyframes expand {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scaleY(1.5);
   }
 }
