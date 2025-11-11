@@ -15,7 +15,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
       {/* snackbar container template */}
-      <div className="fixed top-4 left-2 z-[60] space-y-2 sm:left-5 lg:left-6">
+      <div className="fixed top-4 z-[60] w-full space-y-2">
         <AnimatePresence>
           {snackbars.map((snackbar) => (
             <motion.div
