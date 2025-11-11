@@ -5,28 +5,12 @@ import DesktopNavbar from '../../components/shared/DesktopNavbar/DesktopNavbar';
 import { useState, useEffect } from 'react';
 import desktopBgImage from '../../assets/images/backgrounds/404-page-desktop.jpg';
 import mobileBgImage from '../../assets/images/backgrounds/404-page-mobile.jpg';
-import TextField from '../../components/Inputs/TextField/TextField';
-import { SearchNormal1 } from 'iconsax-react';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import MainButton from '../../components/Buttons/MainButton/MainButton';
 import useMediaQuery from '../../hooks/useMediaQuery';
-
-const schema = z.object({
-  search: z.string().min(1, { message: 'Please provide a keyword.' }),
-});
+import MainButton from '../../components/Buttons/MainButton/MainButton';
 
 function NotFoundPage() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
   const isMobile = useMediaQuery('(max-width: 640px)');
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm({ defaultValues: { search: '' }, resolver: zodResolver(schema) });
-
   useEffect(() => {
     function handleScroll() {
       if (window.scrollY < 82) {
@@ -38,10 +22,6 @@ function NotFoundPage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   });
-
-  const onSubmit = () => {
-    console.log('Submitted successfully!');
-  };
 
   return (
     <>
@@ -71,35 +51,18 @@ function NotFoundPage() {
               </div>
             </div>
           </div>
-          <div className="flex w-full grow flex-col items-center justify-center gap-4 px-2 pt-24 pb-42 text-center lg:gap-6 lg:px-10 lg:pb-26">
-            <h1 className="font-bold">404</h1>
-            <p className="sm:text-lg lg:text-2xl">Sorry, we were unable to find that page :(</p>
-            <form
-              className="mt-4 flex w-full flex-col items-center gap-6 sm:w-4/5 lg:max-w-[720px]"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <TextField
-                type="text"
-                icon={<SearchNormal1 />}
-                placeholder="Search"
-                value={watch('search')}
-                isInvalid={!!errors.search}
-                errorMsg={errors.search?.message}
-                {...register('search')}
-              />
-              <MainButton
-                title={isSubmitting ? 'Searching...' : 'Search'}
-                size="lg"
-                variant="secondary"
-                disabled={isSubmitting}
-              />
-            </form>
-            <p className="mt-2">
-              Start from{' '}
-              <Link className="hover:text-secondary-100 underline" to="/">
-                Home page
-              </Link>
-            </p>
+          <div className="flex w-full grow flex-col items-center justify-center gap-8 px-2 pt-24 pb-42 text-center lg:gap-6 lg:px-10 lg:pb-26">
+            <h1 className="text-8xl font-bold sm:text-9xl">404</h1>
+            <div className="flex flex-col gap-4">
+              <p className="text-xl lg:text-2xl">There is nothing here</p>
+              <p className="text-lg">
+                The page you are looking for doesn&apos;t exist or has been moved.{' '}
+              </p>
+            </div>
+
+            <Link to="/">
+              <MainButton title="Go back home" size="md" variant="secondary" classNames="w-full" />
+            </Link>
           </div>
         </main>
       </div>

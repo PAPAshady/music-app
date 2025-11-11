@@ -90,6 +90,7 @@ export const updatePrivatePlaylistMutationOptions = (playlistId) => ({
       // we have th get them manually from the cache and append it to the update playlist metadata;
       const updatedPlatlistTracks = queryClient.getQueryData(['playlists', { playlistId }]);
       updatedPlaylist.totaltracks = updatedPlatlistTracks.length;
+      queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
       return prevPlaylists.map((playlist) =>
         playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
       );
