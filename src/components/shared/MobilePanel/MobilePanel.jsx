@@ -21,7 +21,7 @@ import { Navigate } from 'react-router-dom';
 export default function MobilePanel() {
   const panelType = useSelector((state) => state.queryState.type);
   const id = useSelector((state) => state.queryState.id);
-  const { data, isPending, error } = useQuery(
+  const { data, isPending, failureReason } = useQuery(
     panelType === 'album'
       ? getAlbumByIdQueryOptions(id)
       : panelType === 'playlist'
@@ -76,8 +76,9 @@ export default function MobilePanel() {
     }
   };
 
-  // in case if "id" is invalid or of no such media exists, redirect to 404
-  if (error?.code === '22P02' || error?.code === 'PGRST116') return <Navigate to="/404" replace />;
+  // in case if "id" is invalid or if no such media exists, redirect to 404
+  if (failureReason?.code === '22P02' || failureReason?.code === 'PGRST116')
+    return <Navigate to="/404" replace />;
 
   return createPortal(
     <div

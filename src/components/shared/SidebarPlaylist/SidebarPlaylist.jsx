@@ -60,6 +60,7 @@ const SidebarPlaylist = memo(() => {
     data: selectedTracklist,
     isPending: isSelectedTracklistPending,
     isError,
+    failureReason,
     error,
   } = useQuery(
     tracklistType === 'album'
@@ -229,7 +230,7 @@ const SidebarPlaylist = memo(() => {
     },
   ];
 
-  if (isError) return <ErrorPanel error={error} />;
+  if (failureReason?.code === '22P02' || isError) return <ErrorPanel error={error} />;
 
   return (
     <div className="sticky top-10 hidden xl:block">
