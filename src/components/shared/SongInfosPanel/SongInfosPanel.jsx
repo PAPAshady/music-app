@@ -68,7 +68,13 @@ export default function SongInfosPanel() {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('lyrics');
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
-  const { data: song, isPending, isError, error } = useQuery(getSongByIdQueryOptions(songId));
+  const {
+    data: song,
+    isPending,
+    isError,
+    error,
+    failureReason,
+  } = useQuery(getSongByIdQueryOptions(songId));
   const selectedSong = useSelector((state) => state.playContext.singleSong);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
   const { data: artist, isPending: isArtistPending } = useQuery(
@@ -88,7 +94,7 @@ export default function SongInfosPanel() {
     song?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
 
-  if (isError) return <ErrorPanel error={error} />;
+  if (failureReason?.code === '22P02' || isError) return <ErrorPanel error={error} />;
 
   return (
     <div className="sticky top-10 hidden xl:block">

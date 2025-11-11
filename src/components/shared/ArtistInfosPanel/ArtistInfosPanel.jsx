@@ -23,6 +23,7 @@ function ArtistInfosPanel() {
     data: selectedArtist,
     isPending,
     isError,
+    failureReason,
     error,
   } = useQuery(getArtistByIdQueryOptions(artistId));
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery({
@@ -45,7 +46,7 @@ function ArtistInfosPanel() {
     containerRef.current.scrollTop = 0;
   }, [selectedArtist]);
 
-  if (isError) return <ErrorPanel error={error} />;
+  if (failureReason?.code === '22P02' || isError) return <ErrorPanel error={error} />;
 
   return (
     <div className="sticky top-10 hidden xl:block">
