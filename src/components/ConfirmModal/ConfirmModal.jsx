@@ -5,6 +5,8 @@ import { useMutation } from '@tanstack/react-query';
 import { deletePrivatePlaylistMutationOptions } from '../../queries/playlists';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { listFiles, deleteFiles } from '../../services/storage';
+import { updateUser } from '../../services/users';
+import { useState } from 'react';
 
 export default function ConfirmModal() {
   const dispatch = useDispatch();
@@ -16,6 +18,7 @@ export default function ConfirmModal() {
   const deletePlaylistMutation = useMutation(
     deletePrivatePlaylistMutationOptions(selectedTracklist.id)
   );
+  const [isPending, setIsPending] = useState(false);
 
   const onClose = () => {
     // To avoid an unpolished visual effect where the title appears empty
@@ -67,12 +70,48 @@ export default function ConfirmModal() {
         console.error('Error deleting playlist : ', err);
       }
       onClose();
-    }
-  };
+    } else if (actionType === 'remove_user_avatar') {
+      setIsPending(true);
+      try {
+        const { data: listingData, error: listingError } = await listFiles(
+          'avatars',
+          userId,
+          undefined,
+          undefined,
+          'avatar'
+        );
 
-  const onCancel = () => {
-    if (actionType === 'delete_playlist') {
-      onClose();
+        if (listingError) {
+          dispatch(
+            showNewSnackbar({ message: 'Error removing avatar. Try again.', type: 'error' })
+          );
+          console.error('Error listing files : ', listingError);
+          return;
+        }
+
+        if (listingData.length) {
+          // remove avatar from storage
+          const { error: deleteError } = await deleteFiles('avatars', [
+            `${userId}/avatar.${listingData[0].name.split('.').pop()}`,
+          ]);
+
+          if (deleteError) {
+            dispatch(
+              showNewSnackbar({ message: 'Error removing avatar. Try again.', type: 'error' })
+            );
+            console.error('Error deleting file : ', deleteError);
+            return;
+          }
+        }
+        await updateUser(userId, { avatar_url: null });
+        dispatch(showNewSnackbar({ message: 'Avatar removed successfully.', type: 'success' }));
+        onClose();
+      } catch (err) {
+        dispatch(showNewSnackbar({ message: 'Error removing avatar. Try again.', type: 'error' }));
+        console.error('Error deleting avatar : ', err);
+      } finally {
+        setIsPending(false);
+      }
     }
   };
 
@@ -81,14 +120,14 @@ export default function ConfirmModal() {
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={onConfirm}
-      onCancel={onCancel}
+      onCancel={onClose}
       title={title}
       confirmButton={buttons.confirm}
       cancelButton={buttons.cancel}
       confirmButtonClassNames={buttonsClassNames.confirm}
       cancelButtonClassNames={buttonsClassNames.cancel}
       confirmButtonDisabled={deletePlaylistMutation.isPending}
-      isSubmitting={deletePlaylistMutation.isPending}
+      isSubmitting={deletePlaylistMutation.isPending || isPending}
     >
       <p className="text-secondary-50 mb-2 text-sm min-[480px]:text-base">{message}</p>
     </Modal>
