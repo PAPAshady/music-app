@@ -148,3 +148,12 @@ export const getRecentlyPlayedPlaylists = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getPlaylistsByKeyword = async (keyword) => {
+  const { data, error } = await supabase
+    .from('playlists_extended')
+    .select('*')
+    .ilike('title', `%${keyword}%`);
+  if (error) throw error;
+  return data;
+};

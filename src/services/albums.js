@@ -58,3 +58,12 @@ export const getNewAlbums = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getAlbumsByKeyword = async (keyword) => {
+  const { data, error } = await supabase
+    .from('albums_extended')
+    .select('*')
+    .ilike('title', `%${keyword}%`);
+  if (error) throw error;
+  return data;
+};

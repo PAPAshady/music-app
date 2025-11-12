@@ -28,3 +28,9 @@ export const getTrendingArtists = async () => {
   if (error) throw error;
   return data;
 };
+
+export const getArtistsByKeyword = async (keyword) => {
+  const { data, error } = await supabase.from('artists').select('*').ilike('name', `%${keyword}%`);
+  if (error) throw error;
+  return data;
+};

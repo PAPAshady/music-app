@@ -8,6 +8,7 @@ import {
   recommendAlbums,
   getRecentAlbums,
   getNewAlbums,
+  getAlbumsByKeyword,
 } from '../services/albums';
 
 export const getAllAlbumsQueryOptions = () => {
@@ -87,5 +88,16 @@ export const getNewAlbumsQueryOptions = () => {
     staleTime: Infinity,
     retryDelay: 5000,
     retry: true,
+  });
+};
+
+export const getAlbumsByKeywordQueryOptions = (keyword) => {
+  return queryOptions({
+    queryKey: ['albums', { keyword }],
+    queryFn: () => getAlbumsByKeyword(keyword),
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+    enabled: !!keyword,
   });
 };
