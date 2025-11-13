@@ -91,10 +91,10 @@ export const getNewAlbumsQueryOptions = () => {
   });
 };
 
-export const getAlbumsByKeywordQueryOptions = (keyword) => {
+export const getAlbumsByKeywordQueryOptions = (keyword, options) => {
   return queryOptions({
     queryKey: ['albums', { keyword }],
-    queryFn: () => getAlbumsByKeyword(keyword),
+    queryFn: () => getAlbumsByKeyword(keyword, options),
     staleTime: Infinity,
     retryDelay: 5000,
     retry: true,

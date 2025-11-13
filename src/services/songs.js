@@ -121,13 +121,13 @@ export const getSongsByGenreId = async (genreId, limit) => {
   return data;
 };
 
-export const getSongsByKeyword = async (keyword) => {
+export const getSongsByKeyword = async (keyword, { limit = 10 } = {}) => {
   const { data, error } = await supabase
     .from('most_played_songs')
     .select('*')
     .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%,genre_name.ilike.%${keyword}%`)
     .order('total_plays', { ascending: false })
-    .limit(10);
+    .limit(limit);
   if (error) throw error;
   return data;
 };

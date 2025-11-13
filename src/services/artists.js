@@ -34,7 +34,8 @@ export const getArtistsByKeyword = async (keyword) => {
     .from('trending_artists')
     .select('*')
     .ilike('name', `%${keyword}%`)
-    .order('total_plays', { ascending: false });
+    .order('total_plays', { ascending: false })
+    .limit(10);
   if (error) throw error;
   return data;
 };
