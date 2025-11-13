@@ -131,10 +131,10 @@ export const getSongsByGenreIdQueryOptions = (genreId, { limit }) => {
   });
 };
 
-export const getSongsByKeywordQueryOptions = (keyword) => {
+export const getSongsByKeywordQueryOptions = (keyword, options) => {
   return queryOptions({
     queryKey: ['songs', { keyword }],
-    queryFn: () => getSongsByKeyword(keyword),
+    queryFn: () => getSongsByKeyword(keyword, options),
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,

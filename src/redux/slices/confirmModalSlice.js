@@ -18,7 +18,7 @@ const confirmModalSlice = createSlice({
     },
     openModal(_, action) {
       const { title, message, actionType, ...rest } = action.payload;
-      const validActionTypes = ['delete_playlist'];
+      const validActionTypes = ['delete_playlist', 'remove_user_avatar'];
 
       if (!title?.trim() || !message?.trim() || !actionType) {
         throw new Error("ConfirmModal requires 'title' and 'message' and 'actionType'.");

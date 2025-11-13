@@ -25,6 +25,7 @@ import {
   subscribeToPlaylist,
   unsubscribeFromPlaylist,
   getRecentlyPlayedPlaylists,
+  getPlaylistsByKeyword,
 } from '../services/playlists';
 import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
@@ -277,5 +278,16 @@ export const getRecentlyPlayedPlaylistsQueryOptions = () => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+  });
+};
+
+export const getPlaylistsByKeywordQueryOptions = (keyword) => {
+  return queryOptions({
+    queryKey: ['playlists', { keyword }],
+    queryFn: () => getPlaylistsByKeyword(keyword),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!keyword,
   });
 };

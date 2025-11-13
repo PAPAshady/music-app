@@ -4,6 +4,7 @@ import {
   getArtistById,
   getRelatedArtists,
   getTrendingArtists,
+  getArtistsByKeyword,
 } from '../services/artists';
 
 export const getArtistsQueryOptions = () => {
@@ -43,5 +44,16 @@ export const getTrendingArtistsQueryOptions = () => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+  });
+};
+
+export const getArtistsByKeywordQueryOptions = (keyword) => {
+  return queryOptions({
+    queryKey: ['artists', { keyword }],
+    queryFn: () => getArtistsByKeyword(keyword),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!keyword,
   });
 };

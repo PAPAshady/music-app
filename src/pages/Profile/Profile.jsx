@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Avatar from '../../components/Avatar/Avatar';
-import useMediaQuery from '../../hooks/useMediaQuery';
 import EmailInput from '../../components/Inputs/EmailInput/EmailInput';
 import InputField from '../../components/Inputs/InputField/InputField';
 import TextArea from '../../components/Inputs/TextArea/TextArea';
@@ -14,6 +13,8 @@ import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/sto
 import { useDispatch } from 'react-redux';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { useSelector } from 'react-redux';
+import { Trash, Edit } from 'iconsax-react';
+import { openModal } from '../../redux/slices/confirmModalSlice';
 
 const formSchema = z.object({
   avatar: z.any().optional(),
@@ -27,7 +28,7 @@ export default function Profile() {
   const userAvatar = useSelector((state) => state.auth.avatar);
   const user = useSelector((state) => state.auth.user);
   const [avatar, setAvatar] = useState(null);
-  const isTablet = useMediaQuery('(min-width: 640px)');
+  const fileInputRef = useRef(null);
   const {
     register,
     handleSubmit,
@@ -169,25 +170,62 @@ export default function Profile() {
     reset();
   };
 
+  const openFileInput = (e) => {
+    e.preventDefault();
+    fileInputRef?.current.click();
+  };
+
+  const openConfirmModal = (e) => {
+    e.preventDefault();
+    dispatch(
+      openModal({
+        title: 'Remove avatar',
+        message: 'Are you sure you want to remove your avatar ?',
+        actionType: 'remove_user_avatar',
+        buttons: { cancel: true, confirm: true },
+        buttonsClassNames: { confirm: '!bg-red !inset-shadow-none' },
+      })
+    );
+  };
+
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6 md:pt-8">
-        <label
-          htmlFor="file-input"
-          className={`relative cursor-pointer rounded-full border-2 transition-colors ${errors.avatar ? 'border-red' : 'border-transparent'}`}
-        >
-          <input
-            type="file"
-            id="file-input"
-            accept="image/*"
-            className="absolute opacity-0"
-            onChange={avatarChangeHandler}
-          />
-          <Avatar size={isTablet ? 'lg' : 'md'} profilePic={avatar} />
-          <span className="text-red absolute top-[110%] hidden text-center text-sm md:block">
-            {errors.avatar?.message}
-          </span>
-        </label>
+        <div className="flex flex-col items-center">
+          <label
+            htmlFor="file-input"
+            className={`relative cursor-pointer rounded-full border-2 transition-colors ${errors.avatar ? 'border-red' : 'border-transparent'}`}
+          >
+            <input
+              type="file"
+              id="file-input"
+              accept="image/*"
+              className="absolute opacity-0"
+              onChange={avatarChangeHandler}
+              ref={fileInputRef}
+            />
+
+            <Avatar size="lg" profilePic={avatar} />
+
+            <span className="text-red absolute top-[110%] hidden text-center text-sm md:block">
+              {errors.avatar?.message}
+            </span>
+          </label>
+          <div className="mt-2 flex gap-2">
+            <button
+              onClick={openConfirmModal}
+              className="bg-red flex size-10 items-center justify-center rounded-full text-white"
+            >
+              <Trash size={24} />
+            </button>
+            <button
+              onClick={openFileInput}
+              className="bg-secondary-400 flex size-10 items-center justify-center rounded-full text-white"
+            >
+              <Edit size={24} />
+            </button>
+          </div>
+        </div>
         <div className="text-center md:text-start">
           <p className="text-red mb-3 text-center text-sm md:hidden">{errors.avatar?.message}</p>
           <p className="text-primary-50 font-semibold sm:text-lg md:mb-2 md:text-2xl">
