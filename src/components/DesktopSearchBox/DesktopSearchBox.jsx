@@ -120,7 +120,7 @@ function DesktopSearchBox() {
               <div className="dir-ltr mt-4 flex h-[300px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
                 <Music size={72} />
                 <p className="text-2xl font-semibold">Let the music begin</p>
-                <p className="text-">You can now start searching for your tunes!</p>
+                <p>You can now start searching for your tunes!</p>
               </div>
             )}
           </div>
@@ -136,7 +136,7 @@ function DesktopSearchBox() {
 function FilterButton({ text, isActive, onClick }) {
   return (
     <button
-      className={`text-secondary-100 cursor-pointer rounded-full border border-transparent bg-slate-600 px-3 py-1.5 text-sm capitalize transition-colors hover:border-slate-500 ${isActive && 'outline-1'}`}
+      className={`text-secondary-100 cursor-pointer rounded-full border border-transparent bg-slate-600 px-3 py-1.5 text-sm capitalize transition-colors hover:border-slate-500 ${isActive ? 'outline-1' : ''}`}
       onClick={onClick}
     >
       {text}

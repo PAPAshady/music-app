@@ -23,7 +23,7 @@ function SmallArtistCard({ artist, size = 'sm', classNames, onClick }) {
         src={image ?? artistDefaultCover}
         className={`group-hover:outline-primary-50 mb-1 rounded-full object-cover outline-1 outline-transparent transition-colors ${size === 'sm' ? 'size-18' : 'size-24'}`}
       />
-      <span className={size === 'sm' && 'text-sm'}>{name}</span>
+      <span className={size === 'sm' ? 'text-sm' : ''}>{name}</span>
     </div>
   );
 }
