@@ -151,9 +151,11 @@ export const getRecentlyPlayedPlaylists = async () => {
 
 export const getPlaylistsByKeyword = async (keyword) => {
   const { data, error } = await supabase
-    .from('playlists_extended')
+    .from('most_played_playlists')
     .select('*')
-    .ilike('title', `%${keyword}%`);
+    .eq('is_public', true)
+    .or(`title.ilike.%${keyword}%,genre_title.ilike.%${keyword}%,genre_title.ilike.%${keyword}%`)
+    .order('total_plays', { ascending: false });
   if (error) throw error;
   return data;
 };

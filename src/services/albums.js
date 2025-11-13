@@ -61,9 +61,11 @@ export const getNewAlbums = async () => {
 
 export const getAlbumsByKeyword = async (keyword) => {
   const { data, error } = await supabase
-    .from('albums_extended')
+    .from('most_played_albums')
     .select('*')
-    .ilike('title', `%${keyword}%`);
+    .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%,genre_title.ilike.%${keyword}%`)
+    .order('total_plays', { ascending: false })
+    .limit(10);
   if (error) throw error;
   return data;
 };

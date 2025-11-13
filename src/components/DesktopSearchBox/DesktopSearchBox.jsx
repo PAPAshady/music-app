@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { Music } from 'iconsax-react';
-import { useState } from 'react';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useCloseOnClickOutside from '../../hooks/useCloseOnClickOutside ';
 import useDebounce from '../../hooks/useDebounce';
@@ -17,7 +16,6 @@ import { getAlbumsByKeywordQueryOptions } from '../../queries/albums';
 import { getArtistsByKeywordQueryOptions } from '../../queries/artists';
 
 function DesktopSearchBox() {
-  const [activeButton, setActiveButton] = useState('all');
   const searchInput = useInput();
   const query = useDebounce(searchInput.value, 500);
   const {
@@ -48,14 +46,6 @@ function DesktopSearchBox() {
   const isLoading = isPlaylistsLoading && isSongsLoading && isAlbumsLoading && isArtistsLoading;
   const hasData = [playlists, albums, songs, artists].some((data) => data?.length);
 
-  const filterButtons = [
-    { id: 1, text: 'all' },
-    { id: 2, text: 'songs' },
-    { id: 3, text: 'artists' },
-    { id: 4, text: 'albums' },
-    { id: 5, text: 'playlists' },
-  ];
-
   return (
     <div className="relative w-full">
       <div
@@ -66,16 +56,6 @@ function DesktopSearchBox() {
         <div
           className={`text-secondary-50 absolute z-[-1] -mt-4 w-full rounded-md bg-gradient-to-b from-slate-800 to-slate-700 px-2 py-8 ${isDesktopSearchBoxOpen ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'}`}
         >
-          <div className="flex items-center gap-2 pb-2">
-            {filterButtons.map((button) => (
-              <FilterButton
-                key={button.id}
-                isActive={button.text === activeButton}
-                onClick={() => setActiveButton(button.text)}
-                {...button}
-              />
-            ))}
-          </div>
           <div className="max-h-[450px] overflow-y-auto px-4">
             {searchInput.value.trim() ? (
               !isLoading && !hasData ? (

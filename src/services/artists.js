@@ -30,7 +30,11 @@ export const getTrendingArtists = async () => {
 };
 
 export const getArtistsByKeyword = async (keyword) => {
-  const { data, error } = await supabase.from('artists').select('*').ilike('name', `%${keyword}%`);
+  const { data, error } = await supabase
+    .from('trending_artists')
+    .select('*')
+    .ilike('name', `%${keyword}%`)
+    .order('total_plays', { ascending: false });
   if (error) throw error;
   return data;
 };
