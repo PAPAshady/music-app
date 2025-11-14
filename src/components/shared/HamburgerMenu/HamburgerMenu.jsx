@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 const HamburgerMenu = memo(() => {
   const isHamburgerMenuOpen = useSelector((state) => state.hamburgerMenu.isOpen);
   const userFullName = useSelector((state) => state.auth.user?.user_metadata.full_name);
+  const userAvatar = useSelector((state) => state.auth.avatar);
   const dispatch = useDispatch();
   const mobileNavLinks = [
     { id: 1, title: 'Home', icon: <Home2 />, href: '/' },
@@ -39,9 +40,9 @@ const HamburgerMenu = memo(() => {
       >
         <div className="">
           <div className="text-primary-300 mb-6 flex items-center justify-between">
-            <button>
-              <Avatar size="sm" />
-            </button>
+            <Link to="/settings/profile" onClick={() => dispatch(setIsHamburgerMenuOpen(false))}>
+              <Avatar size="sm" profilePic={userAvatar} />
+            </Link>
             <button>
               <Notification size={24} />
             </button>
