@@ -15,6 +15,7 @@ import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { useSelector } from 'react-redux';
 import { Trash, Edit } from 'iconsax-react';
 import { openModal } from '../../redux/slices/confirmModalSlice';
+import { updateUserAvatar } from '../../redux/slices/authSlice';
 
 const formSchema = z.object({
   avatar: z.any().optional(),
@@ -136,6 +137,7 @@ export default function Profile() {
         console.error('An error occurred while updating user in database => ', err);
         setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
       }
+      dispatch(updateUserAvatar()); // updates user avatar in redux
       dispatch(
         showNewSnackbar({ message: 'Your profile has been updated successfully!', type: 'success' })
       );

@@ -7,8 +7,6 @@ import {
   getRelatedSongsBySongDataQueryOptions,
   getFavoriteSongsQueryOptions,
 } from '../queries/musics';
-import { setUser } from './slices/authSlice';
-import { getUserAvatar } from './slices/authSlice';
 import { setCurrentMusic } from './slices/musicPlayerSlice';
 import { music, setPrevSongIndex, setCurrentSongIndex, play } from './slices/musicPlayerSlice';
 import {
@@ -20,16 +18,6 @@ import {
 } from './slices/playContextSlice';
 
 const listenerMiddleware = createListenerMiddleware();
-
-// Previously, if a user logged out and logged in again with a different account,
-// their avatar wouldn't update. This listener ensures the avatar is refreshed when the user changes.
-listenerMiddleware.startListening({
-  actionCreator: setUser,
-  effect: (action, { dispatch }) => {
-    const userId = action.payload?.id;
-    userId && dispatch(getUserAvatar(userId));
-  },
-});
 
 listenerMiddleware.startListening({
   actionCreator: setCurrentSongIndex,
