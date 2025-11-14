@@ -50,7 +50,7 @@ export default function MobileSearchPanel() {
     data: artists,
     isPending: isArtistsPending,
     isLoading: isArtistsLoading,
-  } = useQuery(getArtistsByKeywordQueryOptions(query));
+  } = useQuery(getArtistsByKeywordQueryOptions(query, { limit: 6 }));
   const isLoading = isPlaylistsLoading && isSongsLoading && isAlbumsLoading && isArtistsLoading;
   const hasData = [playlists, albums, songs, artists].some((data) => data?.length);
 
@@ -103,16 +103,16 @@ export default function MobileSearchPanel() {
                     <div className="grid grid-cols-1 gap-3 px-1 min-[992px]:!grid-cols-3 sm:grid-cols-2">
                       {isSongsPending
                         ? Array(4)
-                            .fill()
-                            .map((_, index) => <SongCardSkeleton key={index} />)
+                          .fill()
+                          .map((_, index) => <SongCardSkeleton key={index} />)
                         : songs.map((song, index) => (
-                            <SongCard
-                              key={song.id}
-                              song={song}
-                              index={index}
-                              onPlay={onPlayTrack}
-                            />
-                          ))}
+                          <SongCard
+                            key={song.id}
+                            song={song}
+                            index={index}
+                            onPlay={onPlayTrack}
+                          />
+                        ))}
                     </div>
                   </div>
                 )}
@@ -122,16 +122,16 @@ export default function MobileSearchPanel() {
                     <div className="grid grid-cols-1 gap-3 px-1 sm:grid-cols-2">
                       {isAlbumsPending
                         ? Array(4)
-                            .fill()
-                            .map((_, index) => <AlbumCardSkeleton key={index} size="md" />)
+                          .fill()
+                          .map((_, index) => <AlbumCardSkeleton key={index} size="md" />)
                         : albums.map((album) => (
-                            <AlbumCard
-                              size="md"
-                              key={album.id}
-                              album={album}
-                              classNames="!max-w-none"
-                            />
-                          ))}
+                          <AlbumCard
+                            size="md"
+                            key={album.id}
+                            album={album}
+                            classNames="!max-w-none"
+                          />
+                        ))}
                     </div>
                   </div>
                 )}
@@ -141,11 +141,11 @@ export default function MobileSearchPanel() {
                     <div className="grid grid-cols-3 gap-4 px-1 min-[500px]:grid-cols-4 min-[900px]:!grid-cols-6 sm:grid-cols-5">
                       {isArtistsPending
                         ? Array(6)
-                            .fill()
-                            .map((_, index) => <SmallArtistCardSkeleton key={index} size="md" />)
+                          .fill()
+                          .map((_, index) => <SmallArtistCardSkeleton key={index} size="md" />)
                         : artists.map((artist) => (
-                            <SmallArtistCard size="md" key={artist.id} artist={artist} />
-                          ))}
+                          <SmallArtistCard size="md" key={artist.id} artist={artist} />
+                        ))}
                     </div>
                   </div>
                 )}
@@ -161,17 +161,17 @@ export default function MobileSearchPanel() {
                     >
                       {isPlaylistsPending
                         ? Array(8)
-                            .fill()
-                            .map((_, index) => (
-                              <SwiperSlide key={index} className="!w-auto !pb-11">
-                                <PlaylistCardSkeleton classNames="!h-48" />
-                              </SwiperSlide>
-                            ))
-                        : playlists.map((playlist) => (
-                            <SwiperSlide key={playlist.id} className="!w-auto !pb-11">
-                              <PlaylistCard {...playlist} classNames="!h-48" />
+                          .fill()
+                          .map((_, index) => (
+                            <SwiperSlide key={index} className="!w-auto !pb-11">
+                              <PlaylistCardSkeleton classNames="!h-48" />
                             </SwiperSlide>
-                          ))}
+                          ))
+                        : playlists.map((playlist) => (
+                          <SwiperSlide key={playlist.id} className="!w-auto !pb-11">
+                            <PlaylistCard {...playlist} classNames="!h-48" />
+                          </SwiperSlide>
+                        ))}
                     </Swiper>
                   </div>
                 )}

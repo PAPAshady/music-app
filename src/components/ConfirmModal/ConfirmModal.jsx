@@ -7,6 +7,7 @@ import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { listFiles, deleteFiles } from '../../services/storage';
 import { updateUser } from '../../services/users';
 import { useState } from 'react';
+import { updateUserAvatar } from '../../redux/slices/authSlice';
 
 export default function ConfirmModal() {
   const dispatch = useDispatch();
@@ -104,6 +105,7 @@ export default function ConfirmModal() {
           }
         }
         await updateUser(userId, { avatar_url: null });
+        dispatch(updateUserAvatar()); // updates user avatar in redux
         dispatch(showNewSnackbar({ message: 'Avatar removed successfully.', type: 'success' }));
         onClose();
       } catch (err) {

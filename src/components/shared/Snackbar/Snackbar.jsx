@@ -10,7 +10,7 @@ export default function Snackbar({ message, type }) {
 
   return (
     <div
-      className={`text-primary-50 border-primary-300 z-50 mx-auto w-[95%] rounded-sm border bg-[#4E6C96]/53 px-3 py-1.5 backdrop-blur-md transition-all ease-in-out min-[1200px]:!w-1/3 sm:ms-4 sm:w-[70%] md:w-1/2 lg:ms-6 lg:w-[40%]`}
+      className={`text-primary-50 border-primary-300 z-50 mx-auto w-[95%] rounded-sm border bg-[#4E6C96]/53 px-3 py-1.5 backdrop-blur-md transition-all ease-in-out min-[1200px]:!w-1/3 sm:ms-4 sm:w-[70%] max-w-[550px] md:w-1/2 lg:ms-6 lg:w-[40%]`}
     >
       <div className="flex items-center justify-between gap-3 py-1.5">
         <p className="truncate" title={message ? message : 'Provide a message.'}>

@@ -25,7 +25,7 @@ export default function ArtistsSlider({ artists, isLoading }) {
           768: { slidesPerView: 4 },
           850: { slidesPerView: 4.5 },
           1024: { slidesPerView: 4.5, freeMode: false },
-          1440: { slidesPerView: 3.9, pagination: { enabled: true }, freeMode: false },
+          1440: { slidesPerView: 4.5, pagination: { enabled: true }, freeMode: false },
         }}
         className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
       >

@@ -14,8 +14,23 @@ export const signOut = createAsyncThunk('auth/signOut', async () => {
   queryClient.invalidateQueries();
 });
 
-export const getUserAvatar = createAsyncThunk('auth/getUserAvatar', async (userId) => {
-  return await getUserAvatarUrl(userId);
+export const updateUserAvatar = createAsyncThunk(
+  'auth/updateUserAvatar',
+  async (_, { getState, dispatch }) => {
+    const userId = getState().auth.user.id;
+    const avatar = await getUserAvatarUrl(userId); // the avatar which user uploaded him self
+    const oAuthAvatar = getState().auth.user.user_metadata.avatar_url; // the avatar which user got from supabase OAuth 2.0 authentication (from github, google, etc.)
+
+    console.log(avatar, oAuthAvatar);
+
+    dispatch(setAvatar(avatar || oAuthAvatar));
+  }
+);
+
+export const setUser = createAsyncThunk('auth/setUser', async (payload, { dispatch }) => {
+  // keep the user and avatar up-to-date
+  dispatch(updateUser(payload));
+  dispatch(updateUserAvatar());
 });
 
 const authSlice = createSlice({
@@ -27,7 +42,7 @@ const authSlice = createSlice({
     error: null,
   },
   reducers: {
-    setUser: (state, action) => {
+    updateUser: (state, action) => {
       state.user = action.payload;
     },
     setLoading: (state, action) => {
@@ -38,15 +53,11 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(getUserAvatar.fulfilled, (state, action) => {
-        state.avatar = action.payload || state.user.user_metadata.avatar_url;
-      })
-      .addCase(signOut.fulfilled, (state) => {
-        state.avatar = null;
-      });
+    builder.addCase(signOut.fulfilled, (state) => {
+      state.avatar = null;
+    });
   },
 });
 
-export const { setUser, setLoading, setAvatar } = authSlice.actions;
+export const { updateUser, setLoading, setAvatar } = authSlice.actions;
 export default authSlice.reducer;
