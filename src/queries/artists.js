@@ -47,10 +47,10 @@ export const getTrendingArtistsQueryOptions = () => {
   });
 };
 
-export const getArtistsByKeywordQueryOptions = (keyword) => {
+export const getArtistsByKeywordQueryOptions = (keyword, options) => {
   return queryOptions({
     queryKey: ['artists', { keyword }],
-    queryFn: () => getArtistsByKeyword(keyword),
+    queryFn: () => getArtistsByKeyword(keyword, options),
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
