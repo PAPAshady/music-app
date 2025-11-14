@@ -7,7 +7,7 @@ import NotificationMenu from '../NotificationMenu/NotificationMenu';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import SettingsMenu from '../SettingsMenu/SettingsMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openMobileSearchPanel } from '../../../redux/slices/mobileSearchPanelSlice';
 import { setIsHamburgerMenuOpen } from '../../../redux/slices/hamburgerMenuSlice';
 import DesktopSearchBox from '../../DesktopSearchBox/DesktopSearchBox';
@@ -17,6 +17,7 @@ export default memo(function Header() {
   const notificationMenu = useCloseOnClickOutside();
   const mobileSearchBox = useCloseOnClickOutside();
   const settingsMenu = useCloseOnClickOutside();
+  const userAvatar = useSelector(state => state.auth.avatar)
 
   return (
     <header>
@@ -59,9 +60,9 @@ export default memo(function Header() {
             />
             <SettingsMenu isVisible={settingsMenu.isVisible} />
           </div>
-          <button>
-            <Avatar size="xs" />
-          </button>
+          <Link to='/settings/profile'>
+            <Avatar size="xs" profilePic={userAvatar} />
+          </Link>
         </div>
       </div>
     </header>
