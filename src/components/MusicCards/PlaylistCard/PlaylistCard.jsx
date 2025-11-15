@@ -2,12 +2,13 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Heart, Play } from 'iconsax-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { setQueries } from '../../../redux/slices/queryStateSlice';
 import { useMutation } from '@tanstack/react-query';
 import { likePlaylistMutationOptions, unlikePlaylistMutationOptions } from '../../../queries/likes';
+import NowPlayingIndicator from '../../NowPlayingIndicator/NowPlayingIndicator';
 
 const PlaylistCard = memo((playlist) => {
   const dispatch = useDispatch();
@@ -15,6 +16,8 @@ const PlaylistCard = memo((playlist) => {
   const { mutate, isPending } = useMutation(
     is_liked ? unlikePlaylistMutationOptions() : likePlaylistMutationOptions()
   );
+  const playingTracklistId = useSelector((state) => state.playContext.currentCollection?.id);
+  const isCurrentPlaylistPlaying = id === playingTracklistId;
 
   const showSelectedPlaylist = () => {
     dispatch(setSelectedCollection(playlist));
@@ -35,7 +38,10 @@ const PlaylistCard = memo((playlist) => {
       onClick={showSelectedPlaylist}
     >
       <div className="flex size-full flex-col justify-between bg-gradient-to-t from-[rgba(0,0,0,.7)] to-transparent p-2">
-        <div className="p-1 text-end">
+        <div
+          className={`items-center p-1 ${isCurrentPlaylistPlaying ? 'flex items-center justify-between' : 'ms-auto text-end'}`}
+        >
+          {isCurrentPlaylistPlaying && <NowPlayingIndicator />}
           <button className="size-8 lg:size-[26px]" disabled={isPending} onClick={onLikeChange}>
             <Heart
               size="100%"

@@ -8,6 +8,7 @@ import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { setQueries } from '../../../redux/slices/queryStateSlice';
 import { useMutation } from '@tanstack/react-query';
 import { likeAlbumMutationOptions, unlikeAlbumMutationOptions } from '../../../queries/likes';
+import NowPlayingIndicator from '../../NowPlayingIndicator/NowPlayingIndicator';
 
 const AlbumCard = memo(({ size, album, classNames }) => {
   const { cover, totaltracks, artist, is_liked, title, id } = album;
@@ -77,13 +78,7 @@ const AlbumCard = memo(({ size, album, classNames }) => {
                 </span>
               </p>
               <div className="text-primary-50 flex items-center gap-2">
-                {isCurrentAlbumPlaying && (
-                  <div className="flex items-center gap-1 lg:ms-auto">
-                    <div className="bg-secondary-50 animate-expand h-3 w-0.75 origin-bottom rounded-full"></div>
-                    <div className="bg-secondary-50 animate-expand h-3 w-0.75 origin-bottom rounded-full [animation-delay:250ms]"></div>
-                    <div className="bg-secondary-50 animate-expand h-3 w-0.75 origin-bottom rounded-full [animation-delay:450ms]"></div>
-                  </div>
-                )}
+                {isCurrentAlbumPlaying && <NowPlayingIndicator />}
                 <button className="hover:scale-110">
                   <Share size={18} />
                 </button>
