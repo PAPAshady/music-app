@@ -6,11 +6,12 @@ import PlaylistCardSkeleton from '../../MusicCards/PlaylistCard/PlaylistCardSkel
 import 'swiper/css';
 import AddPlaylistButton from '../../AddPlaylistButton/AddPlaylistButton';
 import { Like1 } from 'iconsax-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';
 import { setQueries } from '../../../redux/slices/queryStateSlice';
+import NowPlayingIndicator from '../../NowPlayingIndicator/NowPlayingIndicator';
 
 export default function PlaylistsSlider({
   playlists,
@@ -18,6 +19,7 @@ export default function PlaylistsSlider({
   numberOfPlaylists = playlists?.length,
 }) {
   const dispatch = useDispatch();
+  const playingTracklistId = useSelector((state) => state.playContext.currentCollection?.id);
 
   const showFavoriteSongs = () => {
     dispatch(setSelectedCollection(favoriteSongsInfos));
@@ -67,9 +69,14 @@ export default function PlaylistsSlider({
                 ) : playlist.type === 'favorite-songs' ? (
                   // render a button to show favorite musics onClick
                   <div
-                    className="hover:border-secondary-50 flex h-36 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-transparent bg-gradient-to-br from-[#822F6A] via-[#434EAA] to-[#005E4B] transition-colors lg:h-48 lg:gap-3"
+                    className="hover:border-secondary-50 relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-transparent bg-gradient-to-br from-[#822F6A] via-[#434EAA] to-[#005E4B] transition-colors lg:h-48 lg:gap-3"
                     onClick={showFavoriteSongs}
                   >
+                    {playingTracklistId === 'favorites' && (
+                      <div className="absolute top-5 left-2.5">
+                        <NowPlayingIndicator />
+                      </div>
+                    )}
                     <div className="size-16">
                       <Like1 size="100%" />
                     </div>
