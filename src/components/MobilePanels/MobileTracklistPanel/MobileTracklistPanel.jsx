@@ -22,7 +22,6 @@ import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
 import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
 import useDebounce from '../../../hooks/useDebounce';
 import {
-  Heart,
   Trash,
   ArrowLeft,
   Play,
@@ -91,7 +90,9 @@ function MobileTracklistPanel() {
     (searchedValue && searchedSongs?.length > 0) || (!searchedValue && trendingSongs?.length > 0);
   const dataIsloading = isTrendingSognsPending || isSearchedSongsPending;
   const selectedTracklist = tracklistType === 'favorites' ? favoriteSongsInfos : data;
-  const isFavorites = selectedTracklist.tracklistType === 'favorites';
+  const isFavorites = selectedTracklist?.tracklistType === 'favorites';
+  const isPrivatePlaylist =
+    selectedTracklist?.tracklistType === 'playlist' && !selectedTracklist?.is_public;
   const showAddPanel =
     isMobilePanelOpen &&
     !selectedTracklist?.is_public &&
@@ -276,11 +277,9 @@ function MobileTracklistPanel() {
                 index={index}
                 onPlay={playTracklist}
                 classNames="!w-full text-start !max-w-none"
-                ActionButtonIcon={selectedTracklist?.is_public ? <Heart /> : <Trash />}
-                actionButtonClickHandler={
-                  selectedTracklist?.tracklistType === 'playlist' ? removeSongHandler : undefined
-                }
-                isActionButtonPending={pendingSongId === song.id}
+                ActionButtonIcon={isPrivatePlaylist && <Trash />}
+                actionButtonClickHandler={isPrivatePlaylist && removeSongHandler}
+                isActionButtonPending={isPrivatePlaylist && pendingSongId === song.id}
                 song={song}
               />
             ))}
