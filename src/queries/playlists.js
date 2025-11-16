@@ -29,6 +29,7 @@ import {
 } from '../services/playlists';
 import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
+import { addNotification } from '../redux/slices/notificationsSlice';
 
 export const getAllPlaylistsQueryOptions = () => {
   return queryOptions({
@@ -75,6 +76,7 @@ export const createNewPrivatePlaylistMutationOptions = () => {
     mutationFn: (data) => createNewPrivatePlaylist(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['playlists', { is_public: false }] });
+      store.dispatch(addNotification('Your new playlist has been created!'));
     },
   });
 };
