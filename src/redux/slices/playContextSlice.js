@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import favoriteSongsCover from '../../assets/images/covers/favorites-cover.png'
+import favoriteSongsCover from '../../assets/images/covers/favorites-cover.png';
 
 const playContextSlice = createSlice({
   name: 'playContext',
@@ -45,6 +45,12 @@ const playContextSlice = createSlice({
     setQueuelistType(state, action) {
       state.queuelistType = action.payload;
     },
+    resetCurrentCollection(state) {
+      state.isSingleSong = false;
+      state.currentCollection = {};
+      state.currentQueuelist = [];
+      state.queuelistType = null;
+    },
   },
 });
 
@@ -64,5 +70,6 @@ export const {
   setSingleSong,
   setCurrentQueuelist,
   setQueuelistType,
+  resetCurrentCollection,
 } = playContextSlice.actions;
 export default playContextSlice.reducer;

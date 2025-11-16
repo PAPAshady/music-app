@@ -4,6 +4,7 @@ import {
   setCurrentSongIndex,
   pause,
   music,
+  resetPlayer,
 } from '../redux/slices/musicPlayerSlice';
 import store from '../redux/store';
 import queryClient from '../queryClient';
@@ -27,9 +28,16 @@ import {
   getRecentlyPlayedPlaylists,
   getPlaylistsByKeyword,
 } from '../services/playlists';
-import { setCurrentQueuelist, setSelectedCollectionTracks } from '../redux/slices/playContextSlice';
+import {
+  setCurrentQueuelist,
+  setSelectedCollectionTracks,
+  resetCurrentCollection,
+  setSelectedCollection,
+} from '../redux/slices/playContextSlice';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 import { addNotification } from '../redux/slices/notificationsSlice';
+import { closeMobilePanel } from '../redux/slices/mobilePanelSlice';
+import { setQueries } from '../redux/slices/queryStateSlice';
 
 export const getAllPlaylistsQueryOptions = () => {
   return queryOptions({
@@ -110,6 +118,23 @@ export const deletePrivatePlaylistMutationOptions = (playlistId) => ({
       if (!prevPlaylists?.length) return [];
       return prevPlaylists.filter((playlist) => playlist.id !== playlistId);
     });
+
+    const currentQuelistId = store.getState().playContext.currentCollection?.id;
+    const selectedQuelistId = store.getState().playContext.selectedCollection?.id;
+    const isCurrentPlaylistPlaying = currentQuelistId === playlistId;
+    const isCurrentPlaylistSelected = selectedQuelistId === playlistId;
+    // if user removed the playlists while it is playing, reset the music player and current playlist in redux.
+    if (isCurrentPlaylistPlaying) {
+      store.dispatch(resetCurrentCollection());
+      store.dispatch(resetPlayer());
+    }
+
+    // if user removed the playlists while it is selected, reset the selected playlist in redux, close the mobile panel and reset the query state
+    if (isCurrentPlaylistSelected) {
+      store.dispatch(setSelectedCollection({}));
+      store.dispatch(closeMobilePanel());
+      store.dispatch(setQueries({ type: null, id: null }));
+    }
   },
 });
 

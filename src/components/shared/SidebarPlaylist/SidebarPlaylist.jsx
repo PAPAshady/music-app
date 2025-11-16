@@ -230,7 +230,8 @@ const SidebarPlaylist = memo(() => {
     },
   ];
 
-  if (failureReason?.code === '22P02' || isError) return <ErrorPanel error={error} />;
+  if (failureReason?.code === '22P02' || selectedTracklist === null || isError)
+    return <ErrorPanel error={error} />;
 
   return (
     <div className="sticky top-10 hidden xl:block">

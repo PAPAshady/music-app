@@ -80,7 +80,7 @@ export default function Player({ classNames, isPlayerPage }) {
         <div className="relative size-12 overflow-hidden rounded-lg min-[400px]:size-15 sm:size-20 md:size-16">
           <img
             className="size-full object-cover"
-            src={currentMusic?.cover ? currentMusic.cover : noCoverImg}
+            src={currentMusic?.cover || noCoverImg}
             alt={currentMusic?.title}
           />
           {musicState !== 'playable' ? (
@@ -91,10 +91,10 @@ export default function Player({ classNames, isPlayerPage }) {
             <div
               className={`absolute top-0 flex size-full items-center justify-center bg-black/50 opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${disabled && 'hidden'}`}
             >
-              <button onClick={() => likeHandlerMutation.mutate(currentMusic.id)}>
+              <button onClick={() => likeHandlerMutation.mutate(currentMusic?.id)}>
                 <Heart
                   size={28}
-                  className={`transitions-colors duration-300 ${currentMusic.is_liked ? 'fill-secondary-50 text-secondary-50' : ''}`}
+                  className={`transitions-colors duration-300 ${currentMusic?.is_liked ? 'fill-secondary-50 text-secondary-50' : ''}`}
                 />
               </button>
             </div>
