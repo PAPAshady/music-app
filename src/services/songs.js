@@ -131,3 +131,33 @@ export const getSongsByKeyword = async (keyword, { limit = 10 } = {}) => {
   if (error) throw error;
   return data;
 };
+
+export const getGeneratedQueuelistBySongData = async (song) => {
+  const sameArtistQuery = supabase
+    .from('songs_extended')
+    .select('*')
+    .eq('artist_id', song.artist_id)
+    .neq('id', song.id)
+    .limit(8);
+  const sameGenreQuery = supabase
+    .from('songs_extended')
+    .select('*')
+    .eq('genre_id', song.genre_id)
+    .neq('id', song.id)
+    .neq('artist_id', song.artist_id)
+    .limit(8);
+  const recentsQuery = supabase.from('recent_songs').select('*').limit(4);
+  const trendingsQuery = supabase.from('most_played_songs').select('*').limit(4);
+
+  const [sameArtist, sameGenre, recent, popular] = await Promise.all([
+    sameArtistQuery,
+    sameGenreQuery,
+    recentsQuery,
+    trendingsQuery,
+  ]);
+
+  const error = sameArtist.error || sameGenre.error || recent.error || popular.error;
+  if (error) throw error;
+
+  return [...sameArtist.data, ...sameGenre.data, ...recent.data, ...popular.data];
+};
