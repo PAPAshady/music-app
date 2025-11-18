@@ -28,6 +28,7 @@ import {
   getRecentSongsQueryOptions,
 } from '../../queries/musics';
 import { getUserTopGenresQueryOptions } from '../../queries/genres';
+import usePlayBar from '../../hooks/usePlayBar';
 
 export default function Home() {
   const albums = useQuery(getAllAlbumsQueryOptions());
@@ -77,6 +78,7 @@ export default function Home() {
   const { data: recommendedPlaylistsByGenre, isPending: isRecommendedPlaylistsByGenrePending } =
     useQuery(getPlaylistsByGenreQueryOptions(userMostLikedGenre?.id));
   const showRecommendedPlaylistsByGenre = recommendedPlaylistsByGenre?.length > 5;
+  const { playSingleSong } = usePlayBar();
 
   return (
     <>
@@ -121,6 +123,7 @@ export default function Home() {
         <PlayBarSlider
           songs={showRecommendedSongs ? recommendedSongs : trendingSongs}
           isPending={isRecommendedSongsPending || isTrendingSongsPending}
+          onPlay={playSingleSong}
         />
       </div>
       <div>
@@ -151,7 +154,11 @@ export default function Home() {
       {(isRecentSongsPending || showRecentSongs) && (
         <div className="-mt-8">
           <SectionHeader title="Recently listened" />
-          <PlayBarSlider songs={recentSongs} isPending={isRecentSongsPending} />
+          <PlayBarSlider
+            songs={recentSongs}
+            isPending={isRecentSongsPending}
+            onPlay={playSingleSong}
+          />
         </div>
       )}
     </>

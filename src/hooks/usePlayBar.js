@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  setSingleSong,
   setCurrentQueuelist,
   setCurrentCollection,
-  setQueuelistType,
+  setSelectedSong,
 } from '../redux/slices/playContextSlice';
 import { setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
 import { getPopularSongsByArtistIdQueryOptions } from '../queries/musics';
@@ -23,10 +22,10 @@ function usePlayBar(artistId) {
 
   const playSingleSong = useCallback(
     (song) => {
-      dispatch(setSingleSong(song));
       dispatch(setCurrentQueuelist([song]));
       dispatch(setCurrentSongIndex(0));
       dispatch(openPlayerPanel());
+      dispatch(setSelectedSong(song));
       dispatch(setQueries({ type: 'track', id: song.id }));
     },
     [dispatch]
@@ -50,7 +49,6 @@ function usePlayBar(artistId) {
     (_, songIndex) => {
       dispatch(setCurrentQueuelist(artistPopularSongs));
       dispatch(setCurrentSongIndex(songIndex));
-      dispatch(setQueuelistType('artist_popular_songs'));
     },
     [dispatch, artistPopularSongs]
   );
@@ -59,7 +57,6 @@ function usePlayBar(artistId) {
     (_, songIndex) => {
       dispatch(setCurrentQueuelist(favoriteSongs));
       dispatch(setCurrentSongIndex(songIndex));
-      dispatch(setQueuelistType('favorite_songs'));
     },
     [dispatch, favoriteSongs]
   );

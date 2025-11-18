@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { getPlaylistByIdQueryOptions } from '../queries/playlists';
 import { getAlbumByIdQueryOptions } from '../queries/albums';
-import { getSongByIdQueryOptions, getFavoriteSongsQueryOptions } from '../queries/musics';
+import { getFavoriteSongsQueryOptions, getSongByIdQueryOptions } from '../queries/musics';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   setCurrentQueuelist,
   setSelectedCollection,
   setSelectedCollectionTracks,
+  setSelectedSong,
 } from '../redux/slices/playContextSlice';
 import { setSingleSong } from '../redux/slices/playContextSlice';
 import { setCurrentMusic, music } from '../redux/slices/musicPlayerSlice';
@@ -74,6 +75,7 @@ export default function useMusicQueryToRedux() {
         dispatch(setSelectedCollectionTracks(relatedSongs));
         music.src = data.song_url;
         dispatch(setCurrentMusic(data));
+        dispatch(setSelectedSong(data));
         isMobile && dispatch(openPanel()); // open player panel on mobile if a single track is selected.
       }
     } else if (queryType === 'favorites' && favoriteSongs && !currentMusic) {

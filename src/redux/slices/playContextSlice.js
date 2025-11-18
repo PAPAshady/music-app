@@ -7,9 +7,9 @@ const playContextSlice = createSlice({
     isSingleSong: false,
     selectedCollection: {},
     currentCollection: {},
-    singleSong: {},
+    singleSong: {}, // the song which is currently playing 
+    selectedSong: {}, // the song which user selcted to play initially.
     currentQueuelist: [],
-    queuelistType: null, // could be on of the followings: [null, 'album', 'playlist', 'related_songs', 'artist_popular_songs', 'favorite_songs']
   },
   reducers: {
     setIsSingleSong(state, action) {
@@ -29,7 +29,6 @@ const playContextSlice = createSlice({
       state.isSingleSong = false;
       state.currentCollection = action.payload;
       state.currentQueuelist = state.selectedCollection.tracks;
-      state.queuelistType = action.payload.tracklistType;
     },
 
     setSingleSong(state, action) {
@@ -37,19 +36,17 @@ const playContextSlice = createSlice({
       state.selectedCollection = {};
       state.currentCollection = {};
       state.singleSong = action.payload;
-      state.queuelistType = 'related_songs';
     },
     setCurrentQueuelist(state, action) {
       state.currentQueuelist = action.payload;
-    },
-    setQueuelistType(state, action) {
-      state.queuelistType = action.payload;
     },
     resetCurrentCollection(state) {
       state.isSingleSong = false;
       state.currentCollection = {};
       state.currentQueuelist = [];
-      state.queuelistType = null;
+    },
+    setSelectedSong(state, action) {
+      state.selectedSong = action.payload;
     },
   },
 });
@@ -69,7 +66,7 @@ export const {
   setCurrentCollection,
   setSingleSong,
   setCurrentQueuelist,
-  setQueuelistType,
   resetCurrentCollection,
+  setSelectedSong,
 } = playContextSlice.actions;
 export default playContextSlice.reducer;
