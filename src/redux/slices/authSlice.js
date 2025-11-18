@@ -20,9 +20,6 @@ export const updateUserAvatar = createAsyncThunk(
     const userId = getState().auth.user.id;
     const avatar = await getUserAvatarUrl(userId); // the avatar which user uploaded him self
     const oAuthAvatar = getState().auth.user.user_metadata.avatar_url; // the avatar which user got from supabase OAuth 2.0 authentication (from github, google, etc.)
-
-    console.log(avatar, oAuthAvatar);
-
     dispatch(setAvatar(avatar || oAuthAvatar));
   }
 );

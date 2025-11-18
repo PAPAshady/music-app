@@ -4,7 +4,7 @@ import supabase from '../services/supabaseClient';
 import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
-  getRelatedSongsBySongDataQueryOptions,
+  getGeneratedQueuelistBySongDataQueryOptions,
   getFavoriteSongsQueryOptions,
 } from '../queries/musics';
 import { setCurrentMusic } from './slices/musicPlayerSlice';
@@ -14,7 +14,7 @@ import {
   setCurrentQueuelist,
   setSelectedCollection,
   setSelectedCollectionTracks,
-  setSingleSong,
+  setSelectedSong,
 } from './slices/playContextSlice';
 
 const listenerMiddleware = createListenerMiddleware();
@@ -67,13 +67,13 @@ listenerMiddleware.startListening({
 
 // fetch the related songs to selected musics and save them in redux store.
 listenerMiddleware.startListening({
-  actionCreator: setSingleSong,
+  actionCreator: setSelectedSong,
   effect: async (action, { dispatch }) => {
     const songs = await queryClient.fetchQuery(
-      getRelatedSongsBySongDataQueryOptions(action.payload)
+      getGeneratedQueuelistBySongDataQueryOptions(action.payload)
     );
 
-    dispatch(setCurrentQueuelist(songs));
+    dispatch(setCurrentQueuelist(songs)); // add the selected song to the queuelist
   },
 });
 

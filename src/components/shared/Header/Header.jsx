@@ -17,7 +17,8 @@ export default memo(function Header() {
   const notificationMenu = useCloseOnClickOutside();
   const mobileSearchBox = useCloseOnClickOutside();
   const settingsMenu = useCloseOnClickOutside();
-  const userAvatar = useSelector(state => state.auth.avatar)
+  const userAvatar = useSelector((state) => state.auth.avatar);
+  const hasNotifications = useSelector((state) => state.notifications.length);
 
   return (
     <header>
@@ -49,6 +50,7 @@ export default memo(function Header() {
               onClick={() => notificationMenu.setIsVisible((prev) => !prev)}
               icon={<Notification />}
               isActive={notificationMenu.isVisible}
+              showBadge={!!hasNotifications}
             />
             <NotificationMenu isVisible={notificationMenu.isVisible} />
           </div>
@@ -60,7 +62,7 @@ export default memo(function Header() {
             />
             <SettingsMenu isVisible={settingsMenu.isVisible} />
           </div>
-          <Link to='/settings/profile'>
+          <Link to="/settings/profile">
             <Avatar size="xs" profilePic={userAvatar} />
           </Link>
         </div>

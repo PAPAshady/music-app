@@ -22,7 +22,6 @@ import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
 import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
 import useDebounce from '../../../hooks/useDebounce';
 import {
-  Heart,
   Trash,
   ArrowLeft,
   Play,
@@ -48,6 +47,7 @@ import {
 import usePlayBar from '../../../hooks/usePlayBar';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
+import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';
 
 function MobileTracklistPanel() {
   const tracklistType = useSelector((state) => state.queryState.type);
@@ -57,7 +57,7 @@ function MobileTracklistPanel() {
   const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const [pendingSongId, setPendingSongId] = useState(null);
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
-  const { data: selectedTracklist } = useQuery(
+  const { data } = useQuery(
     tracklistType === 'album'
       ? getAlbumByIdQueryOptions(tracklistId)
       : getPlaylistByIdQueryOptions(tracklistId)
@@ -89,6 +89,16 @@ function MobileTracklistPanel() {
   const hasData =
     (searchedValue && searchedSongs?.length > 0) || (!searchedValue && trendingSongs?.length > 0);
   const dataIsloading = isTrendingSognsPending || isSearchedSongsPending;
+  const selectedTracklist = tracklistType === 'favorites' ? favoriteSongsInfos : data;
+  const isFavorites = selectedTracklist?.tracklistType === 'favorites';
+  const isPrivatePlaylist =
+    selectedTracklist?.tracklistType === 'playlist' && !selectedTracklist?.is_public;
+  const showAddPanel =
+    isMobilePanelOpen &&
+    !selectedTracklist?.is_public &&
+    selectedTracklist?.tracklistType !== 'favorites';
+  const showPlayButtons =
+    !selectedTracklist?.is_public && selectedTracklist?.tracklistType !== 'album' && !isFavorites;
 
   const playPauseButtonHandler = () => {
     if (playingTracklist.id !== selectedTracklist?.id) {
@@ -200,19 +210,17 @@ function MobileTracklistPanel() {
               className="size-full rounded-sm object-cover"
             />
           </button>
-          {!selectedTracklist?.is_public &&
-            selectedTracklist?.tracklistType !== 'album' &&
-            tracklistType !== 'favorites' && (
-              <>
-                {playButtons.map((button) => (
-                  <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
-                ))}
-                <DropDownList
-                  menuItems={playlistDropDownListItems}
-                  dropDownPlacement="bottom start"
-                />
-              </>
-            )}
+          {showPlayButtons && (
+            <>
+              {playButtons.map((button) => (
+                <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
+              ))}
+              <DropDownList
+                menuItems={playlistDropDownListItems}
+                dropDownPlacement="bottom start"
+              />
+            </>
+          )}
         </div>
         <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
           <IconButton
@@ -256,7 +264,7 @@ function MobileTracklistPanel() {
       ) : !selectedPlaylistSongs?.length ? (
         <div className="my-2 w-full">
           <p className="text-gray-400 md:text-lg">
-            No tracks in this {selectedTracklist?.tracklistType} yet
+            No tracks in {isFavorites ? 'your favorites' : `This ${selectedTracklist?.title}`} yet
           </p>
         </div>
       ) : (
@@ -269,11 +277,9 @@ function MobileTracklistPanel() {
                 index={index}
                 onPlay={playTracklist}
                 classNames="!w-full text-start !max-w-none"
-                ActionButtonIcon={selectedTracklist?.is_public ? <Heart /> : <Trash />}
-                actionButtonClickHandler={
-                  selectedTracklist?.tracklistType === 'playlist' ? removeSongHandler : undefined
-                }
-                isActionButtonPending={pendingSongId === song.id}
+                ActionButtonIcon={isPrivatePlaylist && <Trash />}
+                actionButtonClickHandler={isPrivatePlaylist && removeSongHandler}
+                isActionButtonPending={isPrivatePlaylist && pendingSongId === song.id}
                 song={song}
               />
             ))}
@@ -284,7 +290,7 @@ function MobileTracklistPanel() {
         </>
       )}
 
-      {isMobilePanelOpen && !selectedTracklist?.is_public && (
+      {showAddPanel && (
         <div
           className={`text-secondary-50 bg-primary-800 fixed inset-0 z-[10] size-full pb-4 text-start transition-all duration-300 ${isAddMenuOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
         >

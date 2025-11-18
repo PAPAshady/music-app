@@ -83,7 +83,7 @@ export const getRelatedSongsBySongData = async (song) => {
   }
 
   const relatedSongs = shuffleArray([...(artistRes.data || []), ...(genresRes.data || [])]);
-  return [song, ...relatedSongs];
+  return relatedSongs;
 };
 
 export const getFavoriteSongs = async () => {
@@ -130,4 +130,27 @@ export const getSongsByKeyword = async (keyword, { limit = 10 } = {}) => {
     .limit(limit);
   if (error) throw error;
   return data;
+};
+
+export const getGeneratedQueuelistBySongData = async (song) => {
+  const sameArtistQuery = supabase
+    .from('songs_extended')
+    .select('*')
+    .eq('artist_id', song.artist_id)
+    .neq('id', song.id)
+    .limit(8);
+  const sameGenreQuery = supabase
+    .from('songs_extended')
+    .select('*')
+    .eq('genre_id', song.genre_id)
+    .neq('id', song.id)
+    .neq('artist_id', song.artist_id)
+    .limit(8);
+
+  const [sameArtist, sameGenre] = await Promise.all([sameArtistQuery, sameGenreQuery]);
+
+  const error = sameArtist.error || sameGenre.error;
+  if (error) throw error;
+
+  return [song, ...sameArtist.data, ...sameGenre.data];
 };

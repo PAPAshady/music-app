@@ -5,11 +5,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowDown2 } from 'iconsax-react';
 import {
-  getRelatedSongsBySongDataQueryOptions,
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
   getPopularSongsByArtistIdQueryOptions,
   getFavoriteSongsQueryOptions,
+  getGeneratedQueuelistBySongDataQueryOptions,
 } from '../../../queries/musics';
 import 'swiper/css';
 import './PlayerPanel.css';
@@ -26,20 +26,20 @@ export default function PlayerPanel() {
   const isMobile = useMediaQuery('(max-width: 1023px)');
   const dispatch = useDispatch();
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
-  const selectedSingleSong = useSelector((state) => state.playContext.singleSong);
+  const selectedSong = useSelector((state) => state.playContext.selectedSong);
   const { data: song } = useQuery({
     ...getSongByIdQueryOptions(songId),
-    enabled: type === 'song' && !!songId,
+    enabled: type === 'song' && !!songId, 
   });
-  const queuelistType = useSelector((state) => state.playContext.queuelistType);
+
   const { data, isPending } = useQuery(
-    queuelistType === 'related_songs'
-      ? getRelatedSongsBySongDataQueryOptions(selectedSingleSong)
-      : queuelistType === 'playlist'
+    type === 'track'
+      ? getGeneratedQueuelistBySongDataQueryOptions(selectedSong)
+      : type === 'playlist'
         ? getSongsByPlaylistIdQueryOptions(playingTracklist.id)
-        : queuelistType === 'album'
+        : type === 'album'
           ? getSongsByAlbumIdQueryOptions(playingTracklist.id)
-          : queuelistType === 'artist_popular_songs'
+          : type === 'artist'
             ? getPopularSongsByArtistIdQueryOptions(song?.artist_id)
             : getFavoriteSongsQueryOptions()
   );

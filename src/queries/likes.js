@@ -11,6 +11,7 @@ import store from '../redux/store';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 import { setCurrentQueuelist } from '../redux/slices/playContextSlice';
 import { setCurrentMusic } from '../redux/slices/musicPlayerSlice';
+import { addNotification } from '../redux/slices/notificationsSlice';
 
 const onSongMutate = async (songId, shouldLike) => {
   // do optimistic updates on songs to have a realtime updates in UI
@@ -61,6 +62,7 @@ const onSongSuccess = (updatedSong) => {
   const currentMusic = store.getState().musicPlayer.currentMusic;
   if (currentMusic?.id === updatedSong.target_id)
     store.dispatch(setCurrentMusic({ ...currentMusic, is_liked: !currentMusic.is_liked }));
+  store.dispatch(addNotification('Song added to favorites!'));
 };
 
 const onSongError = (err, context, shouldLike) => {
@@ -122,6 +124,7 @@ const onPlaylistSuccess = (shouldLike) => {
     })
   );
   queryClient.invalidateQueries({ queryKey: ['playlists', { is_liked: true }] });
+  store.dispatch(addNotification('Playlist added to favorites!'));
 };
 
 const onAlbumMutate = async (updatedAlbumId, shouldLike) => {
@@ -169,6 +172,7 @@ const onAlbumSuccess = (shouldLike) => {
     })
   );
   queryClient.invalidateQueries({ queryKey: ['albums', { is_liked: true }] });
+  store.dispatch(addNotification('Album added to favorites!'));
 };
 
 export const likeSongMutationOptions = () => {

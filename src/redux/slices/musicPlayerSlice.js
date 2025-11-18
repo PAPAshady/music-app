@@ -48,6 +48,15 @@ export const prev = createAsyncThunk('musicPlayer/prev', (_, { getState, dispatc
   }
 });
 
+export const resetPlayer = createAsyncThunk('musicPlayer/resetPlayer', (_, { dispatch }) => {
+  music.src = '';
+  dispatch(setIsPlaying(false));
+  dispatch(setCurrentSongIndex(0));
+  dispatch(setPrevSongIndex(null));
+  dispatch(setCurrentMusic(null));
+  dispatch(setMusicState('loading'));
+});
+
 // an utility function to convert milliseconds into currect time format
 export const formatTime = (time) => {
   const hours = Math.floor(time / 3600);

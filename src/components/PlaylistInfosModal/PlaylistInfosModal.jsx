@@ -202,14 +202,20 @@ export default function PlaylistInfosModal() {
         );
         onClose();
       } catch (err) {
-        dispatch(
-          showNewSnackbar({
-            message: 'Unexpected error occured while creating playlist. Try again.',
-            type: 'error',
-            hideDuration: 4000,
-          })
-        );
-        console.error('Error creating playlist in database : ', err);
+        if (err.code === '23505') {
+          setError('title', {
+            message: 'Playlist with this title already exists.',
+          });
+        } else {
+          dispatch(
+            showNewSnackbar({
+              message: 'Unexpected error occured while creating playlist. Try again.',
+              type: 'error',
+              hideDuration: 4000,
+            })
+          );
+          console.error('Error creating playlist in database : ', err);
+        }
       }
     } else {
       // handle updating playlist logic in database

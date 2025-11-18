@@ -11,6 +11,7 @@ import mobilePanelReducer from './slices/mobilePanelSlice';
 import MobileSearchPanelReducer from './slices/mobileSearchPanelSlice';
 import PlayerPanelReducer from './slices/playerPanelSlice';
 import QueryStateReducer from './slices/queryStateSlice';
+import NotificationsReducer from './slices/notificationsSlice';
 
 export default configureStore({
   reducer: {
@@ -25,6 +26,7 @@ export default configureStore({
     mobileSearchPanel: MobileSearchPanelReducer,
     playerPanel: PlayerPanelReducer,
     queryState: QueryStateReducer,
+    notifications: NotificationsReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().prepend(listenerMiddleware.middleware);

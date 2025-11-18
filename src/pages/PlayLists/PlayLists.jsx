@@ -14,6 +14,7 @@ import { getTrendingSongsQueryOptions } from '../../queries/musics';
 import PropTypes from 'prop-types';
 import AddPlaylistButton from '../../components/AddPlaylistButton/AddPlaylistButton';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
+import usePlayBar from '../../hooks/usePlayBar';
 
 export default function PlayLists() {
   const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
@@ -29,6 +30,7 @@ export default function PlayLists() {
   const { data: trendingSongs, isPending: isTrendingSongsPending } = useQuery(
     getTrendingSongsQueryOptions()
   );
+  const { playSingleSong } = usePlayBar();
   // Render the "Add New Playlist" button as the first item in the playlists list.
   const privatePlaylists = [{ id: 0, type: 'add-playlist-button' }, ...(userPlaylists.data ?? [])];
   const playlistsSections = [
@@ -73,7 +75,11 @@ export default function PlayLists() {
       ))}
       <div>
         <SectionTitle title="Add Tracks to your playlists" />
-        <PlayBarSlider songs={trendingSongs} isPending={isTrendingSongsPending} />
+        <PlayBarSlider
+          songs={trendingSongs}
+          isPending={isTrendingSongsPending}
+          onPlay={playSingleSong}
+        />
       </div>
     </>
   );
