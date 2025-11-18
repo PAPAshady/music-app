@@ -13,6 +13,7 @@ import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../que
 import {
   getPopularSongsByArtistIdQueryOptions,
   getRelatedSongsBySongDataQueryOptions,
+  getGeneratedQueuelistBySongDataQueryOptions,
 } from '../../../queries/musics';
 import { Music } from 'iconsax-react';
 import {
@@ -54,7 +55,7 @@ function TabButton({ active, onClick, children, id }) {
       role="tab"
       aria-selected={active}
       onClick={onClick}
-      className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+      className={`grow rounded-md p-2 text-sm font-medium transition ${
         active ? 'bg-white/8 text-white' : 'text-slate-300 hover:bg-white/2'
       }`}
     >
@@ -75,7 +76,7 @@ export default function SongInfosPanel() {
     error,
     failureReason,
   } = useQuery(getSongByIdQueryOptions(songId));
-  const selectedSong = useSelector((state) => state.playContext.singleSong);
+  const selectedSong = useSelector((state) => state.playContext.selectedSong);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
   const { data: artist, isPending: isArtistPending } = useQuery(
     getArtistByIdQueryOptions(song?.artist_id)
@@ -85,6 +86,9 @@ export default function SongInfosPanel() {
   );
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
     getRelatedSongsBySongDataQueryOptions(song)
+  );
+  const { data: queuelist, isPending: isQueuelistPending } = useQuery(
+    getGeneratedQueuelistBySongDataQueryOptions(selectedSong)
   );
   const { playTracklist, playArtistSongs } = usePlayBar(song?.artist_id);
   const lineRefs = useRef([]);
@@ -201,6 +205,13 @@ export default function SongInfosPanel() {
                   Lyrics
                 </TabButton>
                 <TabButton
+                  id="tab-artist"
+                  active={activeTab === 'up-next'}
+                  onClick={() => setActiveTab('up-next')}
+                >
+                  Up next
+                </TabButton>
+                <TabButton
                   id="tab-related"
                   active={activeTab === 'related'}
                   onClick={() => setActiveTab('related')}
@@ -275,7 +286,7 @@ export default function SongInfosPanel() {
           </AnimatePresence>
         )}
 
-        {activeTab === 'related' && (
+        {activeTab === 'up-next' && (
           <AnimatePresence mode="wait">
             <motion.div
               key={selectedSong.id}
@@ -290,7 +301,67 @@ export default function SongInfosPanel() {
               }}
               className="mt-4 h-full space-y-4 overflow-auto pr-2 pb-2"
             >
-              <div className="text-sm text-slate-300">Suggested & Queue</div>
+              <div className="text-sm text-slate-300">Coming up</div>
+              <motion.div
+                initial="hidden"
+                animate="show"
+                exit="hidden"
+                variants={{
+                  show: {
+                    transition: {
+                      delayChildren: 0.1,
+                      staggerChildren: 0.1,
+                    },
+                  },
+                }}
+                className="mt-2 space-y-3"
+              >
+                {isQueuelistPending
+                  ? Array(10)
+                      .fill()
+                      .map((_, index) => (
+                        <motion.div
+                          key={index}
+                          variants={{
+                            hidden: { opacity: 0, y: 15 },
+                            show: { opacity: 1, y: 0 },
+                          }}
+                        >
+                          <PlayBarSkeleton size="sm" />
+                        </motion.div>
+                      ))
+                  : queuelist.map((song, index) => (
+                      <motion.div
+                        key={song.id}
+                        variants={{
+                          hidden: { opacity: 0, y: 15 },
+                          show: { opacity: 1, y: 0 },
+                        }}
+                      >
+                        <PlayBar size="sm" onPlay={playTracklist} song={song} index={index} />
+                      </motion.div>
+                    ))}
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
+        )}
+
+        {activeTab === 'related' && (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={song?.id}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={{
+                initial: { opacity: 0, y: 15 },
+                animate: { opacity: 1, y: 0 },
+                exit: { opacity: 0, y: 15 },
+                transition: { duration: 0.6 },
+              }}
+              className="mt-4 h-full space-y-4 overflow-auto pr-2 pb-2"
+            >
+              <div className="text-sm text-slate-300">You might also like</div>
               <motion.div
                 initial="hidden"
                 animate="show"
@@ -331,7 +402,6 @@ export default function SongInfosPanel() {
                       </motion.div>
                     ))}
               </motion.div>
-              <button className="mt-3 w-full rounded-md bg-white/6 py-2 text-sm">Show more</button>
             </motion.div>
           </AnimatePresence>
         )}
