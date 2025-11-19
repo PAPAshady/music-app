@@ -47,7 +47,7 @@ import { setSelectedCollection } from '../../redux/slices/playContextSlice';
 import { setQueries } from '../../redux/slices/queryStateSlice';
 import { openMobilePanel } from '../../redux/slices/mobilePanelSlice';
 
-function MobilePlayerPanel() {
+function MobilePlayerPanel({ songs, isPending: isSongsPending }) {
   const songId = useSelector((state) => state.queryState.id);
   const { data: song, isPending } = useQuery(getSongByIdQueryOptions(songId));
   const dispatch = useDispatch();
@@ -72,7 +72,7 @@ function MobilePlayerPanel() {
   const [tab, setTab] = useState(null);
   const [isContentPanelOpen, setIsContentPanelOpen] = useState(false);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
-  const { playSingleSong } = usePlayBar();
+  const { playSingleSong, playTracklist } = usePlayBar();
 
   const closeContentPanel = () => {
     // close only the content panel. (if called singlely, playerPanel will stay open)
@@ -349,6 +349,35 @@ function MobilePlayerPanel() {
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {tab === 'UP NEXT' && (
+            <div className="flex flex-col gap-2">
+              {isSongsPending ? (
+                Array(10)
+                  .fill()
+                  .map((_, index) => <SongCardSkeleton key={index} />)
+              ) : songs.length ? (
+                songs.map((music, index) => (
+                  <SongCard
+                    key={music.id}
+                    song={music}
+                    onPlay={playTracklist}
+                    index={index}
+                    // highlight current playing song in the queuelist.
+                    classNames={`!border-none !text-white  ${music.id === song?.id ? '!bg-slate-700' : ''}`}
+                  />
+                ))
+              ) : (
+                <div className="mt-10 flex size-full flex-col items-center justify-center gap-2 rounded-md border-neutral-400 text-center">
+                  <Music size={68} className="text-secondary-300" />
+                  <p className="mt-2 text-xl font-semibold text-white">
+                    There is no song in the queue
+                  </p>
+                  <p>Let the music begin...</p>
+                </div>
+              )}
             </div>
           )}
         </div>
