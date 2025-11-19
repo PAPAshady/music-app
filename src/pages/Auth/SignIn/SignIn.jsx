@@ -54,15 +54,14 @@ export default function SignIn() {
     } catch (err) {
       const error = Object.fromEntries(Object.entries(err));
       let errorMsg = '';
-      if (error.code === 'ERR_NETWORK') {
+      if (error.code === 'ERR_NETWORK' || error.status === 0) {
         errorMsg = 'Network error. Please check your connection and try again.';
-      } else if (error.status === 404 || error.status === 400) {
+      } else if (error.code === 'invalid_credentials') {
         errorMsg = 'Incorrect email or password. Please try again.';
       } else {
         errorMsg = 'An unexpected error occurred. Please try again.';
         console.log('error in login user => ', error);
       }
-
       setError('root', { message: errorMsg });
     }
   };

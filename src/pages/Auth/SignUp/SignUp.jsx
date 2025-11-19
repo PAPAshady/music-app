@@ -51,44 +51,29 @@ export default function SignUp() {
         password,
         options: { data: { user_name, full_name: `${first_name} ${last_name}` } },
       });
-      if (data) {
+      if (data.user) {
         dispatch(setUser(data.user));
         dispatch(showNewSnackbar({ message: 'Welcome to VioTune!', type: 'success' }));
         navigate('/');
       } else throw error;
     } catch (err) {
-      const res = err.response.data;
-      if (err.code === 'ERR_NETWORK') {
+      const error = Object.fromEntries(Object.entries(err));
+      if (err.code === 'ERR_NETWORK' || error.status === 0) {
         setError('root', {
           message: 'Network error. Please check your connection and try again.',
         });
-      } else if (res.status === 302) {
-        // email or username already exists
-        res.msg.includes('email')
-          ? setError('email', { message: res.msg })
-          : setError('username', { message: res.msg });
-      } else if (res.status === 400) {
-        // invalid fields
-        const errors = res.error;
-        if (res.msg.includes('Email')) {
-          setError('email', { message: res.msg });
-        }
-        if (errors?.username?.[0]) {
-          setError('username', {
-            message:
-              'Invalid username. It may contain only letters, numbers, and @/./+/-/_ characters.',
-          });
-        }
-        if (errors?.password?.[0]) {
-          setError('password', { message: errors.password[0] });
-        }
-        console.log(res);
+      } else if (error.code === 'user_already_exists') {
+        setError('email', { message: 'User with this email already exists.' });
+      } else if (error.code === 'validation_failed') {
+        setError('root', { message: 'Invalid inputs. Please try again.' });
+      } else if (error.code === 'weak_password') {
+        setError('password', { message: 'Password must be at least 6 characters.' });
       } else {
         // default error
         setError('root', {
           message: 'An unexpected error occurred. Please try again.',
         });
-        console.log('error in register user => ', err);
+        console.log('error in register user => ', error);
       }
     }
   };
