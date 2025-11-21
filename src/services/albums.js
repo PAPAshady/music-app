@@ -19,8 +19,10 @@ export const getAlbumById = async (albumId) => {
   return data;
 };
 
-export const getAlbumsByArtistId = async (artistId) => {
-  const { data, error } = await supabase.from('albums').select('*').eq('artist_id', artistId);
+export const getAlbumsByArtistId = async (artistId, { limit } = {}) => {
+  let query = supabase.from('albums').select('*').eq('artist_id', artistId);
+  if (limit) query.limit(limit);
+  const { data, error } = await query;
   if (error) throw error;
   return data;
 };

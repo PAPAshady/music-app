@@ -30,10 +30,10 @@ export const getAlbumByIdQueryOptions = (albumId) => {
   });
 };
 
-export const getAlbumsByArtistIdQueryOptions = (artistId) => {
+export const getAlbumsByArtistIdQueryOptions = (artistId, options) => {
   return queryOptions({
     queryKey: ['albums', { artistId }],
-    queryFn: () => getAlbumsByArtistId(artistId),
+    queryFn: () => getAlbumsByArtistId(artistId, options),
     staleTime: Infinity,
     retryDelay: 5000,
     retry: true,

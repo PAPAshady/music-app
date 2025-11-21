@@ -15,6 +15,7 @@ import {
   getRelatedSongsBySongDataQueryOptions,
   getGeneratedQueuelistBySongDataQueryOptions,
 } from '../../../queries/musics';
+import { getAlbumsByArtistIdQueryOptions } from '../../../queries/albums';
 import { Music } from 'iconsax-react';
 import {
   formatTime,
@@ -35,6 +36,8 @@ import { Pagination } from 'swiper/modules';
 import { chunkArray } from '../../../utils/arrayUtils';
 import SmallArtistCard from '../../MusicCards/SmallArtistCard/SmallArtistCard';
 import SmallArtistCardSkeleton from '../../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
+import SmallAlbumCard from '../../MusicCards/SmallAlbumCard/SmallAlbumCard';
+import SmallAlbumCardSkeleton from '../../MusicCards/SmallAlbumCard/SmallAlbumCardSkeleton';
 
 function IconButton({ children, label, onClick, className = '', title, disabled }) {
   return (
@@ -97,6 +100,9 @@ export default function SongInfosPanel() {
   );
   const { data: similarArtists, isPending: isSimilarArtistsPending } = useQuery(
     getRelatedArtistsQueryOptions(artist)
+  );
+  const { data: albums, isPending: isAlbumsPending } = useQuery(
+    getAlbumsByArtistIdQueryOptions(song?.artist_id, { limit: 3 })
   );
   const { playTracklist, playArtistSongs } = usePlayBar(song?.artist_id);
   const lineRefs = useRef([]);
@@ -412,11 +418,24 @@ export default function SongInfosPanel() {
                           </SwiperSlide>
                         ))
                     : similarArtists.map((artist) => (
-                        <SwiperSlide key={artist.id} className="mb-10 p-[1px]">
+                        <SwiperSlide
+                          key={artist.id}
+                          className={`p-[1px] ${similarArtists.length > 2 ? 'mb-10' : 'mb-4'}`}
+                        >
                           <SmallArtistCard artist={artist} size="md" />
                         </SwiperSlide>
                       ))}
                 </Swiper>
+              </div>
+              <div>
+                <div className="mb-4 font-semibold text-slate-300">More from this artist</div>
+                <div className="space-y-1">
+                  {isAlbumsPending
+                    ? Array(3)
+                        .fill()
+                        .map((_, index) => <SmallAlbumCardSkeleton key={index} />)
+                    : albums.map((album) => <SmallAlbumCard key={album.id} {...album} />)}
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>
