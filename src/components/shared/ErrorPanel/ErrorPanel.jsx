@@ -1,8 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { Music, Musicnote, ArrowLeft } from 'iconsax-react';
+import { Music, Musicnote } from 'iconsax-react';
 import Logo from '../../Logo/Logo';
-import { Link } from 'react-router-dom';
 
 export default function ErrorPanel() {
   return (
@@ -33,17 +32,6 @@ export default function ErrorPanel() {
               We couldn’t find the media you were looking for. Maybe the link is broken, or it has
               been removed.
             </p>
-
-            <Link>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-secondary-500 flex items-center gap-2 rounded-2xl px-6 py-3 font-medium text-white shadow-lg transition"
-              >
-                <ArrowLeft className="h-5 w-5" />
-                Go Back
-              </motion.div>
-            </Link>
           </div>
         </motion.div>
       </AnimatePresence>
