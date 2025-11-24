@@ -7,14 +7,21 @@ import ShimmerOverlay from '../ShimmerOverlay/ShimmerOverlay';
 import PropTypes from 'prop-types';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
+import { getAlbumsByGenreIdQueryOptions } from '../../queries/albums';
+import SmallAlbumCard from '../MusicCards/SmallAlbumCard/SmallAlbumCard';
+import SmallAlbumCardSkeleton from '../MusicCards/SmallAlbumCard/SmallAlbumCardSkeleton';
 
 function GenrePanel() {
   const genreId = useSelector((state) => state.queryState.id);
   const { data: genre, isPending: isGenrePending } = useQuery(getGenreByIdQueryOptions(genreId));
   const { data: playlists, isPending: isPlaylistsPending } = useQuery(
-    getPlaylistsByGenreQueryOptions(genreId)
+    getPlaylistsByGenreQueryOptions(genre?.id)
+  );
+  const { data: albums, isPending: isAlbumsPending } = useQuery(
+    getAlbumsByGenreIdQueryOptions(genre?.id, { limit: 3 })
   );
   const hasPlaylists = isPlaylistsPending || playlists?.length > 0;
+  const hasAlbums = isAlbumsPending || albums?.length > 0;
 
   return (
     <div className="sticky top-10 hidden xl:block">
@@ -58,32 +65,51 @@ function GenrePanel() {
               </>
             )}
 
-            <div className="mt-6 space-y-2">
-              <p className="font-bold">Top Curated Playlists</p>
-              {hasPlaylists ? (
-                <Swiper
-                  modules={[Pagination]}
-                  spaceBetween={4}
-                  pagination={{ clickable: true }}
-                  slidesPerView={2.2}
-                >
-                  {isPlaylistsPending
-                    ? Array(6)
-                        .fill()
-                        .map((_, index) => (
-                          <SwiperSlide key={index} className="pb-9">
-                            <SmallTracklistCardSkeleton />
+            <div className="space-y-6">
+              <div className="mt-6 space-y-2">
+                <p className="font-bold">Top Curated Playlists</p>
+                {hasPlaylists ? (
+                  <Swiper
+                    modules={[Pagination]}
+                    spaceBetween={4}
+                    pagination={{ clickable: true }}
+                    slidesPerView={2.2}
+                  >
+                    {isPlaylistsPending
+                      ? Array(6)
+                          .fill()
+                          .map((_, index) => (
+                            <SwiperSlide key={index} className="pb-9">
+                              <SmallPlaylistCardSkeleton />
+                            </SwiperSlide>
+                          ))
+                      : playlists.map((playlist) => (
+                          <SwiperSlide
+                            key={playlist.id}
+                            className={playlists.length > 2 ? 'pb-9' : ''}
+                          >
+                            <SmallPlaylistCard {...playlist} />
                           </SwiperSlide>
-                        ))
-                    : playlists?.map((playlist) => (
-                        <SwiperSlide key={playlist.id} className="pb-9">
-                          <SmallTracklistCard {...playlist} />
-                        </SwiperSlide>
-                      ))}
-                </Swiper>
-              ) : (
-                <p className="text-secondary-200 text-sm">No playlists found</p>
-              )}
+                        ))}
+                  </Swiper>
+                ) : (
+                  <p className="text-secondary-200 text-sm">No playlists found</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <p className="font-bold">Related Albums</p>
+                {hasAlbums ? (
+                  <div className='space-y-1'>
+                    {isAlbumsPending
+                      ? Array(3)
+                          .fill()
+                          .map((_, index) => <SmallAlbumCardSkeleton key={index} />)
+                      : albums.map((album) => <SmallAlbumCard key={album.id} {...album} />)}
+                  </div>
+                ) : (
+                  <p className="text-secondary-200 text-sm">No albums found</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -116,7 +142,7 @@ function DescriptionLineSkeleton({ width }) {
   );
 }
 
-function SmallTracklistCard({ title, cover, tracklistType, release_date, totaltracks }) {
+function SmallPlaylistCard({ title, cover, tracklistType, release_date, totaltracks }) {
   return (
     <div className="flex w-[110px] flex-col rounded-xl">
       <img
@@ -138,7 +164,7 @@ function SmallTracklistCard({ title, cover, tracklistType, release_date, totaltr
   );
 }
 
-function SmallTracklistCardSkeleton() {
+function SmallPlaylistCardSkeleton() {
   return (
     <div className="flex w-[110px] flex-col rounded-xl">
       <div className="relative mb-2 h-[100px] w-full overflow-hidden rounded-lg bg-gray-600/60">
@@ -160,7 +186,7 @@ Tag.propTypes = {
 
 DescriptionLineSkeleton.propTypes = { width: PropTypes.string };
 
-SmallTracklistCard.propTypes = {
+SmallPlaylistCard.propTypes = {
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
   tracklistType: PropTypes.string.isRequired,
