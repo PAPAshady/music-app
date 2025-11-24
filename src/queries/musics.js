@@ -89,6 +89,8 @@ export const getFavoriteSongsQueryOptions = () => {
     queryKey: ['songs', { is_liked: true }],
     queryFn: getFavoriteSongs,
     staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
   });
 };
 
