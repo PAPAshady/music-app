@@ -25,6 +25,7 @@ const PlaylistCard = memo((playlist) => {
     dispatch(setQueries({ type: 'playlist', id: playlist.id }));
   };
 
+
   const onLikeChange = (e) => {
     e.stopPropagation();
     mutate(id);

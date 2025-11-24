@@ -1,11 +1,11 @@
-import TracksCard from '../../MusicCards/TracksCard/TracksCard';
+import GenreCard from '../../MusicCards/GenreCard/GenreCard';
 import { chunkArray } from '../../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import PropTypes from 'prop-types';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import TracksCardSkeleton from '../../MusicCards/TracksCard/TracksCardSkeleton';
+import GenreCardSkeleton from '../../MusicCards/GenreCard/GenreCardSkeleton';
 
 export default function GenresSlider({ genres, isPending }) {
   return (
@@ -23,7 +23,7 @@ export default function GenresSlider({ genres, isPending }) {
               <SwiperSlide key={index}>
                 <div className="flex flex-col gap-4">
                   {skeletonCardsArray.map((_, index) => (
-                    <TracksCardSkeleton key={index} />
+                    <GenreCardSkeleton key={index} />
                   ))}
                 </div>
               </SwiperSlide>
@@ -32,7 +32,7 @@ export default function GenresSlider({ genres, isPending }) {
               <SwiperSlide key={index} className="mb-11 p-[1px]">
                 <div className="flex flex-col gap-4">
                   {tracksArray.map((track) => (
-                    <TracksCard key={track.id} {...track} />
+                    <GenreCard key={track.id} {...track} />
                   ))}
                 </div>
               </SwiperSlide>
