@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getGenreByIdQueryOptions } from '../../queries/genres';
 import { getPlaylistsByGenreQueryOptions } from '../../queries/playlists';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import defaultCover from '../../assets/images/covers/no-cover.jpg';
 import ShimmerOverlay from '../ShimmerOverlay/ShimmerOverlay';
 import PropTypes from 'prop-types';
@@ -10,6 +10,9 @@ import { Pagination } from 'swiper/modules';
 import { getAlbumsByGenreIdQueryOptions } from '../../queries/albums';
 import SmallAlbumCard from '../MusicCards/SmallAlbumCard/SmallAlbumCard';
 import SmallAlbumCardSkeleton from '../MusicCards/SmallAlbumCard/SmallAlbumCardSkeleton';
+import { setSelectedCollection } from '../../redux/slices/playContextSlice';
+import { setQueries } from '../../redux/slices/queryStateSlice';
+import { openMobilePanel } from '../../redux/slices/mobilePanelSlice';
 
 function GenrePanel() {
   const genreId = useSelector((state) => state.queryState.id);
@@ -88,7 +91,7 @@ function GenrePanel() {
                             key={playlist.id}
                             className={playlists.length > 2 ? 'pb-9' : ''}
                           >
-                            <SmallPlaylistCard {...playlist} />
+                            <SmallPlaylistCard playlist={playlist} />
                           </SwiperSlide>
                         ))}
                   </Swiper>
@@ -99,7 +102,7 @@ function GenrePanel() {
               <div className="space-y-2">
                 <p className="font-bold">Related Albums</p>
                 {hasAlbums ? (
-                  <div className='space-y-1'>
+                  <div className="space-y-1">
                     {isAlbumsPending
                       ? Array(3)
                           .fill()
@@ -142,22 +145,33 @@ function DescriptionLineSkeleton({ width }) {
   );
 }
 
-function SmallPlaylistCard({ title, cover, tracklistType, release_date, totaltracks }) {
+function SmallPlaylistCard({ playlist }) {
+  const dispatch = useDispatch();
+  const { title, totaltracks, cover, tracklistType } = playlist;
+
+  const showSelectedPlaylist = () => {
+    console.log('hello?');
+    dispatch(setSelectedCollection(playlist));
+    dispatch(openMobilePanel('playlist'));
+    dispatch(setQueries({ type: 'playlist', id: playlist.id }));
+  };
+
   return (
     <div className="flex w-[110px] flex-col rounded-xl">
       <img
         src={cover || defaultCover}
         alt={title}
         className="mb-2 h-[100px] w-full cursor-pointer rounded-lg object-cover"
+        onClick={showSelectedPlaylist}
       />
-      <h3 className="cursor-pointer truncate text-sm font-semibold">{title}</h3>
+      <h3 className="cursor-pointer truncate text-sm font-semibold" onClick={showSelectedPlaylist}>
+        {title}
+      </h3>
       <div className="mt-1 flex items-center gap-1 truncate text-xs text-gray-400">
         <span className="capitalize">{tracklistType}</span>
         <span className="bg-secondary-100 size-0.75 rounded-full"></span>
         <span>
-          {tracklistType === 'album'
-            ? release_date.split('-')[0]
-            : `${totaltracks ? (totaltracks > 1 ? `${totaltracks} tracks` : '1 track') : 'No tracks'}`}
+          {`${totaltracks ? (totaltracks > 1 ? `${totaltracks} tracks` : '1 track') : 'No tracks'}`}
         </span>
       </div>
     </div>
@@ -187,11 +201,7 @@ Tag.propTypes = {
 DescriptionLineSkeleton.propTypes = { width: PropTypes.string };
 
 SmallPlaylistCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  cover: PropTypes.string,
-  tracklistType: PropTypes.string.isRequired,
-  release_date: PropTypes.string,
-  totaltracks: PropTypes.number,
+  playlist: PropTypes.object.isRequired,
 };
 
 export default GenrePanel;
