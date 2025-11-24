@@ -9,6 +9,7 @@ import {
   getRecentAlbums,
   getNewAlbums,
   getAlbumsByKeyword,
+  getAlbumsByGenreId,
 } from '../services/albums';
 
 export const getAllAlbumsQueryOptions = () => {
@@ -99,5 +100,16 @@ export const getAlbumsByKeywordQueryOptions = (keyword, options) => {
     retryDelay: 5000,
     retry: true,
     enabled: !!keyword,
+  });
+};
+
+export const getAlbumsByGenreIdQueryOptions = (genreId, options) => {
+  return queryOptions({
+    queryKey: ['albums', { genreId }],
+    queryFn: () => getAlbumsByGenreId(genreId, options),
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+    enabled: !!genreId,
   });
 };

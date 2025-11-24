@@ -71,3 +71,13 @@ export const getAlbumsByKeyword = async (keyword, { limit = 10 } = {}) => {
   if (error) throw error;
   return data;
 };
+
+export const getAlbumsByGenreId = async (genreId, { limit = 10 } = {}) => {
+  const { data, error } = await supabase
+    .from('albums_extended')
+    .select('*')
+    .eq('genre_id', genreId)
+    .limit(limit);
+  if (error) throw error;
+  return data;
+};
