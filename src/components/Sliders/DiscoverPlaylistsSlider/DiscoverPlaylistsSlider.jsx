@@ -1,14 +1,11 @@
-import MainButton from '../../Buttons/MainButton/MainButton';
 import sectionBg from '../../../assets/images/backgrounds/section-bg-1.jpg';
 import PlaylistCard from '../../MusicCards/PlaylistCard/PlaylistCard';
-import useMediaQuery from '../../../hooks/useMediaQuery';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import PropTypes from 'prop-types';
 import 'swiper/css';
 
 export default function DiscoverPlaylistsSlider({ playlists }) {
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
   return (
     <div
       className="mx-auto flex w-full max-w-[95dvw] flex-col overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat md:mx-auto lg:w-[93%] lg:max-w-[calc(95dvw-126px)] xl:w-[calc(95dvw-428px)] xl:max-w-[940px]"
@@ -23,9 +20,6 @@ export default function DiscoverPlaylistsSlider({ playlists }) {
           <p className="text-white-200 text-sm sm:hidden">
             Dive into the music that brings your beloved shows to life.
           </p>
-          <div className="hidden sm:inline">
-            <MainButton size={isDesktop ? 'lg' : 'md'} title="Join Now" variant="neutral" />
-          </div>
         </div>
         <div className="mx-auto max-w-full py-4 min-[480px]:p-0">
           <Swiper

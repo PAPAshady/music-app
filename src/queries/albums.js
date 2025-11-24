@@ -9,6 +9,7 @@ import {
   getRecentAlbums,
   getNewAlbums,
   getAlbumsByKeyword,
+  getAlbumsByGenreId,
 } from '../services/albums';
 
 export const getAllAlbumsQueryOptions = () => {
@@ -30,10 +31,10 @@ export const getAlbumByIdQueryOptions = (albumId) => {
   });
 };
 
-export const getAlbumsByArtistIdQueryOptions = (artistId) => {
+export const getAlbumsByArtistIdQueryOptions = (artistId, options) => {
   return queryOptions({
     queryKey: ['albums', { artistId }],
-    queryFn: () => getAlbumsByArtistId(artistId),
+    queryFn: () => getAlbumsByArtistId(artistId, options),
     staleTime: Infinity,
     retryDelay: 5000,
     retry: true,
@@ -99,5 +100,16 @@ export const getAlbumsByKeywordQueryOptions = (keyword, options) => {
     retryDelay: 5000,
     retry: true,
     enabled: !!keyword,
+  });
+};
+
+export const getAlbumsByGenreIdQueryOptions = (genreId, options) => {
+  return queryOptions({
+    queryKey: ['albums', { genreId }],
+    queryFn: () => getAlbumsByGenreId(genreId, options),
+    staleTime: Infinity,
+    retryDelay: 5000,
+    retry: true,
+    enabled: !!genreId,
   });
 };

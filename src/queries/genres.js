@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getAllGenres, getUserTopGenres } from '../services/genres';
+import { getAllGenres, getUserTopGenres, getGenreById } from '../services/genres';
 
 export const getAllGenresQueryOptions = () => {
   return queryOptions({
@@ -18,5 +18,16 @@ export const getUserTopGenresQueryOptions = () => {
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+  });
+};
+
+export const getGenreByIdQueryOptions = (genreId) => {
+  return queryOptions({
+    queryKey: ['genres', { genreId }],
+    queryFn: () => getGenreById(genreId),
+    staleTime: Infinity,
+    retry: true,
+    retryDelay: 5000,
+    enabled: !!genreId,
   });
 };

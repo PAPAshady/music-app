@@ -22,8 +22,9 @@ import SongInfosPanel from '../../SongInfosPanel/SongInfosPanel';
 import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
 import PlayerPanel from '../../PlayerPanel/PlayerPanel';
 import { useSelector } from 'react-redux';
+import GenrePanel from '../../../GenrePanel/GenrePanel';
 
-const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track'];
+const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track', 'genre'];
 
 export default function MainLayout() {
   const [showDesktopLogoNavbar, setShowDesktopLogoNavbar] = useState(false);
@@ -96,6 +97,7 @@ export default function MainLayout() {
                   {['album', 'playlist', 'favorites'].includes(sidebarType) && <SidebarPlaylist />}
                   {sidebarType === 'artist' && <ArtistInfosPanel />}
                   {sidebarType === 'track' && <SongInfosPanel />}
+                  {sidebarType === 'genre' && <GenrePanel />}
                 </>
               ) : (
                 <SidebarWelcomePanel />

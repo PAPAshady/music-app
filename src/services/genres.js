@@ -1,5 +1,11 @@
 import supabase from './supabaseClient';
 
+export const getGenreById = async (genreId) => {
+  const { data, error } = await supabase.from('genres').select('*').eq('id', genreId).single();
+  if (error) throw error;
+  return data;
+};
+
 export const getAllGenres = async () => {
   const { data, error } = await supabase.from('genres').select('*');
   if (error) throw error;

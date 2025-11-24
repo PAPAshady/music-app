@@ -19,8 +19,10 @@ export const getAlbumById = async (albumId) => {
   return data;
 };
 
-export const getAlbumsByArtistId = async (artistId) => {
-  const { data, error } = await supabase.from('albums').select('*').eq('artist_id', artistId);
+export const getAlbumsByArtistId = async (artistId, { limit } = {}) => {
+  let query = supabase.from('albums').select('*').eq('artist_id', artistId);
+  if (limit) query.limit(limit);
+  const { data, error } = await query;
   if (error) throw error;
   return data;
 };
@@ -65,6 +67,16 @@ export const getAlbumsByKeyword = async (keyword, { limit = 10 } = {}) => {
     .select('*')
     .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%,genre_title.ilike.%${keyword}%`)
     .order('total_plays', { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return data;
+};
+
+export const getAlbumsByGenreId = async (genreId, { limit = 10 } = {}) => {
+  const { data, error } = await supabase
+    .from('albums_extended')
+    .select('*')
+    .eq('genre_id', genreId)
     .limit(limit);
   if (error) throw error;
   return data;

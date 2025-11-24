@@ -202,7 +202,7 @@ export default function Profile() {
               type="file"
               id="file-input"
               accept="image/*"
-              className="absolute opacity-0"
+              className="absolute w-0 opacity-0"
               onChange={avatarChangeHandler}
               ref={fileInputRef}
             />
@@ -213,7 +213,8 @@ export default function Profile() {
               {errors.avatar?.message}
             </span>
           </label>
-          <div className="mt-2 flex gap-2">
+
+          <div className={`flex gap-2 ${errors.avatar?.message ? 'mt-14' : 'mt-2'}`}>
             <button
               onClick={openConfirmModal}
               className="bg-red flex size-10 items-center justify-center rounded-full text-white"

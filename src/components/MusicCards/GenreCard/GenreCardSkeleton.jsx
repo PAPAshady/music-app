@@ -1,6 +1,6 @@
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 
-function TracksCardSkeleton() {
+function GenreCardSkeleton() {
   return (
     <div className="xs:h-[13dvw] relative h-[28dvw] w-full overflow-hidden rounded-lg bg-gray-600/60 lg:h-[8dvw] lg:max-h-[100px]">
       <ShimmerOverlay />
@@ -11,4 +11,4 @@ function TracksCardSkeleton() {
   );
 }
 
-export default TracksCardSkeleton;
+export default GenreCardSkeleton;

@@ -29,7 +29,7 @@ export default function PlayerPanel() {
   const selectedSong = useSelector((state) => state.playContext.selectedSong);
   const { data: song } = useQuery({
     ...getSongByIdQueryOptions(songId),
-    enabled: type === 'song' && !!songId, 
+    enabled: type === 'song' && !!songId,
   });
 
   const { data, isPending } = useQuery(
