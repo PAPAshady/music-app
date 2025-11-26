@@ -10,8 +10,12 @@ const playerPanelSlice = createSlice({
     closePanel: (state) => {
       state.isOpen = false;
     },
+    togglePanel: (state) => {
+      console.log(33);
+      state.isOpen = !state.isOpen;
+    },
   },
 });
 
-export const { openPanel, closePanel } = playerPanelSlice.actions;
+export const { openPanel, closePanel, togglePanel } = playerPanelSlice.actions;
 export default playerPanelSlice.reducer;
