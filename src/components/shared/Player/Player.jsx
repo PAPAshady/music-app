@@ -43,6 +43,7 @@ export default function Player({ classNames, isPlayerPage }) {
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const musicState = useSelector((state) => state.musicPlayer.musicState);
   const musicVolume = useSelector((state) => state.musicPlayer.volume);
+  const isPlayerPanelOpen = useSelector((state) => state.playerPanel.isOpen);
   const volume = [musicVolume];
   const verticalVolumeSlider = useCloseOnClickOutside();
 
@@ -151,6 +152,8 @@ export default function Player({ classNames, isPlayerPage }) {
             icon={<MusicFilter />}
             classNames={isPlayerPage ? 'hipdden' : 'xl:hpidden'}
             onClick={() => dispatch(togglePlayerPanel())}
+            isActive={isPlayerPanelOpen}
+            label={isPlayerPanelOpen ? 'Close player panel' : 'Open player panel'}
           />
           <div
             className="relative hidden items-center gap-2 md:flex"
