@@ -23,6 +23,7 @@ import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
 import PlayerPanel from '../../PlayerPanel/PlayerPanel';
 import { useSelector } from 'react-redux';
 import GenrePanel from '../../../GenrePanel/GenrePanel';
+import MobileGenrePanel from '../../../MobileGenrePanel/MobileGenrePanel';
 
 const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track', 'genre'];
 
@@ -109,6 +110,7 @@ export default function MainLayout() {
         </main>
         <HamburgerMenu />
         {isDesktop && <MobilePanel />}
+        {isDesktop && <MobileGenrePanel />}
         {isMobile && <MobileSearchPanel />}
         <PlayerPanel />
         <ConfirmModal />

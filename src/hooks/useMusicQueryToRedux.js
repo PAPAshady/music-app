@@ -18,6 +18,7 @@ import { setQueries } from '../redux/slices/queryStateSlice';
 import { favoriteSongsInfos } from '../redux/slices/playContextSlice';
 import { openPanel } from '../redux/slices/playerPanelSlice';
 import useMediaQuery from './useMediaQuery';
+import { openMobileGenrePanel } from '../redux/slices/mobileGenrePanelSlice';
 
 const queryOptions = {
   playlist: getPlaylistByIdQueryOptions,
@@ -84,6 +85,8 @@ export default function useMusicQueryToRedux() {
       dispatch(setCurrentQueuelist(favoriteSongs));
       dispatch(setCurrentMusic(favoriteSongs?.[0]));
       music.src = favoriteSongs[0]?.song_url;
+    } else if (queryType === 'genre') {
+      dispatch(openMobileGenrePanel()); // open mobile genre panel if genre is selected on initial page load
     }
   }, [data, dispatch, queryType, relatedSongs, currentMusic, favoriteSongs, isMobile]);
 

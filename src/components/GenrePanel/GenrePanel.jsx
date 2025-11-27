@@ -150,7 +150,6 @@ function SmallPlaylistCard({ playlist }) {
   const { title, totaltracks, cover, tracklistType } = playlist;
 
   const showSelectedPlaylist = () => {
-    console.log('hello?');
     dispatch(setSelectedCollection(playlist));
     dispatch(openMobilePanel('playlist'));
     dispatch(setQueries({ type: 'playlist', id: playlist.id }));
