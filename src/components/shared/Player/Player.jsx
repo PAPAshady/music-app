@@ -19,7 +19,7 @@ import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Range } from 'react-range';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleMobilePanel } from '../../../redux/slices/mobilePanelSlice';
+import { togglePanel as togglePlayerPanel } from '../../../redux/slices/playerPanelSlice';
 import PlayerProgressBar from '../../PlayerProgressBar/PlayerProgressBar';
 import {
   formatTime,
@@ -43,6 +43,7 @@ export default function Player({ classNames, isPlayerPage }) {
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const musicState = useSelector((state) => state.musicPlayer.musicState);
   const musicVolume = useSelector((state) => state.musicPlayer.volume);
+  const isPlayerPanelOpen = useSelector((state) => state.playerPanel.isOpen);
   const volume = [musicVolume];
   const verticalVolumeSlider = useCloseOnClickOutside();
 
@@ -149,8 +150,10 @@ export default function Player({ classNames, isPlayerPage }) {
           </div>
           <IconButton
             icon={<MusicFilter />}
-            classNames={isPlayerPage ? 'hidden' : 'xl:hidden'}
-            onClick={() => dispatch(toggleMobilePanel())}
+            classNames={isPlayerPage ? 'hipdden' : 'xl:hpidden'}
+            onClick={() => dispatch(togglePlayerPanel())}
+            isActive={isPlayerPanelOpen}
+            label={isPlayerPanelOpen ? 'Close player panel' : 'Open player panel'}
           />
           <div
             className="relative hidden items-center gap-2 md:flex"

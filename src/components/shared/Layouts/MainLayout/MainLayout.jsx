@@ -1,9 +1,4 @@
 import { useState, useEffect } from 'react';
-import homePageBgImg from '../../../../assets/images/backgrounds/home-page.jpg';
-import favoritesPageBgImg from '../../../../assets/images/backgrounds/favorites-page.jpg';
-import playlistAndSubscriptionPageBgImg from '../../../../assets/images/backgrounds/playlist and-subscription-page.jpg';
-import browsePageBgImg from '../../../../assets/images/backgrounds/browse-page.jpg';
-import settingsPageBgImg from '../../../../assets/images/backgrounds/player-and-settings-page.png';
 import Header from '../../Header/Header';
 import DesktopNavbar from '../../DesktopNavbar/DesktopNavbar';
 import HamburgerMenu from '../../HamburgerMenu/HamburgerMenu';
@@ -12,7 +7,7 @@ import Footer from '../../Footer/Footer';
 import Logo from '../../../Logo/Logo';
 import MobilePanel from '../../MobilePanel/MobilePanel';
 import useMediaQuery from '../../../../hooks/useMediaQuery';
-import { useLocation, Outlet, Link } from 'react-router-dom';
+import { useLocation, Outlet, Link, useMatches } from 'react-router-dom';
 import SidebarPlaylist from '../../SidebarPlaylist/SidebarPlaylist';
 import SidebarWelcomePanel from '../../SidebarWelcomePanel/SidebarWelcomePanel';
 import PlaylistInfosModal from '../../../PlaylistInfosModal/PlaylistInfosModal';
@@ -23,6 +18,7 @@ import MobileSearchPanel from '../../../MobileSearchPanel/MobileSearchPanel';
 import PlayerPanel from '../../PlayerPanel/PlayerPanel';
 import { useSelector } from 'react-redux';
 import GenrePanel from '../../../GenrePanel/GenrePanel';
+import MobileGenrePanel from '../../../MobileGenrePanel/MobileGenrePanel';
 
 const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track', 'genre'];
 
@@ -33,6 +29,9 @@ export default function MainLayout() {
   const isMobile = useMediaQuery('(max-width: 1024px)');
   const sidebarType = useSelector((state) => state.queryState.type);
   const isPlayerPanelOpen = useSelector((state) => state.playerPanel.isOpen);
+  const matches = useMatches();
+  const isSettingsPage = currentPage.includes('/settings');
+  const backgroundImage = matches.at(isSettingsPage ? -2 : -1).handle.backgroundCover;
 
   useEffect(() => {
     function handleScroll() {
@@ -45,18 +44,6 @@ export default function MainLayout() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   });
-
-  const pagesBackgrounds = {
-    '/': homePageBgImg,
-    '/favorites': favoritesPageBgImg,
-    '/playlists': playlistAndSubscriptionPageBgImg,
-    '/browse': browsePageBgImg,
-    '/permium': playlistAndSubscriptionPageBgImg,
-  };
-
-  const backgroundImage = currentPage.includes('/settings') // checks if user is in /settings route and sets the proper background image.
-    ? settingsPageBgImg
-    : pagesBackgrounds[currentPage];
 
   return (
     <>
@@ -109,6 +96,7 @@ export default function MainLayout() {
         </main>
         <HamburgerMenu />
         {isDesktop && <MobilePanel />}
+        {isDesktop && <MobileGenrePanel />}
         {isMobile && <MobileSearchPanel />}
         <PlayerPanel />
         <ConfirmModal />

@@ -97,6 +97,11 @@ const SidebarPlaylist = memo(() => {
     playingTracklist.id === selectedTracklist?.id &&
     playingTracklist.title === selectedTracklist?.title;
   const totalTracklistTime = selectedPlaylistSongs?.reduce((acc, next) => acc + next.duration, 0);
+  const showErrorPanel =
+    failureReason?.code === '22P02' ||
+    failureReason?.code === 'PGRST116' ||
+    selectedTracklist === null ||
+    isError;
   const { playTracklist } = usePlayBar();
 
   const playPauseButtonHandler = () => {
@@ -230,8 +235,7 @@ const SidebarPlaylist = memo(() => {
     },
   ];
 
-  if (failureReason?.code === '22P02' || selectedTracklist === null || isError)
-    return <ErrorPanel error={error} />;
+  if (showErrorPanel) return <ErrorPanel error={error} />;
 
   return (
     <div className="sticky top-10 hidden xl:block">

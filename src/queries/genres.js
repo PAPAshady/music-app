@@ -26,8 +26,6 @@ export const getGenreByIdQueryOptions = (genreId) => {
     queryKey: ['genres', { genreId }],
     queryFn: () => getGenreById(genreId),
     staleTime: Infinity,
-    retry: true,
-    retryDelay: 5000,
     enabled: !!genreId,
   });
 };

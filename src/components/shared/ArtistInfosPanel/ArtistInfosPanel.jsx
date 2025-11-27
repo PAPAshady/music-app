@@ -38,6 +38,8 @@ function ArtistInfosPanel() {
   );
   const { playArtistSongs } = usePlayBar(selectedArtist?.id);
   const containerRef = useRef();
+  const showErrorPanel =
+    failureReason?.code === '22P02' || failureReason?.code === 'PGRST116' || isError;
 
   const itemVariants = { hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } };
 
@@ -46,7 +48,7 @@ function ArtistInfosPanel() {
     containerRef.current.scrollTop = 0;
   }, [selectedArtist]);
 
-  if (failureReason?.code === '22P02' || isError) return <ErrorPanel error={error} />;
+  if (showErrorPanel) return <ErrorPanel error={error} />;
 
   return (
     <div className="sticky top-10 hidden xl:block">

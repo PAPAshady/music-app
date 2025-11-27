@@ -111,8 +111,10 @@ export default function SongInfosPanel() {
   const likeHandlerMutation = useMutation(
     song?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
+  const showErrorPanel =
+    failureReason?.code === '22P02' || failureReason?.code === 'PGRST116' || isError;
 
-  if (failureReason?.code === '22P02' || isError) return <ErrorPanel error={error} />;
+  if (showErrorPanel) return <ErrorPanel error={error} />;
 
   return (
     <div className="sticky top-10 hidden xl:block">
