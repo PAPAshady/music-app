@@ -12,6 +12,7 @@ import { getPlaylistsByGenreQueryOptions } from '../../queries/playlists';
 import PlaylistCard from '../MusicCards/PlaylistCard/PlaylistCard';
 import PlaylistCardSkeleton from '../MusicCards/PlaylistCard/PlaylistCardSkeleton';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper/modules';
 import PropTypes from 'prop-types';
 import { getAlbumsByGenreIdQueryOptions } from '../../queries/albums';
 import AlbumCard from '../MusicCards/AlbumCard/AlbumCard';
@@ -83,9 +84,9 @@ function MobileGenrePanel() {
               className="relative h-[40dvh] overflow-hidden bg-cover bg-center"
               style={{ backgroundImage: `url(${genre?.cover || defaultCover})` }}
             >
-              <div className="absolute top-0 flex size-full flex-col justify-end gap-2 bg-gradient-to-t from-black/80 to-transparent p-5">
-                <p className="text-5xl font-black">{genre?.title}</p>
-                <p className="text-secondary-100 text-sm">{genre?.description}</p>
+              <div className="absolute top-0 flex size-full flex-col justify-end gap-2 sm:gap-4 bg-gradient-to-t from-black/80 to-transparent p-5 lg:p-10">
+                <p className="text-5xl font-black lg:text-6xl">{genre?.title}</p>
+                <p className="text-secondary-100 text-sm sm:text-base lg:text-lg">{genre?.description}</p>
                 <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
                   {genre?.tags?.map((tag) => (
                     <Tag key={tag} tag={tag} />
@@ -94,20 +95,32 @@ function MobileGenrePanel() {
               </div>
             </div>
             <div className="space-y-10 px-3 pb-10">
-              <div className="space-y-3">
+              <div className="space-y-6">
                 <p className="text-2xl font-bold">Top Curated Playlists</p>
                 {hasPlaylists ? (
-                  <Swiper spaceBetween={16} slidesPerView={2.2}>
+                  <Swiper
+                    spaceBetween={16}
+                    slidesPerView={1.5}
+                    modules={[Pagination]}
+                    pagination={{ clickable: true, enabled: false }}
+                    breakpoints={{
+                      390: { slidesPerView: 2.2 },
+                      520: { slidesPerView: 3, pagination: { enabled: true } },
+                      768: { slidesPerView: 4, pagination: { enabled: true } },
+                      1024: { slidesPerView: 5.3, pagination: { enabled: true } },
+                      1120: { slidesPerView: 6.3, pagination: { enabled: true }, spaceBetween: 20 },
+                    }}
+                  >
                     {isPlaylistsPending
-                      ? Array(6)
+                      ? Array(9)
                           .fill()
                           .map((_, index) => (
-                            <SwiperSlide key={index}>
+                            <SwiperSlide key={index} className="min-[520px]:pb-10">
                               <PlaylistCardSkeleton />
                             </SwiperSlide>
                           ))
-                      : playlists.map((playlist) => (
-                          <SwiperSlide key={playlist.id} className="p-[1px]">
+                      : playlists?.map((playlist) => (
+                          <SwiperSlide key={playlist.id} className="p-[1px] min-[520px]:pb-10">
                             <PlaylistCard {...playlist} />
                           </SwiperSlide>
                         ))}
@@ -116,13 +129,22 @@ function MobileGenrePanel() {
                   <p>No playlists found</p>
                 )}
               </div>
-              <div className="space-y-3">
+              <div className="space-y-6">
                 <p className="text-2xl font-bold">Related Albums</p>
                 {hasAlbums ? (
-                  <Swiper spaceBetween={16} slidesPerView={albums?.length > 3 ? 1.2 : 1}>
+                  <Swiper
+                    spaceBetween={16}
+                    modules={[Pagination]}
+                    slidesPerView={albums?.length > 3 ? 1.2 : 1}
+                    pagination={{ clickable: true, enabled: false }}
+                    breakpoints={{
+                      640: { slidesPerView: 2, pagination: { enabled: true } },
+                      1200: { slidesPerView: 3, pagination: { enabled: true } },
+                    }}
+                  >
                     {isAlbumPending
-                      ? chunkArray(shuffleArray(Array(9).fill()), 3).map((albumsArr, index) => (
-                          <SwiperSlide key={index}>
+                      ? chunkArray(shuffleArray(Array(12).fill()), 3).map((albumsArr, index) => (
+                          <SwiperSlide key={index} className="sm:pb-11">
                             <div className="space-y-3">
                               {albumsArr.map((_, index) => (
                                 <AlbumCardSkeleton key={index} />
@@ -130,11 +152,16 @@ function MobileGenrePanel() {
                             </div>
                           </SwiperSlide>
                         ))
-                      : chunkArray(albums, 3).map((albumsArr, index) => (
-                          <SwiperSlide key={index}>
+                      : chunkArray(albums || [], 3).map((albumsArr, index) => (
+                          <SwiperSlide key={index} className="sm:pb-11">
                             <div className="space-y-3">
                               {albumsArr.map((album) => (
-                                <AlbumCard key={album.id} album={album} size="md" />
+                                <AlbumCard
+                                  key={album.id}
+                                  album={album}
+                                  size="md"
+                                  classNames="!max-w-full"
+                                />
                               ))}
                             </div>
                           </SwiperSlide>
