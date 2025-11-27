@@ -37,7 +37,6 @@ function MobileGenrePanel() {
     dispatch(closeMobileGenrePanel());
   };
 
-  console.log(albums);
 
   useEffect(() => {
     if (isOpen) {

@@ -13,10 +13,17 @@ import SmallAlbumCardSkeleton from '../MusicCards/SmallAlbumCard/SmallAlbumCardS
 import { setSelectedCollection } from '../../redux/slices/playContextSlice';
 import { setQueries } from '../../redux/slices/queryStateSlice';
 import { openMobilePanel } from '../../redux/slices/mobilePanelSlice';
+import ErrorPanel from '../shared/ErrorPanel/ErrorPanel';
 
 function GenrePanel() {
   const genreId = useSelector((state) => state.queryState.id);
-  const { data: genre, isPending: isGenrePending } = useQuery(getGenreByIdQueryOptions(genreId));
+  const {
+    data: genre,
+    isPending: isGenrePending,
+    failureReason,
+    isError,
+    error,
+  } = useQuery(getGenreByIdQueryOptions(genreId));
   const { data: playlists, isPending: isPlaylistsPending } = useQuery(
     getPlaylistsByGenreQueryOptions(genre?.id)
   );
@@ -25,6 +32,10 @@ function GenrePanel() {
   );
   const hasPlaylists = isPlaylistsPending || playlists?.length > 0;
   const hasAlbums = isAlbumsPending || albums?.length > 0;
+  const showErrorPanel =
+    failureReason?.code === '22P02' || failureReason?.code === 'PGRST116' || isError;
+
+  if (showErrorPanel) return <ErrorPanel error={error} />;
 
   return (
     <div className="sticky top-10 hidden xl:block">
