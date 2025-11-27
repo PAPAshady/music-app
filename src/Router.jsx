@@ -17,6 +17,11 @@ import Analytics from './pages/Analytics/Analytics';
 import ContactUs from './pages/ContactUs/ContactUs';
 import FAQ from './pages/FAQ/FAQ';
 import NotFoundPage from './pages/404/404';
+import homePageBg from './assets/images/backgrounds/home-page.jpg';
+import favoritesPageBg from './assets/images/backgrounds/favorites-page.jpg';
+import playlistAndSubscriptionPageBgImg from './assets/images/backgrounds/playlist and-subscription-page.jpg';
+import browsePageBgImg from './assets/images/backgrounds/browse-page.jpg';
+import settingsPageBgImg from './assets/images/backgrounds/player-and-settings-page.png';
 
 const routes = [
   {
@@ -36,11 +41,19 @@ const routes = [
       </ProtectedRoute>
     ),
     children: [
-      { path: '/', element: <Home /> },
-      { path: '/favorites', element: <Favorites /> },
-      { path: '/playlists', element: <PlayLists /> },
-      { path: '/browse', element: <Browse /> },
-      { path: '/permium', element: <Permium /> },
+      { path: '/', element: <Home />, handle: { backgroundCover: homePageBg } },
+      { path: '/favorites', element: <Favorites />, handle: { backgroundCover: favoritesPageBg } },
+      {
+        path: '/playlists',
+        element: <PlayLists />,
+        handle: { backgroundCover: playlistAndSubscriptionPageBgImg },
+      },
+      { path: '/browse', element: <Browse />, handle: { backgroundCover: browsePageBgImg } },
+      {
+        path: '/permium',
+        element: <Permium />,
+        handle: { backgroundCover: playlistAndSubscriptionPageBgImg },
+      },
       {
         path: '/settings',
         element: <SettingsLayout />,
@@ -51,6 +64,7 @@ const routes = [
           { path: 'contact-us', element: <ContactUs /> },
           { path: 'FAQ', element: <FAQ /> },
         ],
+        handle: { backgroundCover: settingsPageBgImg },
       },
     ],
   },
