@@ -17,12 +17,18 @@ import { getAlbumsByGenreIdQueryOptions } from '../../queries/albums';
 import AlbumCard from '../MusicCards/AlbumCard/AlbumCard';
 import AlbumCardSkeleton from '../MusicCards/AlbumCard/AlbumCardSkeleton';
 import { chunkArray, shuffleArray } from '../../utils/arrayUtils';
+import { Navigate } from 'react-router-dom';
 
 function MobileGenrePanel() {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => state.mobileGenrePanel.isOpen);
   const id = useSelector((state) => state.queryState.id);
-  const { data: genre, isPending: isGenrePending } = useQuery(getGenreByIdQueryOptions(id));
+  const {
+    data: genre,
+    isPending: isGenrePending,
+    failureReason,
+    isError,
+  } = useQuery(getGenreByIdQueryOptions(id));
   const { data: playlists, isPending: isPlaylistsPending } = useQuery(
     getPlaylistsByGenreQueryOptions(genre?.id)
   );
@@ -31,12 +37,13 @@ function MobileGenrePanel() {
   );
   const hasPlaylists = isPlaylistsPending || playlists?.length > 0;
   const hasAlbums = isAlbumPending || albums?.length > 0;
+  const showErrorPanel =
+    failureReason?.code === '22P02' || failureReason?.code === 'PGRST116' || isError;
 
   const closePanel = () => {
     dispatch(setQueries({ type: null, id: null }));
     dispatch(closeMobileGenrePanel());
   };
-
 
   useEffect(() => {
     if (isOpen) {
@@ -45,6 +52,10 @@ function MobileGenrePanel() {
       document.body.style.overflow = 'visible';
     }
   }, [isOpen]);
+
+  if (showErrorPanel) {
+    return <Navigate to="/404" />;
+  }
 
   return createPortal(
     <div
@@ -96,7 +107,7 @@ function MobileGenrePanel() {
                             </SwiperSlide>
                           ))
                       : playlists.map((playlist) => (
-                          <SwiperSlide key={playlist.id} className='p-[1px]'>
+                          <SwiperSlide key={playlist.id} className="p-[1px]">
                             <PlaylistCard {...playlist} />
                           </SwiperSlide>
                         ))}
