@@ -8,17 +8,10 @@ import { ArrowLeft } from 'iconsax-react';
 import { closeMobileGenrePanel } from '../../redux/slices/mobileGenrePanelSlice';
 import { setQueries } from '../../redux/slices/queryStateSlice';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
-import { getPlaylistsByGenreQueryOptions } from '../../queries/playlists';
-import PlaylistCard from '../MusicCards/PlaylistCard/PlaylistCard';
-import PlaylistCardSkeleton from '../MusicCards/PlaylistCard/PlaylistCardSkeleton';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper/modules';
 import PropTypes from 'prop-types';
-import { getAlbumsByGenreIdQueryOptions } from '../../queries/albums';
-import AlbumCard from '../MusicCards/AlbumCard/AlbumCard';
-import AlbumCardSkeleton from '../MusicCards/AlbumCard/AlbumCardSkeleton';
-import { chunkArray, shuffleArray } from '../../utils/arrayUtils';
 import { Navigate } from 'react-router-dom';
+import MobileGenerePanelAlbumsList from './MobileGenerePanelAlbumsList';
+import MobileGenrePanelPlaylistsList from './MobileGenrePanelPlaylistsList';
 
 function MobileGenrePanel() {
   const dispatch = useDispatch();
@@ -31,14 +24,6 @@ function MobileGenrePanel() {
     failureReason,
     isError,
   } = useQuery({ ...getGenreByIdQueryOptions(id), enabled: !!id && type === 'genre' });
-  const { data: playlists, isPending: isPlaylistsPending } = useQuery(
-    getPlaylistsByGenreQueryOptions(genre?.id)
-  );
-  const { data: albums, isPending: isAlbumPending } = useQuery(
-    getAlbumsByGenreIdQueryOptions(genre?.id)
-  );
-  const hasPlaylists = isPlaylistsPending || playlists?.length > 0;
-  const hasAlbums = isAlbumPending || albums?.length > 0;
   const showErrorPanel =
     failureReason?.code === '22P02' || failureReason?.code === 'PGRST116' || isError;
 
@@ -102,82 +87,8 @@ function MobileGenrePanel() {
               </div>
             </div>
             <div className="space-y-10 px-3 pb-10">
-              <div className="space-y-6">
-                <p className="text-2xl font-bold">Top Curated Playlists</p>
-                {hasPlaylists ? (
-                  <Swiper
-                    spaceBetween={16}
-                    slidesPerView={1.5}
-                    modules={[Pagination]}
-                    pagination={{ clickable: true, enabled: false }}
-                    breakpoints={{
-                      390: { slidesPerView: 2.2 },
-                      520: { slidesPerView: 3, pagination: { enabled: true } },
-                      768: { slidesPerView: 4, pagination: { enabled: true } },
-                      1024: { slidesPerView: 5.3, pagination: { enabled: true } },
-                      1120: { slidesPerView: 6.3, pagination: { enabled: true }, spaceBetween: 20 },
-                    }}
-                  >
-                    {isPlaylistsPending
-                      ? Array(9)
-                          .fill()
-                          .map((_, index) => (
-                            <SwiperSlide key={index} className="min-[520px]:pb-10">
-                              <PlaylistCardSkeleton />
-                            </SwiperSlide>
-                          ))
-                      : playlists?.map((playlist) => (
-                          <SwiperSlide key={playlist.id} className="p-[1px] min-[520px]:pb-10">
-                            <PlaylistCard {...playlist} />
-                          </SwiperSlide>
-                        ))}
-                  </Swiper>
-                ) : (
-                  <p>No playlists found</p>
-                )}
-              </div>
-              <div className="space-y-6">
-                <p className="text-2xl font-bold">Related Albums</p>
-                {hasAlbums ? (
-                  <Swiper
-                    spaceBetween={16}
-                    modules={[Pagination]}
-                    slidesPerView={albums?.length > 3 ? 1.2 : 1}
-                    pagination={{ clickable: true, enabled: false }}
-                    breakpoints={{
-                      640: { slidesPerView: 2, pagination: { enabled: true } },
-                      1200: { slidesPerView: 3, pagination: { enabled: true } },
-                    }}
-                  >
-                    {isAlbumPending
-                      ? chunkArray(shuffleArray(Array(12).fill()), 3).map((albumsArr, index) => (
-                          <SwiperSlide key={index} className="sm:pb-11">
-                            <div className="space-y-3">
-                              {albumsArr.map((_, index) => (
-                                <AlbumCardSkeleton key={index} />
-                              ))}
-                            </div>
-                          </SwiperSlide>
-                        ))
-                      : chunkArray(albums || [], 3).map((albumsArr, index) => (
-                          <SwiperSlide key={index} className="sm:pb-11">
-                            <div className="space-y-3">
-                              {albumsArr.map((album) => (
-                                <AlbumCard
-                                  key={album.id}
-                                  album={album}
-                                  size="md"
-                                  classNames="!max-w-full"
-                                />
-                              ))}
-                            </div>
-                          </SwiperSlide>
-                        ))}
-                  </Swiper>
-                ) : (
-                  <p>No albums found</p>
-                )}
-              </div>
+              <MobileGenrePanelPlaylistsList genreId={genre?.id} />
+              <MobileGenerePanelAlbumsList genreId={genre?.id} />
             </div>
           </>
         )}
