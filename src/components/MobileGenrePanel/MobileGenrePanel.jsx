@@ -123,7 +123,11 @@ function MobileGenrePanel() {
                             </SwiperSlide>
                           ))
                       : playlists?.map((playlist) => (
-                          <SwiperSlide key={playlist.id} className="p-[1px] min-[520px]:pb-10">
+                          <SwiperSlide
+                            key={playlist.id}
+                            className="p-[1px] min-[520px]:pb-10"
+                            onClick={() => dispatch(closeMobileGenrePanel())}
+                          >
                             <PlaylistCard {...playlist} />
                           </SwiperSlide>
                         ))}
@@ -159,12 +163,12 @@ function MobileGenrePanel() {
                           <SwiperSlide key={index} className="sm:pb-11">
                             <div className="space-y-3">
                               {albumsArr.map((album) => (
-                                <AlbumCard
+                                <div
                                   key={album.id}
-                                  album={album}
-                                  size="md"
-                                  classNames="!max-w-full"
-                                />
+                                  onClick={() => dispatch(closeMobileGenrePanel())}
+                                >
+                                  <AlbumCard album={album} size="md" classNames="!max-w-full" />
+                                </div>
                               ))}
                             </div>
                           </SwiperSlide>
