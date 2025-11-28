@@ -48,6 +48,7 @@ import usePlayBar from '../../../hooks/usePlayBar';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
 import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';
+import { setCurrentQueuelist, setSelectedSong } from '../../../redux/slices/playContextSlice';
 
 function MobileTracklistPanel() {
   const tracklistType = useSelector((state) => state.queryState.type);
@@ -328,7 +329,7 @@ function MobileTracklistPanel() {
                               key={song.id}
                               isPending={song.id === pendingSongId}
                               onAdd={addSongHandler}
-                              {...song}
+                              song={song}
                             />
                           ))
                       : isTrendingSognsPending
@@ -342,7 +343,7 @@ function MobileTracklistPanel() {
                                 key={song.id}
                                 isPending={song.id === pendingSongId}
                                 onAdd={addSongHandler}
-                                {...song}
+                                song={song}
                               />
                             ))}
                   </div>
@@ -366,18 +367,41 @@ function MobileTracklistPanel() {
   );
 }
 
-const SuggestedSong = memo(({ id, title, cover, artist = 'Unknown artist', isPending, onAdd }) => {
+const SuggestedSong = memo(({ isPending, onAdd, song }) => {
+  const { id, title, cover, artist } = song;
+  const dispatch = useDispatch();
+  const currentMusicId = useSelector((state) => state.musicPlayer.currentMusic?.id);
+  const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
+  const isCurrentSongPlaying = id === currentMusicId;
+
+  const playOnClick = () => {
+    if (isCurrentSongPlaying) {
+      dispatch(isPlaying ? pause() : play());
+    } else {
+      dispatch(setCurrentQueuelist([song]));
+      dispatch(setCurrentSongIndex(0));
+      dispatch(setSelectedSong(song));
+    }
+  };
+
   return (
     <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm md:border">
       <div className="flex grow items-center gap-2 overflow-hidden">
-        <div className="relative h-15 w-15 min-w-[60px] overflow-hidden rounded-sm sm:h-[70px] sm:w-[70px] sm:min-w-[70px]">
+        <div
+          className="relative h-15 w-15 min-w-[60px] overflow-hidden rounded-sm sm:h-[70px] sm:w-[70px] sm:min-w-[70px]"
+          onClick={playOnClick}
+        >
           <img
             src={cover ? cover : playlistDefaultCover}
             alt={title}
             className="size-full object-cover"
           />
           <button className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <Play className="fill-white" />
+            {isCurrentSongPlaying && isPlaying ? (
+              <Pause className="fill-white" />
+            ) : (
+              <Play className="fill-white" />
+            )}
           </button>
         </div>
         <div className="flex grow flex-col gap-1.5 overflow-hidden">
@@ -423,10 +447,7 @@ const SuggestedSongSkeleton = () => {
 
 SuggestedSong.displayName = 'SuggestedSong';
 SuggestedSong.propTypes = {
-  id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  cover: PropTypes.string,
-  artist: PropTypes.string,
+  song: PropTypes.object.isRequired,
   isPending: PropTypes.bool,
   onAdd: PropTypes.func.isRequired,
 };
