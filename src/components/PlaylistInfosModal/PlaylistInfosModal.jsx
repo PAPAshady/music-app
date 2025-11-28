@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, memo, useCallback } from 'react';
-import { Image, Trash, Edit2, AddCircle, Play, Music } from 'iconsax-react';
+import { Image, Trash, Edit2, AddCircle, Play, Music, Pause } from 'iconsax-react';
 import Modal from '../../components/Modal/Modal';
 import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
@@ -17,7 +17,11 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import { uploadFile, getFileUrl, deleteFiles, listFiles } from '../../services/storage';
-import { setSelectedCollection } from '../../redux/slices/playContextSlice';
+import {
+  setSelectedCollection,
+  setCurrentQueuelist,
+  setSelectedSong,
+} from '../../redux/slices/playContextSlice';
 import {
   createNewPrivatePlaylistMutationOptions,
   updatePrivatePlaylistMutationOptions,
@@ -34,6 +38,7 @@ import PropTypes from 'prop-types';
 import { getPlaylistByIdQueryOptions } from '../../queries/playlists';
 import useDebounce from '../../hooks/useDebounce';
 import ShimmerOverlay from '../ShimmerOverlay/ShimmerOverlay';
+import { play, pause, setCurrentSongIndex } from '../../redux/slices/musicPlayerSlice';
 
 const schema = z.object({
   description: z.string().optional(),
@@ -454,7 +459,7 @@ export default function PlaylistInfosModal() {
                                 key={song.id}
                                 buttonState={song.id === pendingSongId ? 'pending' : selectedTab}
                                 onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
-                                {...song}
+                                song={song}
                               />
                             )))}
 
@@ -464,7 +469,7 @@ export default function PlaylistInfosModal() {
                             key={song.id}
                             buttonState={song.id === pendingSongId ? 'pending' : selectedTab}
                             onClick={selectedTab === 'add' ? addSongHandler : removeSongHandler}
-                            {...song}
+                            song={song}
                           />
                         ))}
                     </div>
@@ -490,35 +495,56 @@ export default function PlaylistInfosModal() {
   );
 }
 
-const PlaylistSong = memo(
-  ({ title, cover, artist = 'Unknown artist', buttonState, onClick, id }) => {
-    return (
-      <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
-        <div className="flex grow items-center gap-2 overflow-hidden">
-          <div className="relative h-[45px] w-[45px] min-w-[45px] overflow-hidden rounded-sm">
-            <img src={cover ? cover : playlistDefaultCover} className="size-full object-cover" />
-            <button className="absolute inset-0 flex items-center justify-center bg-black/20">
+const PlaylistSong = memo(({ song, buttonState, onClick }) => {
+  const { title, cover, artist, id } = song;
+  const dispatch = useDispatch();
+  const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
+  const currentMusicId = useSelector((state) => state.musicPlayer.currentMusic?.id);
+  const isCurrentSongPlaying = id === currentMusicId;
+
+  const playOnClick = () => {
+    if (isCurrentSongPlaying) {
+      dispatch(isPlaying ? pause() : play());
+    } else {
+      dispatch(setCurrentQueuelist([song]));
+      dispatch(setCurrentSongIndex(0));
+      dispatch(setSelectedSong(song));
+    }
+  };
+
+  return (
+    <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
+      <div className="flex grow items-center gap-2 overflow-hidden">
+        <div
+          className="relative h-[45px] w-[45px] min-w-[45px] overflow-hidden rounded-sm"
+          onClick={playOnClick}
+        >
+          <img src={cover ? cover : playlistDefaultCover} className="size-full object-cover" />
+          <button className="absolute inset-0 flex items-center justify-center bg-black/20">
+            {isCurrentSongPlaying && isPlaying ? (
+              <Pause size={18} className="fill-white" />
+            ) : (
               <Play size={18} className="fill-white" />
-            </button>
-          </div>
-          <div className="flex grow flex-col gap-1 overflow-hidden">
-            <p className="truncate text-sm">{title}</p>
-            <p className="text-secondary-200 truncate text-sm">{artist}</p>
-          </div>
+            )}
+          </button>
         </div>
-        {buttonState === 'pending' ? (
-          <LoadingSpinner size="xs" classNames="me-2.5" />
-        ) : (
-          <IconButton
-            icon={buttonState === 'add' ? <AddCircle /> : <Trash />}
-            onClick={() => onClick(id)}
-            classNames="min-w-8 min-h-8 me-1"
-          />
-        )}
+        <div className="flex grow flex-col gap-1 overflow-hidden">
+          <p className="truncate text-sm">{title}</p>
+          <p className="text-secondary-200 truncate text-sm">{artist}</p>
+        </div>
       </div>
-    );
-  }
-);
+      {buttonState === 'pending' ? (
+        <LoadingSpinner size="xs" classNames="me-2.5" />
+      ) : (
+        <IconButton
+          icon={buttonState === 'add' ? <AddCircle /> : <Trash />}
+          onClick={() => onClick(id)}
+          classNames="min-w-8 min-h-8 me-1"
+        />
+      )}
+    </div>
+  );
+});
 
 const PlaylistSongSkeleton = () => {
   return (
@@ -549,12 +575,9 @@ function TabButton({ title, isActive, tabName, onClick }) {
 
 PlaylistSong.displayName = 'PlaylistSong';
 PlaylistSong.propTypes = {
-  title: PropTypes.string.isRequired,
-  cover: PropTypes.string,
-  artist: PropTypes.string,
+  song: PropTypes.object.isRequired,
   buttonState: PropTypes.oneOf(['add', 'view', 'pending']),
   onClick: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired,
 };
 
 TabButton.propTypes = {
