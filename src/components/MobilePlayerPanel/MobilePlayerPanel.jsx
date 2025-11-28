@@ -49,7 +49,11 @@ import { openMobilePanel } from '../../redux/slices/mobilePanelSlice';
 
 function MobilePlayerPanel({ songs, isPending: isSongsPending }) {
   const songId = useSelector((state) => state.queryState.id);
-  const { data: song, isPending } = useQuery(getSongByIdQueryOptions(songId));
+  const type = useSelector((state) => state.queryState.type);
+  const { data: song, isPending } = useQuery({
+    ...getSongByIdQueryOptions(songId),
+    enabled: !!songId && type === 'track',
+  });
   const dispatch = useDispatch();
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const likeHandlerMutation = useMutation(
