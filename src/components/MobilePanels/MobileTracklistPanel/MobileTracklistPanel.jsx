@@ -278,7 +278,7 @@ function MobileTracklistPanel() {
                 onPlay={playTracklist}
                 classNames="!w-full text-start !max-w-none"
                 ActionButtonIcon={isPrivatePlaylist && <Trash />}
-                actionButtonClickHandler={isPrivatePlaylist && removeSongHandler}
+                actionButtonClickHandler={isPrivatePlaylist ? removeSongHandler : undefined}
                 isActionButtonPending={isPrivatePlaylist && pendingSongId === song.id}
                 song={song}
               />
@@ -426,7 +426,7 @@ SuggestedSong.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
-  artist: PropTypes.array,
+  artist: PropTypes.string,
   isPending: PropTypes.bool,
   onAdd: PropTypes.func.isRequired,
 };
