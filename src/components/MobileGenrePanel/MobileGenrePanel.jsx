@@ -24,12 +24,13 @@ function MobileGenrePanel() {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => state.mobileGenrePanel.isOpen);
   const id = useSelector((state) => state.queryState.id);
+  const type = useSelector((state) => state.queryState.type);
   const {
     data: genre,
     isPending: isGenrePending,
     failureReason,
     isError,
-  } = useQuery(getGenreByIdQueryOptions(id));
+  } = useQuery({ ...getGenreByIdQueryOptions(id), enabled: !!id && type === 'genre' });
   const { data: playlists, isPending: isPlaylistsPending } = useQuery(
     getPlaylistsByGenreQueryOptions(genre?.id)
   );
@@ -84,9 +85,11 @@ function MobileGenrePanel() {
               className="relative h-[40dvh] overflow-hidden bg-cover bg-center"
               style={{ backgroundImage: `url(${genre?.cover || defaultCover})` }}
             >
-              <div className="absolute top-0 flex size-full flex-col justify-end gap-2 sm:gap-4 bg-gradient-to-t from-black/80 to-transparent p-5 lg:p-10">
+              <div className="absolute top-0 flex size-full flex-col justify-end gap-2 bg-gradient-to-t from-black/80 to-transparent p-5 sm:gap-4 lg:p-10">
                 <p className="text-5xl font-black lg:text-6xl">{genre?.title}</p>
-                <p className="text-secondary-100 text-sm sm:text-base lg:text-lg">{genre?.description}</p>
+                <p className="text-secondary-100 text-sm sm:text-base lg:text-lg">
+                  {genre?.description}
+                </p>
                 <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
                   {genre?.tags?.map((tag) => (
                     <Tag key={tag} tag={tag} />
