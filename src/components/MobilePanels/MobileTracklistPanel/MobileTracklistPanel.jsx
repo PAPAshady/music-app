@@ -309,11 +309,13 @@ function MobileTracklistPanel() {
                 <>
                   <div className="px-4 pt-4 min-[480px]:px-6 min-[480px]:pt-6">
                     <p className="text-xl font-semibold text-white min-[480px]:text-2xl">
-                      Suggested
+                      {searchedValue ? `Results for "${searchedValue}"` : 'Suggested'}
                     </p>
-                    <p className="mt-1 text-sm min-[480px]:mt-3 min-[480px]:text-lg">
-                      See what&apos;s trending
-                    </p>
+                    {!searchedValue && (
+                      <p className="mt-1 text-sm min-[480px]:mt-3 min-[480px]:text-lg">
+                        See what&apos;s trending
+                      </p>
+                    )}
                   </div>
                   <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
                     {searchedValue
@@ -321,16 +323,14 @@ function MobileTracklistPanel() {
                         ? Array(6)
                             .fill()
                             .map((_, index) => <SuggestedSongSkeleton key={index} />)
-                        : searchedSongs
-                            .filter((song) => !playlistSongIds.has(song.id))
-                            .map((song) => (
-                              <SuggestedSong
-                                key={song.id}
-                                isPending={song.id === pendingSongId}
-                                onAdd={addSongHandler}
-                                {...song}
-                              />
-                            ))
+                        : searchedSongs.map((song) => (
+                            <SuggestedSong
+                              key={song.id}
+                              isPending={song.id === pendingSongId}
+                              onAdd={addSongHandler}
+                              {...song}
+                            />
+                          ))
                       : isTrendingSognsPending
                         ? Array(6)
                             .fill()

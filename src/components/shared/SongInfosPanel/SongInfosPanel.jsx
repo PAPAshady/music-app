@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useRef } from 'react';
-import { Play, Pause, Heart, Menu } from 'iconsax-react';
+import { Play, Pause, Heart, AddCircle } from 'iconsax-react';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 import defaultArtistCover from '../../../assets/images/Avatar/no-avatar.png';
@@ -190,8 +190,8 @@ export default function SongInfosPanel() {
                 />
               </IconButton>
 
-              <IconButton label="More">
-                <Menu size={20} />
+              <IconButton label="Add to playlist">
+                <AddCircle size={20} />
               </IconButton>
 
               {isPending ? (
