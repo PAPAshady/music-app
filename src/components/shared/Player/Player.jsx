@@ -19,7 +19,10 @@ import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Range } from 'react-range';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { togglePanel as togglePlayerPanel } from '../../../redux/slices/playerPanelSlice';
+import {
+  togglePanel as togglePlayerPanel,
+  openPanel as openPlayerPanel,
+} from '../../../redux/slices/playerPanelSlice';
 import PlayerProgressBar from '../../PlayerProgressBar/PlayerProgressBar';
 import {
   formatTime,
@@ -49,6 +52,7 @@ export default function Player({ classNames, isPlayerPage }) {
 
   const disabled = !queuelist?.length;
   const isLargeMobile = useMediaQuery('(max-width: 639px)');
+  const isMobile = useMediaQuery('(min-width: 768px)');
   const likeHandlerMutation = useMutation(
     currentMusic?.is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
   );
@@ -73,12 +77,24 @@ export default function Player({ classNames, isPlayerPage }) {
     { id: 3, icon: <Next />, onClick: () => dispatch(next()) },
   ];
 
+  // opens player panel when user click on the player on mobile devices (only in devices with the max-width of 768px)
+  const openPlayerPanelOnClick = () => {
+    if (!isMobile) dispatch(openPlayerPanel());
+  };
+
+  // avoids opening player panel on mobile devices in case user click on certian elements such as play buttons, song cover, progres bar, etc. 
+  const stopPropagation = (e) => e.stopPropagation();
+
   return (
     <div
       className={`border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-10 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-sm transition-all duration-300 min-[400px]:items-center min-[480px]:p-4 min-[1330px]:!w-[64dvw] sm:items-center sm:gap-4 md:sticky md:bottom-2 md:justify-between md:gap-8 md:rounded-lg md:border xl:w-[62.6dvw] xl:gap-4 2xl:!w-full ${disabled && !isPlayerPage ? 'translate-y-full opacity-0 md:translate-y-[calc(100%+8px)]' : 'translate-y-0 opacity-100'} ${classNames}`}
+      onClick={openPlayerPanelOnClick}
     >
       <div className="flex items-center gap-4">
-        <div className="relative size-12 overflow-hidden rounded-lg min-[400px]:size-15 sm:size-20 md:size-16">
+        <div
+          className="relative size-12 overflow-hidden rounded-lg min-[400px]:size-15 sm:size-20 md:size-16"
+          onClick={stopPropagation}
+        >
           <img
             className="size-full object-cover"
             src={currentMusic?.cover || noCoverImg}
@@ -121,7 +137,10 @@ export default function Player({ classNames, isPlayerPage }) {
               </p>
             </div>
             <CurrentTimeNumber />
-            <div className="xs:gap-5 flex items-center gap-4 min-[400px]:gap-6 sm:gap-10 md:gap-12 2xl:!gap-16">
+            <div
+              className="xs:gap-5 flex items-center gap-4 min-[400px]:gap-6 sm:gap-10 md:gap-12 2xl:!gap-16"
+              onClick={stopPropagation}
+            >
               {playButtons.map((button) => (
                 <PlayButton key={button.id} {...button} disabled={disabled} />
               ))}
@@ -130,7 +149,9 @@ export default function Player({ classNames, isPlayerPage }) {
               {formatTime(currentMusic?.duration) ?? '00:00'}
             </span>
           </div>
-          <PlayerProgressBar disabled={disabled} />
+          <div onClick={stopPropagation}>
+            <PlayerProgressBar disabled={disabled} />
+          </div>
         </div>
         <div className="ms-4 hidden items-center gap-4 md:flex">
           <div title={playingState}>
@@ -150,7 +171,6 @@ export default function Player({ classNames, isPlayerPage }) {
           </div>
           <IconButton
             icon={<MusicFilter />}
-            classNames={isPlayerPage ? 'hipdden' : 'xl:hpidden'}
             onClick={() => dispatch(togglePlayerPanel())}
             isActive={isPlayerPanelOpen}
             label={isPlayerPanelOpen ? 'Close player panel' : 'Open player panel'}
@@ -158,6 +178,7 @@ export default function Player({ classNames, isPlayerPage }) {
           <div
             className="relative hidden items-center gap-2 md:flex"
             ref={verticalVolumeSlider.ref}
+            onClick={stopPropagation}
           >
             <IconButton
               icon={volume[0] ? <VolumeHigh /> : <VolumeSlash />}
