@@ -3,7 +3,7 @@ import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import { useDispatch } from 'react-redux';
 import { setQueries } from '../../../redux/slices/queryStateSlice';
 
-export default function GenreCard({ id, title, cover }) {
+export default function GenreCard({ id, title, cover, classNames }) {
   const dispatch = useDispatch();
 
   const handleClick = () => {
@@ -12,7 +12,7 @@ export default function GenreCard({ id, title, cover }) {
 
   return (
     <div
-      className="hover:outline-primary-50 xs:h-[13dvw] relative h-[28dvw] w-full cursor-pointer overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat outline outline-transparent transition-colors duration-300 lg:h-[8dvw] lg:max-h-[100px]"
+      className={`hover:outline-primary-50 xs:h-[13dvw] relative h-[28dvw] w-full cursor-pointer overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat outline outline-transparent transition-colors duration-300 lg:h-[8dvw] lg:max-h-[100px] ${classNames}`}
       style={{ backgroundImage: `url(${cover || defaultCover})` }}
       onClick={handleClick}
     >
@@ -27,4 +27,5 @@ GenreCard.propTypes = {
   title: PropTypes.string.isRequired,
   cover: PropTypes.string,
   id: PropTypes.string.isRequired,
+  classNames: PropTypes.string,
 };
