@@ -16,7 +16,7 @@ export default function GenresSlider({ genres, isPending }) {
         modules={[Pagination]}
         pagination={{ clickable: true }}
         className="max-w-[95dvw] lg:max-w-[calc(95dvw-86px)] xl:max-w-[calc(95dvw-428px)]"
-        breakpoints={{ 360: { slidesPerView: 3 } }}
+        breakpoints={{ 360: { slidesPerView: 2 }, 600: { slidesPerView: 3 } }}
       >
         {isPending
           ? chunkArray(Array(9).fill(0), 3).map((skeletonCardsArray, index) => (
@@ -32,7 +32,7 @@ export default function GenresSlider({ genres, isPending }) {
               <SwiperSlide key={index} className="mb-11 p-[1px]">
                 <div className="flex flex-col gap-4">
                   {tracksArray.map((track) => (
-                    <GenreCard key={track.id} {...track} />
+                    <GenreCard key={track.id} {...track} classNames="xs:h-[80px]" />
                   ))}
                 </div>
               </SwiperSlide>
