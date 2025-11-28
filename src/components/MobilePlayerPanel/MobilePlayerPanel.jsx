@@ -213,7 +213,7 @@ function MobilePlayerPanel({ songs, isPending: isSongsPending }) {
             </div>
           )}
           <div onClick={() => setIsContentPanelOpen(true)}>
-            <div className="border-secondary-300 flex items-center border-b">
+            <div className="border-secondary-300 flex items-center border-b md:-mt-3">
               {tabButtons.map((button) => (
                 <TabButton
                   key={button.id}
@@ -393,7 +393,7 @@ function MobilePlayerPanel({ songs, isPending: isSongsPending }) {
 function TabButton({ title, onClick, isActive }) {
   return (
     <button
-      className={`grow cursor-pointer border-b px-2 py-4 transition-colors md:py-8 md:text-lg ${isActive ? 'border-secondary-200' : 'border-transparent'}`}
+      className={`grow cursor-pointer border-b px-2 py-4 transition-colors md:py-6 md:text-lg ${isActive ? 'border-secondary-200' : 'border-transparent'}`}
       onClick={() => onClick(title)}
     >
       {title}
