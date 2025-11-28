@@ -67,7 +67,7 @@ function MobileGenrePanel() {
     <div
       className={`text-secondary-50 fixed inset-0 z-10 overflow-y-auto bg-gradient-to-b from-slate-700 to-slate-900 transition-all ${isOpen ? 'top-0 opacity-100' : 'top-full opacity-0'}`}
     >
-      <div className="fixed top-0 z-[1] px-4 pt-3">
+      <div className={`fixed top-0 z-[1] px-4 pt-3 ${!isOpen ? 'hidden' : ''}`}>
         <button
           className="grid size-12 place-content-center rounded-full bg-black/50"
           onClick={closePanel}

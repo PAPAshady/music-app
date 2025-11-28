@@ -1,8 +1,7 @@
 import { memo, cloneElement } from 'react';
-import { Heart, HeartSlash, Menu, Play, AddCircle } from 'iconsax-react';
+import { Heart, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
-import useCloseOnClickOutside from '../.../../../../hooks/useCloseOnClickOutside ';
 import { formatTime } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
@@ -21,7 +20,6 @@ const PlayBar = memo(
     isActionButtonPending,
     classNames,
   }) => {
-    const dropDownMenu = useCloseOnClickOutside();
     const { title, id, cover, artist, duration, album, is_liked } = song;
     const likeHandlerMutation = useMutation(
       is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
@@ -43,16 +41,6 @@ const PlayBar = memo(
       md: 'text-sm',
       sm: 'hidden',
     };
-
-    const dropDownMenuItems = [
-      { id: 1, title: 'Add to playlist', icon: <AddCircle /> },
-      {
-        id: 2,
-        title: `${is_liked ? 'Remove from' : 'Add to'} favorites`,
-        icon: is_liked ? <HeartSlash /> : <Heart />,
-        onClick: () => likeHandlerMutation.mutate(id),
-      },
-    ];
 
     return (
       <div
@@ -126,20 +114,10 @@ const PlayBar = memo(
             <div
               className={`${size === 'md' ? 'hidden lg:block' : ''} ${size === 'sm' ? 'hidden lg:block' : ''}`}
             >
-              <div className="relative" ref={dropDownMenu.ref}>
-                <IconButton
-                  icon={<Menu size={size === 'sm' ? 16 : 24} />}
-                  onClick={() => dropDownMenu.setIsVisible((prev) => !prev)}
-                  isActive={dropDownMenu.isVisible}
-                />
-                <ul
-                  className={`bg-primary-500/60 absolute right-[110%] z-[9999] w-max -translate-y-1/2 flex-col gap-1 rounded-md p-1 backdrop-blur-sm transition-all duration-300 ${dropDownMenu.isVisible ? 'visible top-1/2 opacity-100' : 'invisible top-[70%] opacity-0'}`}
-                >
-                  {dropDownMenuItems.map((item) => (
-                    <DropDownMenuItem key={item.id} {...item} />
-                  ))}
-                </ul>
-              </div>
+              <IconButton
+                icon={<AddCircle size={size === 'sm' ? 16 : 24} />}
+                label="Add to playlist"
+              />
             </div>
           </div>
         </div>
