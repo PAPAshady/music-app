@@ -48,6 +48,10 @@ function MobileGenrePanel() {
   };
 
   useEffect(() => {
+    if (type !== 'genre') dispatch(closeMobileGenrePanel());
+  }, [type, dispatch]);
+
+  useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -123,11 +127,7 @@ function MobileGenrePanel() {
                             </SwiperSlide>
                           ))
                       : playlists?.map((playlist) => (
-                          <SwiperSlide
-                            key={playlist.id}
-                            className="p-[1px] min-[520px]:pb-10"
-                            onClick={() => dispatch(closeMobileGenrePanel())}
-                          >
+                          <SwiperSlide key={playlist.id} className="p-[1px] min-[520px]:pb-10">
                             <PlaylistCard {...playlist} />
                           </SwiperSlide>
                         ))}
@@ -163,12 +163,12 @@ function MobileGenrePanel() {
                           <SwiperSlide key={index} className="sm:pb-11">
                             <div className="space-y-3">
                               {albumsArr.map((album) => (
-                                <div
+                                <AlbumCard
                                   key={album.id}
-                                  onClick={() => dispatch(closeMobileGenrePanel())}
-                                >
-                                  <AlbumCard album={album} size="md" classNames="!max-w-full" />
-                                </div>
+                                  album={album}
+                                  size="md"
+                                  classNames="!max-w-full"
+                                />
                               ))}
                             </div>
                           </SwiperSlide>
