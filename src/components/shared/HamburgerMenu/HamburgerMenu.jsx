@@ -8,7 +8,6 @@ import {
   Home2,
   MusicFilter,
   MusicSquareSearch,
-  Notification,
   Setting2,
   Medal,
 } from 'iconsax-react';
@@ -43,9 +42,6 @@ const HamburgerMenu = memo(() => {
             <Link to="/settings/profile" onClick={() => dispatch(setIsHamburgerMenuOpen(false))}>
               <Avatar size="sm" profilePic={userAvatar} />
             </Link>
-            <button>
-              <Notification size={24} />
-            </button>
           </div>
           <p className="text-white-50 text-lg">{userFullName}</p>
 
