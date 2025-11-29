@@ -1,5 +1,5 @@
 import DropDownList from '../../DropDownList/DropDownList';
-import IconButton from '../../IconButton/IconButton';
+import IconButton from '../../Buttons/IconButton/IconButton';
 import { Additem } from 'iconsax-react';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
