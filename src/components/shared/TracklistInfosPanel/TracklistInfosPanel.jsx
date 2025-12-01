@@ -52,7 +52,7 @@ import {
   likeAlbumMutationOptions,
 } from '../../../queries/likes';
 
-const SidebarPlaylist = memo(() => {
+const TracklistInfosPanel = memo(() => {
   useSelector((state) => state.queryState.type);
   const tracklistType = useSelector((state) => state.queryState.type);
   const tracklistId = useSelector((state) => state.queryState.id);
@@ -391,11 +391,11 @@ function PlaylistInfoSkeleton() {
   );
 }
 
-SidebarPlaylist.displayName = 'SidebarPlaylist';
+TracklistInfosPanel.displayName = 'TracklistInfosPanel';
 
 PlaylistInfo.propTypes = {
   title: PropTypes.string.isRequired,
   icon: PropTypes.element.isRequired,
 };
 
-export default SidebarPlaylist;
+export default TracklistInfosPanel;
