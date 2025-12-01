@@ -2,21 +2,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import artistDefaultImage from '../../../assets/images/Avatar/no-avatar.png';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import IconButton from '../../Buttons/IconButton/IconButton';
-import { Shuffle, RepeateOne, RepeateMusic, Play, Pause, Heart } from 'iconsax-react';
+import { Shuffle, RepeateOne, RepeateMusic, Play, Pause } from 'iconsax-react';
 import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
-import PlayBar from '../../MusicCards/PlayBar/PlayBar';
-import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import { setCurrentQueuelist } from '../../../redux/slices/playContextSlice';
 import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
-import usePlayBar from '../../../hooks/usePlayBar';
 import AlbumsSlider from '../../Sliders/AlbumsSlider/AlbumsSlider';
 import { getAlbumsByArtistIdQueryOptions } from '../../../queries/albums';
 import { getRelatedArtistsQueryOptions } from '../../../queries/artists';
 import ArtistsSlider from '../../Sliders/ArtistsSlider/ArtistsSlider';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
+import MobileArtistPanelSongsList from './MobileArtistPanelSongsList';
 
 function MobileArtistPanel() {
   const dispatch = useDispatch();
@@ -25,12 +23,10 @@ function MobileArtistPanel() {
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
   const isTablet = useMediaQuery('(min-width: 768px)');
-  const isLargeMobile = useMediaQuery('(min-width: 420px)');
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery({
     ...getPopularSongsByArtistIdQueryOptions(artistId),
     select: (data) => data.slice(0, 5),
   });
-  const { playArtistSongs } = usePlayBar(artistId);
   const { data: albums, isPending: isAlbumsPending } = useQuery(
     getAlbumsByArtistIdQueryOptions(artistId)
   );
@@ -82,43 +78,11 @@ function MobileArtistPanel() {
       </div>
 
       <div className="flex w-full flex-col gap-7">
-        <div>
-          <p className="px-4 py-4 text-center text-2xl font-bold">Popular</p>
-
-          {isPopularSongsPending ? (
-            <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-              {Array(5)
-                .fill()
-                .map((_, index) => (
-                  <PlayBarSkeleton
-                    key={index}
-                    size={isLargeMobile ? 'lg' : 'md'}
-                    classNames="!w-full text-start !max-w-none"
-                  />
-                ))}
-            </div>
-          ) : popularSongs.length ? (
-            <div className="mt-8 flex w-full grow flex-col items-center gap-3 sm:gap-4 md:gap-5 md:pb-4">
-              {popularSongs.map((song, index) => (
-                <PlayBar
-                  key={song.id}
-                  size={isLargeMobile ? 'lg' : 'md'}
-                  index={index}
-                  classNames="!w-full text-start !max-w-none"
-                  ActionButtonIcon={<Heart />}
-                  actionButtonClickHandler={() => {}}
-                  song={song}
-                  onPlay={playArtistSongs}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="my-2 w-full">
-              <p className="text-gray-400 md:text-lg">No tracks from this artist.</p>
-            </div>
-          )}
-        </div>
-
+        <MobileArtistPanelSongsList
+          songs={popularSongs}
+          isPending={isPopularSongsPending}
+          artistId={artistId}
+        />
         <div>
           <p className="px-4 pt-4 pb-8 text-center text-2xl font-bold">Albums</p>
           {albums?.length ? (

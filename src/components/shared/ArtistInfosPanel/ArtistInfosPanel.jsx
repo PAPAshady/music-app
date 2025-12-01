@@ -1,21 +1,14 @@
 import noImage from '../../../assets/images/Avatar/no-avatar.png';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
-import usePlayBar from '../../../hooks/usePlayBar';
-import SmallAlbumCard from '../../MusicCards/SmallAlbumCard/SmallAlbumCard';
-import { getAlbumsByArtistIdQueryOptions } from '../../../queries/albums';
-import SmallAlbumCardSkeleton from '../../MusicCards/SmallAlbumCard/SmallAlbumCardSkeleton';
-import SongCard from '../../MusicCards/SongCard/SongCard';
-import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
-import { getRelatedArtistsQueryOptions } from '../../../queries/artists';
-import SmallArtistCardSkeleton from '../../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
 import { useEffect, useRef } from 'react';
-import SmallArtistCard from '../../MusicCards/SmallArtistCard/SmallArtistCard';
 import { useSelector } from 'react-redux';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 import ErrorPanel from '../ErrorPanel/ErrorPanel';
+import ArtistInfosPanelSongsList from './ArtistInfosPanelSongsList';
+import ArtistInfosPanelAlbumsList from './ArtistInfosPanelAlbumsList';
+import ArtistInfosPanelArtistsList from './ArtistInfosPanelArtistsList';
 
 function ArtistInfosPanel() {
   const artistId = useSelector((state) => state.queryState.id);
@@ -26,22 +19,9 @@ function ArtistInfosPanel() {
     failureReason,
     error,
   } = useQuery(getArtistByIdQueryOptions(artistId));
-  const { data: popularSongs, isPending: isPopularSongsPending } = useQuery({
-    ...getPopularSongsByArtistIdQueryOptions(selectedArtist?.id),
-    select: (popularSongs) => popularSongs.slice(0, 4),
-  });
-  const { data: albums, isPending: isAlbumsPending } = useQuery(
-    getAlbumsByArtistIdQueryOptions(selectedArtist?.id)
-  );
-  const { data: relatedArtists, isPending: isRelatedArtistsPending } = useQuery(
-    getRelatedArtistsQueryOptions(selectedArtist)
-  );
-  const { playArtistSongs } = usePlayBar(selectedArtist?.id);
   const containerRef = useRef();
   const showErrorPanel =
     failureReason?.code === '22P02' || failureReason?.code === 'PGRST116' || isError;
-
-  const itemVariants = { hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } };
 
   // always scroll to top when user clicked on another artist
   useEffect(() => {
@@ -123,71 +103,9 @@ function ArtistInfosPanel() {
             </AnimatePresence>
           </div>
           <div className="mt-4 flex grow flex-col gap-6">
-            <div>
-              <p className="ps-3 pb-2 text-xl font-bold text-white">Popular</p>
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={artistId}
-                  variants={{
-                    show: {
-                      transition: {
-                        delayChildren: 0.1,
-                        staggerChildren: 0.1,
-                      },
-                    },
-                  }}
-                  initial="hidden"
-                  animate="show"
-                  exit="hidden"
-                  className={`flex flex-col gap-2 pe-2 pt-[2px] ${!popularSongs?.length && 'h-full'}`}
-                >
-                  {isPopularSongsPending ? (
-                    Array(5)
-                      .fill()
-                      .map((_, index) => (
-                        <motion.div key={index} variants={itemVariants}>
-                          <SongCardSkeleton />
-                        </motion.div>
-                      ))
-                  ) : popularSongs.length ? (
-                    popularSongs.map((song, index) => (
-                      <motion.div key={song.id} variants={itemVariants}>
-                        <SongCard song={song} index={index} onPlay={playArtistSongs} />
-                      </motion.div>
-                    ))
-                  ) : (
-                    <p className="ps-2 pt-1 text-sm">No popular song found from this artist.</p>
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-            <div className="pe-2">
-              <p className="ps-3 pb-3 text-xl font-bold text-white">Albums</p>
-              <div className="flex flex-col gap-2">
-                {isAlbumsPending ? (
-                  Array(3)
-                    .fill()
-                    .map((_, index) => <SmallAlbumCardSkeleton key={index} />)
-                ) : albums.length ? (
-                  albums.map((album) => <SmallAlbumCard key={album.id} {...album} />)
-                ) : (
-                  <p className="ps-2 pt-1 text-sm">No albums found from this artist.</p>
-                )}
-              </div>
-            </div>
-            <div className="pe-2">
-              <p className="ps-3 pb-3 text-xl font-bold text-white">Fans also like</p>
-              <div className="grid grid-cols-3 gap-x-2 gap-y-4">
-                {isRelatedArtistsPending
-                  ? Array(6)
-                      .fill()
-                      .map((_, index) => <SmallArtistCardSkeleton key={index} size="sm" />)
-                  : relatedArtists.map((artist) => (
-                      <SmallArtistCard key={artist.id} size="sm" artist={artist} />
-                    ))}
-              </div>
-            </div>
+            <ArtistInfosPanelSongsList artistId={selectedArtist?.id} />
+            <ArtistInfosPanelAlbumsList artistId={selectedArtist?.id} />
+            <ArtistInfosPanelArtistsList artist={selectedArtist} />
           </div>
         </div>
       </div>

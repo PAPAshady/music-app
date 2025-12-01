@@ -2,34 +2,26 @@ import { createPortal } from 'react-dom';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import { useQuery } from '@tanstack/react-query';
-import SongCardSkeleton from '../MusicCards/SongCard/SongCardSkeleton';
-import SongCard from '../MusicCards/SongCard/SongCard';
-import { Musicnote, Profile2User, MusicPlaylist, Music, ArrowLeft } from 'iconsax-react';
-import AlbumCard from '../MusicCards/AlbumCard/AlbumCard';
-import AlbumCardSkeleton from '../MusicCards/AlbumCard/AlbumCardSkeleton';
+import { Music, ArrowLeft } from 'iconsax-react';
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import useDebounce from '../../hooks/useDebounce';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeMobileSearchPanel } from '../../redux/slices/mobileSearchPanelSlice';
-import SmallArtistCard from '../MusicCards/SmallArtistCard/SmallArtistCard';
-import SmallArtistCardSkeleton from '../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
-import usePlayBar from '../../hooks/usePlayBar';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper/modules';
-import PlaylistCard from '../MusicCards/PlaylistCard/PlaylistCard';
-import PlaylistCardSkeleton from '../MusicCards/PlaylistCard/PlaylistCardSkeleton';
 import { getSongsByKeywordQueryOptions } from '../../queries/musics';
 import { getAlbumsByKeywordQueryOptions } from '../../queries/albums';
 import { getArtistsByKeywordQueryOptions } from '../../queries/artists';
 import { getPlaylistsByKeywordQueryOptions } from '../../queries/playlists';
+import MobileSearchPanelSongsList from './MobileSearchPanelSongsList';
+import MobileSearchPanelAlbumsList from './MobileSearchPanelAlbumsList';
+import MobileSearchPanelArtistsList from './MobileSearchPanelArtistsList';
+import MobileSearchPanelPlaylistsList from './MobileSearchPanelPlaylistsList';
 
 export default function MobileSearchPanel() {
   const dispatch = useDispatch();
   const searchInput = useInput();
   const query = useDebounce(searchInput.value, 500);
   const isOpen = useSelector((state) => state.mobileSearchPanel.isOpen);
-  const { playSingleSong } = usePlayBar();
   const inputRef = useRef(null);
   const {
     data: playlists,
@@ -53,14 +45,6 @@ export default function MobileSearchPanel() {
   } = useQuery(getArtistsByKeywordQueryOptions(query, { limit: 6 }));
   const isLoading = isPlaylistsLoading && isSongsLoading && isAlbumsLoading && isArtistsLoading;
   const hasData = [playlists, albums, songs, artists].some((data) => data?.length);
-
-  const onPlayTrack = useCallback(
-    (song) => {
-      playSingleSong(song);
-      dispatch(closeMobileSearchPanel());
-    },
-    [dispatch, playSingleSong]
-  );
 
   useEffect(() => {
     if (isOpen) {
@@ -98,82 +82,22 @@ export default function MobileSearchPanel() {
             ) : (
               <div className="mt-2 flex flex-col gap-10">
                 {(isSongsPending || !!songs?.length) && (
-                  <div>
-                    <SectionTitle title="Songs" icon={<Musicnote />} />
-                    <div className="grid grid-cols-1 gap-3 px-1 min-[992px]:!grid-cols-3 sm:grid-cols-2">
-                      {isSongsPending
-                        ? Array(4)
-                          .fill()
-                          .map((_, index) => <SongCardSkeleton key={index} />)
-                        : songs.map((song, index) => (
-                          <SongCard
-                            key={song.id}
-                            song={song}
-                            index={index}
-                            onPlay={onPlayTrack}
-                          />
-                        ))}
-                    </div>
-                  </div>
+                  <MobileSearchPanelSongsList songs={songs} isSongsPending={isSongsPending} />
                 )}
                 {(isAlbumsPending || !!albums?.length) && (
-                  <div>
-                    <SectionTitle title="Albums" icon={<MusicPlaylist />} />
-                    <div className="grid grid-cols-1 gap-3 px-1 sm:grid-cols-2">
-                      {isAlbumsPending
-                        ? Array(4)
-                          .fill()
-                          .map((_, index) => <AlbumCardSkeleton key={index} size="md" />)
-                        : albums.map((album) => (
-                          <AlbumCard
-                            size="md"
-                            key={album.id}
-                            album={album}
-                            classNames="!max-w-none"
-                          />
-                        ))}
-                    </div>
-                  </div>
+                  <MobileSearchPanelAlbumsList albums={albums} isAlbumsPending={isAlbumsPending} />
                 )}
                 {(isArtistsPending || !!artists?.length) && (
-                  <div>
-                    <SectionTitle title="Artists" icon={<Profile2User />} />
-                    <div className="grid grid-cols-3 gap-4 px-1 min-[500px]:grid-cols-4 min-[900px]:!grid-cols-6 sm:grid-cols-5">
-                      {isArtistsPending
-                        ? Array(6)
-                          .fill()
-                          .map((_, index) => <SmallArtistCardSkeleton key={index} size="md" />)
-                        : artists.map((artist) => (
-                          <SmallArtistCard size="md" key={artist.id} artist={artist} />
-                        ))}
-                    </div>
-                  </div>
+                  <MobileSearchPanelArtistsList
+                    artists={artists}
+                    isArtistsPending={isArtistsPending}
+                  />
                 )}
                 {(isPlaylistsPending || !!playlists?.length) && (
-                  <div>
-                    <SectionTitle title="Playlists" icon={<MusicPlaylist />} />
-                    <Swiper
-                      spaceBetween={20}
-                      slidesPerView="auto"
-                      modules={[Pagination]}
-                      pagination={{ clickable: true }}
-                      className="!m-0 !max-w-full !p-[1px]"
-                    >
-                      {isPlaylistsPending
-                        ? Array(8)
-                          .fill()
-                          .map((_, index) => (
-                            <SwiperSlide key={index} className="!w-auto !pb-11">
-                              <PlaylistCardSkeleton classNames="!h-48" />
-                            </SwiperSlide>
-                          ))
-                        : playlists.map((playlist) => (
-                          <SwiperSlide key={playlist.id} className="!w-auto !pb-11">
-                            <PlaylistCard {...playlist} classNames="!h-48" />
-                          </SwiperSlide>
-                        ))}
-                    </Swiper>
-                  </div>
+                  <MobileSearchPanelPlaylistsList
+                    playlists={playlists}
+                    isPlaylistsPending={isPlaylistsPending}
+                  />
                 )}
               </div>
             )
@@ -202,22 +126,8 @@ function FilterButton({ text, isActive, onClick }) {
   );
 }
 
-function SectionTitle({ title, icon }) {
-  return (
-    <div className="mb-4 flex items-center gap-2">
-      {icon}
-      <p className="text-2xl font-bold">{title}</p>
-    </div>
-  );
-}
-
 FilterButton.propTypes = {
   text: PropTypes.string.isRequired,
   isActive: PropTypes.bool,
   onClick: PropTypes.func,
-};
-
-SectionTitle.propTypes = {
-  title: PropTypes.string.isRequired,
-  icon: PropTypes.node.isRequired,
 };
