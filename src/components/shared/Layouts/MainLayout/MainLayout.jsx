@@ -8,7 +8,7 @@ import Logo from '../../../Logo/Logo';
 import MobilePanel from '../../MobilePanel/MobilePanel';
 import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { useLocation, Outlet, Link, useMatches } from 'react-router-dom';
-import SidebarPlaylist from '../../SidebarPlaylist/SidebarPlaylist';
+import TracklistInfosPanel from '../../TracklistInfosPanel/TracklistInfosPanel';
 import SidebarWelcomePanel from '../../SidebarWelcomePanel/SidebarWelcomePanel';
 import PlaylistInfosModal from '../../../PlaylistInfosModal/PlaylistInfosModal';
 import ConfirmModal from '../../../ConfirmModal/ConfirmModal';
@@ -81,7 +81,9 @@ export default function MainLayout() {
 
               {sidebarType && validSidebarTypes.includes(sidebarType) ? (
                 <>
-                  {['album', 'playlist', 'favorites'].includes(sidebarType) && <SidebarPlaylist />}
+                  {['album', 'playlist', 'favorites'].includes(sidebarType) && (
+                    <TracklistInfosPanel />
+                  )}
                   {sidebarType === 'artist' && <ArtistInfosPanel />}
                   {sidebarType === 'track' && <SongInfosPanel />}
                   {sidebarType === 'genre' && <GenrePanel />}

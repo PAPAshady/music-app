@@ -70,7 +70,7 @@ export default function PlayerPanel() {
           </span>
         </button>
         {isMobile ? (
-          <MobilePlayerPanel isPending={isPending} songs={data} />
+          <MobilePlayerPanel />
         ) : (
           <DesktopPlayerPanel isPending={isPending} songs={data} isPlayerPanelOpen={isOpen} />
         )}
