@@ -82,7 +82,7 @@ const PlayBar = memo(
         </div>
 
         <div
-          className={`flex items-center justify-between gap-4 pe-3 ${size !== 'sm' ? 'lg:grow-3' : ''}`}
+          className={`flex items-center justify-between gap-4  ${size !== 'sm' ? 'lg:grow-3 lg:pe-3' : ''}`}
         >
           {size !== 'sm' && (
             <>
@@ -112,7 +112,6 @@ const PlayBar = memo(
               )}
             </div>
             <div
-              className={`${size === 'md' ? 'hidden lg:block' : ''} ${size === 'sm' ? 'hidden lg:block' : ''}`}
             >
               <IconButton
                 icon={<AddCircle size={size === 'sm' ? 16 : 24} />}
