@@ -19,6 +19,7 @@ import PlayerPanel from '../../PlayerPanel/PlayerPanel';
 import { useSelector } from 'react-redux';
 import GenrePanel from '../../../GenrePanel/GenrePanel';
 import MobileGenrePanel from '../../../MobileGenrePanel/MobileGenrePanel';
+import AddSongToPlaylistMobilePanel from '../../../addSongToPlaylistMobilePanel/addSongToPlaylistMobilePanel';
 
 const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track', 'genre'];
 
@@ -102,6 +103,7 @@ export default function MainLayout() {
         {isMobile && <MobileSearchPanel />}
         <PlayerPanel />
         <ConfirmModal />
+        {isMobile && <AddSongToPlaylistMobilePanel />}
       </div>
       <PlaylistInfosModal />
     </>

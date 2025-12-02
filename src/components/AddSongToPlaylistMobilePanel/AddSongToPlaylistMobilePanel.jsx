@@ -1,0 +1,55 @@
+import { createPortal } from 'react-dom';
+import { useState, useEffect } from 'react';
+import { SearchNormal1 } from 'iconsax-react';
+import { getAllPrivatePlaylistsQueryOptions } from '../../queries/playlists';
+import { useQuery } from '@tanstack/react-query';
+import useInput from '../../hooks/useInput';
+import AddSongToPlaylistMobilePanelPlaylistsList from './AddSongToPlaylistMobilePanelPlaylistsList ';
+
+function AddSongToPlaylistMobilePanel() {
+  const [isOpen] = useState(true);
+  const searchInput = useInput();
+  const { data, isPending } = useQuery(getAllPrivatePlaylistsQueryOptions());
+  const playlists = data?.filter((playlist) =>
+    playlist.title.toLowerCase().includes(searchInput.value.toLowerCase())
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'visible';
+    }
+    return () => (document.body.style.overflow = 'visible');
+  }, [isOpen]);
+
+  return createPortal(
+    <div
+      className={`fixed inset-0 flex items-end bg-black/40 backdrop-blur transition-all duration-300 will-change-transform ${isOpen ? 'z-10 translate-y-0 opacity-100' : 'z-[-1] translate-y-full opacity-0'} `}
+    >
+      <div className="text-secondary-50 flex h-[90%] grow flex-col rounded-t-2xl bg-gradient-to-b from-slate-700 to-slate-900 pt-9">
+        <div className="mb-4 flex items-center justify-between px-3">
+          <span className="font-bold text-white">Save in</span>
+          <button className="text-secondary-200 text-xs font-bold">New playlist</button>
+        </div>
+        <div className="px-2">
+          <div className="flex items-center overflow-hidden rounded-sm bg-slate-800">
+            <div className="ps-1.5">
+              <SearchNormal1 size={18} />
+            </div>
+            <input
+              type="text"
+              placeholder="Find playlist"
+              className="grow p-1.5 ps-2 font-semibold outline-none"
+              {...searchInput}
+            />
+          </div>
+        </div>
+        <AddSongToPlaylistMobilePanelPlaylistsList playlists={playlists} isPending={isPending} />
+      </div>
+    </div>,
+    document.getElementById('addSongToPlaylistMobilePanel')
+  );
+}
+
+export default AddSongToPlaylistMobilePanel;
