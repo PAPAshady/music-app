@@ -93,32 +93,15 @@ export const updatePrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { is_public: false, playlistId }],
   mutationFn: (newData) => updatePrivatePlaylist(playlistId, newData),
   enabled: !!playlistId,
-  onSuccess: (updatedPlaylist) => {
-    queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
-      if (!prevPlaylists) return [];
-
-      // since supabase dose not provide totaltracks of the playlist in the returend data from server,
-      // we have th get them manually from the cache and append it to the update playlist metadata;
-      const updatedPlatlistTracks = queryClient.getQueryData(['playlists', { playlistId }]);
-      updatedPlaylist.totaltracks = updatedPlatlistTracks.length;
-      queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
-      return prevPlaylists.map((playlist) =>
-        playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
-      );
-    });
-  },
+  onSuccess: () => queryClient.invalidateQueries({ queryKey: ['playlists'] }),
 });
 
 export const deletePrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { is_public: false }],
   mutationFn: () => deletePrivatePlaylist(playlistId),
   enabled: !!playlistId,
-  onSuccess: () => {
-    queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
-      if (!prevPlaylists?.length) return [];
-      return prevPlaylists.filter((playlist) => playlist.id !== playlistId);
-    });
-
+  onSuccess: async () => {
+    await queryClient.invalidateQueries({ queryKey: ['playlists'] });
     const currentQuelistId = store.getState().playContext.currentCollection?.id;
     const selectedQuelistId = store.getState().playContext.selectedCollection?.id;
     const isCurrentPlaylistPlaying = currentQuelistId === playlistId;
@@ -144,6 +127,7 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
   enabled: !!playlistId,
   onSuccess: async () => {
     await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId }] });
+    await queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
 
     // update playlists cache to show the new value of totaltracks field
     queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {

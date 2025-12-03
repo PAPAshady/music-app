@@ -13,6 +13,7 @@ import {
   getSongsByGenreId,
   getSongsByKeyword,
   getGeneratedQueuelistBySongData,
+  getSingleSongByPlaylistId,
 } from '../services/songs';
 
 export const getAllSongsInfiniteQueryOptions = ({ limit = 10 } = {}) => {
@@ -70,6 +71,16 @@ export const getSongsByPlaylistIdQueryOptions = (playlistId) => {
     retry: true,
     retryDelay: 5000,
     enabled: !!playlistId,
+  });
+};
+
+export const getSingleSongByPlaylistIdQueryOptions = (playlistId, songId) => {
+  return queryOptions({
+    queryKey: ['songs', { playlistId, songId }],
+    queryFn: () => getSingleSongByPlaylistId(playlistId, songId),
+    staleTime: Infinity,
+    retry: false,
+    enabled: !!playlistId && !!songId,
   });
 };
 

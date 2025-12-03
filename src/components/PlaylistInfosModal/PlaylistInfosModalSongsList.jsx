@@ -44,7 +44,13 @@ function PlaylistInfosModalSongsList({ tracklist, tracklistSongs }) {
     tracklistSongs?.filter((song) => song.title.toLowerCase().includes(searchValue)) || []; // songs to render in the view tab
   const addTabContentPending = isTrendingSongsLoading || isSearchedSongsLoading;
   const numberOfSongsToRender = (selectedTab === 'add' ? addTabContent : viewTabContent).length;
-  
+  const songsListTitle =
+    selectedTab === 'add'
+      ? 'Recommended songs to add.'
+      : searchValue
+        ? `Results for "${searchValue}"`
+        : `You have ${tracklistSongs.length} song${numberOfSongsToRender > 1 ? 's' : ''} in this playlist`;
+
   const addSongHandler = useCallback(
     async (songId) => {
       const isAlreadyAdded = tracklistSongs.some((song) => song.id === songId);
@@ -120,13 +126,7 @@ function PlaylistInfosModalSongsList({ tracklist, tracklistSongs }) {
       </div>
       <SearchInput {...searchInput} />
       <div className="text-secondary-50">
-        {!!numberOfSongsToRender && (
-          <p className="mb-4 font-semibold">
-            {selectedTab === 'add'
-              ? 'Recommended songs to add.'
-              : `You have ${tracklistSongs.length} song${numberOfSongsToRender > 1 ? 's' : ''} in this playlist`}
-          </p>
-        )}
+        {!!numberOfSongsToRender && <p className="mb-4 font-semibold">{songsListTitle}</p>}
 
         <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
           {addTabContentPending || numberOfSongsToRender ? (
