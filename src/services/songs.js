@@ -46,6 +46,18 @@ export const getSongsByPlaylistId = async (playlistId) => {
   return data.map((data) => data.songs);
 };
 
+// checks if a playlist has a specific song
+export const getSingleSongByPlaylistId = async (playlistId, songId) => {
+  console.log(playlistId, ' ', songId);
+  const { data, error } = await supabase
+    .from('playlist_songs')
+    .select('songs(*)')
+    .eq('playlist_id', playlistId)
+    .eq('song_id', songId);
+  if (error) throw error;
+  return data[0]?.songs || null;
+};
+
 export const getPopularSongsByArtistId = async (artistId) => {
   const { data, error } = await supabase
     .from('songs_extended')
