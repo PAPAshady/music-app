@@ -48,7 +48,6 @@ export const getSongsByPlaylistId = async (playlistId) => {
 
 // checks if a playlist has a specific song
 export const getSingleSongByPlaylistId = async (playlistId, songId) => {
-  console.log(playlistId, ' ', songId);
   const { data, error } = await supabase
     .from('playlist_songs')
     .select('songs(*)')
