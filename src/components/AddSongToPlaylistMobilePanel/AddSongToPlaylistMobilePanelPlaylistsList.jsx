@@ -11,8 +11,10 @@ import {
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { getSingleSongByPlaylistIdQueryOptions } from '../../queries/musics';
 import queryClient from '../../queryClient';
+import { openModal as openPlaylistInfosModal } from '../../redux/slices/playlistInfosModalSlice';
 
 function AddSongToPlaylistMobilePanelPlaylistsList({ playlists, isPending }) {
+  const dispatch = useDispatch();
   return (
     <div className="mt-3 grow space-y-1 overflow-y-auto px-1 pb-4">
       {isPending ? (
@@ -33,7 +35,17 @@ function AddSongToPlaylistMobilePanelPlaylistsList({ playlists, isPending }) {
               </p>
             </div>
           )}
-          <div className="flex w-full cursor-pointer items-center rounded-md p-1">
+          <button
+            className="flex w-full cursor-pointer items-center rounded-md p-1"
+            onClick={() =>
+              dispatch(
+                openPlaylistInfosModal({
+                  title: 'Create new playlist',
+                  actionType: 'create_playlist',
+                })
+              )
+            }
+          >
             <div className="flex items-center gap-2">
               <div className="grid size-11 place-content-center rounded-md bg-slate-700">
                 <Add size={36} />
@@ -42,7 +54,7 @@ function AddSongToPlaylistMobilePanelPlaylistsList({ playlists, isPending }) {
                 <p className="font-semibold">New playlist</p>
               </div>
             </div>
-          </div>
+          </button>
         </>
       )}
     </div>

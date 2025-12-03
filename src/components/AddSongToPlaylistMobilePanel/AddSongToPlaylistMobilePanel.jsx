@@ -7,6 +7,7 @@ import useInput from '../../hooks/useInput';
 import AddSongToPlaylistMobilePanelPlaylistsList from './AddSongToPlaylistMobilePanelPlaylistsList';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeAddSongToPlaylistMobilePanel } from '../../redux/slices/addSongToPlaylistMobilePanel';
+import { openModal as openPlaylistInfosModal } from '../../redux/slices/playlistInfosModalSlice';
 
 function AddSongToPlaylistMobilePanel() {
   const dispatch = useDispatch();
@@ -41,7 +42,19 @@ function AddSongToPlaylistMobilePanel() {
         </div>
         <div className="mb-4 flex items-center justify-between px-3">
           <span className="font-bold text-white">Save in</span>
-          <button className="text-secondary-200 text-xs font-bold">New playlist</button>
+          <button
+            className="text-secondary-200 text-xs font-bold"
+            onClick={() =>
+              dispatch(
+                openPlaylistInfosModal({
+                  title: 'Create new playlist',
+                  actionType: 'create_playlist',
+                })
+              )
+            }
+          >
+            New playlist
+          </button>
         </div>
         <div className="px-2">
           <div className="flex items-center overflow-hidden rounded-sm bg-slate-800">
