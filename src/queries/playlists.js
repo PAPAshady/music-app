@@ -127,6 +127,7 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
   enabled: !!playlistId,
   onSuccess: async () => {
     await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId }] });
+    await queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
 
     // update playlists cache to show the new value of totaltracks field
     queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {

@@ -1,13 +1,16 @@
 import { createPortal } from 'react-dom';
-import { useState, useEffect } from 'react';
-import { SearchNormal1 } from 'iconsax-react';
+import { useEffect } from 'react';
+import { SearchNormal1, ArrowDown2 } from 'iconsax-react';
 import { getAllPrivatePlaylistsQueryOptions } from '../../queries/playlists';
 import { useQuery } from '@tanstack/react-query';
 import useInput from '../../hooks/useInput';
 import AddSongToPlaylistMobilePanelPlaylistsList from './AddSongToPlaylistMobilePanelPlaylistsList';
+import { useSelector, useDispatch } from 'react-redux';
+import { closeAddSongToPlaylistMobilePanel } from '../../redux/slices/addSongToPlaylistMobilePanel';
 
 function AddSongToPlaylistMobilePanel() {
-  const [isOpen] = useState(true);
+  const dispatch = useDispatch();
+  const isOpen = useSelector((state) => state.addSongToPlaylistMobilePanel.isOpen);
   const searchInput = useInput();
   const { data, isPending } = useQuery(getAllPrivatePlaylistsQueryOptions());
   const playlists = data?.filter((playlist) =>
@@ -27,7 +30,15 @@ function AddSongToPlaylistMobilePanel() {
     <div
       className={`fixed inset-0 flex items-end bg-black/40 backdrop-blur transition-all duration-300 will-change-transform ${isOpen ? 'z-10 translate-y-0 opacity-100' : 'z-[-1] translate-y-full opacity-0'} `}
     >
-      <div className="text-secondary-50 flex h-[90%] grow flex-col rounded-t-2xl bg-gradient-to-b from-slate-700 to-slate-900 pt-9">
+      <div className="text-secondary-50 flex h-[90%] grow flex-col rounded-t-2xl bg-gradient-to-b from-slate-700 to-slate-900">
+        <div className="flex justify-center pt-4 pb-3">
+          <button
+            className="rounded-md bg-slate-600 px-4"
+            onClick={() => dispatch(closeAddSongToPlaylistMobilePanel())}
+          >
+            <ArrowDown2 size={32} />
+          </button>
+        </div>
         <div className="mb-4 flex items-center justify-between px-3">
           <span className="font-bold text-white">Save in</span>
           <button className="text-secondary-200 text-xs font-bold">New playlist</button>

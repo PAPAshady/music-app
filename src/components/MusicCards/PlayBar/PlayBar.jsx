@@ -7,7 +7,8 @@ import PropTypes from 'prop-types';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { useMutation } from '@tanstack/react-query';
 import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { openAddSongToPlaylistMobilePanel } from '../../../redux/slices/addSongToPlaylistMobilePanel';
 
 const PlayBar = memo(
   ({
@@ -20,6 +21,7 @@ const PlayBar = memo(
     isActionButtonPending,
     classNames,
   }) => {
+    const dispatch = useDispatch();
     const { title, id, cover, artist, duration, album, is_liked } = song;
     const likeHandlerMutation = useMutation(
       is_liked ? unlikeSongMutationOptions() : likeSongMutationOptions()
@@ -82,7 +84,7 @@ const PlayBar = memo(
         </div>
 
         <div
-          className={`flex items-center justify-between gap-4  ${size !== 'sm' ? 'lg:grow-3 lg:pe-3' : ''}`}
+          className={`flex items-center justify-between gap-4 ${size !== 'sm' ? 'lg:grow-3 lg:pe-3' : ''}`}
         >
           {size !== 'sm' && (
             <>
@@ -111,11 +113,11 @@ const PlayBar = memo(
                 />
               )}
             </div>
-            <div
-            >
+            <div>
               <IconButton
                 icon={<AddCircle size={size === 'sm' ? 16 : 24} />}
                 label="Add to playlist"
+                onClick={() => dispatch(openAddSongToPlaylistMobilePanel(id))}
               />
             </div>
           </div>
