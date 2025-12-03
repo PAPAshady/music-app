@@ -19,7 +19,7 @@ import PlayerPanel from '../../PlayerPanel/PlayerPanel';
 import { useSelector } from 'react-redux';
 import GenrePanel from '../../../GenrePanel/GenrePanel';
 import MobileGenrePanel from '../../../MobileGenrePanel/MobileGenrePanel';
-import AddSongToPlaylistMobilePanel from '../../../addSongToPlaylistMobilePanel/addSongToPlaylistMobilePanel';
+import AddSongToPlaylistMobilePanel from '../../../AddSongToPlaylistMobilePanel/AddSongToPlaylistMobilePanel';
 
 const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track', 'genre'];
 
