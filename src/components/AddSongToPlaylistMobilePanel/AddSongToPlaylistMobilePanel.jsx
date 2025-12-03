@@ -4,7 +4,7 @@ import { SearchNormal1 } from 'iconsax-react';
 import { getAllPrivatePlaylistsQueryOptions } from '../../queries/playlists';
 import { useQuery } from '@tanstack/react-query';
 import useInput from '../../hooks/useInput';
-import AddSongToPlaylistMobilePanelPlaylistsList from './AddSongToPlaylistMobilePanelPlaylistsList ';
+import AddSongToPlaylistMobilePanelPlaylistsList from './AddSongToPlaylistMobilePanelPlaylistsList';
 
 function AddSongToPlaylistMobilePanel() {
   const [isOpen] = useState(true);
@@ -41,7 +41,8 @@ function AddSongToPlaylistMobilePanel() {
               type="text"
               placeholder="Find playlist"
               className="grow p-1.5 ps-2 font-semibold outline-none"
-              {...searchInput}
+              value={searchInput.value}
+              onChange={searchInput.onChange}
             />
           </div>
         </div>
