@@ -1,4 +1,4 @@
-import { memo, cloneElement } from 'react';
+import { memo } from 'react';
 import { Heart, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
@@ -127,21 +127,6 @@ const PlayBar = memo(
   }
 );
 
-function DropDownMenuItem({ icon, title, onClick }) {
-  const styledIcon = cloneElement(icon, { size: '100%' });
-
-  return (
-    <li>
-      <button onClick={onClick} className="hover:bg-primary-400/60 w-full cursor-default">
-        <div className="flex items-center gap-2 p-2 text-start text-sm">
-          <span className="size-5">{styledIcon}</span>
-          <span>{title}</span>
-        </div>
-      </button>
-    </li>
-  );
-}
-
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
   index: PropTypes.number,
@@ -152,12 +137,6 @@ PlayBar.propTypes = {
   isActionButtonPending: PropTypes.bool,
   onLikeChange: PropTypes.func,
   classNames: PropTypes.string,
-};
-
-DropDownMenuItem.propTypes = {
-  icon: PropTypes.element.isRequired,
-  title: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
 };
 
 PlayBar.displayName = 'PlayBar';
