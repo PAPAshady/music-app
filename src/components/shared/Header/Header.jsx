@@ -6,7 +6,7 @@ import Avatar from '../../Avatar/Avatar';
 import NotificationMenu from '../NotificationMenu/NotificationMenu';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import SettingsMenu from '../SettingsMenu/SettingsMenu';
-import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
+import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside';
 import { useDispatch, useSelector } from 'react-redux';
 import { openMobileSearchPanel } from '../../../redux/slices/mobileSearchPanelSlice';
 import { setIsHamburgerMenuOpen } from '../../../redux/slices/hamburgerMenuSlice';
@@ -28,7 +28,7 @@ export default memo(function Header() {
             onClick={() => dispatch(setIsHamburgerMenuOpen(true))}
             icon={<HambergerMenu />}
           />
-          <div className="relative" ref={mobileSearchBox.ref}>
+          <div className="relative" ref={mobileSearchBox.setRef}>
             <IconButton
               icon={<SearchNormal1 />}
               onClick={() => dispatch(openMobileSearchPanel())}
@@ -45,7 +45,7 @@ export default memo(function Header() {
         <DesktopSearchBox />
 
         <div className="text-secondary-100 flex items-center gap-2">
-          <div className="relative" ref={notificationMenu.ref}>
+          <div className="relative" ref={notificationMenu.setRef}>
             <IconButton
               onClick={() => notificationMenu.setIsVisible((prev) => !prev)}
               icon={<Notification />}
@@ -54,7 +54,7 @@ export default memo(function Header() {
             />
             <NotificationMenu isVisible={notificationMenu.isVisible} />
           </div>
-          <div ref={settingsMenu.ref} className="relative">
+          <div ref={settingsMenu.setRef} className="relative">
             <IconButton
               icon={<Setting2 />}
               onClick={() => settingsMenu.setIsVisible((prev) => !prev)}

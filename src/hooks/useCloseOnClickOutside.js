@@ -3,11 +3,19 @@ import { useState, useEffect, useRef } from 'react';
 // close drop downs when user clicks outside.
 export default function useCloseOnClickOutside(initialState = false, onClose) {
   const [isVisible, setIsVisible] = useState(initialState);
-  const ref = useRef(null);
+  const refs = useRef([]);
+
+  const setRef = (el) => {
+    // avoid duplicate and null refs
+    if (el && !refs.current.includes(el)) {
+      refs.current.push(el);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
+      const clickedOutsideAll = refs.current.every((ref) => !ref.contains(event.target));
+      if (clickedOutsideAll) {
         setIsVisible(false);
         onClose?.();
       }
@@ -22,5 +30,5 @@ export default function useCloseOnClickOutside(initialState = false, onClose) {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isVisible, onClose]);
 
-  return { ref, isVisible, setIsVisible };
+  return { refs, isVisible, setIsVisible, setRef };
 }

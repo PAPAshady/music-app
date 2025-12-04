@@ -1,5 +1,5 @@
 import { useEffect, useState, cloneElement } from 'react';
-import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside ';
+import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import {
   Pause,
@@ -177,7 +177,7 @@ export default function Player({ classNames, isPlayerPage }) {
           />
           <div
             className="relative hidden items-center gap-2 md:flex"
-            ref={verticalVolumeSlider.ref}
+            ref={verticalVolumeSlider.setRef}
             onClick={stopPropagation}
           >
             <IconButton

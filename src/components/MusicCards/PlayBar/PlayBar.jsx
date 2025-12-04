@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useEffect } from 'react';
+import { memo } from 'react';
 import { Heart, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
@@ -14,6 +14,7 @@ import {
   setPosition,
 } from '../../../redux/slices/addSongToPlaylistSlice';
 import PlayBarDropDownMenu from './PlayBarDropDownMenu';
+import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside';
 
 const PlayBar = memo(
   ({
@@ -34,37 +35,17 @@ const PlayBar = memo(
     const currentMusicId = useSelector((state) => state.musicPlayer.currentMusic?.id);
     const isCurrentSongPlaying = currentMusicId === id;
     const isDropDownOpen = useSelector((state) => state.addSongToPlaylist.isDropDownOpen);
-    const [isVisible, setIsVisible] = useState(false);
-    const shouldShowDropDown = isDropDownOpen && isVisible;
-    const refs = useRef([]);
-
-    const setRef = (el) => {
-      if (el && !refs.current.includes(el)) {
-        refs.current.push(el);
-      }
-    };
-
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        const clickedOutsideAll = refs.current.every((ref) => !ref.contains(event.target));
-        if (clickedOutsideAll) {
-          setIsVisible(false);
-        }
-      };
-
-      if (isVisible) {
-        document.addEventListener('click', handleClickOutside);
-      } else {
-        document.removeEventListener('click', handleClickOutside);
-      }
-
-      return () => document.removeEventListener('click', handleClickOutside);
-    }, [isVisible]);
+    const {
+      isVisible: isDropDownMenuVisible,
+      setIsVisible: setIsDropDownMenuVisible,
+      setRef,
+    } = useCloseOnClickOutside();
+    const shouldShowDropDown = isDropDownOpen && isDropDownMenuVisible;
 
     const addSongToPlaylist = (e) => {
       dispatch(openAddSongToPlaylistMobilePanel(song.id));
       dispatch(openDropDown(song.id));
-      setIsVisible(true);
+      setIsDropDownMenuVisible(true);
 
       // calculate the position of the dropdown
       const rect = e.target.getBoundingClientRect();
@@ -158,7 +139,7 @@ const PlayBar = memo(
                 />
               )}
             </div>
-            <div id="im the container" ref={setRef}>
+            <div ref={setRef}>
               <IconButton
                 icon={<AddCircle size={size === 'sm' ? 16 : 24} />}
                 label="Add to playlist"
