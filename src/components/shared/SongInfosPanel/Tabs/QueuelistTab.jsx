@@ -1,3 +1,4 @@
+import { useState, useCallback, useEffect } from 'react';
 import usePlayBar from '../../../../hooks/usePlayBar';
 import PlayBar from '../../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../../MusicCards/PlayBar/PlayBarSkeleton';
@@ -13,6 +14,21 @@ function QueuelistTab({ artistId }) {
   const { data: queuelist, isPending: isQueuelistPending } = useQuery(
     getGeneratedQueuelistBySongDataQueryOptions(selectedSong)
   );
+  const [isScrollbarLocked, setIsScrollbarLocked] = useState(false);
+  const lockScroll = useCallback(() => setIsScrollbarLocked(true), []);
+  const unlockScroll = useCallback(() => setIsScrollbarLocked(false), []);
+
+  useEffect(() => {
+    if (isScrollbarLocked) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'visible';
+    }
+
+    return () => {
+      document.body.style.overflow = 'visible';
+    };
+  }, [isScrollbarLocked]);
 
   return (
     <AnimatePresence mode="wait">
@@ -27,7 +43,7 @@ function QueuelistTab({ artistId }) {
           exit: { opacity: 0, y: 15 },
           transition: { duration: 0.6 },
         }}
-        className="mt-4 h-full space-y-4 overflow-auto pr-2 pb-2"
+        className={`mt-4 h-full space-y-4 overflow-auto pr-2 pb-2 ${isScrollbarLocked ? 'locked-scroll' : ''}`}
       >
         <div className="text-sm text-slate-300">Coming up</div>
         <motion.div
@@ -66,7 +82,14 @@ function QueuelistTab({ artistId }) {
                     show: { opacity: 1, y: 0 },
                   }}
                 >
-                  <PlayBar size="sm" onPlay={playTracklist} song={song} index={index} />
+                  <PlayBar
+                    size="sm"
+                    onPlay={playTracklist}
+                    song={song}
+                    index={index}
+                    onDropDownOpen={lockScroll}
+                    onDropDownClose={unlockScroll}
+                  />
                 </motion.div>
               ))}
         </motion.div>
