@@ -44,8 +44,8 @@ function Playlist({ cover, title, totaltracks, id }) {
       disabled={addSongMutation.isPending}
     >
       <div className="flex grow items-center gap-2">
-        <img src={cover || defaultCover} className="size-11 rounded-sm object-cover md:size-14" />
-        <div className="text-start">
+        <img src={cover || defaultCover} className="size-14 rounded-sm object-cover md:size-16" />
+        <div className="text-start md:space-y-1">
           <p className="font-semibold">{title}</p>
           <span className="text-secondary-200 text-sm">
             {totaltracks ? `${totaltracks} song${totaltracks > 1 ? 's' : ''}` : 'Empty'}
@@ -56,7 +56,7 @@ function Playlist({ cover, title, totaltracks, id }) {
         {addSongMutation.isPending ? (
           <LoadingSpinner size="sm" />
         ) : (
-          <div className="size-6 md:size-7">
+          <div className="size-7 md:size-8">
             {isSongInPlaylist ? (
               <TickCircle size="100%" className="fill-secondary-400 text-secondary-50" />
             ) : (
