@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
 import { Heart, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
@@ -8,7 +8,12 @@ import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { useMutation } from '@tanstack/react-query';
 import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
 import { useSelector, useDispatch } from 'react-redux';
-import { openMobilePanel as openAddSongToPlaylistMobilePanel } from '../../../redux/slices/addSongToPlaylistSlice';
+import {
+  openMobilePanel as openAddSongToPlaylistMobilePanel,
+  openDropDown,
+  setPosition,
+} from '../../../redux/slices/addSongToPlaylistSlice';
+import PlayBarDropDownMenu from './PlayBarDropDownMenu';
 
 const PlayBar = memo(
   ({
@@ -28,6 +33,46 @@ const PlayBar = memo(
     );
     const currentMusicId = useSelector((state) => state.musicPlayer.currentMusic?.id);
     const isCurrentSongPlaying = currentMusicId === id;
+    const isDropDownOpen = useSelector((state) => state.addSongToPlaylist.isDropDownOpen);
+    const [isVisible, setIsVisible] = useState(false);
+    const shouldShowDropDown = isDropDownOpen && isVisible;
+    const refs = useRef([]);
+
+    const setRef = (el) => {
+      if (el && !refs.current.includes(el)) {
+        refs.current.push(el);
+      }
+    };
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        const clickedOutsideAll = refs.current.every((ref) => !ref.contains(event.target));
+        if (clickedOutsideAll) {
+          setIsVisible(false);
+        }
+      };
+
+      if (isVisible) {
+        document.addEventListener('click', handleClickOutside);
+      } else {
+        document.removeEventListener('click', handleClickOutside);
+      }
+
+      return () => document.removeEventListener('click', handleClickOutside);
+    }, [isVisible]);
+
+    const addSongToPlaylist = (e) => {
+      dispatch(openAddSongToPlaylistMobilePanel(song.id));
+      dispatch(openDropDown(song.id));
+      setIsVisible(true);
+
+      // calculate the position of the dropdown
+      const rect = e.target.getBoundingClientRect();
+      const dropDownWidth = 260; // assumed width of the dropdown
+      const left = rect.left + window.scrollX - dropDownWidth;
+      const top = rect.top + window.scrollY;
+      dispatch(setPosition({ left, top }));
+    };
 
     // add a glowing style around the borders if the current song is playing.
     const activeStateStyles = `${isCurrentSongPlaying ? `border-primary-100 shadow-[1px_1px_5px_rgba(216,223,245,.4),-1px_-1px_6px_rgba(216,223,245,.4)] ${size === 'sm' ? '!inset-shadow-[1px_1px_10px] !inset-shadow-[#d8dff5]/80 ' : '!inset-shadow-[#d8dff5]/45 '}` : 'border-primary-300'}`;
@@ -113,13 +158,14 @@ const PlayBar = memo(
                 />
               )}
             </div>
-            <div>
+            <div id="im the container" ref={setRef}>
               <IconButton
                 icon={<AddCircle size={size === 'sm' ? 16 : 24} />}
                 label="Add to playlist"
-                onClick={() => dispatch(openAddSongToPlaylistMobilePanel(id))}
+                onClick={addSongToPlaylist}
               />
             </div>
+            {shouldShowDropDown && <PlayBarDropDownMenu ref={setRef} />}
           </div>
         </div>
       </div>

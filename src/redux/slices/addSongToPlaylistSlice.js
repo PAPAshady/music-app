@@ -6,6 +6,7 @@ const addSongToPlaylistSlice = createSlice({
     isDropDownOpen: false,
     isMobilePanelOpen: false,
     selectedSongId: null,
+    position: { left: 0, top: 0 },
   },
   reducers: {
     openDropDown(state, action) {
@@ -24,9 +25,22 @@ const addSongToPlaylistSlice = createSlice({
       state.isMobilePanelOpen = false;
       state.selectedSongId = null;
     },
+    setPosition(state, action) {
+      state.position = action.payload;
+    },
+    toggleDropDown(state, action) {
+      state.isDropDownOpen = !state.isDropDownOpen;
+      state.selectedSongId = action.payload ?? null;
+    },
   },
 });
 
-export const { openDropDown, closeDropDown, openMobilePanel, closeMobilePanel } =
-  addSongToPlaylistSlice.actions;
+export const {
+  openDropDown,
+  closeDropDown,
+  openMobilePanel,
+  closeMobilePanel,
+  setPosition,
+  toggleDropDown,
+} = addSongToPlaylistSlice.actions;
 export default addSongToPlaylistSlice.reducer;
