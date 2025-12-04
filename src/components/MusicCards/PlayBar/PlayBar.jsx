@@ -12,6 +12,7 @@ import {
   openMobilePanel as openAddSongToPlaylistMobilePanel,
   openDropDown,
   setPosition,
+  closeDropDown,
 } from '../../../redux/slices/addSongToPlaylistSlice';
 import PlayBarDropDownMenu from './PlayBarDropDownMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside';
@@ -39,7 +40,7 @@ const PlayBar = memo(
       isVisible: isDropDownMenuVisible,
       setIsVisible: setIsDropDownMenuVisible,
       setRef,
-    } = useCloseOnClickOutside();
+    } = useCloseOnClickOutside(false, () => dispatch(closeDropDown())); // close the dropdown when user clicks outside
     const shouldShowDropDown = isDropDownOpen && isDropDownMenuVisible;
 
     const addSongToPlaylist = (e) => {
@@ -144,6 +145,7 @@ const PlayBar = memo(
                 icon={<AddCircle size={size === 'sm' ? 16 : 24} />}
                 label="Add to playlist"
                 onClick={addSongToPlaylist}
+                isActive={shouldShowDropDown}
               />
             </div>
             {shouldShowDropDown && <PlayBarDropDownMenu ref={setRef} />}
