@@ -6,12 +6,12 @@ import { useQuery } from '@tanstack/react-query';
 import useInput from '../../hooks/useInput';
 import AddSongToPlaylistMobilePanelPlaylistsList from './AddSongToPlaylistMobilePanelPlaylistsList';
 import { useSelector, useDispatch } from 'react-redux';
-import { closeAddSongToPlaylistMobilePanel } from '../../redux/slices/addSongToPlaylistMobilePanel';
+import { closeMobilePanel } from '../../redux/slices/addSongToPlaylistSlice';
 import { openModal as openPlaylistInfosModal } from '../../redux/slices/playlistInfosModalSlice';
 
 function AddSongToPlaylistMobilePanel() {
   const dispatch = useDispatch();
-  const isOpen = useSelector((state) => state.addSongToPlaylistMobilePanel.isOpen);
+  const isOpen = useSelector((state) => state.addSongToPlaylist.isMobilePanelOpen);
   const searchInput = useInput();
   const { data, isPending } = useQuery(getAllPrivatePlaylistsQueryOptions());
   const playlists = data?.filter((playlist) =>
@@ -35,7 +35,7 @@ function AddSongToPlaylistMobilePanel() {
         <div className="flex justify-center pt-4 pb-3">
           <button
             className="rounded-md bg-slate-600 px-4"
-            onClick={() => dispatch(closeAddSongToPlaylistMobilePanel())}
+            onClick={() => dispatch(closeMobilePanel())}
           >
             <ArrowDown2 size={32} />
           </button>

@@ -8,7 +8,7 @@ import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { useMutation } from '@tanstack/react-query';
 import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
 import { useSelector, useDispatch } from 'react-redux';
-import { openAddSongToPlaylistMobilePanel } from '../../../redux/slices/addSongToPlaylistMobilePanel';
+import { openMobilePanel as openAddSongToPlaylistMobilePanel } from '../../../redux/slices/addSongToPlaylistSlice';
 
 const PlayBar = memo(
   ({
