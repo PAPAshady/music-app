@@ -27,6 +27,8 @@ const PlayBar = memo(
     actionButtonClickHandler,
     isActionButtonPending,
     classNames,
+    onDropDownClose,
+    onDropDownOpen,
   }) => {
     const dispatch = useDispatch();
     const { title, id, cover, artist, duration, album, is_liked } = song;
@@ -40,20 +42,33 @@ const PlayBar = memo(
       isVisible: isDropDownMenuVisible,
       setIsVisible: setIsDropDownMenuVisible,
       setRef,
-    } = useCloseOnClickOutside(false, () => dispatch(closeDropDown())); // close the dropdown when user clicks outside
+    } = useCloseOnClickOutside(false, closeAddToPlaylistDropDown); // close the dropdown when user clicks outside
     const shouldShowDropDown = isDropDownOpen && isDropDownMenuVisible;
 
-    const addSongToPlaylist = (e) => {
-      dispatch(openAddSongToPlaylistMobilePanel(song.id));
-      dispatch(openDropDown(song.id));
-      setIsDropDownMenuVisible(true);
+    // handle on dropdown close
+    function closeAddToPlaylistDropDown() {
+      dispatch(closeDropDown());
+      onDropDownClose?.();
+    }
 
+    // handle on dropdown open
+    const openAddToPlaylistDropDown = (e) => {
       // calculate the position of the dropdown
       const rect = e.target.getBoundingClientRect();
       const dropDownWidth = 260; // assumed width of the dropdown
       const left = rect.left + window.scrollX - dropDownWidth;
       const top = rect.top + window.scrollY;
       dispatch(setPosition({ left, top }));
+
+      // show the drop down
+      dispatch(openDropDown(song.id));
+      setIsDropDownMenuVisible(true);
+      onDropDownOpen?.();
+    };
+
+    const addSongToPlaylist = (e) => {
+      dispatch(openAddSongToPlaylistMobilePanel(song.id));
+      openAddToPlaylistDropDown(e);
     };
 
     // add a glowing style around the borders if the current song is playing.
@@ -166,6 +181,8 @@ PlayBar.propTypes = {
   isActionButtonPending: PropTypes.bool,
   onLikeChange: PropTypes.func,
   classNames: PropTypes.string,
+  onDropDownClose: PropTypes.func,
+  onDropDownOpen: PropTypes.func,
 };
 
 PlayBar.displayName = 'PlayBar';
