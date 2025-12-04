@@ -7,7 +7,7 @@ import Playlist from './Playlist';
 
 function AddSongToPlaylistMobilePanelPlaylistsList({ playlists, isPending }) {
   return (
-    <div className="mt-3 md:px-6 grow space-y-1 overflow-y-auto px-1 pb-4">
+    <div className="mt-3 grow space-y-1 overflow-y-auto px-1 pb-4 md:px-6">
       {isPending ? (
         <div className="grid size-full place-content-center">
           <div className="size-10">
@@ -41,7 +41,7 @@ function CreatePlaylistButton() {
 
   return (
     <button
-      className="md:py-3 md:px-1.5 flex w-full cursor-pointer items-center rounded-md p-1 min-[560px]:border min-[560px]:border-slate-600"
+      className="flex w-full cursor-pointer items-center rounded-md p-1 min-[560px]:border min-[560px]:border-slate-600 md:p-1.5"
       onClick={() =>
         dispatch(
           openPlaylistInfosModal({
@@ -52,8 +52,8 @@ function CreatePlaylistButton() {
       }
     >
       <div className="flex items-center gap-2">
-        <div className="grid size-11 place-content-center rounded-md bg-slate-700">
-          <Add size={36} />
+        <div className="grid size-14 place-content-center rounded-md bg-slate-700 md:size-16">
+          <Add size={42} />
         </div>
         <div>
           <p className="font-semibold">New playlist</p>

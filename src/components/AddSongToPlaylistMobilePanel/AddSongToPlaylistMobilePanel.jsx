@@ -41,9 +41,9 @@ function AddSongToPlaylistMobilePanel() {
           </button>
         </div>
         <div className="mb-4 flex items-center justify-between px-3 md:px-6">
-          <span className="font-bold text-white min-[560px]:text-xl">Save in</span>
+          <span className="text-xl font-bold text-white">Save in</span>
           <button
-            className="text-secondary-200 text-xs font-bold min-[560px]:text-base"
+            className="text-secondary-200 text-base font-bold"
             onClick={() =>
               dispatch(
                 openPlaylistInfosModal({
@@ -58,13 +58,15 @@ function AddSongToPlaylistMobilePanel() {
         </div>
         <div className="px-2 md:px-6">
           <div className="flex items-center overflow-hidden rounded-sm bg-slate-800">
-            <div className="ps-1.5">
-              <SearchNormal1 size={18} />
+            <div className="xs:ps-3 ps-1.5">
+              <div className="xs:size-6 size-4">
+                <SearchNormal1 size="100%" />
+              </div>
             </div>
             <input
               type="text"
               placeholder="Find playlist"
-              className="grow p-1.5 ps-2 font-semibold outline-none min-[560px]:p-2.5"
+              className="xs:p-3 grow p-1.5 ps-2 font-semibold outline-none"
               value={searchInput.value}
               onChange={searchInput.onChange}
             />
