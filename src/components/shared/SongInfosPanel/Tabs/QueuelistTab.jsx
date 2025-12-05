@@ -1,4 +1,3 @@
-import { useState, useCallback, useEffect } from 'react';
 import usePlayBar from '../../../../hooks/usePlayBar';
 import PlayBar from '../../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../../MusicCards/PlayBar/PlayBarSkeleton';
@@ -7,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import useLockScrollbar from '../../../../hooks/useLockScrollbar';
 
 function QueuelistTab({ artistId }) {
   const { playTracklist } = usePlayBar(artistId);
@@ -14,21 +14,7 @@ function QueuelistTab({ artistId }) {
   const { data: queuelist, isPending: isQueuelistPending } = useQuery(
     getGeneratedQueuelistBySongDataQueryOptions(selectedSong)
   );
-  const [isScrollbarLocked, setIsScrollbarLocked] = useState(false);
-  const lockScroll = useCallback(() => setIsScrollbarLocked(true), []);
-  const unlockScroll = useCallback(() => setIsScrollbarLocked(false), []);
-
-  useEffect(() => {
-    if (isScrollbarLocked) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'visible';
-    }
-
-    return () => {
-      document.body.style.overflow = 'visible';
-    };
-  }, [isScrollbarLocked]);
+  const { isScrollbarLocked, lockScroll, unlockScroll } = useLockScrollbar(true);
 
   return (
     <AnimatePresence mode="wait">
