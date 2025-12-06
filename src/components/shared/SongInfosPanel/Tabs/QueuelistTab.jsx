@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import useLockScrollbar from '../../../../hooks/useLockScrollbar';
 
 function QueuelistTab({ artistId }) {
   const { playTracklist } = usePlayBar(artistId);
@@ -13,6 +14,7 @@ function QueuelistTab({ artistId }) {
   const { data: queuelist, isPending: isQueuelistPending } = useQuery(
     getGeneratedQueuelistBySongDataQueryOptions(selectedSong)
   );
+  const { isScrollbarLocked, lockScroll, unlockScroll } = useLockScrollbar(true);
 
   return (
     <AnimatePresence mode="wait">
@@ -27,7 +29,7 @@ function QueuelistTab({ artistId }) {
           exit: { opacity: 0, y: 15 },
           transition: { duration: 0.6 },
         }}
-        className="mt-4 h-full space-y-4 overflow-auto pr-2 pb-2"
+        className={`mt-4 h-full space-y-4 overflow-auto pr-2 pb-2 ${isScrollbarLocked ? 'locked-scroll' : ''}`}
       >
         <div className="text-sm text-slate-300">Coming up</div>
         <motion.div
@@ -66,7 +68,14 @@ function QueuelistTab({ artistId }) {
                     show: { opacity: 1, y: 0 },
                   }}
                 >
-                  <PlayBar size="sm" onPlay={playTracklist} song={song} index={index} />
+                  <PlayBar
+                    size="sm"
+                    onPlay={playTracklist}
+                    song={song}
+                    index={index}
+                    onDropDownOpen={lockScroll}
+                    onDropDownClose={unlockScroll}
+                  />
                 </motion.div>
               ))}
         </motion.div>

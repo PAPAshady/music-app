@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 
 function Playlist({ cover, title, totaltracks, id }) {
   const dispatch = useDispatch();
-  const songId = useSelector((state) => state.addSongToPlaylistMobilePanel.selectedSongId);
+  const songId = useSelector((state) => state.addSongToPlaylist.selectedSongId);
   const { data: isSongInPlaylist, isLoading } = useQuery(
     getSingleSongByPlaylistIdQueryOptions(id, songId)
   );

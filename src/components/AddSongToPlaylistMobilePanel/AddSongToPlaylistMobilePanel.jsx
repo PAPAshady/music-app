@@ -6,12 +6,12 @@ import { useQuery } from '@tanstack/react-query';
 import useInput from '../../hooks/useInput';
 import AddSongToPlaylistMobilePanelPlaylistsList from './AddSongToPlaylistMobilePanelPlaylistsList';
 import { useSelector, useDispatch } from 'react-redux';
-import { closeAddSongToPlaylistMobilePanel } from '../../redux/slices/addSongToPlaylistMobilePanel';
+import { closeMobilePanel } from '../../redux/slices/addSongToPlaylistSlice';
 import { openModal as openPlaylistInfosModal } from '../../redux/slices/playlistInfosModalSlice';
 
 function AddSongToPlaylistMobilePanel() {
   const dispatch = useDispatch();
-  const isOpen = useSelector((state) => state.addSongToPlaylistMobilePanel.isOpen);
+  const isOpen = useSelector((state) => state.addSongToPlaylist.isMobilePanelOpen);
   const searchInput = useInput();
   const { data, isPending } = useQuery(getAllPrivatePlaylistsQueryOptions());
   const playlists = data?.filter((playlist) =>
@@ -29,13 +29,13 @@ function AddSongToPlaylistMobilePanel() {
 
   return createPortal(
     <div
-      className={`fixed inset-0 flex items-end bg-black/40 backdrop-blur transition-all duration-300 will-change-transform ${isOpen ? 'z-10 translate-y-0 opacity-100' : 'z-[-1] translate-y-full opacity-0'} `}
+      className={`fixed inset-0 flex items-end bg-black/40 backdrop-blur transition-all duration-300 will-change-transform ${isOpen ? 'z-20 translate-y-0 opacity-100' : 'z-[-1] translate-y-full opacity-0'} `}
     >
       <div className="text-secondary-50 flex h-[90%] grow flex-col rounded-t-2xl bg-gradient-to-b from-slate-700 to-slate-900">
         <div className="flex justify-center pt-4 pb-3">
           <button
             className="rounded-md bg-slate-600 px-4"
-            onClick={() => dispatch(closeAddSongToPlaylistMobilePanel())}
+            onClick={() => dispatch(closeMobilePanel())}
           >
             <ArrowDown2 size={32} />
           </button>

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { chunkArray } from '../../../utils/arrayUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, FreeMode, Mousewheel, Scrollbar } from 'swiper/modules';
@@ -5,11 +6,28 @@ import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import PropTypes from 'prop-types';
+import useLockScrollbar from '../../../hooks/useLockScrollbar';
 
 export default function PlayBarSlider({ songs, isPending, onPlay }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const songsPerChunk = isDesktop ? 5 : 3;
   const itemsToRender = chunkArray(isPending ? Array(10).fill() : songs, songsPerChunk);
+  const { isScrollbarLocked, lockScroll, unlockScroll } = useLockScrollbar();
+  const swiperRef = useRef();
+
+  // disable scrollbar when DropDown menu is open
+  useEffect(() => {
+    const swiper = swiperRef.current;
+    if (isScrollbarLocked) {
+      swiper.disable();
+      swiper.mousewheel.disable();
+      swiper.scrollbar.disable();
+    } else {
+      swiper.enable();
+      swiper.mousewheel.enable();
+      swiper.scrollbar.enable();
+    }
+  }, [isScrollbarLocked]);
 
   return (
     <div className="mx-auto w-[95%] max-w-[1050px]">
@@ -20,6 +38,7 @@ export default function PlayBarSlider({ songs, isPending, onPlay }) {
         pagination={{ clickable: true, enabled: !isDesktop }}
         className="max-w-[95dvw] lg:max-h-[450px]"
         scrollbar={{ enabled: false, draggable: true }}
+        onSwiper={(swiper) => (swiperRef.current = swiper)}
         breakpoints={{
           480: {
             slidesPerView: 1.2,
@@ -60,6 +79,8 @@ export default function PlayBarSlider({ songs, isPending, onPlay }) {
                     classNames="!max-w-none"
                     song={item}
                     onPlay={onPlay}
+                    onDropDownOpen={lockScroll}
+                    onDropDownClose={unlockScroll}
                   />
                 )
               )}

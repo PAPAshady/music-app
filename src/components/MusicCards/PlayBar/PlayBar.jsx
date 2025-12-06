@@ -1,4 +1,4 @@
-import { memo, cloneElement } from 'react';
+import { memo } from 'react';
 import { Heart, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
@@ -8,7 +8,15 @@ import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { useMutation } from '@tanstack/react-query';
 import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../queries/likes';
 import { useSelector, useDispatch } from 'react-redux';
-import { openAddSongToPlaylistMobilePanel } from '../../../redux/slices/addSongToPlaylistMobilePanel';
+import {
+  openMobilePanel as openAddSongToPlaylistMobilePanel,
+  openDropDown,
+  setPosition,
+  closeDropDown,
+} from '../../../redux/slices/addSongToPlaylistSlice';
+import PlayBarDropDownMenu from './PlayBarDropDownMenu';
+import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside';
+import useMediaQuery from '../../../hooks/useMediaQuery';
 
 const PlayBar = memo(
   ({
@@ -20,6 +28,8 @@ const PlayBar = memo(
     actionButtonClickHandler,
     isActionButtonPending,
     classNames,
+    onDropDownClose,
+    onDropDownOpen,
   }) => {
     const dispatch = useDispatch();
     const { title, id, cover, artist, duration, album, is_liked } = song;
@@ -28,6 +38,40 @@ const PlayBar = memo(
     );
     const currentMusicId = useSelector((state) => state.musicPlayer.currentMusic?.id);
     const isCurrentSongPlaying = currentMusicId === id;
+    const isDropDownOpen = useSelector((state) => state.addSongToPlaylist.isDropDownOpen);
+    const {
+      isVisible: isDropDownMenuVisible,
+      setIsVisible: setIsDropDownMenuVisible,
+      setRef,
+    } = useCloseOnClickOutside(false, closeAddToPlaylistDropDown); // close the dropdown when user clicks outside
+    const isTablet = useMediaQuery('(min-width: 640px)');
+    const shouldShowDropDown = isDropDownOpen && isDropDownMenuVisible && isTablet;
+
+    // handle on dropdown close
+    function closeAddToPlaylistDropDown() {
+      dispatch(closeDropDown());
+      onDropDownClose?.();
+    }
+
+    // handle on dropdown open
+    const openAddToPlaylistDropDown = (e) => {
+      // calculate the position of the dropdown
+      const rect = e.target.getBoundingClientRect();
+      const dropDownWidth = 260; // assumed width of the dropdown
+      const left = rect.left + window.scrollX - dropDownWidth;
+      const top = rect.top + window.scrollY;
+      dispatch(setPosition({ left, top }));
+
+      // show the drop down
+      dispatch(openDropDown(song.id));
+      setIsDropDownMenuVisible(true);
+      onDropDownOpen?.();
+    };
+
+    const addSongToPlaylist = (e) => {
+      dispatch(openAddSongToPlaylistMobilePanel(song.id));
+      openAddToPlaylistDropDown(e);
+    };
 
     // add a glowing style around the borders if the current song is playing.
     const activeStateStyles = `${isCurrentSongPlaying ? `border-primary-100 shadow-[1px_1px_5px_rgba(216,223,245,.4),-1px_-1px_6px_rgba(216,223,245,.4)] ${size === 'sm' ? '!inset-shadow-[1px_1px_10px] !inset-shadow-[#d8dff5]/80 ' : '!inset-shadow-[#d8dff5]/45 '}` : 'border-primary-300'}`;
@@ -113,34 +157,21 @@ const PlayBar = memo(
                 />
               )}
             </div>
-            <div>
+            <div ref={setRef}>
               <IconButton
                 icon={<AddCircle size={size === 'sm' ? 16 : 24} />}
                 label="Add to playlist"
-                onClick={() => dispatch(openAddSongToPlaylistMobilePanel(id))}
+                onClick={addSongToPlaylist}
+                isActive={shouldShowDropDown}
               />
             </div>
+            {shouldShowDropDown && <PlayBarDropDownMenu ref={setRef} />}
           </div>
         </div>
       </div>
     );
   }
 );
-
-function DropDownMenuItem({ icon, title, onClick }) {
-  const styledIcon = cloneElement(icon, { size: '100%' });
-
-  return (
-    <li>
-      <button onClick={onClick} className="hover:bg-primary-400/60 w-full cursor-default">
-        <div className="flex items-center gap-2 p-2 text-start text-sm">
-          <span className="size-5">{styledIcon}</span>
-          <span>{title}</span>
-        </div>
-      </button>
-    </li>
-  );
-}
 
 PlayBar.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']).isRequired,
@@ -152,12 +183,8 @@ PlayBar.propTypes = {
   isActionButtonPending: PropTypes.bool,
   onLikeChange: PropTypes.func,
   classNames: PropTypes.string,
-};
-
-DropDownMenuItem.propTypes = {
-  icon: PropTypes.element.isRequired,
-  title: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
+  onDropDownClose: PropTypes.func,
+  onDropDownOpen: PropTypes.func,
 };
 
 PlayBar.displayName = 'PlayBar';

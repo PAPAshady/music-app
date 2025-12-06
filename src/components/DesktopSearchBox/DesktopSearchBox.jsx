@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Music } from 'iconsax-react';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
-import useCloseOnClickOutside from '../../hooks/useCloseOnClickOutside ';
+import useCloseOnClickOutside from '../../hooks/useCloseOnClickOutside';
 import useDebounce from '../../hooks/useDebounce';
 import useInput from '../../hooks/useInput';
 import { useQuery } from '@tanstack/react-query';
@@ -21,7 +21,7 @@ function DesktopSearchBox() {
   const {
     isVisible: isDesktopSearchBoxOpen,
     setIsVisible: setIsDesktopSearchBoxOpen,
-    ref: desktopSearchBoxRef,
+    setRef,
   } = useCloseOnClickOutside();
   const {
     data: playlists,
@@ -49,7 +49,7 @@ function DesktopSearchBox() {
   return (
     <div className="relative w-full">
       <div
-        ref={desktopSearchBoxRef}
+        ref={setRef}
         className={`relative transition-all ease-in-out ${isDesktopSearchBoxOpen ? 'z-[30] w-[80%] min-[1200px]:w-[75%] min-[1400px]:w-[65%]' : 'w-[315px]'}`}
       >
         <SearchInput {...searchInput} onFocus={() => setIsDesktopSearchBoxOpen(true)} />

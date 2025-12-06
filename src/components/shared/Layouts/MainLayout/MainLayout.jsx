@@ -28,6 +28,7 @@ export default function MainLayout() {
   const currentPage = useLocation().pathname;
   const isDesktop = useMediaQuery('(max-width: 1280px)');
   const isMobile = useMediaQuery('(max-width: 1024px)');
+  const isSmallMobile = useMediaQuery('(max-width: 639px)');
   const sidebarType = useSelector((state) => state.queryState.type);
   const isPlayerPanelOpen = useSelector((state) => state.playerPanel.isOpen);
   const matches = useMatches();
@@ -103,7 +104,7 @@ export default function MainLayout() {
         {isMobile && <MobileSearchPanel />}
         <PlayerPanel />
         <ConfirmModal />
-        {isMobile && <AddSongToPlaylistMobilePanel />}
+        {isSmallMobile && <AddSongToPlaylistMobilePanel />}
       </div>
       <PlaylistInfosModal />
     </>
