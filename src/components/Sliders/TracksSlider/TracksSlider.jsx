@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import useMediaQuery from '../../../hooks/useMediaQuery';
@@ -6,10 +7,20 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import PropTypes from 'prop-types';
 import usePlayBar from '../../../hooks/usePlayBar';
+import useLockScrollbar from '../../../hooks/useLockScrollbar';
 
 export default function TracksSlider({ songs, isPending }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const { playSingleSong } = usePlayBar();
+  const { isScrollbarLocked, lockScroll, unlockScroll } = useLockScrollbar();
+  const swiperRef = useRef();
+
+  // disable swiper instance in order to now allow the user to slide when dropDownMenu is open.
+  useEffect(() => {
+    const swiper = swiperRef.current;
+    if (isScrollbarLocked) swiper.disable();
+    else swiper.enable();
+  }, [isScrollbarLocked]);
 
   return (
     <div className="mx-auto w-[95%] xl:max-w-[940px]">
@@ -18,6 +29,7 @@ export default function TracksSlider({ songs, isPending }) {
         modules={[Pagination]}
         spaceBetween={12}
         pagination={{ clickable: true }}
+        onSwiper={(swiper) => (swiperRef.current = swiper)}
         breakpoints={{
           360: {
             slidesPerView: 1.2,
@@ -61,6 +73,8 @@ export default function TracksSlider({ songs, isPending }) {
                       onPlay={playSingleSong}
                       size={isDesktop ? 'sm' : 'md'}
                       classNames="!max-w-full"
+                      onDropDownOpen={lockScroll}
+                      onDropDownClose={unlockScroll}
                     />
                   ))}
                 </div>
