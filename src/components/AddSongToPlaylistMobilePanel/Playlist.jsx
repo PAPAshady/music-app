@@ -28,6 +28,8 @@ function Playlist({ cover, title, totaltracks, id }) {
       await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId: id, songId }] });
       // show real time update of totaltracks in playlists list
       await queryClient.invalidateQueries({ queryKey: ['playlists', { is_public: false }] });
+      // update the list of songs in the playlist
+      await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId: id }] });
       dispatch(
         showNewSnackbar({
           message: isSongInPlaylist ? 'Song removed from playlist' : 'Song added to playlist',
