@@ -1,16 +1,16 @@
 import { createPortal } from 'react-dom';
 import { forwardRef } from 'react';
-import { useSelector } from 'react-redux';
-import { SearchNormal1, Add, TickCircle, AddCircle } from 'iconsax-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { SearchNormal1, Add } from 'iconsax-react';
 import { useQuery } from '@tanstack/react-query';
 import { getAllPrivatePlaylistsQueryOptions } from '../../../queries/playlists';
-import { getSingleSongByPlaylistIdQueryOptions } from '../../../queries/musics';
-import defaultCover from '../../../assets/images/covers/no-cover.jpg';
-import PropTypes from 'prop-types';
+import PlaylistItem from './PlaylistItem';
+import PlaylistItemSkeleton from './PlaylistItemSkeleton';
 import useInput from '../../../hooks/useInput';
-import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
+import { openModal as openPlaylistInfosModal } from '../../../redux/slices/playlistInfosModalSlice';
 
 const PlayBarDropDownMenu = forwardRef((_, ref) => {
+  const dispatch = useDispatch();
   const position = useSelector((state) => state.addSongToPlaylist.position);
   const { data, isPending } = useQuery(getAllPrivatePlaylistsQueryOptions());
   const searchInput = useInput();
@@ -39,7 +39,17 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
             onChange={searchInput.onChange}
           />
         </div>
-        <button className="mt-1 flex w-full items-center gap-2 rounded-sm py-1.5 hover:bg-slate-700">
+        <button
+          className="mt-1 flex w-full items-center gap-2 rounded-sm py-1.5 hover:bg-slate-700"
+          onClick={() =>
+            dispatch(
+              openPlaylistInfosModal({
+                actionType: 'create_playlist',
+                title: 'Create new playlist',
+              })
+            )
+          }
+        >
           <div>
             <Add />
           </div>
@@ -73,46 +83,6 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
     document.getElementById('addSongToPlaylistDropDown')
   );
 });
-
-function PlaylistItem({ title, cover, id }) {
-  const songId = useSelector((state) => state.addSongToPlaylist.selectedSongId);
-  const { data: isSongInPlaylist } = useQuery(getSingleSongByPlaylistIdQueryOptions(id, songId));
-
-  return (
-    <button className="flex w-full items-center rounded-md p-1.5 hover:bg-slate-700" title={title}>
-      <div className="flex grow items-center gap-2">
-        <img className="size-8 rounded-sm object-cover" src={cover || defaultCover} />
-        <span className="text-sm">{title}</span>
-      </div>
-      <div className="size-5">
-        {isSongInPlaylist ? (
-          <TickCircle className="fill-secondary-400 text-secondary-100" size="100%" />
-        ) : (
-          <AddCircle size="100%" />
-        )}
-      </div>
-    </button>
-  );
-}
-
-function PlaylistItemSkeleton() {
-  return (
-    <div className="relative flex items-center overflow-hidden rounded-md bg-gray-600/60 p-1.5">
-      <ShimmerOverlay />
-      <div className="flex grow items-center gap-2">
-        <div className="size-8 rounded-sm bg-gray-800/50"></div>
-        <span className="h-2 w-1/2 rounded-full bg-gray-800/50"></span>
-      </div>
-      <div className="size-5 rounded-sm bg-gray-800/50"></div>
-    </div>
-  );
-}
-
-PlaylistItem.propTypes = {
-  title: PropTypes.string.isRequired,
-  cover: PropTypes.string,
-  id: PropTypes.string.isRequired,
-};
 
 PlayBarDropDownMenu.displayName = 'PlayBarDropDownMenu';
 
