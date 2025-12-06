@@ -19,9 +19,11 @@ export default function PlayBarSlider({ songs, isPending, onPlay }) {
   useEffect(() => {
     const swiper = swiperRef.current;
     if (isScrollbarLocked) {
+      swiper.disable();
       swiper.mousewheel.disable();
       swiper.scrollbar.disable();
     } else {
+      swiper.enable();
       swiper.mousewheel.enable();
       swiper.scrollbar.enable();
     }
