@@ -16,6 +16,7 @@ import {
 } from '../../../redux/slices/addSongToPlaylistSlice';
 import PlayBarDropDownMenu from './PlayBarDropDownMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside';
+import useMediaQuery from '../../../hooks/useMediaQuery';
 
 const PlayBar = memo(
   ({
@@ -43,7 +44,8 @@ const PlayBar = memo(
       setIsVisible: setIsDropDownMenuVisible,
       setRef,
     } = useCloseOnClickOutside(false, closeAddToPlaylistDropDown); // close the dropdown when user clicks outside
-    const shouldShowDropDown = isDropDownOpen && isDropDownMenuVisible;
+    const isTablet = useMediaQuery('(min-width: 640px)');
+    const shouldShowDropDown = isDropDownOpen && isDropDownMenuVisible && isTablet;
 
     // handle on dropdown close
     function closeAddToPlaylistDropDown() {

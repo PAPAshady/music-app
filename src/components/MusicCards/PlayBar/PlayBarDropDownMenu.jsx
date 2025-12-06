@@ -58,7 +58,7 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
       </div>
       <div className="max-h-[250px] min-h-[180px] grow space-y-2 overflow-y-auto py-2 pe-1.5">
         {isPending ? (
-          Array(6)
+          Array(4)
             .fill()
             .map((_, index) => <PlaylistItemSkeleton key={index} />)
         ) : noPlaylistsExist ? (
