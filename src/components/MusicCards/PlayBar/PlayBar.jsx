@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { Heart, Play, AddCircle } from 'iconsax-react';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
@@ -46,6 +46,9 @@ const PlayBar = memo(
     } = useCloseOnClickOutside(false, closeAddToPlaylistDropDown); // close the dropdown when user clicks outside
     const isTablet = useMediaQuery('(min-width: 640px)');
     const shouldShowDropDown = isDropDownOpen && isDropDownMenuVisible && isTablet;
+
+    // unlock the scrollbar when component is unmounted
+    useEffect(() => onDropDownClose, [onDropDownClose]);
 
     // handle on dropdown close
     function closeAddToPlaylistDropDown() {
