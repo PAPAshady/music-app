@@ -3,9 +3,9 @@ import useLyrics from '../../../hooks/useLyrics';
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Music } from 'iconsax-react';
-import PropTypes from 'prop-types';
 
-function LyricsTab({ song }) {
+function LyricsTab() {
+  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const dispatch = useDispatch();
   const containerRef = useRef(null);
   const lineRefs = useRef([]);
@@ -27,9 +27,9 @@ function LyricsTab({ song }) {
       </div>
 
       <div className="h-full grow overflow-auto pr-2 pb-2" ref={containerRef}>
-        {song?.lyrics ? (
+        {currentMusic?.lyrics ? (
           <div className="space-y-8">
-            {song.lyrics.map((lyric, index) => (
+            {currentMusic.lyrics.map((lyric, index) => (
               <p
                 ref={(el) => (lineRefs.current[index] = el)}
                 key={index}
@@ -52,7 +52,5 @@ function LyricsTab({ song }) {
     </div>
   );
 }
-
-LyricsTab.propTypes = { song: PropTypes.object };
 
 export default LyricsTab;

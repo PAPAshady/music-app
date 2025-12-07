@@ -14,17 +14,19 @@ import { formatTime } from '../../../redux/slices/musicPlayerSlice';
 import PropTypes from 'prop-types';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 import SongCard from '../../MusicCards/SongCard/SongCard';
+import { useSelector } from 'react-redux';
 
-function RelatedTab({ onClose, song }) {
+function RelatedTab({ onClose }) {
+  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
-    getRelatedSongsBySongDataQueryOptions(song)
+    getRelatedSongsBySongDataQueryOptions(currentMusic)
   );
-  const { data: artist } = useQuery(getArtistByIdQueryOptions(song?.artist_id));
+  const { data: artist } = useQuery(getArtistByIdQueryOptions(currentMusic?.artist_id));
   const { data: relatedArtists, isPending: isRelatedArtistsPending } = useQuery(
     getRelatedArtistsQueryOptions(artist)
   );
   const { data: albums, isPending: isAlbumsPending } = useQuery(
-    getAlbumsByArtistIdQueryOptions(song?.artist_id)
+    getAlbumsByArtistIdQueryOptions(currentMusic?.artist_id)
   );
   const { playSingleSong } = usePlayBar();
 
@@ -97,20 +99,20 @@ function RelatedTab({ onClose, song }) {
             ))}
       </Swiper>
 
-      {song && (
+      {currentMusic && (
         <>
           <h2 className="mt-6 mb-4 text-xl font-bold">Song details</h2>
           <div className="flex items-center gap-3">
             <div className="size-24 overflow-hidden rounded-xl">
-              <img src={song?.cover} alt={song?.title} className="size-full object-cover" />
+              <img src={currentMusic?.cover} alt={currentMusic?.title} className="size-full object-cover" />
             </div>
             <div className="flex grow flex-col gap-1">
-              <p className="font-bold">{song?.title}</p>
+              <p className="font-bold">{currentMusic?.title}</p>
               <p className="text-sm text-slate-300">
-                {song?.artist} - {formatTime(song?.duration)}
+                {currentMusic?.artist} - {formatTime(currentMusic?.duration)}
               </p>
               <p className="text-sm">
-                {song?.album} - {song?.release_date.split('-')[0]}
+                {currentMusic?.album} - {currentMusic?.release_date.split('-')[0]}
               </p>
             </div>
           </div>
@@ -122,7 +124,6 @@ function RelatedTab({ onClose, song }) {
 
 RelatedTab.propTypes = {
   onClose: PropTypes.func.isRequired,
-  song: PropTypes.object,
 };
 
 export default RelatedTab;

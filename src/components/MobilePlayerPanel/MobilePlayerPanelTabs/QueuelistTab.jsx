@@ -11,9 +11,9 @@ import {
   getSongsByAlbumIdQueryOptions,
   getPopularSongsByArtistIdQueryOptions,
 } from '../../../queries/musics';
-import PropTypes from 'prop-types';
 
-function QueuelistTab({ song }) {
+function QueuelistTab() {
+  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const { playTracklist } = usePlayBar();
   const type = useSelector((state) => state.queryState.type);
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
@@ -26,7 +26,7 @@ function QueuelistTab({ song }) {
         : type === 'album'
           ? getSongsByAlbumIdQueryOptions(playingTracklist.id)
           : type === 'artist'
-            ? getPopularSongsByArtistIdQueryOptions(song?.artist_id)
+            ? getPopularSongsByArtistIdQueryOptions(currentMusic?.artist_id)
             : getFavoriteSongsQueryOptions()
   );
 
@@ -44,7 +44,7 @@ function QueuelistTab({ song }) {
             onPlay={playTracklist}
             index={index}
             // highlight current playing song in the queuelist.
-            classNames={`!border-none !text-white  ${music.id === song?.id ? '!bg-slate-700' : ''}`}
+            classNames={`!border-none !text-white  ${music.id === currentMusic?.id ? '!bg-slate-700' : ''}`}
           />
         ))
       ) : (
@@ -57,7 +57,5 @@ function QueuelistTab({ song }) {
     </div>
   );
 }
-
-QueuelistTab.propTypes = { song: PropTypes.object };
 
 export default QueuelistTab;
