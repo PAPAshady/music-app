@@ -1,4 +1,3 @@
-import DropDownList from '../../DropDownList/DropDownList';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import { Additem } from 'iconsax-react';
 import { useDispatch } from 'react-redux';
@@ -18,18 +17,8 @@ function MobileTracklistPanelPlayButtons({ tracklistTitle, setIsAddMenuOpen }) {
         dispatch(openModal({ title: `Edit ${tracklistTitle}`, actionType: 'edit_playlist' })),
     },
     { id: 2, icon: <Additem />, onClick: () => setIsAddMenuOpen(true) },
-  ];
-
-  const playlistDropDownListItems = [
     {
-      id: 1,
-      icon: <Edit />,
-      title: 'Edit playlist',
-      onClick: () =>
-        dispatch(openModal({ title: `Edit ${tracklistTitle}`, actionType: 'edit_playlist' })),
-    },
-    {
-      id: 2,
+      id: 3,
       icon: <Trash />,
       title: 'Delete playlist',
       onClick: () =>
@@ -45,14 +34,9 @@ function MobileTracklistPanelPlayButtons({ tracklistTitle, setIsAddMenuOpen }) {
     },
   ];
 
-  return (
-    <>
-      {playButtons.map((button) => (
-        <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
-      ))}
-      <DropDownList menuItems={playlistDropDownListItems} dropDownPlacement="bottom start" />
-    </>
-  );
+  return playButtons.map((button) => (
+    <IconButton key={button.id} classNames="sm:size-9 md:size-10" {...button} />
+  ));
 }
 
 export default MobileTracklistPanelPlayButtons;

@@ -62,7 +62,8 @@ function MobileTracklistPanelSongsList({
       ) : !songs?.length ? (
         <div className="my-2 w-full">
           <p className="text-gray-400 md:text-lg">
-            No tracks in {isFavorites ? 'your favorites' : `This ${selectedTracklist?.title}`} yet
+            No tracks in{' '}
+            {isFavorites ? 'your favorites' : `This ${selectedTracklist?.tracklistType}`} yet
           </p>
         </div>
       ) : (
