@@ -15,7 +15,13 @@ import PropTypes from 'prop-types';
 import SuggestedSong from './SuggestedSong/SuggestedSong';
 import SuggestedSongSkeleton from './SuggestedSong/SuggestedSongSkeleton';
 
-function AddSongPanel({ isOpen, setIsOpen, selectedPlaylistSongs, pendingSongId, setPendingSongId }) {
+function AddSongPanel({
+  isOpen,
+  setIsOpen,
+  selectedPlaylistSongs,
+  pendingSongId,
+  setPendingSongId,
+}) {
   const dispatch = useDispatch();
   const searchInput = useInput();
   const tracklistId = useSelector((state) => state.queryState.id);
@@ -64,29 +70,27 @@ function AddSongPanel({ isOpen, setIsOpen, selectedPlaylistSongs, pendingSongId,
 
   return (
     <div
-      className={`text-secondary-50 bg-primary-800 fixed inset-0 z-[10] size-full pb-4 text-start transition-all duration-300 ${isOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+      className={`text-secondary-50 fixed inset-0 z-[10] size-full bg-gradient-to-b from-slate-700 to-slate-900 pb-4 text-start transition-all duration-300 ${isOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div className="container flex h-full flex-col gap-4">
         <div className="flex items-center justify-between pt-4">
           <button onClick={() => setIsOpen(false)}>
-            <ArrowLeft size={28} />
+            <ArrowLeft size={32} />
           </button>
-          <p className="font-semibold sm:text-lg">Add to this playlist</p>
+          <p className="text-lg font-semibold">Add to this playlist</p>
         </div>
         <div>
           <SearchInput {...searchInput} />
         </div>
-        <div className="bg-primary-700 flex grow flex-col gap-5 overflow-y-scroll rounded-md pb-16 min-[400px]:pb-20 min-[480px]:gap-7 sm:pb-24 md:pb-26">
+        <div className="flex grow flex-col gap-5 overflow-y-scroll rounded-md pb-16 min-[400px]:pb-20 min-[480px]:gap-7 sm:pb-24 md:pb-26">
           {hasData || dataIsloading ? (
             <>
               <div className="px-4 pt-4 min-[480px]:px-6 min-[480px]:pt-6">
-                <p className="text-xl font-semibold text-white min-[480px]:text-2xl">
+                <p className="text-2xl font-semibold text-white">
                   {searchedValue ? `Results for "${searchedValue}"` : 'Suggested'}
                 </p>
                 {!searchedValue && (
-                  <p className="mt-1 text-sm min-[480px]:mt-3 min-[480px]:text-lg">
-                    See what&apos;s trending
-                  </p>
+                  <p className="mt-2 text-lg min-[480px]:mt-3">See what&apos;s trending</p>
                 )}
               </div>
               <div className="grid grid-cols-1 gap-4 px-3 pb-4 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-4">
