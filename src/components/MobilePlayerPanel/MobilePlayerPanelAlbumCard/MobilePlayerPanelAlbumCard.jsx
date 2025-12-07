@@ -23,8 +23,8 @@ function MobilePlayerPanelAlbumCard({ album, onClick }) {
         alt={title}
         className="mb-2 h-[120px] w-full cursor-pointer rounded-lg object-cover"
       />
-      <h3 className="cursor-pointer truncate text-sm font-semibold">{title}</h3>
-      <div className="mt-1 flex items-center gap-1 truncate text-xs text-gray-400">
+      <h3 className="cursor-pointer truncate text-base font-semibold">{title}</h3>
+      <div className="mt-1 flex items-center gap-1 truncate text-sm text-gray-400">
         <span>Album</span>
         <span className="bg-secondary-100 size-0.75 rounded-full"></span>
         <span>{release_date.split('-')[0]}</span>
