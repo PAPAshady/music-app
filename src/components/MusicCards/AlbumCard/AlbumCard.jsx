@@ -9,6 +9,7 @@ import { setQueries } from '../../../redux/slices/queryStateSlice';
 import { useMutation } from '@tanstack/react-query';
 import { likeAlbumMutationOptions, unlikeAlbumMutationOptions } from '../../../queries/likes';
 import NowPlayingIndicator from '../../NowPlayingIndicator/NowPlayingIndicator';
+import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
 const AlbumCard = memo(({ size, album, classNames }) => {
   const { cover, totaltracks, artist, is_liked, title, id } = album;
@@ -28,6 +29,17 @@ const AlbumCard = memo(({ size, album, classNames }) => {
   const onLikeChangeHandler = (e) => {
     e.stopPropagation();
     mutate(id);
+  };
+
+  const copyLink = async () => {
+    try {
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      await navigator.clipboard.writeText(`${baseUrl}?type=album&id=${id}`);
+      dispatch(showNewSnackbar({ message: 'Link copied to clipboard!', type: 'success' }));
+    } catch (err) {
+      dispatch(showNewSnackbar({ message: 'Error copying link', type: 'error' }));
+      console.error('Error copying link : ', err);
+    }
   };
 
   return (
@@ -79,7 +91,7 @@ const AlbumCard = memo(({ size, album, classNames }) => {
               </p>
               <div className="text-primary-50 flex items-center gap-2">
                 {isCurrentAlbumPlaying && <NowPlayingIndicator />}
-                <button className="hover:scale-110">
+                <button className="hover:scale-110" onClick={copyLink}>
                   <Share size={18} />
                 </button>
                 <button

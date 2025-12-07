@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Play, Pause, Heart, AddCircle } from 'iconsax-react';
+import { Play, Pause, Heart, Share } from 'iconsax-react';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -17,6 +17,7 @@ import LyricsTab from './Tabs/LyricsTab';
 import QueuelistTab from './Tabs/QueuelistTab';
 import RelatedTab from './Tabs/RelatedTab';
 import ArtistTab from './Tabs/ArtistTab';
+import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
 export default function SongInfosPanel() {
   const songId = useSelector((state) => state.queryState.id);
@@ -40,6 +41,17 @@ export default function SongInfosPanel() {
     failureReason?.code === '22P02' || failureReason?.code === 'PGRST116' || isError;
 
   if (showErrorPanel) return <ErrorPanel error={error} />;
+
+  const copyLink = async () => {
+    try {
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      await navigator.clipboard.writeText(`${baseUrl}?type=track&id=${songId}`);
+      dispatch(showNewSnackbar({ message: 'Link copied to clipboard!', type: 'success' }));
+    } catch (err) {
+      dispatch(showNewSnackbar({ message: 'Error copying link', type: 'error' }));
+      console.error('Error copying link : ', err);
+    }
+  };
 
   const tabButtons = [
     {
@@ -142,8 +154,8 @@ export default function SongInfosPanel() {
                 />
               </SongInfosPanelIconButton>
 
-              <SongInfosPanelIconButton label="Add to playlist">
-                <AddCircle size={20} />
+              <SongInfosPanelIconButton label="Share song" onClick={copyLink}>
+                <Share size={20} />
               </SongInfosPanelIconButton>
 
               {isPending ? (
