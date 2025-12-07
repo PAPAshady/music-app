@@ -12,13 +12,13 @@ function Song({ song, index: songIndex, onPlay, classNames }) {
       <img
         src={cover || defaultSongCover}
         alt="cover"
-        className="h-12 w-12 rounded-md object-cover"
+        className="size-14 rounded-md object-cover"
       />
       <div className="flex flex-1 flex-col justify-center gap-1 overflow-hidden">
-        <p className="truncate text-sm font-medium" title={title}>
+        <p className="truncate  font-medium" title={title}>
           {title}
         </p>
-        <p className="truncate text-xs text-slate-300" title={artist}>
+        <p className="truncate text-sm text-slate-300" title={artist}>
           {artist}
         </p>
       </div>

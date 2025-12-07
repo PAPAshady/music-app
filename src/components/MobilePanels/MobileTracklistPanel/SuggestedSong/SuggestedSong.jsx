@@ -48,10 +48,10 @@ const SuggestedSong = memo(({ isPending, onAdd, song }) => {
           </button>
         </div>
         <div className="flex grow flex-col gap-1.5 overflow-hidden">
-          <p className="truncate text-[0.9rem] min-[480px]:text-base" title={title}>
+          <p className="truncate" title={title}>
             {title}
           </p>
-          <p className="text-secondary-200 truncate text-xs min-[480px]:text-sm" title={artist}>
+          <p className="text-secondary-200 truncate text-sm" title={artist}>
             {artist}
           </p>
         </div>

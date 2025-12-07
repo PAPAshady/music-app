@@ -35,18 +35,18 @@ function PlayerProgressBar({ disabled }) {
       renderTrack={({ props, children }) => (
         <div
           {...props}
-          className={`relative flex h-1.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${isDisabled ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
+          className={`relative flex h-2.5 cursor-pointer items-center rounded-3xl border sm:h-2 ${isDisabled ? 'border-white-700' : 'border-primary-400 md:border-primary-300'}`}
         >
           {/* Buffer bar is disabled in Firefox due to inconsistent `audio.buffered` reporting. */}
           {/* Firefox often shows only small or partial buffered ranges, which breaks the progress calculation. */}
           {!isDisabled && !/Firefox/i.test(navigator.userAgent) && (
             <div
-              className="absolute h-1.5 rounded-3xl bg-white/30 transition sm:h-2"
+              className="absolute h-2 rounded-3xl bg-white/30 transition sm:h-2"
               style={{ width: `${bufferProgressPercentage}%` }}
             ></div>
           )}
           <div
-            className={`relative h-1.5 rounded-3xl border sm:h-2 ${isDisabled ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
+            className={`relative h-2 rounded-3xl border ${isDisabled ? 'bg-white-700 border-white-700 hidden' : 'bg-primary-400 md:bg-primary-300 border-primary-400 md:border-primary-300'}`}
             style={{ width: `${musicProgress[0]}%` }}
           ></div>
           {children}
@@ -54,7 +54,7 @@ function PlayerProgressBar({ disabled }) {
       )}
       renderThumb={({ props }) => (
         <div
-          className={`bg-primary-300 top-0 size-3 rounded-full outline-none sm:size-4 ${isDisabled ? 'hidden' : ''}`}
+          className={`bg-primary-300 top-0 rounded-full outline-none size-4 ${isDisabled ? 'hidden' : ''}`}
           {...props}
           key={1}
         ></div>

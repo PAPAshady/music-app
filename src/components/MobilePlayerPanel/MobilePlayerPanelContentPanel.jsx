@@ -10,11 +10,11 @@ function MobilePlayerPanelContentPanel({ song, isPending, onClose }) {
   const isPlaying = useSelector((state) => state.musicPlayer.isPlaying);
 
   return (
-    <div className="bg-secondary-800/50 flex origin-top items-center p-2">
-      <div className="flex grow items-center gap-2" onClick={onClose}>
+    <div className="bg-secondary-800/50 flex origin-top items-center px-2 py-3">
+      <div className="flex grow items-center gap-3" onClick={onClose}>
         {isPending ? (
           <>
-            <div className="relative size-11 overflow-hidden rounded-lg bg-gray-600/60">
+            <div className="relative size-13 overflow-hidden rounded-lg bg-gray-600/60">
               <ShimmerOverlay />
             </div>
             <div className="flex grow flex-col gap-2">
@@ -31,17 +31,17 @@ function MobilePlayerPanelContentPanel({ song, isPending, onClose }) {
             <img
               src={song?.cover || musicCover}
               alt={song?.title}
-              className="size-11 rounded-lg object-cover"
+              className="size-13 rounded-lg object-cover"
             />
             <div>
-              <p className="text-sm font-semibold">{song?.title}</p>
-              <p className="text-xs text-slate-300">{song?.artist}</p>
+              <p className="font-semibold">{song?.title}</p>
+              <p className="text-sm text-slate-300">{song?.artist}</p>
             </div>
           </>
         )}
       </div>
       <button onClick={() => dispatch(isPlaying ? pause() : play())} className="px-3 py-2">
-        {isPlaying ? <Pause /> : <Play />}
+        {isPlaying ? <Pause size={32} /> : <Play size={32} />}
       </button>
     </div>
   );
