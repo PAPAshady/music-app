@@ -111,8 +111,8 @@ TracklistInfosPanelCover.propTypes = {
   tracklist: PropTypes.object,
   tracklistType: PropTypes.string,
   tracklistSongs: PropTypes.array,
-  isTracklistPending: PropTypes.bool.isRequired,
-  isTracklistSongsPending: PropTypes.bool.isRequired,
+  isTracklistPending: PropTypes.bool,
+  isTracklistSongsPending: PropTypes.bool,
 };
 
 export default TracklistInfosPanelCover;
