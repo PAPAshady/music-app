@@ -11,17 +11,21 @@ import useMediaQuery from '../../../hooks/useMediaQuery';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useDispatch } from 'react-redux';
+import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please provide an valid email' }),
 });
 
 export default function Footer() {
+  const dispatch = useDispatch();
   const isDesktop = useMediaQuery('(min-width:1024px)');
   const {
     register,
     watch,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues: { email: '' }, resolver: zodResolver(formSchema) });
 
@@ -30,34 +34,37 @@ export default function Footer() {
       id: 1,
       mainTitle: 'Main Links',
       links: [
-        { id: 1, href: '#', title: 'About Us' },
-        { id: 2, href: '#', title: 'Contact Us' },
-        { id: 3, href: '#', title: 'FAQ' },
-        { id: 4, href: '#', title: 'Privacy Policy' },
+        { id: 1, href: '/settings/profile', title: 'Profile' },
+        { id: 2, href: '/settings/contact-us', title: 'Contact Us' },
+        { id: 3, href: '/settings/FAQ', title: 'FAQ' },
+        { id: 4, href: '/settings/analytics', title: 'Analytics' },
       ],
     },
     {
       id: 2,
       mainTitle: 'Categories',
       links: [
-        { id: 1, href: '#', title: 'Music Genre' },
-        { id: 2, href: '#', title: 'Popular Playlists' },
-        { id: 3, href: '#', title: 'New Albums ' },
+        { id: 1, href: '/favorites', title: 'Your favorites' },
+        { id: 2, href: '/playlists', title: 'Playlists' },
+        { id: 3, href: '/browse', title: 'Browse' },
       ],
     },
     {
       id: 3,
       mainTitle: 'Main Links',
       links: [
-        { id: 1, href: '#', title: 'About Us' },
-        { id: 2, href: '#', title: 'Contact Us' },
-        { id: 3, href: '#', title: 'FAQ' },
-        { id: 4, href: '#', title: 'Privacy Policy' },
+        { id: 1, href: '/settings/profile', title: 'Profile' },
+        { id: 2, href: '/settings/contact-us', title: 'Contact Us' },
+        { id: 3, href: '/settings/FAQ', title: 'FAQ' },
+        { id: 4, href: '/settings/analytics', title: 'Analytics' },
       ],
     },
   ];
 
-  const submitHandler = async (data) => console.log(data);
+  const submitHandler = async () => {
+    dispatch(showNewSnackbar({ message: 'Subscribed successfully', type: 'success' }));
+    reset();
+  };
 
   return (
     <>
@@ -115,9 +122,24 @@ export default function Footer() {
             <div className="flex items-center justify-center gap-6 sm:gap-4">
               <span className="text-primary-200 text-sm font-bold sm:text-base">Follow Us</span>
               <div className="flex items-center gap-2">
-                <img className="size-8" src={instagramImg} alt="Instagram" />
-                <img className="size-8" src={twitterImg} alt="Twitter" />
-                <img className="size-8" src={facebookImg} alt="Facebook" />
+                <a
+                  href="https://www.instagram.com/nima.jsx?igsh=MTlhYmFma2lyc2NoZQ=="
+                  target="_blank"
+                >
+                  <img className="size-8" src={instagramImg} alt="Instagram" />
+                </a>
+                <a
+                  href="https://www.instagram.com/nima.jsx?igsh=MTlhYmFma2lyc2NoZQ=="
+                  target="_blank"
+                >
+                  <img className="size-8" src={twitterImg} alt="Twitter" />
+                </a>
+                <a
+                  href="https://www.instagram.com/nima.jsx?igsh=MTlhYmFma2lyc2NoZQ=="
+                  target="_blank"
+                >
+                  <img className="size-8" src={facebookImg} alt="Facebook" />
+                </a>
               </div>
             </div>
           </div>
