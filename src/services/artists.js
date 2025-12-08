@@ -1,7 +1,9 @@
 import supabase from './supabaseClient';
 
-export const getArtists = async () => {
-  const { data, error } = await supabase.from('artists').select('*');
+export const getArtists = async ({ limit }) => {
+  let query = supabase.from('artists').select('*');
+  if (limit) query = query.limit(limit);
+  const { data, error } = await query;
   if (error) throw error;
   return data;
 };
