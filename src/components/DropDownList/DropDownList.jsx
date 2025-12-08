@@ -9,7 +9,6 @@ export default function DropDownList({
   dropDownPlacement = 'bottom start',
 }) {
   const styledMenuButtonIcon = cloneElement(menuButtonIcon, { size: '100%' });
-  console.log('first');
   return (
     <Menu>
       <div className="relative">
