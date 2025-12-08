@@ -8,12 +8,18 @@ import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import favoritesCover from '../../../assets/images/covers/favorites-cover.png';
-import { Music, Timer, User, Play, Pause } from 'iconsax-react';
+import { Music, Timer, AddCircle, User, Play, Pause, MinusCirlce } from 'iconsax-react';
 import PlaylistInfo from './PlaylistInfo/PlaylistInfo';
 import PlaylistInfoSkeleton from './PlaylistInfo/PlaylistInfoSkeleton';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 import PropTypes from 'prop-types';
 import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';
+import { useMutation } from '@tanstack/react-query';
+import {
+  unsubscribeFromPlaylistMutationOptions,
+  subscribeToPlaylistMutationOptions,
+} from '../../../queries/playlists';
+import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 
 function TracklistInfosPanelCover({
   tracklist,
@@ -30,6 +36,19 @@ function TracklistInfosPanelCover({
   const isPlayingPlaylistSelected =
     playingTracklist.id === tracklist?.id && playingTracklist.title === tracklist?.title;
   const totalTracklistTime = tracklistSongs?.reduce((acc, next) => acc + next.duration, 0);
+  const playlistSubscriptionMutation = useMutation(
+    tracklist?.is_subscribed
+      ? unsubscribeFromPlaylistMutationOptions()
+      : subscribeToPlaylistMutationOptions()
+  );
+  const isPublicPlaylist =
+    tracklist && tracklist.tracklistType === 'playlist' && tracklist.is_public;
+  const subscriptionButtonIcon = tracklist?.is_subscribed ? (
+    <MinusCirlce size={22} />
+  ) : (
+    <AddCircle size={22} />
+  );
+
   const playPauseButtonHandler = () => {
     if (isPlayingPlaylistSelected) {
       dispatch(isPlaying ? pause() : play());
@@ -43,7 +62,22 @@ function TracklistInfosPanelCover({
     }
   };
 
-  const playlistInfosArray = [
+  const publicPlaylistInfosArray = [
+    {
+      id: 1,
+      title: tracklistSongs?.length
+        ? `${tracklistSongs?.length} ${tracklistSongs?.length > 1 ? 'tracks' : 'track'}`
+        : 'No tracks',
+      icon: <Music />,
+    },
+    {
+      id: 2,
+      title: tracklistSongs ? formatTime(totalTracklistTime) : '00:00',
+      icon: <Timer />,
+    },
+  ];
+
+  const tracklistInfosArray = [
     {
       id: 1,
       title: tracklistSongs?.length
@@ -94,12 +128,38 @@ function TracklistInfosPanelCover({
           </div>
         </div>
       )}
-      <div className="flex grow flex-col">
-        {playlistInfosArray.map((info) =>
-          isTracklistSongsPending ? (
-            <PlaylistInfoSkeleton key={info.id} />
-          ) : (
-            <PlaylistInfo key={info.id} {...info} />
+      <div className="flex grow flex-col items-start">
+        {isPublicPlaylist ? (
+          <>
+            {publicPlaylistInfosArray.map((info) =>
+              isTracklistSongsPending ? (
+                <PlaylistInfoSkeleton key={info.id} />
+              ) : (
+                <PlaylistInfo key={info.id} {...info} />
+              )
+            )}
+            <button
+              className="bg-primary-500/80 hover:bg-primary-500 flex grow-[0.4] items-center gap-1 rounded-md px-3 text-start text-xs"
+              onClick={() => playlistSubscriptionMutation.mutate(tracklist.id)}
+              disabled={playlistSubscriptionMutation.isPending}
+            >
+              {playlistSubscriptionMutation.isPending ? (
+                <LoadingSpinner size="xs" />
+              ) : (
+                subscriptionButtonIcon
+              )}
+              <span className="font-semibold">
+                {tracklist?.is_subscribed ? 'Unsubscribe' : 'Subscribe'}
+              </span>
+            </button>
+          </>
+        ) : (
+          tracklistInfosArray.map((info) =>
+            isTracklistSongsPending ? (
+              <PlaylistInfoSkeleton key={info.id} />
+            ) : (
+              <PlaylistInfo key={info.id} {...info} />
+            )
           )
         )}
       </div>
