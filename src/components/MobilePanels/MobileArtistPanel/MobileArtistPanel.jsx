@@ -50,7 +50,6 @@ function MobileArtistPanel() {
             />
           </button>
 
-          <MainButton size="sm" variant="primary" type="outline" title="Follow" />
         </div>
         <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
           <IconButton
