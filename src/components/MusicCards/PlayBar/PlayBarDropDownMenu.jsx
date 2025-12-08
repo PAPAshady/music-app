@@ -8,6 +8,7 @@ import PlaylistItem from './PlaylistItem';
 import PlaylistItemSkeleton from './PlaylistItemSkeleton';
 import useInput from '../../../hooks/useInput';
 import { openModal as openPlaylistInfosModal } from '../../../redux/slices/playlistInfosModalSlice';
+import { motion } from 'framer-motion';
 
 const PlayBarDropDownMenu = forwardRef((_, ref) => {
   const dispatch = useDispatch();
@@ -21,11 +22,35 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
   const noPlaylistsExist = data?.length === 0;
 
   return createPortal(
-    <div
+    <motion.div
       className={`text-secondary-50 border-secondary-300 absolute z-[5] flex w-[250px] flex-col rounded-md border bg-gradient-to-b from-slate-700 to-slate-900 p-2`}
       style={{ top: `${position.top}px`, left: `${position.left}px` }}
       ref={ref}
+      variants={{
+        hidden: { opacity: 0, y: 15 },
+        show: { opacity: 1, y: 0 },
+      }}
+      transition={{ duration: 0.1 }}
+      initial="hidden"
+      animate="show"
+      exit="hidden"
     >
+      <div className="mb-2 flex items-center justify-between px-1 pt-0.5 pb-1">
+        <p className="text-sm">Save in</p>
+        <button
+          className="text-primary-300 text-xs"
+          onClick={() =>
+            dispatch(
+              openPlaylistInfosModal({
+                actionType: 'create_playlist',
+                title: 'Create new playlist',
+              })
+            )
+          }
+        >
+          New playlist
+        </button>
+      </div>
       <div className="mb-1 border-b border-slate-700 pb-2">
         <div className="flex items-center rounded-md bg-slate-600">
           <div className="ps-2">
@@ -79,7 +104,8 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
           playlists.map((playlist) => <PlaylistItem key={playlist.id} {...playlist} />)
         )}
       </div>
-    </div>,
+    </motion.div>,
+
     document.getElementById('addSongToPlaylistDropDown')
   );
 });

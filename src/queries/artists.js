@@ -7,10 +7,10 @@ import {
   getArtistsByKeyword,
 } from '../services/artists';
 
-export const getArtistsQueryOptions = () => {
+export const getArtistsQueryOptions = (options) => {
   return queryOptions({
     queryKey: ['artists'],
-    queryFn: getArtists,
+    queryFn: () => getArtists(options),
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,

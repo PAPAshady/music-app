@@ -47,13 +47,11 @@ function MobileTracklistPanel() {
 
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const selectedTracklist = tracklistType === 'favorites' ? favoriteSongsInfos : data;
-  const isFavorites = selectedTracklist?.tracklistType === 'favorites';
   const showAddSongPanel =
     isMobilePanelOpen &&
     !selectedTracklist?.is_public &&
     selectedTracklist?.tracklistType !== 'favorites';
-  const showPlayButtons =
-    !selectedTracklist?.is_public && selectedTracklist?.tracklistType !== 'album' && !isFavorites;
+  const showPlayButtons = selectedTracklist?.tracklistType === 'playlist';
 
   const playPauseButtonHandler = () => {
     if (playingTracklist.id !== selectedTracklist?.id) {
@@ -77,7 +75,7 @@ function MobileTracklistPanel() {
           </button>
           {showPlayButtons && (
             <MobileTracklistPanelPlayButtons
-              tracklistTitle={selectedTracklist?.title}
+              playlist={selectedTracklist}
               setIsAddMenuOpen={setIsAddMenuOpen}
             />
           )}

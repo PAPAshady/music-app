@@ -107,7 +107,7 @@ function MobilePlayerPanel() {
       <div className="flex w-full flex-col gap-4 px-4 pb-20 text-start sm:w-[95%]">
         <div className="sm:mb-2">
           <p className="text-secondary-50 text-2xl font-bold sm:text-4xl">{currentMusic?.title}</p>
-          <p className="text-secondary-200 mt-1 text-sm sm:mt-4 sm:text-xl">
+          <p className="text-secondary-200 mt-1 text-lg sm:mt-4 sm:text-xl">
             {currentMusic?.artist}
           </p>
         </div>

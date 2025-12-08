@@ -1,7 +1,7 @@
 import TracksSlider from '../../components/Sliders/TracksSlider/TracksSlider';
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import SettingsPagesSectionHeader from '../../components/SettingsPagesSectionHeader/SettingsPagesSectionHeader';
-import { songs, usageChartData } from '../../data';
+import { usageChartData } from '../../data';
 import { getArtistsQueryOptions } from '../../queries/artists';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -14,14 +14,18 @@ import {
   CartesianGrid,
 } from 'recharts';
 import useMediaQuery from '../../hooks/useMediaQuery';
+import { getRecentSongsQueryOptions } from '../../queries/musics';
 
 export default function Analytics() {
-  const artists = useQuery(getArtistsQueryOptions());
+  const artists = useQuery(getArtistsQueryOptions({ limit: 10 }));
+  const { data: recentSongs, isPending: isRecentSongsPending } = useQuery(
+    getRecentSongsQueryOptions()
+  );
   const isTablet = useMediaQuery('(min-width: 640px)');
 
   return (
-    <>
-      <div className="mb-4 text-center">
+    <div className='space-y-10'>
+      <div className="my-16 text-center">
         <p className="mb-4 text-2xl font-bold md:text-4xl">Your Activity</p>
         <p className="text-primary-200 md:text-xl">
           You&apos;ve been busy scince last week! check it out
@@ -29,7 +33,7 @@ export default function Analytics() {
       </div>
       <div>
         <SettingsPagesSectionHeader title="Songs you've listened to a lot this month" />
-        <TracksSlider songs={songs} />
+        <TracksSlider songs={recentSongs} isPending={isRecentSongsPending} />
       </div>
       <div>
         <SettingsPagesSectionHeader title="Singers who were very popular with you" />
@@ -61,6 +65,6 @@ export default function Analytics() {
           </LineChart>
         </ResponsiveContainer>
       </div>
-    </>
+    </div>
   );
 }

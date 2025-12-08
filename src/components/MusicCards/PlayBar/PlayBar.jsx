@@ -17,6 +17,7 @@ import {
 import PlayBarDropDownMenu from './PlayBarDropDownMenu';
 import useCloseOnClickOutside from '../../../hooks/useCloseOnClickOutside';
 import useMediaQuery from '../../../hooks/useMediaQuery';
+import { AnimatePresence } from 'framer-motion';
 
 const PlayBar = memo(
   ({
@@ -168,7 +169,9 @@ const PlayBar = memo(
                 isActive={shouldShowDropDown}
               />
             </div>
-            {shouldShowDropDown && <PlayBarDropDownMenu ref={setRef} />}
+            <AnimatePresence mode="sync">
+              {shouldShowDropDown && <PlayBarDropDownMenu ref={setRef} />}
+            </AnimatePresence>
           </div>
         </div>
       </div>
