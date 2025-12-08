@@ -26,6 +26,22 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
       style={{ top: `${position.top}px`, left: `${position.left}px` }}
       ref={ref}
     >
+      <div className="mb-2 flex items-center justify-between px-1 pt-0.5 pb-1">
+        <p className="text-sm">Save in</p>
+        <button
+          className="text-primary-300 text-xs"
+          onClick={() =>
+            dispatch(
+              openPlaylistInfosModal({
+                actionType: 'create_playlist',
+                title: 'Create new playlist',
+              })
+            )
+          }
+        >
+          New playlist
+        </button>
+      </div>
       <div className="mb-1 border-b border-slate-700 pb-2">
         <div className="flex items-center rounded-md bg-slate-600">
           <div className="ps-2">
