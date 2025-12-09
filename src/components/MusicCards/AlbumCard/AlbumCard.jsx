@@ -5,11 +5,11 @@ import { Heart, Music, Share } from 'iconsax-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
-import { setQueries } from '../../../redux/slices/queryStateSlice';
 import { useMutation } from '@tanstack/react-query';
 import { likeAlbumMutationOptions, unlikeAlbumMutationOptions } from '../../../queries/likes';
 import NowPlayingIndicator from '../../NowPlayingIndicator/NowPlayingIndicator';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
+import { Link, useLocation } from 'react-router-dom';
 
 const AlbumCard = memo(({ size, album, classNames }) => {
   const { cover, totaltracks, artist, is_liked, title, id } = album;
@@ -19,11 +19,11 @@ const AlbumCard = memo(({ size, album, classNames }) => {
   const { mutate, isPending } = useMutation(
     is_liked ? unlikeAlbumMutationOptions() : likeAlbumMutationOptions()
   );
+  const pathname = useLocation().pathname;
 
   const openMobilePanelHandler = () => {
     dispatch(setSelectedCollection(album));
     dispatch(openMobilePanel('album'));
-    dispatch(setQueries({ type: 'album', id: album.id }));
   };
 
   const onLikeChangeHandler = (e) => {
@@ -47,9 +47,10 @@ const AlbumCard = memo(({ size, album, classNames }) => {
       className={`lg:bg-secondary-700/40 lg:hover:border-secondary-300 lg:hover:bg-secondary-600/48 inset-shadow-secondary-400/70 group relative w-full overflow-hidden rounded-lg border border-transparent bg-black/80 shadow-[1px_1px_12px_rgba(0,0,0,.7)] transition-all duration-300 hover:border-white lg:inset-shadow-[1px_1px_7px] ${size === 'md' ? 'lg:max-w-[328px]' : ''} ${classNames}`}
     >
       <div className="flex items-center lg:p-3">
-        <div
+        <Link
           className="relative flex items-center justify-center lg:pe-10"
           onClick={openMobilePanelHandler}
+          to={`${pathname}?type=album&id=${id}`}
         >
           <img
             className="z-[1] size-[85px] min-h-[85px] min-w-[85px] cursor-pointer rounded-sm object-cover transition-all group-hover:opacity-50 lg:group-hover:opacity-100"
@@ -67,16 +68,17 @@ const AlbumCard = memo(({ size, album, classNames }) => {
           >
             <span className="size-[31%] rounded-full border border-white lg:size-[21px] lg:border"></span>
           </div>
-        </div>
+        </Link>
         <div className="flex grow items-center justify-between overflow-hidden px-3.5 lg:block">
           <div className="overflow-hidden text-start">
-            <p
+            <Link
               className={`text-white-50 cursor-pointer truncate text-base ${size === 'lg' ? 'lg:text-lg' : ''}`}
               title={title}
               onClick={openMobilePanelHandler}
+              to={`${pathname}?type=album&id=${id}`}
             >
               {title}
-            </p>
+            </Link>
             <span title={artist} className="block truncate text-sm text-white">
               {artist}
             </span>

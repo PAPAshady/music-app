@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import GenrePanel from '../../../GenrePanel/GenrePanel';
 import MobileGenrePanel from '../../../MobileGenrePanel/MobileGenrePanel';
 import AddSongToPlaylistMobilePanel from '../../../AddSongToPlaylistMobilePanel/AddSongToPlaylistMobilePanel';
+import useUrlListener from '../../../../hooks/useUrlListener';
 
 const validSidebarTypes = ['playlist', 'album', 'favorites', 'artist', 'track', 'genre'];
 
@@ -34,6 +35,7 @@ export default function MainLayout() {
   const matches = useMatches();
   const isSettingsPage = currentPage.includes('/settings');
   const backgroundImage = matches.at(isSettingsPage ? -2 : -1).handle.backgroundCover;
+  useUrlListener();
 
   useEffect(() => {
     function handleScroll() {

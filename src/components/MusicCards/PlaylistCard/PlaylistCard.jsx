@@ -5,13 +5,14 @@ import { Heart, Play } from 'iconsax-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
-import { setQueries } from '../../../redux/slices/queryStateSlice';
 import { useMutation } from '@tanstack/react-query';
 import { likePlaylistMutationOptions, unlikePlaylistMutationOptions } from '../../../queries/likes';
 import NowPlayingIndicator from '../../NowPlayingIndicator/NowPlayingIndicator';
+import {Link, useLocation} from 'react-router-dom';
 
 const PlaylistCard = memo((playlist) => {
   const dispatch = useDispatch();
+  const pathname = useLocation().pathname;
   const { title, totaltracks, cover, classNames, is_liked, id } = playlist;
   const { mutate, isPending } = useMutation(
     is_liked ? unlikePlaylistMutationOptions() : likePlaylistMutationOptions()
@@ -22,7 +23,6 @@ const PlaylistCard = memo((playlist) => {
   const showSelectedPlaylist = () => {
     dispatch(setSelectedCollection(playlist));
     dispatch(openMobilePanel('playlist'));
-    dispatch(setQueries({ type: 'playlist', id: playlist.id }));
   };
 
 
@@ -32,11 +32,12 @@ const PlaylistCard = memo((playlist) => {
   };
 
   return (
-    <div
+    <Link
       className={`group relative flex h-36 min-w-36 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[2px_2px_15px_rgba(0,0,0,0.5)] outline outline-transparent transition-all duration-300 hover:outline-white lg:h-48 lg:min-w-[152px] lg:outline-none xl:min-w-[140px] ${classNames}`}
       style={{ backgroundImage: `url(${cover ?? noCoverImg})` }}
       title={title}
       onClick={showSelectedPlaylist}
+      to={`${pathname}?type=playlist&id=${id}`}
     >
       <div className="flex size-full flex-col justify-between bg-gradient-to-t from-[rgba(0,0,0,.7)] to-transparent p-2">
         <div
@@ -64,7 +65,7 @@ const PlaylistCard = memo((playlist) => {
           </p>
         </div>
       </div>
-    </div>
+    </Link>
   );
 });
 PlaylistCard.propTypes = {

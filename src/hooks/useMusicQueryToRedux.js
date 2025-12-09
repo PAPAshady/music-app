@@ -14,11 +14,11 @@ import { setSingleSong } from '../redux/slices/playContextSlice';
 import { setCurrentMusic, music } from '../redux/slices/musicPlayerSlice';
 import { getRelatedSongsBySongDataQueryOptions } from '../queries/musics';
 import { useSelector } from 'react-redux';
-import { setQueries } from '../redux/slices/queryStateSlice';
 import { favoriteSongsInfos } from '../redux/slices/playContextSlice';
 import { openPanel } from '../redux/slices/playerPanelSlice';
 import useMediaQuery from './useMediaQuery';
 import { openMobileGenrePanel } from '../redux/slices/mobileGenrePanelSlice';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const queryOptions = {
   playlist: getPlaylistByIdQueryOptions,
@@ -45,6 +45,8 @@ export default function useMusicQueryToRedux() {
   const id = useSelector((state) => state.queryState.id);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const isMobile = useMediaQuery('(max-width: 1023px)');
+  const navigate = useNavigate();
+  const pathname = useLocation().pathname;
 
   // Fetch initial media data (playlist, album, or single track)
   const { data } = useQuery({
@@ -93,7 +95,7 @@ export default function useMusicQueryToRedux() {
   // if a single track is playing, update the query state and url if user changes the track
   useEffect(() => {
     if (queryType === 'track' && currentMusic) {
-      dispatch(setQueries({ id: currentMusic.id }));
+      navigate(`${pathname}?type=track&id=${currentMusic.id}`, { replace: true });
     }
-  }, [currentMusic, queryType, dispatch]);
+  }, [currentMusic, queryType, pathname, navigate]);
 }
