@@ -5,7 +5,7 @@ import Logo from '../../Logo/Logo';
 import { useSelector } from 'react-redux';
 import useInitilizeAudioEvents from '../../../hooks/useInitilizeAudioEvents';
 import useInitilizeAuth from '../../../hooks/useInitilizeAuth';
-import useMusicQueryToRedux from '../../../hooks/useMusicQueryToRedux';
+import useLoadInitialMedia from '../../../hooks/useLoadInitialMedia';
 
 export default function ProtectedRoute({ children }) {
   const user = useSelector((state) => state.auth.user);
@@ -15,7 +15,7 @@ export default function ProtectedRoute({ children }) {
   useInitilizeAuth(); // initilize app's authentication
   //fetch music data based on query strings
   // and store it in Redux as the initial state after page load
-  useMusicQueryToRedux();
+  useLoadInitialMedia();
 
   if (isLoading) {
     return (

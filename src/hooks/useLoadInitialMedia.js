@@ -39,7 +39,7 @@ const dummyQueryOptions = {
 
 // Custom hook to fetch music data based on query strings
 // and store it in Redux as the initial state after page load
-export default function useMusicQueryToRedux() {
+export default function useLoadInitialMedia() {
   const dispatch = useDispatch();
   const queryType = useSelector((state) => state.queryState.type);
   const id = useSelector((state) => state.queryState.id);
