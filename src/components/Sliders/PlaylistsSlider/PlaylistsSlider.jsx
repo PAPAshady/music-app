@@ -10,8 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';
-import { setQueries } from '../../../redux/slices/queryStateSlice';
 import NowPlayingIndicator from '../../NowPlayingIndicator/NowPlayingIndicator';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function PlaylistsSlider({
   playlists,
@@ -20,11 +20,11 @@ export default function PlaylistsSlider({
 }) {
   const dispatch = useDispatch();
   const playingTracklistId = useSelector((state) => state.playContext.currentCollection?.id);
+  const pathname = useLocation().pathname;
 
   const showFavoriteSongs = () => {
     dispatch(setSelectedCollection(favoriteSongsInfos));
     dispatch(openMobilePanel('favorites'));
-    dispatch(setQueries({ type: 'favorites', id: null }));
   };
 
   return (
@@ -68,9 +68,10 @@ export default function PlaylistsSlider({
                   <AddPlaylistButton />
                 ) : playlist.type === 'favorite-songs' ? (
                   // render a button to show favorite musics onClick
-                  <div
+                  <Link
                     className="hover:border-secondary-50 relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-transparent bg-gradient-to-br from-[#822F6A] via-[#434EAA] to-[#005E4B] transition-colors lg:h-48 lg:gap-3"
                     onClick={showFavoriteSongs}
+                    to={`${pathname}?type=favorites`}
                   >
                     {playingTracklistId === 'favorites' && (
                       <div className="absolute top-5 left-2.5">
@@ -81,7 +82,7 @@ export default function PlaylistsSlider({
                       <Like1 size="100%" />
                     </div>
                     <p className="font-semibold lg:text-lg">Your favorites</p>
-                  </div>
+                  </Link>
                 ) : (
                   <PlaylistCard {...playlist} />
                 )}

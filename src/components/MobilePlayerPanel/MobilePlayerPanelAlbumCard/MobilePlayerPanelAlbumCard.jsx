@@ -1,23 +1,27 @@
 import PropTypes from 'prop-types';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
-import { setQueries } from '../../../redux/slices/queryStateSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import { useDispatch } from 'react-redux';
 import musicCover from '../../../assets/images/covers/no-cover.jpg';
+import { Link, useLocation } from 'react-router-dom';
 
 function MobilePlayerPanelAlbumCard({ album, onClick }) {
   const { cover, title, release_date } = album;
   const dispatch = useDispatch();
+  const pathname = useLocation().pathname;
 
   const clickHandler = () => {
     dispatch(setSelectedCollection(album));
     dispatch(openMobilePanel('album'));
-    dispatch(setQueries({ type: 'album', id: album.id }));
     onClick?.();
   };
 
   return (
-    <div className="flex w-[150px] flex-col rounded-xl p-3" onClick={clickHandler}>
+    <Link
+      className="flex w-[150px] flex-col rounded-xl p-3"
+      onClick={clickHandler}
+      to={`${pathname}?type=album&id=${album.id}`}
+    >
       <img
         src={cover || musicCover}
         alt={title}
@@ -29,7 +33,7 @@ function MobilePlayerPanelAlbumCard({ album, onClick }) {
         <span className="bg-secondary-100 size-0.75 rounded-full"></span>
         <span>{release_date.split('-')[0]}</span>
       </div>
-    </div>
+    </Link>
   );
 }
 

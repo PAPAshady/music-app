@@ -1,22 +1,25 @@
 import { setSelectedCollection } from '../../redux/slices/playContextSlice';
-import { setQueries } from '../../redux/slices/queryStateSlice';
 import { openMobilePanel } from '../../redux/slices/mobilePanelSlice';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import defaultCover from '../../assets/images/covers/no-cover.jpg';
+import { Link, useLocation } from 'react-router-dom';
 
 function PlaylistCard({ playlist }) {
   const dispatch = useDispatch();
   const { title, totaltracks, cover, tracklistType } = playlist;
+  const pathname = useLocation().pathname;
 
   const showSelectedPlaylist = () => {
     dispatch(setSelectedCollection(playlist));
     dispatch(openMobilePanel('playlist'));
-    dispatch(setQueries({ type: 'playlist', id: playlist.id }));
   };
 
   return (
-    <div className="flex w-[110px] flex-col rounded-xl">
+    <Link
+      className="flex w-[110px] flex-col rounded-xl"
+      to={`${pathname}?type=playlist$id=${playlist.id}`}
+    >
       <img
         src={cover || defaultCover}
         alt={title}
@@ -33,7 +36,7 @@ function PlaylistCard({ playlist }) {
           {`${totaltracks ? (totaltracks > 1 ? `${totaltracks} tracks` : '1 track') : 'No tracks'}`}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
