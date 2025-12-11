@@ -18,7 +18,7 @@ function PlaylistCard({ playlist }) {
   return (
     <Link
       className="flex w-[110px] flex-col rounded-xl"
-      to={`${pathname}?type=playlist$id=${playlist.id}`}
+      to={`${pathname}?type=playlist&id=${playlist.id}`}
     >
       <img
         src={cover || defaultCover}
