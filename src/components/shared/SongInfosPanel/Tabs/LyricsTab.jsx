@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
+import getRandomNoLyricsMessage from '../../../../utils/getRandomNoLyricsMessage';
 
 function LyricsTab({ songId, lyrics }) {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ function LyricsTab({ songId, lyrics }) {
   const lineRefs = useRef([]);
   const containerRef = useRef(null);
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
+  const { title, description } = getRandomNoLyricsMessage();
 
   return (
     <AnimatePresence mode="wait">
@@ -56,12 +58,10 @@ function LyricsTab({ songId, lyrics }) {
               ))}
             </div>
           ) : (
-            <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center">
+            <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 px-2 text-center">
               <Music size={55} className="text-secondary-300" />
-              <p className="mt-2 px-4 font-semibold text-white">
-                No lyrics available at the moment.
-              </p>
-              <p className="text-sm">Check back soon!</p>
+              <p className="mt-2 px-4 font-semibold text-white">{title}</p>
+              <p className="text-sm">{description}</p>
             </div>
           )}
         </div>
