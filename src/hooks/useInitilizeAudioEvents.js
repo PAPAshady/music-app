@@ -1,5 +1,8 @@
 import { useEffect, useCallback } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import {
   music,
   setMusicState,
@@ -13,11 +16,14 @@ import {
 import songDefaultCover from '../assets/images/covers/no-cover.jpg';
 
 export default function useInitilizeAudioEvents() {
+  const navigate = useNavigate();
+  const pathname = useLocation().pathname;
   const dispatch = useDispatch();
   const currentSongIndex = useSelector((state) => state.musicPlayer.currentSongIndex);
   const queuelist = useSelector((state) => state.playContext.currentQueuelist);
   const playingState = useSelector((state) => state.musicPlayer.playingState);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
+  const mediaType = useSelector((state) => state.queryState.type);
   const SMTC = 'mediaSession' in window.navigator; // SMTC (System Media Transport Controls):
   // Lets the OS show track info (title, artist, artwork) in the volume/media overlay
   // and handle play/pause/next/prev from hardware/media keys.
@@ -65,6 +71,14 @@ export default function useInitilizeAudioEvents() {
     }
   }, [dispatch, currentSongIndex, playingState, queuelist]);
 
+  // if a single track is playing, update the query state and url if user changes the track
+  useEffect(() => {
+    if (mediaType === 'track' && currentMusic) {
+      navigate(`${pathname}?type=track&id=${currentMusic.id}`, { replace: true });
+    }
+  }, [currentMusic, mediaType, pathname, navigate]);
+
+  // attach the event listeners
   useEffect(() => {
     music.addEventListener('loadstart', startMusicInitialLoading);
     music.addEventListener('waiting', startMusicBuffering);

@@ -1,101 +1,112 @@
+import { useEffect } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
+import { useSelector, useDispatch } from 'react-redux';
+
 import { getPlaylistByIdQueryOptions } from '../queries/playlists';
 import { getAlbumByIdQueryOptions } from '../queries/albums';
-import { getFavoriteSongsQueryOptions, getSongByIdQueryOptions } from '../queries/musics';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  setCurrentQueuelist,
-  setSelectedCollection,
-  setSelectedCollectionTracks,
-  setSelectedSong,
-} from '../redux/slices/playContextSlice';
-import { setSingleSong } from '../redux/slices/playContextSlice';
-import { setCurrentMusic, music } from '../redux/slices/musicPlayerSlice';
-import { getRelatedSongsBySongDataQueryOptions } from '../queries/musics';
-import { useSelector } from 'react-redux';
-import { favoriteSongsInfos } from '../redux/slices/playContextSlice';
-import { openPanel } from '../redux/slices/playerPanelSlice';
+import { getSongByIdQueryOptions } from '../queries/musics';
 import useMediaQuery from './useMediaQuery';
-import { openMobileGenrePanel } from '../redux/slices/mobileGenrePanelSlice';
-import { useNavigate, useLocation } from 'react-router-dom';
-
-const queryOptions = {
-  playlist: getPlaylistByIdQueryOptions,
-  album: getAlbumByIdQueryOptions,
-  track: getSongByIdQueryOptions,
-};
-
-const actions = {
-  playlist: setSelectedCollection,
-  album: setSelectedCollection,
-  track: setSingleSong,
-};
-
-const dummyQueryOptions = {
-  queryKey: ['dummy'],
-  queryFn: () => {},
-};
+import {
+  setSelectedCollection,
+  setSelectedSong,
+  setSingleSong,
+  favoriteSongsInfos,
+  resetPlayContext,
+} from '../redux/slices/playContextSlice';
+import { setCurrentMusic, music, resetPlayer } from '../redux/slices/musicPlayerSlice';
+import {
+  openPanel as openPlayerPanel,
+  closePanel as closePlayerPanel,
+} from '../redux/slices/playerPanelSlice';
+import { openMobileGenrePanel, closeMobileGenrePanel } from '../redux/slices/mobileGenrePanelSlice';
 
 // Custom hook to fetch music data based on query strings
 // and store it in Redux as the initial state after page load
-export default function useLoadInitialMedia() {
+function useLoadInitialMedia2() {
   const dispatch = useDispatch();
-  const queryType = useSelector((state) => state.queryState.type);
-  const id = useSelector((state) => state.queryState.id);
+  const mediaId = useSelector((state) => state.queryState.id);
+  const mediaType = useSelector((state) => state.queryState.type);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
+
   const isMobile = useMediaQuery('(max-width: 1023px)');
-  const navigate = useNavigate();
-  const pathname = useLocation().pathname;
 
-  // Fetch initial media data (playlist, album, or single track)
-  const { data } = useQuery({
-    // set dummy query option if query type is not found to avoid react query error
-    ...(queryOptions[queryType]?.(id) || dummyQueryOptions),
-    enabled: !!queryOptions[queryType],
+  const { data: playlist } = useQuery({
+    ...getPlaylistByIdQueryOptions(mediaId),
+    enabled: mediaType === 'playlist' && !!mediaId,
+  });
+  const { data: album } = useQuery({
+    ...getAlbumByIdQueryOptions(mediaId),
+    enabled: mediaType === 'album' && !!mediaId,
+  });
+  const { data: track } = useQuery({
+    ...getSongByIdQueryOptions(mediaId),
+    enabled: mediaType === 'track' && !!mediaId,
   });
 
-  // If the media is a single track, fetch related songs
-  const { data: relatedSongs } = useQuery({
-    ...getRelatedSongsBySongDataQueryOptions(data),
-    enabled: !!data?.id && queryType === 'track',
-  });
+  const isFavorites = mediaType === 'favorites';
+  const isGenre = mediaType === 'genre';
 
-  const { data: favoriteSongs } = useQuery({
-    ...getFavoriteSongsQueryOptions(),
-    enabled: queryType === 'favorites',
-  });
-
+  // -----------------------------
+  // INITIAL LOAD
+  // -----------------------------
   useEffect(() => {
-    if (data) {
-      // if data exists it means its a playlist, album or a single track. so we dispatch the corresponding actions
-      const action = actions[queryType];
-      dispatch(action(data));
+    if (!mediaId || !mediaType) return;
 
-      // For single tracks, also save related songs and play the song. also dont play the song on initial page load (if current music dose not exist). on initial load it is better to user him self play the song.
-      // thats why we're manipulating music.src and currentMusic directly instead of dispatching setCurrentSongIndex
-      if (queryType === 'track' && relatedSongs && !currentMusic) {
-        dispatch(setSelectedCollectionTracks(relatedSongs));
-        music.src = data.song_url;
-        dispatch(setCurrentMusic(data));
-        dispatch(setSelectedSong(data));
-        isMobile && dispatch(openPanel()); // open player panel on mobile if a single track is selected.
-      }
-    } else if (queryType === 'favorites' && favoriteSongs && !currentMusic) {
-      // if data does not exist it means its favorite songs. so we dispatch the corresponding actions
+    if (playlist) {
+      dispatch(setSelectedCollection(playlist));
+      return;
+    }
+
+    if (album) {
+      dispatch(setSelectedCollection(album));
+      return;
+    }
+
+    if (isFavorites) {
       dispatch(setSelectedCollection(favoriteSongsInfos));
-      dispatch(setCurrentQueuelist(favoriteSongs));
-      dispatch(setCurrentMusic(favoriteSongs?.[0]));
-      music.src = favoriteSongs[0]?.song_url;
-    } else if (queryType === 'genre') {
-      dispatch(openMobileGenrePanel()); // open mobile genre panel if genre is selected on initial page load
+      return;
     }
-  }, [data, dispatch, queryType, relatedSongs, currentMusic, favoriteSongs, isMobile]);
 
-  // if a single track is playing, update the query state and url if user changes the track
-  useEffect(() => {
-    if (queryType === 'track' && currentMusic) {
-      navigate(`${pathname}?type=track&id=${currentMusic.id}`, { replace: true });
+    if (isGenre) {
+      dispatch(openMobileGenrePanel());
+      return;
     }
-  }, [currentMusic, queryType, pathname, navigate]);
+
+    // only run when track exists and currentMusic is not set (this prevents re-runnuing when user changes the track)
+    if (track && !currentMusic) {
+      dispatch(setSingleSong(track));
+      dispatch(setSelectedSong(track));
+      dispatch(setCurrentMusic(track));
+
+      if (isMobile) dispatch(openPlayerPanel());
+
+      music.src = track.song_url;
+    }
+  }, [
+    mediaId,
+    mediaType,
+    playlist,
+    album,
+    track,
+    isFavorites,
+    isGenre,
+    isMobile,
+    dispatch,
+    currentMusic,
+  ]);
+
+  // -----------------------------
+  // CLEANUP ON UNMOUNT ONLY
+  // -----------------------------
+  useEffect(() => {
+    return () => {
+      dispatch(resetPlayContext());
+      dispatch(resetPlayer());
+      dispatch(closePlayerPanel());
+      dispatch(closeMobileGenrePanel());
+    };
+  }, [dispatch]);
 }
+
+export default useLoadInitialMedia2;
