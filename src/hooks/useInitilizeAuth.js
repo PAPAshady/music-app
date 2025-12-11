@@ -50,8 +50,6 @@ export default function useInitilizeAuth() {
             }
           }
         }, 0);
-      } else if (event === 'SIGNED_OUT') {
-        console.log('Hello world');
       }
 
       dispatch(setLoading(false));

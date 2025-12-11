@@ -1,16 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import favoriteSongsCover from '../../assets/images/covers/favorites-cover.png';
 
+const initialState = {
+  isSingleSong: false,
+  selectedCollection: {},
+  currentCollection: {},
+  singleSong: {}, // the song which is currently playing
+  selectedSong: {}, // the song which user selcted to play initially.
+  currentQueuelist: [],
+};
+
 const playContextSlice = createSlice({
   name: 'playContext',
-  initialState: {
-    isSingleSong: false,
-    selectedCollection: {},
-    currentCollection: {},
-    singleSong: {}, // the song which is currently playing 
-    selectedSong: {}, // the song which user selcted to play initially.
-    currentQueuelist: [],
-  },
+  initialState,
   reducers: {
     setIsSingleSong(state, action) {
       state.isSingleSong = action.payload;
@@ -48,6 +50,9 @@ const playContextSlice = createSlice({
     setSelectedSong(state, action) {
       state.selectedSong = action.payload;
     },
+    resetPlayContext() {
+      return initialState;
+    },
   },
 });
 
@@ -68,5 +73,6 @@ export const {
   setCurrentQueuelist,
   resetCurrentCollection,
   setSelectedSong,
+  resetPlayContext,
 } = playContextSlice.actions;
 export default playContextSlice.reducer;

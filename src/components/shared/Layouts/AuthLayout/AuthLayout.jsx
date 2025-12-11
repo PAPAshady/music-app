@@ -3,14 +3,21 @@ import useMediaQuery from '../../../../hooks/useMediaQuery';
 import { Outlet } from 'react-router-dom';
 import Logo from '../../../Logo/Logo';
 import bgImg from '../../../../assets/images/backgrounds/login-signup-page.jpg';
+import { resetPlayContext } from '../../../../redux/slices/playContextSlice';
+import { resetPlayer } from '../../../../redux/slices/musicPlayerSlice';
+import { useDispatch } from 'react-redux';
 
 export default function Authentication() {
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 3000);
-  }, []);
+    // reset playContext and player if user logged out
+    dispatch(resetPlayContext());
+    dispatch(resetPlayer());
+  }, [dispatch]);
 
   return (
     <div
