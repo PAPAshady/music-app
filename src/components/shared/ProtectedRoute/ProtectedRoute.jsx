@@ -9,7 +9,7 @@ import useLoadInitialMedia from '../../../hooks/useLoadInitialMedia';
 
 export default function ProtectedRoute({ children }) {
   const user = useSelector((state) => state.auth.user);
-  const isLoading = useSelector((state) => state.auth.isLoading);
+  const isLoading = useSelector((state) => state.loadingOverlay.isLoading);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   useInitilizeAudioEvents(); // initilize all audio events globally.
   useInitilizeAuth(); // initilize app's authentication
