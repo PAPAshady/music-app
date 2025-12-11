@@ -3,15 +3,8 @@ import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsHamburgerMenuOpen } from '../../../redux/slices/hamburgerMenuSlice';
 import Avatar from '../../Avatar/Avatar';
-import {
-  Heart,
-  Home2,
-  MusicFilter,
-  MusicSquareSearch,
-  Setting2,
-  Medal,
-} from 'iconsax-react';
-import { NavLink, Link } from 'react-router-dom';
+import { Heart, Home2, MusicFilter, MusicSquareSearch, Setting2, Medal } from 'iconsax-react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const HamburgerMenu = memo(() => {
@@ -25,7 +18,7 @@ const HamburgerMenu = memo(() => {
     { id: 3, title: 'Playlists', icon: <MusicFilter />, href: '/playlists' },
     { id: 4, title: 'Browse', icon: <MusicSquareSearch />, href: '/browse' },
     { id: 5, title: 'Permium', icon: <Medal />, href: '/permium' },
-    { id: 6, title: 'Settings', icon: <Setting2 />, href: '/settings/' },
+    { id: 6, title: 'Settings', icon: <Setting2 />, href: '/settings/profile' },
   ];
 
   return createPortal(
@@ -76,13 +69,14 @@ const HamburgerMenu = memo(() => {
 });
 
 function MobileNavLink({ title, href, icon, onClick }) {
+  const searchParams = useLocation().search;
   const styledIcon = cloneElement(icon, { className: 'size-6' });
   return (
     <NavLink
       className={({ isActive }) =>
         `flex items-center gap-2 rounded-lg px-2 py-1.5 ${href && isActive ? 'bg-secondary-300 text-white-50' : 'text-secondary-50'}`
       }
-      to={href}
+      to={`${href}${searchParams}`}
       onClick={onClick}
     >
       {styledIcon}
