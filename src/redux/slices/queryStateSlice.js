@@ -10,8 +10,6 @@ export const setQueries = createAsyncThunk('queryState/setQuery', (newQueries, {
       params.set(key, value);
     }
   }
-
-  window.history.pushState({}, '', `?${params.toString()}`);
   dispatch(bindQueries(Object.fromEntries(params.entries())));
 });
 

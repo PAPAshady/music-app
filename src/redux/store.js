@@ -14,6 +14,7 @@ import QueryStateReducer from './slices/queryStateSlice';
 import NotificationsReducer from './slices/notificationsSlice';
 import MobileGenrePanelReducer from './slices/mobileGenrePanelSlice';
 import addSongToPlaylistReducer from './slices/addSongToPlaylistSlice';
+import loadingOverlayReducer from './slices/loadingOverLaySlice';
 
 export default configureStore({
   reducer: {
@@ -31,6 +32,7 @@ export default configureStore({
     notifications: NotificationsReducer,
     mobileGenrePanel: MobileGenrePanelReducer,
     addSongToPlaylist: addSongToPlaylistReducer,
+    loadingOverlay: loadingOverlayReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().prepend(listenerMiddleware.middleware);

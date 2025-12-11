@@ -1,6 +1,6 @@
 import supabase from '../services/supabaseClient';
 import { setUser } from '../redux/slices/authSlice';
-import { setLoading } from '../redux/slices/authSlice';
+import { hideLoadingOverlay } from '../redux/slices/loadingOverLaySlice';
 import { getUser, addUser } from '../services/users';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 import { useEffect } from 'react';
@@ -14,7 +14,7 @@ export default function useInitilizeAuth() {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
         dispatch(setUser(null));
-        dispatch(setLoading(false));
+        dispatch(hideLoadingOverlay());
         return;
       }
 
@@ -52,7 +52,7 @@ export default function useInitilizeAuth() {
         }, 0);
       }
 
-      dispatch(setLoading(false));
+      dispatch(hideLoadingOverlay());
     });
 
     return () => authListener.subscription.unsubscribe();

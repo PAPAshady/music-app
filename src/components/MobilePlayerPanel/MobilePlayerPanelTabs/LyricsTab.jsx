@@ -3,6 +3,7 @@ import useLyrics from '../../../hooks/useLyrics';
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Music } from 'iconsax-react';
+import getRandomNoLyricsMessage from '../../../utils/getRandomNoLyricsMessage';
 
 function LyricsTab() {
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
@@ -11,6 +12,7 @@ function LyricsTab() {
   const lineRefs = useRef([]);
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
+  const { title, description } = getRandomNoLyricsMessage();
 
   return (
     <div className="flex h-full flex-col">
@@ -42,10 +44,8 @@ function LyricsTab() {
         ) : (
           <div className="flex size-full flex-col items-center justify-center gap-2 rounded-md border-neutral-400 pt-10 text-center">
             <Music size={64} className="text-secondary-300" />
-            <p className="mt-2 px-4 text-xl font-semibold text-white">
-              No lyrics available at the moment.
-            </p>
-            <p className="text-lg">Check back soon!</p>
+            <p className="mt-2 px-4 text-xl font-semibold text-white">{title}</p>
+            <p className="text-lg">{description}</p>
           </div>
         )}
       </div>

@@ -13,6 +13,7 @@ import noMusicCover from '../../assets/images/covers/no-cover.jpg';
 import { closePanel as closePlayerPanel } from '../../redux/slices/playerPanelSlice';
 import { ArrowDown2 } from 'iconsax-react';
 import PropTypes from 'prop-types';
+import getRandomNoLyricsMessage from '../../utils/getRandomNoLyricsMessage';
 
 function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
   const { currentLineIndex } = useLyrics(lineRefs, containerRef);
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
+  const { title, description } = getRandomNoLyricsMessage();
 
   useEffect(() => {
     if (swiperRef.current) {
@@ -118,28 +120,37 @@ function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
           </div>
         </div>
         <div className="min-[480px]:w-full">
-          <div
-            className={`xs:text-base lyrics-wrapper flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base ${shouldAutoTrackLyrics && 'hide-scrollbar'}`}
-            ref={containerRef}
-          >
-            {currentMusic?.lyrics?.map((lyric, index) => (
-              <p
-                className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
-                key={lyric.time}
-                ref={(el) => (lineRefs.current[index] = el)}
+          {currentMusic?.lyrics ? (
+            <>
+              <div
+                className={`xs:text-base lyrics-wrapper flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base ${shouldAutoTrackLyrics && 'hide-scrollbar'}`}
+                ref={containerRef}
               >
-                {lyric.text}
-              </p>
-            ))}
-          </div>
-          <label className="hidden px-4 pt-8 lg:block">
-            <input
-              type="checkbox"
-              checked={shouldAutoTrackLyrics}
-              onChange={() => dispatch(setAutoLyricsTracker(!shouldAutoTrackLyrics))}
-            />
-            <span className="ms-2">Auto-Sync</span>
-          </label>
+                {currentMusic?.lyrics?.map((lyric, index) => (
+                  <p
+                    className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
+                    key={lyric.time}
+                    ref={(el) => (lineRefs.current[index] = el)}
+                  >
+                    {lyric.text}
+                  </p>
+                ))}
+              </div>
+              <label className="hidden px-4 pt-8 lg:block">
+                <input
+                  type="checkbox"
+                  checked={shouldAutoTrackLyrics}
+                  onChange={() => dispatch(setAutoLyricsTracker(!shouldAutoTrackLyrics))}
+                />
+                <span className="ms-2">Auto-Sync</span>
+              </label>
+            </>
+          ) : (
+            <div className="space-y-6 text-center">
+              <p className="text-2xl font-bold">{title}</p>
+              <p className="text-secondary-200 text-lg">{description}</p>
+            </div>
+          )}
         </div>
       </div>
       {isPlayerPanelOpen && <Player classNames="lg:!bottom-4 lg:!w-full" isPlayerPage />}

@@ -80,6 +80,11 @@ export default function Home() {
   const showRecommendedPlaylistsByGenre = recommendedPlaylistsByGenre?.length > 5;
   const { playSingleSong } = usePlayBar();
 
+  const actionButtons = [
+    { id: -1, type: 'add-playlist-button' },
+    { id: 0, type: 'favorite-songs' },
+  ];
+
   return (
     <>
       <div>
@@ -88,8 +93,8 @@ export default function Home() {
           isLoading={isUserPlaylistsPending || isTrendingPlaylistsPending}
           playlists={
             showUserPlaylists
-              ? [{ id: 0, type: 'favorite-songs' }, ...userPlaylists]
-              : trendingPlaylists
+              ? [...actionButtons, ...userPlaylists]
+              : [...actionButtons, ...(trendingPlaylists ?? [])]
           }
         />
       </div>

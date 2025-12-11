@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Home2, Heart, MusicFilter, MusicSquareSearch, Medal, Setting2 } from 'iconsax-react';
 import PropTypes from 'prop-types';
 
@@ -21,19 +21,21 @@ export default memo(function DesktopNavbar() {
 
       <div className="flex flex-col gap-4">
         <DesktopNavLink href="/permium" icon={<Medal />} />
-        <DesktopNavLink href="/settings" icon={<Setting2 />} />
+        <DesktopNavLink href="/settings/profile" icon={<Setting2 />} />
       </div>
     </div>
   );
 });
 
 function DesktopNavLink({ icon, href }) {
+  const searchParams = useLocation().search;
+
   return (
     <NavLink
       className={({ isActive }) =>
         `flex size-8 items-center justify-center rounded-lg border border-transparent transition-colors duration-300 ${isActive ? 'text-primary-900 bg-primary-50' : 'text-primary-50 hover:scale-110'}`
       }
-      to={href}
+      to={`${href}${searchParams}`}
     >
       {icon}
     </NavLink>

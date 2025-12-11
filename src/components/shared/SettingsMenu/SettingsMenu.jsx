@@ -1,7 +1,7 @@
 import { cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from '../../Avatar/Avatar';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { UserEdit, Chart, Headphone, Messages, Login } from 'iconsax-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { signOut } from '../../../redux/slices/authSlice';
@@ -55,6 +55,7 @@ export default function SettingsMenu({ isVisible }) {
 }
 
 function ListItem({ title, href = '#', icon }) {
+  const searchParams = useLocation().search;
   const styledIcon = cloneElement(icon, { size: 24 });
   return (
     <li>
@@ -62,7 +63,7 @@ function ListItem({ title, href = '#', icon }) {
         className={({ isActive }) =>
           `hover:text-primary-200 flex items-center gap-2 transition-colors ${isActive ? 'text-primary-300' : 'text-primary-50'}`
         }
-        to={href}
+        to={`${href}${searchParams}`}
       >
         {styledIcon}
         {title}

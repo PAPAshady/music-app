@@ -54,7 +54,7 @@ function PlayerProgressBar({ disabled }) {
       )}
       renderThumb={({ props }) => (
         <div
-          className={`bg-primary-300 top-0 rounded-full outline-none size-4 ${isDisabled ? 'hidden' : ''}`}
+          className={`bg-primary-300 top-0 size-4 rounded-full outline-none ${isDisabled ? 'invisible' : ''}`}
           {...props}
           key={1}
         ></div>

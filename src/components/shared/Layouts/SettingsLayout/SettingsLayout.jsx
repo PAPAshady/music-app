@@ -1,6 +1,7 @@
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useLocation } from 'react-router-dom';
 
 export default function SettingsLayout() {
+  const searchParams = useLocation().search;
   const navLinks = [
     { id: 1, title: 'Profile', href: 'profile' },
     { id: 2, title: 'Analytics', href: 'analytics' },
@@ -17,7 +18,7 @@ export default function SettingsLayout() {
               `xs:text-sm rounded-md p-2 px-3 text-xs font-semibold transition-colors duration-300 sm:text-base lg:text-base ${isActive ? 'text-white-50 bg-secondary-300/64' : 'text-primary-100'}`
             }
             key={link.id}
-            to={link.href}
+            to={`${link.href}${searchParams}`}
           >
             {link.title}
           </NavLink>
