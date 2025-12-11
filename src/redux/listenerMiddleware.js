@@ -69,11 +69,13 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setSelectedSong,
   effect: async (action, { dispatch }) => {
-    const songs = await queryClient.fetchQuery(
-      getGeneratedQueuelistBySongDataQueryOptions(action.payload)
-    );
+    if (action.payload.id) { // only run the query if the song exists.
+      const songs = await queryClient.fetchQuery(
+        getGeneratedQueuelistBySongDataQueryOptions(action.payload)
+      );
 
-    dispatch(setCurrentQueuelist(songs)); // add the selected song to the queuelist
+      dispatch(setCurrentQueuelist(songs)); // add the selected song to the queuelist
+    }
   },
 });
 
