@@ -23,7 +23,7 @@ import { openMobileGenrePanel, closeMobileGenrePanel } from '../redux/slices/mob
 
 // Custom hook to fetch music data based on query strings
 // and store it in Redux as the initial state after page load
-function useLoadInitialMedia2() {
+function useLoadInitialMedia() {
   const dispatch = useDispatch();
   const mediaId = useSelector((state) => state.queryState.id);
   const mediaType = useSelector((state) => state.queryState.type);
@@ -109,4 +109,4 @@ function useLoadInitialMedia2() {
   }, [dispatch]);
 }
 
-export default useLoadInitialMedia2;
+export default useLoadInitialMedia;
