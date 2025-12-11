@@ -9,6 +9,7 @@ import useLockScrollbar from '../../../hooks/useLockScrollbar';
 function TracklistInfosPanelSongsList({ songs, isPending, tracklist, tracklistId }) {
   const { isScrollbarLocked, lockScroll, unlockScroll } = useLockScrollbar(true);
   const { playTracklist } = usePlayBar();
+  const tracklistType = tracklist?.tracklistType;
 
   const listVariants = {
     show: {
@@ -62,7 +63,7 @@ function TracklistInfosPanelSongsList({ songs, isPending, tracklist, tracklistId
           >
             <Music size={68} className="text-secondary-300" />
             <p className="mt-2 text-xl font-semibold text-white">
-              This {tracklist?.tracklistType} is empty
+              {tracklistType === 'favorites' ? 'Your' : 'This'} {tracklistType} is empty
             </p>
             <p>Let the music begin...</p>
           </motion.div>
