@@ -118,28 +118,37 @@ function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
           </div>
         </div>
         <div className="min-[480px]:w-full">
-          <div
-            className={`xs:text-base lyrics-wrapper flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base ${shouldAutoTrackLyrics && 'hide-scrollbar'}`}
-            ref={containerRef}
-          >
-            {currentMusic?.lyrics?.map((lyric, index) => (
-              <p
-                className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
-                key={lyric.time}
-                ref={(el) => (lineRefs.current[index] = el)}
+          {!currentMusic?.lyrics ? (
+            <>
+              <div
+                className={`xs:text-base lyrics-wrapper flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base ${shouldAutoTrackLyrics && 'hide-scrollbar'}`}
+                ref={containerRef}
               >
-                {lyric.text}
-              </p>
-            ))}
-          </div>
-          <label className="hidden px-4 pt-8 lg:block">
-            <input
-              type="checkbox"
-              checked={shouldAutoTrackLyrics}
-              onChange={() => dispatch(setAutoLyricsTracker(!shouldAutoTrackLyrics))}
-            />
-            <span className="ms-2">Auto-Sync</span>
-          </label>
+                {currentMusic?.lyrics?.map((lyric, index) => (
+                  <p
+                    className={`transition-colors duration-300 ${currentLineIndex === index ? 'text-white-50' : 'text-white-700'}`}
+                    key={lyric.time}
+                    ref={(el) => (lineRefs.current[index] = el)}
+                  >
+                    {lyric.text}
+                  </p>
+                ))}
+              </div>
+              <label className="hidden px-4 pt-8 lg:block">
+                <input
+                  type="checkbox"
+                  checked={shouldAutoTrackLyrics}
+                  onChange={() => dispatch(setAutoLyricsTracker(!shouldAutoTrackLyrics))}
+                />
+                <span className="ms-2">Auto-Sync</span>
+              </label>
+            </>
+          ) : (
+            <div className='text-center space-y-6'>
+              <p className='font-bold text-2xl'>No lyrics found :(</p>
+              <p className='text-lg text-secondary-200'>You have to guess the lyrics for this one!</p>
+            </div>
+          )}
         </div>
       </div>
       {isPlayerPanelOpen && <Player classNames="lg:!bottom-4 lg:!w-full" isPlayerPage />}
