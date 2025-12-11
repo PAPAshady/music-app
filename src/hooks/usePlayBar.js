@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   setCurrentQueuelist,
   setCurrentCollection,
+  setSelectedCollection,
   setSelectedSong,
+  favoriteSongsInfos,
 } from '../redux/slices/playContextSlice';
 import { setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
 import { getPopularSongsByArtistIdQueryOptions } from '../queries/musics';
@@ -57,10 +59,13 @@ function usePlayBar(artistId) {
 
   const playFavoriteSongs = useCallback(
     (_, songIndex) => {
+      dispatch(setCurrentCollection(favoriteSongsInfos));
+      dispatch(setSelectedCollection(favoriteSongsInfos));
       dispatch(setCurrentQueuelist(favoriteSongs));
       dispatch(setCurrentSongIndex(songIndex));
+      navigate(`${pathname}?type=favorites`);
     },
-    [dispatch, favoriteSongs]
+    [dispatch, favoriteSongs, navigate, pathname]
   );
 
   return { playSingleSong, playTracklist, playArtistSongs, playFavoriteSongs };
