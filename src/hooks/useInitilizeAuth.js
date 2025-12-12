@@ -5,6 +5,7 @@ import { getUser, addUser } from '../services/users';
 import { showNewSnackbar } from '../redux/slices/snackbarSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import queryClient from '../queryClient';
 
 export default function useInitilizeAuth() {
   const dispatch = useDispatch();
@@ -20,6 +21,10 @@ export default function useInitilizeAuth() {
 
       // keep user data up-to-date
       dispatch(setUser(session.user));
+
+      // We refetch here because the user's auth state just changed, so all user-dependent
+      // data must be refreshed to stay consistent with the new session.
+      queryClient.invalidateQueries({ refetchType: 'all' });
 
       if (event === 'SIGNED_IN') {
         // using setTimeout is necessary to avoid dead-locks and performance issues.
