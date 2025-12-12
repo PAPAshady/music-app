@@ -26,7 +26,8 @@ const PlaylistCard = memo((playlist) => {
   };
 
   const onLikeChange = (e) => {
-    e.preventDefault();
+    e.stopPropagation(); // stop the click from bubbling to <Link/> so it doesn't open the mobile panel
+    e.preventDefault(); // keep <Link/> from performing a full page navigation (fallback <a> behavior when bubbling is stopped)
     mutate(id);
   };
 
