@@ -151,7 +151,7 @@ export const removeSongFromPrivatePlaylistMutationOptions = (playlistId) => ({
     await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId }] });
     // invalidate getSingleSongByPlaylistIdQueryOptions to update isSongInPlaylist value
     await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId, songId }] });
-    
+
     const updatedPlaylistSongs = queryClient.getQueryData(['songs', { playlistId }]);
     const playingTracklist = store.getState().playContext.currentCollection; // the playlist which is currently playing
     const musicPlayer = store.getState().musicPlayer;
