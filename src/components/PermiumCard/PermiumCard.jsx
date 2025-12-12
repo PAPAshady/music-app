@@ -1,12 +1,12 @@
 import { cloneElement } from 'react';
 import MainButton from '../Buttons/MainButton/MainButton';
-import { Headphone, VoiceCricle, Import } from 'iconsax-react';
+import { Headphone, VoiceCricle, Import } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { showNewSnackbar } from '../../redux/slices/snackbarSlice'
+import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 
 export default function PermiumCard({ title, permiumType, price, disabled }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const cardOptions = [
     { id: 1, icon: <Headphone />, title: 'Ad-free listening' },
     { id: 2, icon: <VoiceCricle />, title: 'High-quality audio' },
@@ -45,7 +45,19 @@ export default function PermiumCard({ title, permiumType, price, disabled }) {
         ))}
       </ul>
       <div>
-        <MainButton title="Subscribe" size="lg" disabled={disabled} onClick={() => dispatch(showNewSnackbar({ message: `You have selected ${permiumType}. Enjoy!`, type: 'success' }))} />
+        <MainButton
+          title="Subscribe"
+          size="lg"
+          disabled={disabled}
+          onClick={() =>
+            dispatch(
+              showNewSnackbar({
+                message: `You have selected ${permiumType}. Enjoy!`,
+                type: 'success',
+              })
+            )
+          }
+        />
       </div>
     </div>
   );

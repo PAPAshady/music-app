@@ -2,7 +2,7 @@ import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import usePlayBar from '../../../hooks/usePlayBar';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import useLockScrollbar from '../../../hooks/useLockScrollbar';
 

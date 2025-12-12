@@ -11,7 +11,7 @@ import useMediaQuery from '../../hooks/useMediaQuery';
 import useLyrics from '../../hooks/useLyrics';
 import noMusicCover from '../../assets/images/covers/no-cover.jpg';
 import { closePanel as closePlayerPanel } from '../../redux/slices/playerPanelSlice';
-import { ArrowDown2 } from 'iconsax-react';
+import { ArrowDown2 } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import getRandomNoLyricsMessage from '../../utils/getRandomNoLyricsMessage';
 

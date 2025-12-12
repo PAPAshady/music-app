@@ -8,7 +8,7 @@ import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import favoritesCover from '../../../assets/images/covers/favorites-cover.png';
-import { Music, Timer, AddCircle, User, Play, Pause, MinusCirlce } from 'iconsax-react';
+import { Music, Timer, AddCircle, User, Play, Pause, MinusCirlce } from 'iconsax-reactjs';
 import PlaylistInfo from './PlaylistInfo/PlaylistInfo';
 import PlaylistInfoSkeleton from './PlaylistInfo/PlaylistInfoSkeleton';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';

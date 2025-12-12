@@ -1,5 +1,5 @@
 import { cloneElement } from 'react';
-import { Menu as MenuIcon } from 'iconsax-react';
+import { Menu as MenuIcon } from 'iconsax-reactjs';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import PropTypes from 'prop-types';
 

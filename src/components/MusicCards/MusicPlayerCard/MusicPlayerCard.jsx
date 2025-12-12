@@ -1,5 +1,5 @@
 import IconButton from '../../Buttons/IconButton/IconButton';
-import { Heart } from 'iconsax-react';
+import { Heart } from 'iconsax-reactjs';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import PropTypes from 'prop-types';
 import { formatTime } from '../../../redux/slices/musicPlayerSlice';

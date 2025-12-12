@@ -1,6 +1,6 @@
 import SongCardSkeleton from '../MusicCards/SongCard/SongCardSkeleton';
 import SongCard from '../MusicCards/SongCard/SongCard';
-import { Musicnote } from 'iconsax-react';
+import { Musicnote } from 'iconsax-reactjs';
 import usePlayBar from '../../hooks/usePlayBar';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';

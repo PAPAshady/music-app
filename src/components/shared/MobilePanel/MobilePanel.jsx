@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import BgImage from '../../../assets/images/backgrounds/login-signup-page.jpg';
 import tracklistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
 import artistDefaultImage from '../../../assets/images/Avatar/no-avatar.png';
-import { ArrowLeft } from 'iconsax-react';
+import { ArrowLeft } from 'iconsax-reactjs';
 import Player from '../Player/Player';
 import { useDispatch, useSelector } from 'react-redux';
 import { closePanel, closeMobilePanel } from '../../../redux/slices/mobilePanelSlice';

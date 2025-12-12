@@ -1,7 +1,7 @@
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import { useCallback, useState } from 'react';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import { getTrendingSongsQueryOptions, getSongsByKeywordQueryOptions } from '../../queries/musics';
 import {
   addSongToPrivatePlaylistMutationOptions,

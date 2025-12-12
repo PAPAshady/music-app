@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { SearchNormal1, CloseCircle } from 'iconsax-react';
+import { SearchNormal1, CloseCircle } from 'iconsax-reactjs';
 import { forwardRef } from 'react';
 
 const SearchInput = forwardRef(

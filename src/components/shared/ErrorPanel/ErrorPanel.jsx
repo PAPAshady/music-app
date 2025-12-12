@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { Music, Musicnote } from 'iconsax-react';
+import { Music, Musicnote } from 'iconsax-reactjs';
 import Logo from '../../Logo/Logo';
 
 export default function ErrorPanel() {

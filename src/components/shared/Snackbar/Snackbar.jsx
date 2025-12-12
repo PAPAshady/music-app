@@ -1,4 +1,4 @@
-import { InfoCircle, TickCircle, Danger } from 'iconsax-react';
+import { InfoCircle, TickCircle, Danger } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 
 export default function Snackbar({ message, type }) {

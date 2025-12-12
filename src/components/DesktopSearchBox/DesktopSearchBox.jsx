@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useCloseOnClickOutside from '../../hooks/useCloseOnClickOutside';
 import useDebounce from '../../hooks/useDebounce';
 import useInput from '../../hooks/useInput';
 import { useQuery } from '@tanstack/react-query';
-import { Musicnote, Profile2User, MusicPlaylist } from 'iconsax-react';
+import { Musicnote, Profile2User, MusicPlaylist } from 'iconsax-reactjs';
 import SearchBoxTracksSlider from './SearchBoxSliders/SearchBoxTracksSlider';
 import SearchBoxArtistsSlider from './SearchBoxSliders/SearchBoxArtistsSlider';
 import SearchBoxAlbumsSlider from './SearchBoxSliders/SearchBoxAlbumsSlider';

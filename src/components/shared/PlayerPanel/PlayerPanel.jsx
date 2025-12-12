@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import backgroundImage from '../../../assets/images/backgrounds/player-and-settings-page.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowDown2 } from 'iconsax-react';
+import { ArrowDown2 } from 'iconsax-reactjs';
 import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,

@@ -1,6 +1,6 @@
 import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
-import { Sms, Lock } from 'iconsax-react';
+import { Sms, Lock } from 'iconsax-reactjs';
 import { Link } from 'react-router-dom';
 import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSignUpButton';
 import { socialSignUpButtons } from '../../../data';

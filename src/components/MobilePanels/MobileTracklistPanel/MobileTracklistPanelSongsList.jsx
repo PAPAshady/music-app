@@ -8,7 +8,7 @@ import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 import { useMutation } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Trash } from 'iconsax-react';
+import { Trash } from 'iconsax-reactjs';
 
 function MobileTracklistPanelSongsList({
   selectedTracklist,

@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom';
 import { forwardRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { SearchNormal1, Add } from 'iconsax-react';
+import { SearchNormal1, Add } from 'iconsax-reactjs';
 import { useQuery } from '@tanstack/react-query';
 import { getAllPrivatePlaylistsQueryOptions } from '../../../queries/playlists';
 import PlaylistItem from './PlaylistItem';

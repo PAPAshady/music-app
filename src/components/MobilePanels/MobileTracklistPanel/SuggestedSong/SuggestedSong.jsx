@@ -1,12 +1,12 @@
 import { memo } from 'react';
-import { AddCircle } from 'iconsax-react';
+import { AddCircle } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import LoadingSpinner from '../../../LoadingSpinner/LoadingSpinner';
 import { setCurrentQueuelist, setSelectedSong } from '../../../../redux/slices/playContextSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { play, pause } from '../../../../redux/slices/musicPlayerSlice';
 import { setCurrentSongIndex } from '../../../../redux/slices/musicPlayerSlice';
-import { Play, Pause } from 'iconsax-react';
+import { Play, Pause } from 'iconsax-reactjs';
 import IconButton from '../../../Buttons/IconButton/IconButton';
 import playlistDefaultCover from '../../../../assets/images/covers/no-cover.jpg';
 

@@ -3,7 +3,7 @@ import { setCurrentQueuelist, setSelectedSong } from '../../../redux/slices/play
 import IconButton from '../../Buttons/IconButton/IconButton';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { memo } from 'react';
-import { AddCircle, Play, Pause, Trash } from 'iconsax-react';
+import { AddCircle, Play, Pause, Trash } from 'iconsax-reactjs';
 import { play, pause, setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import playlistDefaultCover from '../../../assets/images/covers/no-cover.jpg';

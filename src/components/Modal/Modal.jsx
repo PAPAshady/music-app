@@ -1,7 +1,7 @@
 import { Dialog, DialogPanel, DialogTitle, DialogBackdrop } from '@headlessui/react';
 import MainButton from '../Buttons/MainButton/MainButton';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
-import { CloseCircle } from 'iconsax-react';
+import { CloseCircle } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 
 export default function Modal({

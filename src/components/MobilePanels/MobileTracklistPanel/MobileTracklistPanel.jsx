@@ -9,7 +9,7 @@ import { setCurrentSongIndex, play, pause } from '../../../redux/slices/musicPla
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
 import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
-import { Play, Pause, Shuffle, RepeateOne, RepeateMusic } from 'iconsax-react';
+import { Play, Pause, Shuffle, RepeateOne, RepeateMusic } from 'iconsax-reactjs';
 import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,

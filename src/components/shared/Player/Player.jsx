@@ -13,7 +13,7 @@ import {
   Heart,
   VolumeHigh,
   VolumeSlash,
-} from 'iconsax-react';
+} from 'iconsax-reactjs';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Range } from 'react-range';
@@ -82,7 +82,7 @@ export default function Player({ classNames, isPlayerPage }) {
     if (!isMobile) dispatch(openPlayerPanel());
   };
 
-  // avoids opening player panel on mobile devices in case user click on certian elements such as play buttons, song cover, progres bar, etc. 
+  // avoids opening player panel on mobile devices in case user click on certian elements such as play buttons, song cover, progres bar, etc.
   const stopPropagation = (e) => e.stopPropagation();
 
   return (

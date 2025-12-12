@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Play, Pause, Heart, Share } from 'iconsax-react';
+import { Play, Pause, Heart, Share } from 'iconsax-reactjs';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 import { useQuery, useMutation } from '@tanstack/react-query';

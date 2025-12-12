@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home2, Heart, MusicFilter, MusicSquareSearch, Medal, Setting2 } from 'iconsax-react';
+import { Home2, Heart, MusicFilter, MusicSquareSearch, Medal, Setting2 } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 
 export default memo(function DesktopNavbar() {

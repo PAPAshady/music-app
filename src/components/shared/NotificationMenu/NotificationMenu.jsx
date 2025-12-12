@@ -6,7 +6,7 @@ import {
   removeNotification,
   timeAgo,
 } from '../../../redux/slices/notificationsSlice';
-import { Clock } from 'iconsax-react';
+import { Clock } from 'iconsax-reactjs';
 
 export default function NotificationMenu({ isVisible, classNames }) {
   const notifications = useSelector((state) => state.notifications);
@@ -63,7 +63,7 @@ const Notification = memo(({ text, createdAt, id }) => {
         <p className="text-primary-100 before:bg-primary-100 text-sm">{text}</p>
       </div>
       <div className="flex items-center justify-end gap-1 text-end">
-        <p className='text-primary-300'>
+        <p className="text-primary-300">
           <Clock size={15} />
         </p>
         <p className="text-primary-300 text-sm">{timeAgo(createdAt)}</p>

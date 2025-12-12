@@ -3,7 +3,7 @@ import TextField from '../../Inputs/TextField/TextField';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Sms } from 'iconsax-react';
+import { Sms } from 'iconsax-reactjs';
 import instagramImg from '../../../assets/images/socials/instagram.png';
 import twitterImg from '../../../assets/images/socials/twitter.png';
 import facebookImg from '../../../assets/images/socials/facebook.png';

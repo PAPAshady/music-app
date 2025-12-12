@@ -1,6 +1,6 @@
 import { cloneElement, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { Eye, EyeSlash } from 'iconsax-react';
+import { Eye, EyeSlash } from 'iconsax-reactjs';
 
 const TextField = forwardRef(
   ({ type = 'text', value, placeholder, icon, isInvalid, errorMsg, ...props }, ref) => {

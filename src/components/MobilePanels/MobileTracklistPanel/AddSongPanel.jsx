@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import useInput from '../../../hooks/useInput';
 import useDebounce from '../../../hooks/useDebounce';
-import { ArrowLeft, Music } from 'iconsax-react';
+import { ArrowLeft, Music } from 'iconsax-reactjs';
 import { addSongToPrivatePlaylistMutationOptions } from '../../../queries/playlists';
 import {
   getTrendingSongsQueryOptions,

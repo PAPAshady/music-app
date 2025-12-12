@@ -1,7 +1,7 @@
 import addPlaylistImg from '../../assets/images/covers/add-playlist.jpg';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../redux/slices/playlistInfosModalSlice';
-import { AddCircle } from 'iconsax-react';
+import { AddCircle } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 
 function AddPlaylistButton({ classNames }) {

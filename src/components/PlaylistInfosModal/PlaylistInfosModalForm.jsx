@@ -1,4 +1,4 @@
-import { Image, Trash, Edit2 } from 'iconsax-react';
+import { Image, Trash, Edit2 } from 'iconsax-reactjs';
 import InputField from '../Inputs/InputField/InputField';
 import TextArea from '../Inputs/TextArea/TextArea';
 import DropDownList from '../DropDownList/DropDownList';

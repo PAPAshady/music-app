@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import PlaylistCard from '../MusicCards/PlaylistCard/PlaylistCard';
 import PlaylistCardSkeleton from '../MusicCards/PlaylistCard/PlaylistCardSkeleton';
-import { MusicPlaylist } from 'iconsax-react';
+import { MusicPlaylist } from 'iconsax-reactjs';
 import MobileSearchPanelSectionTitle from './MobileSearchPanelSectionTitle';
 import PropTypes from 'prop-types';
 

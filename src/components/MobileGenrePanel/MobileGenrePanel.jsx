@@ -4,7 +4,7 @@ import defaultCover from '../../assets/images/covers/no-cover.jpg';
 import { useSelector, useDispatch } from 'react-redux';
 import { getGenreByIdQueryOptions } from '../../queries/genres';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft } from 'iconsax-react';
+import { ArrowLeft } from 'iconsax-reactjs';
 import { closeMobileGenrePanel } from '../../redux/slices/mobileGenrePanelSlice';
 import { setQueries } from '../../redux/slices/queryStateSlice';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';

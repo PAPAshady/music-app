@@ -9,7 +9,7 @@ import {
   RepeateOne,
   RepeateMusic,
   Like1,
-} from 'iconsax-react';
+} from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import PlayerProgressBar from '../PlayerProgressBar/PlayerProgressBar';
 import { useSelector, useDispatch } from 'react-redux';

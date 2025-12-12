@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import { useQuery } from '@tanstack/react-query';
-import { Music, ArrowLeft } from 'iconsax-react';
+import { Music, ArrowLeft } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 import useDebounce from '../../hooks/useDebounce';

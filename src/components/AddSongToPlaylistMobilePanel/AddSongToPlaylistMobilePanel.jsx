@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom';
 import { useEffect } from 'react';
-import { SearchNormal1, ArrowDown2 } from 'iconsax-react';
+import { SearchNormal1, ArrowDown2 } from 'iconsax-reactjs';
 import { getAllPrivatePlaylistsQueryOptions } from '../../queries/playlists';
 import { useQuery } from '@tanstack/react-query';
 import useInput from '../../hooks/useInput';

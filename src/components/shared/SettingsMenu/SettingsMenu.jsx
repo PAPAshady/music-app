@@ -2,7 +2,7 @@ import { cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from '../../Avatar/Avatar';
 import { NavLink, useLocation } from 'react-router-dom';
-import { UserEdit, Chart, Headphone, Messages, Login } from 'iconsax-react';
+import { UserEdit, Chart, Headphone, Messages, Login } from 'iconsax-reactjs';
 import { useSelector, useDispatch } from 'react-redux';
 import { signOut } from '../../../redux/slices/authSlice';
 

@@ -1,7 +1,7 @@
 import MobileSearchPanelSectionTitle from './MobileSearchPanelSectionTitle';
 import SmallArtistCard from '../MusicCards/SmallArtistCard/SmallArtistCard';
 import SmallArtistCardSkeleton from '../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
-import { Profile2User } from 'iconsax-react';
+import { Profile2User } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 
 function MobileSearchPanelArtistsList({ artists, isArtistsPending }) {

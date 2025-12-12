@@ -1,7 +1,7 @@
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { Add } from 'iconsax-react';
+import { Add } from 'iconsax-reactjs';
 import { openModal as openPlaylistInfosModal } from '../../redux/slices/playlistInfosModalSlice';
 import Playlist from './Playlist';
 

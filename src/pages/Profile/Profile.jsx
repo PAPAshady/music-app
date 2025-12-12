@@ -13,7 +13,7 @@ import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/sto
 import { useDispatch } from 'react-redux';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { useSelector } from 'react-redux';
-import { Trash, Edit } from 'iconsax-react';
+import { Trash, Edit } from 'iconsax-reactjs';
 import { openModal } from '../../redux/slices/confirmModalSlice';
 import { updateUserAvatar } from '../../redux/slices/authSlice';
 

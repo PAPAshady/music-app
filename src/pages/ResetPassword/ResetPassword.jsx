@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import LoginButton from '../../components/Buttons/LoginButton/LoginButton';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Lock } from 'iconsax-react';
+import { Lock } from 'iconsax-reactjs';
 import supabase from '../../services/supabaseClient';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/authSlice';

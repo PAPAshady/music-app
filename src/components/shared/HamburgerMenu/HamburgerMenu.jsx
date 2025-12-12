@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsHamburgerMenuOpen } from '../../../redux/slices/hamburgerMenuSlice';
 import Avatar from '../../Avatar/Avatar';
-import { Heart, Home2, MusicFilter, MusicSquareSearch, Setting2, Medal } from 'iconsax-react';
+import { Heart, Home2, MusicFilter, MusicSquareSearch, Setting2, Medal } from 'iconsax-reactjs';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 

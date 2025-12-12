@@ -1,5 +1,5 @@
 import { memo, useEffect } from 'react';
-import { Heart, Play, AddCircle } from 'iconsax-react';
+import { Heart, Play, AddCircle } from 'iconsax-reactjs';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { formatTime } from '../../../redux/slices/musicPlayerSlice';

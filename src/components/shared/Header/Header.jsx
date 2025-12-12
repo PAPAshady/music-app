@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
+import { HamburgerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-reactjs';
 import Logo from '../../Logo/Logo';
 import Avatar from '../../Avatar/Avatar';
 import NotificationMenu from '../NotificationMenu/NotificationMenu';
@@ -26,7 +26,7 @@ export default memo(function Header() {
         <div className="flex items-center gap-2">
           <IconButton
             onClick={() => dispatch(setIsHamburgerMenuOpen(true))}
-            icon={<HambergerMenu />}
+            icon={<HamburgerMenu />}
           />
           <div className="relative" ref={mobileSearchBox.setRef}>
             <IconButton

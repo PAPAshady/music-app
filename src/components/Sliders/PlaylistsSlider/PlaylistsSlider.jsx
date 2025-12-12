@@ -5,7 +5,7 @@ import { FreeMode } from 'swiper/modules';
 import PlaylistCardSkeleton from '../../MusicCards/PlaylistCard/PlaylistCardSkeleton';
 import 'swiper/css';
 import AddPlaylistButton from '../../AddPlaylistButton/AddPlaylistButton';
-import { Like1 } from 'iconsax-react';
+import { Like1 } from 'iconsax-reactjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { openMobilePanel } from '../../../redux/slices/mobilePanelSlice';
