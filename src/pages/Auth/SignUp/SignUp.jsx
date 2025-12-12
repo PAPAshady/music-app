@@ -122,8 +122,8 @@ export default function SignUp() {
         <h3 className="mb-6 text-5xl font-semibold">Sign Up</h3>
         <p className="text-lg">Welcome To VioTune</p>
       </div>
-      <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
-        <p className="text-red mt-5 mb-8 text-lg font-semibold">{errors.root?.message}</p>
+      <form action="#" className="mb-6 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
+        <p className="text-red mt-2 mb-6 text-lg font-semibold">{errors.root?.message}</p>
         <div className="mb-4 flex flex-col gap-9">
           <div className="flex flex-col gap-4 sm:flex-row">
             {formInputs.slice(0, 2).map((input) => (
@@ -152,7 +152,7 @@ export default function SignUp() {
       </form>
       <div className="text-center">
         <p className="text-white-200 mb-4">OR Sign Up With</p>
-        <div className="mb-6 flex items-center justify-center gap-6">
+        <div className="mb-4 flex items-center justify-center gap-6">
           {socialSignUpButtons.map((button) => (
             <SocialSignUpButton
               key={button.id}
