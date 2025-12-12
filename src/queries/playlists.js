@@ -125,18 +125,11 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { playlistId }],
   mutationFn: (songId) => addSongToPrivatePlaylist(playlistId, songId),
   enabled: !!playlistId,
-  onSuccess: async () => {
+  onSuccess: async (_, songId) => {
+    await queryClient.invalidateQueries({ queryKey: ['playlists'] });
     await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId }] });
-    await queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
-
-    // update playlists cache to show the new value of totaltracks field
-    queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
-      return prevPlaylists.map((playlist) =>
-        playlist.id === playlistId
-          ? { ...playlist, totaltracks: playlist.totaltracks + 1 }
-          : playlist
-      );
-    });
+    // invalidate getSingleSongByPlaylistIdQueryOptions to update isSongInPlaylist value
+    await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId, songId }] });
 
     const updatedPlaylistSongs = queryClient.getQueryData(['songs', { playlistId }]);
     const playingTracklist = store.getState().playContext.currentCollection; // the playlist which is currently playing
@@ -154,23 +147,12 @@ export const removeSongFromPrivatePlaylistMutationOptions = (playlistId) => ({
   mutationFn: (songId) => removeSongFromPrivatePlaylist(playlistId, songId),
   enabled: !!playlistId,
   onSuccess: async (_, songId) => {
-    const updatedPlaylistSongs = queryClient.setQueryData(
-      ['songs', { playlistId }],
-      (prevPlaylistSongs) => {
-        if (!prevPlaylistSongs) return [];
-        return prevPlaylistSongs.filter((song) => song.id !== songId);
-      }
-    );
-
-    // update playlists cache to show the new value of totaltracks field
-    queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
-      return prevPlaylists.map((playlist) =>
-        playlist.id === playlistId
-          ? { ...playlist, totaltracks: playlist.totaltracks - 1 }
-          : playlist
-      );
-    });
-
+    await queryClient.invalidateQueries({ queryKey: ['playlists'] });
+    await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId }] });
+    // invalidate getSingleSongByPlaylistIdQueryOptions to update isSongInPlaylist value
+    await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId, songId }] });
+    
+    const updatedPlaylistSongs = queryClient.getQueryData(['songs', { playlistId }]);
     const playingTracklist = store.getState().playContext.currentCollection; // the playlist which is currently playing
     const musicPlayer = store.getState().musicPlayer;
     const { dispatch } = store;
