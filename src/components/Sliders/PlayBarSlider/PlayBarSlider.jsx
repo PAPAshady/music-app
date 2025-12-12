@@ -10,9 +10,13 @@ import useLockScrollbar from '../../../hooks/useLockScrollbar';
 
 export default function PlayBarSlider({ songs, isPending, onPlay }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const isTablet = useMediaQuery('(min-width: 640px)');
   const songsPerChunk = isDesktop ? 5 : 3;
   const itemsToRender = chunkArray(isPending ? Array(10).fill() : songs, songsPerChunk);
   const { isScrollbarLocked, lockScroll, unlockScroll } = useLockScrollbar();
+  const isOneSlideOnly = songs?.length <= 3;
+  // adjust the size of playbar for both desktop and mobile/tablet. also covers the case when songs has less lenght that more than 1 slide
+  const size = isTablet ? (isOneSlideOnly ? 'lg' : 'md') : isDesktop ? 'lg' : 'md';
   const swiperRef = useRef();
 
   // disable scrollbar when DropDown menu is open
@@ -32,6 +36,7 @@ export default function PlayBarSlider({ songs, isPending, onPlay }) {
   return (
     <div className="mx-auto w-[95%] max-w-[1050px]">
       <Swiper
+        key={isOneSlideOnly}
         spaceBetween={24}
         slidesPerView={1}
         modules={[Pagination, FreeMode, Mousewheel, Scrollbar]}
@@ -41,13 +46,13 @@ export default function PlayBarSlider({ songs, isPending, onPlay }) {
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         breakpoints={{
           480: {
-            slidesPerView: 1.2,
+            slidesPerView: isOneSlideOnly ? 1 : 1.2,
           },
           570: {
-            slidesPerView: 1.4,
+            slidesPerView: isOneSlideOnly ? 1 : 1.4,
           },
           640: {
-            slidesPerView: 2,
+            slidesPerView: isOneSlideOnly ? 1 : 2,
             spaceBetween: 16,
           },
           1024: {
@@ -66,16 +71,12 @@ export default function PlayBarSlider({ songs, isPending, onPlay }) {
             <div className="flex flex-col gap-4 lg:gap-6">
               {chunk.map((item, songIndex) =>
                 isPending ? (
-                  <PlayBarSkeleton
-                    key={songIndex}
-                    classNames="!max-w-none"
-                    size={isDesktop ? 'lg' : 'md'}
-                  />
+                  <PlayBarSkeleton key={songIndex} classNames="!max-w-none" size={size} />
                 ) : (
                   <PlayBar
                     key={item.id}
                     index={songsPerChunk * chunkIndex + songIndex} // since we are chunking the array, we need to calculate the song index to play them in order
-                    size={isDesktop ? 'lg' : 'md'}
+                    size={size}
                     classNames="!max-w-none"
                     song={item}
                     onPlay={onPlay}
