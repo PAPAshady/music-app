@@ -8,9 +8,10 @@ import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
 import { playlists } from '../../data';
 import { useQuery } from '@tanstack/react-query';
 import {
-  getAllAlbumsQueryOptions,
   getTrendingAlbumsQueryOptions,
   getRecommendedAlbumsQueryOptions,
+  getRecentAlbumsQueryOptions,
+  getAlbumsByGenreIdQueryOptions,
 } from '../../queries/albums';
 import {
   getAllPrivatePlaylistsQueryOptions,
@@ -31,7 +32,6 @@ import { getUserTopGenresQueryOptions } from '../../queries/genres';
 import usePlayBar from '../../hooks/usePlayBar';
 
 export default function Home() {
-  const albums = useQuery(getAllAlbumsQueryOptions());
   const { data: trendingArtists, isPending: isTrendingArtistsPending } = useQuery(
     getTrendingArtistsQueryOptions()
   );
@@ -50,11 +50,15 @@ export default function Home() {
   const { data: recentSongs, isPending: isRecentSongsPending } = useQuery(
     getRecentSongsQueryOptions()
   );
+  const { data: recentAlbums, isPending: isRecentAlbumsPending } = useQuery(
+    getRecentAlbumsQueryOptions()
+  );
   const showUserPlaylists = !!userPlaylists?.length;
   const showRecommendedPlaylists = !!recommendedPlaylists?.length;
   const showRecommendedAlbums = !!recommendedAlbums?.length;
   const showRecommendedSongs = recommendedSongs?.length > 5;
   const showRecentSongs = recentSongs?.length > 5;
+  const showRecentAlbums = !!recentAlbums?.length;
   const { data: trendingPlaylists, isLoading: isTrendingPlaylistsPending } = useQuery({
     ...getTrendingPlaylistsQueryOptions(),
     enabled: !showUserPlaylists,
@@ -66,6 +70,10 @@ export default function Home() {
   const { data: trendingSongs, isLoading: isTrendingSongsPending } = useQuery({
     ...getTrendingSongsQueryOptions(),
     enabled: !showRecommendedSongs,
+  });
+  const { data: hipHopAlbums, isLoading: isHopHopAlbumsLoading } = useQuery({
+    ...getAlbumsByGenreIdQueryOptions('22cebc0a-01a0-4f3d-a6b9-45039290936c'), // get hip-hop albums
+    enabled: !showRecentAlbums,
   });
   const topPlaylistsTitle = showUserPlaylists
     ? 'Your Personal Music Space'
@@ -144,8 +152,13 @@ export default function Home() {
         </div>
       )}
       <div>
-        <SectionHeader title="Albums You Were Listening To" />
-        <AlbumsSlider albums={albums.data} isLoading={albums.isPending} />
+        <SectionHeader
+          title={showRecentAlbums ? 'Albums you were listening to' : 'Best of hip-hop'}
+        />
+        <AlbumsSlider
+          albums={showRecentAlbums ? recentAlbums : hipHopAlbums}
+          isLoading={isRecentAlbumsPending || isHopHopAlbumsLoading}
+        />
       </div>
       <div>
         <SectionHeader title="Genres You might like" />
