@@ -85,7 +85,7 @@ function RelatedTab({ song, artist }) {
               : similarArtists.map((artist) => (
                   <SwiperSlide
                     key={artist.id}
-                    className={`p-[1px] ${similarArtists.length > 2 ? 'mb-10' : 'mb-4'}`}
+                    className={`p-px ${similarArtists.length > 2 ? 'mb-10' : 'mb-4'}`}
                   >
                     <SmallArtistCard artist={artist} size="md" />
                   </SwiperSlide>

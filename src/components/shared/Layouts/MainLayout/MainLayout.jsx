@@ -51,7 +51,7 @@ export default function MainLayout() {
 
   return (
     <>
-      <div className="bg-primary-800 relative min-h-[100dvh]">
+      <div className="bg-primary-800 relative min-h-dvh">
         <div
           className={`absolute size-full bg-cover bg-center bg-no-repeat ${currentPage.includes('/settings') ? 'opacity-70' : 'opacity-10 blur-md'}`}
           style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -71,7 +71,7 @@ export default function MainLayout() {
                 <Logo size="md" />
               </Link>
               <div
-                className={`transition-all duration-300 ${showDesktopLogoNavbar ? 'pt-[90px]' : 'pt-0'}`}
+                className={`transition-all duration-300 ${showDesktopLogoNavbar ? 'pt-22.5' : 'pt-0'}`}
               >
                 <DesktopNavbar />
               </div>

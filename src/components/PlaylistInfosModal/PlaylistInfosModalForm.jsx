@@ -67,7 +67,7 @@ const PlaylistInfosModalForm = forwardRef(function (
     <div className="items-cente flex flex-col gap-3 sm:flex-row">
       <div className="flex flex-col gap-1">
         <div
-          className={`group relative mx-auto mt-6 size-[150px] overflow-hidden rounded-xl border transition-colors duration-200 min-[480px]:size-[180px] sm:size-[190px] sm:min-w-[190px] ${errors.cover ? 'border-red' : 'border-transparent'}`}
+          className={`group relative mx-auto mt-6 size-37.5 overflow-hidden rounded-xl border transition-colors duration-200 min-[480px]:size-45 sm:size-47.5 sm:min-w-47.5 ${errors.cover ? 'border-red' : 'border-transparent'}`}
         >
           <img className="size-full object-cover" src={cover} alt={tracklistTitle} />
           <label

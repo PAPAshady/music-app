@@ -23,14 +23,14 @@ const HamburgerMenu = memo(() => {
 
   return createPortal(
     <div
-      className={`fixed top-0 h-[100dvh] w-full bg-black/50 transition-[backdrop-filter,z-index] ${isHamburgerMenuOpen ? 'z-30 backdrop-blur-xs' : 'z-[-1] backdrop-blur-[0]'}`}
+      className={`fixed top-0 h-dvh w-full bg-black/50 transition-[backdrop-filter,z-index] ${isHamburgerMenuOpen ? 'z-30 backdrop-blur-xs' : 'z-[-1] backdrop-blur-[0]'}`}
       // close the menu if use clicks outside of menu box
       onClick={(e) => e.target === e.currentTarget && dispatch(setIsHamburgerMenuOpen(false))}
     >
       <div
-        className={`bg-secondary-400/40 fixed h-full w-[250px] overflow-y-auto p-4 transition-transform ${isHamburgerMenuOpen ? 'translate-0' : '-translate-x-full'}`}
+        className={`bg-secondary-400/40 fixed h-full w-62.5 overflow-y-auto p-4 transition-transform ${isHamburgerMenuOpen ? 'translate-0' : '-translate-x-full'}`}
       >
-        <div className="">
+        <div>
           <div className="text-primary-300 mb-6 flex items-center justify-between">
             <Link to="/settings/profile" onClick={() => dispatch(setIsHamburgerMenuOpen(false))}>
               <Avatar size="sm" profilePic={userAvatar} />

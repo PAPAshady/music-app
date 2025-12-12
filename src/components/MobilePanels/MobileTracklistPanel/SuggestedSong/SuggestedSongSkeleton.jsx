@@ -5,7 +5,7 @@ const SuggestedSongSkeleton = () => {
     <div className="relative flex items-center justify-between gap-2 overflow-hidden rounded-sm bg-gray-600/60">
       <ShimmerOverlay />
       <div className="flex grow items-center gap-2 overflow-hidden">
-        <div className="relative h-15 w-15 min-w-[60px] overflow-hidden rounded-sm sm:h-[70px] sm:w-[70px] sm:min-w-[70px]">
+        <div className="relative h-15 w-15 min-w-15 overflow-hidden rounded-sm sm:size-17.5 sm:min-w-17.5">
           <div className="size-full bg-gray-800/50"></div>
         </div>
         <div className="flex grow flex-col gap-1.5 overflow-hidden p-1">

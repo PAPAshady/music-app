@@ -27,7 +27,7 @@ export default function Modal({
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogPanel
           transition
-          className="bg-primary-700/60 flex max-h-[550px] w-full max-w-[650px] flex-col gap-3 rounded-xl px-4 py-6 backdrop-blur-sm transition data-[closed]:scale-95 data-[closed]:opacity-0"
+          className="bg-primary-700/60 flex max-h-137.5 w-full max-w-162.5 flex-col gap-3 rounded-xl px-4 py-6 backdrop-blur-sm transition data-closed:scale-95 data-closed:opacity-0"
         >
           <div className="mb-2 flex items-center justify-between">
             <DialogTitle className="text-primary-50 text-xl font-semibold">{title}</DialogTitle>

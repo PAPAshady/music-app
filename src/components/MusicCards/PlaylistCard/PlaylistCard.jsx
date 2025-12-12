@@ -33,18 +33,18 @@ const PlaylistCard = memo((playlist) => {
 
   return (
     <Link
-      className={`group relative flex h-36 min-w-36 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[2px_2px_15px_rgba(0,0,0,0.5)] outline outline-transparent transition-all duration-300 hover:outline-white lg:h-48 lg:min-w-[152px] lg:outline-none xl:min-w-[140px] ${classNames}`}
+      className={`group relative flex h-36 min-w-36 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat shadow-[2px_2px_15px_rgba(0,0,0,0.5)] outline outline-transparent transition-all duration-300 hover:outline-white lg:h-48 lg:min-w-38 lg:outline-none xl:min-w-35 ${classNames}`}
       style={{ backgroundImage: `url(${cover ?? noCoverImg})` }}
       title={title}
       onClick={showSelectedPlaylist}
       to={`${pathname}?type=playlist&id=${id}`}
     >
-      <div className="flex size-full flex-col justify-between bg-gradient-to-t from-[rgba(0,0,0,.7)] to-transparent p-2">
+      <div className="flex size-full flex-col justify-between bg-linear-to-t from-[rgba(0,0,0,.7)] to-transparent p-2">
         <div
           className={`items-center p-1 ${isCurrentPlaylistPlaying ? 'flex items-center justify-between' : 'ms-auto text-end'}`}
         >
           {isCurrentPlaylistPlaying && <NowPlayingIndicator />}
-          <button className="size-8 lg:size-[26px]" disabled={isPending} onClick={onLikeChange}>
+          <button className="size-8 lg:size-6.5" disabled={isPending} onClick={onLikeChange}>
             <Heart
               size="100%"
               className={`transition-colors duration-300 ${is_liked ? 'fill-secondary-50 text-secondary-50' : ''}`}

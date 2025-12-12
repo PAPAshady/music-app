@@ -16,10 +16,10 @@ export default function Authentication() {
 
   return (
     <div
-      className="bg-primary-800 relative min-h-[100dvh] bg-cover bg-center bg-no-repeat"
+      className="bg-primary-800 relative min-h-dvh bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${bgImg})` }}
     >
-      <div className="flex min-h-[100dvh] items-center justify-center backdrop-blur-md">
+      <div className="flex min-h-dvh items-center justify-center backdrop-blur-md">
         <div
           className={`absolute grid size-full place-content-center transition-all duration-300 ${isLoading ? 'visible z-10 opacity-100' : 'invisible -z-10 opacity-0'}`}
         >
@@ -29,7 +29,7 @@ export default function Authentication() {
           className={`transision-all grow duration-300 ${isLoading ? 'invisible opacity-0' : 'visible opacity-100'}`}
         >
           <div className="flex w-full items-center justify-center">
-            <div className="mx-auto flex w-[85%] max-w-[620px] flex-col lg:max-w-[530px] xl:max-w-[600px]">
+            <div className="mx-auto flex w-[85%] max-w-155 flex-col lg:max-w-132.5 xl:max-w-150">
               <Outlet />
             </div>
           </div>

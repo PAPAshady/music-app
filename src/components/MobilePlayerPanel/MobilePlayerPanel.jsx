@@ -99,7 +99,7 @@ function MobilePlayerPanel() {
         <div className="relative overflow-hidden">
           <img
             src={currentMusic?.cover || musicCover}
-            className="aspect-square w-[85vw] rounded-xl object-cover min-[500px]:max-w-[420px] min-[500px]:rounded-3xl sm:w-[70vw] sm:max-w-none md:max-w-[650px]"
+            className="aspect-square w-[85vw] rounded-xl object-cover min-[500px]:max-w-105 min-[500px]:rounded-3xl sm:w-[70vw] sm:max-w-none md:max-w-162.5"
             alt={currentMusic?.title}
           />
         </div>
@@ -128,7 +128,7 @@ function MobilePlayerPanel() {
         </div>
       </div>
       <div
-        className={`text-secondary-50 absolute bottom-0 flex w-full flex-col overflow-hidden transition-all transition-discrete duration-300 ${isContentPanelOpen ? 'z-[1] h-full bg-slate-800' : 'h-14 bg-transparent'}`}
+        className={`text-secondary-50 absolute bottom-0 flex w-full flex-col overflow-hidden transition-all transition-discrete duration-300 ${isContentPanelOpen ? 'z-1 h-full bg-slate-800' : 'h-14 bg-transparent'}`}
       >
         <div>
           {isContentPanelOpen && (

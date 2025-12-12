@@ -28,7 +28,7 @@ export default function SettingsMenu({ isVisible }) {
 
   return (
     <div
-      className={`bg-primary-800/60 absolute right-0 z-10 flex w-[230px] flex-col gap-6 rounded-[20px] border p-5 backdrop-blur-sm transition-all duration-300 ${isVisible ? 'visible top-[130%] opacity-100' : 'invisible top-[170%] opacity-0'}`}
+      className={`bg-primary-800/60 absolute right-0 z-10 flex w-57.5 flex-col gap-6 rounded-[20px] border p-5 backdrop-blur-sm transition-all duration-300 ${isVisible ? 'visible top-[130%] opacity-100' : 'invisible top-[170%] opacity-0'}`}
     >
       <div className="px-2">
         <div className="flex items-center justify-center gap-3 border-b pb-6">

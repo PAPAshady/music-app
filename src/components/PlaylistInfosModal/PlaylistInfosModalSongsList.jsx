@@ -128,7 +128,7 @@ function PlaylistInfosModalSongsList({ tracklist, tracklistSongs }) {
       <div className="text-secondary-50">
         {!!numberOfSongsToRender && <p className="mb-4 font-semibold">{songsListTitle}</p>}
 
-        <div className="dir-rtl max-h-[260px] min-h-[100px] overflow-y-auto pe-2">
+        <div className="dir-rtl max-h-65 min-h-25 overflow-y-auto pe-2">
           {addTabContentPending || numberOfSongsToRender ? (
             <div className="dir-ltr grid grid-cols-1 gap-3 min-[580px]:grid-cols-2">
               {/* if user is on add tab, show trending/searched songs or their loading state.  */}
@@ -158,7 +158,7 @@ function PlaylistInfosModalSongsList({ tracklist, tracklistSongs }) {
                 ))}
             </div>
           ) : (
-            <div className="dir-ltr flex h-[200px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
+            <div className="dir-ltr flex h-50 flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
               <Music size={62} />
               <p className="text-xl font-semibold">
                 {searchValue.length ? 'No songs found' : 'This playlist is empty :('}

@@ -12,7 +12,7 @@ export default memo(function DesktopNavbar() {
   ];
 
   return (
-    <div className="border-primary-50 bg-secondary-400/40 relative inline-flex h-[calc(100dvh-150px)] max-h-[700px] min-h-[300px] flex-col items-center justify-between rounded-lg border px-2.5 py-3">
+    <div className="border-primary-50 bg-secondary-400/40 relative inline-flex h-[calc(100dvh-150px)] max-h-175 min-h-75 flex-col items-center justify-between rounded-lg border px-2.5 py-3">
       <div className="flex flex-col gap-4">
         {navLinks.map((link) => (
           <DesktopNavLink key={link.id} {...link} />

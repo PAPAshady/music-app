@@ -110,7 +110,7 @@ function PlaylistsContainer({ playlists = [], classNames = 'grow !max-w-[170px]'
             ? Array(7)
                 .fill()
                 .map((_, index) => (
-                  <div key={index} className="w-[170px] max-w-[170px]">
+                  <div key={index} className="w-42.5 max-w-42.5">
                     <PlaylistCardSkeleton />
                   </div>
                 ))

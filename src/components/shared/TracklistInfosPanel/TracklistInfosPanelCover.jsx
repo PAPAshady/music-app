@@ -96,7 +96,7 @@ function TracklistInfosPanelCover({
   return (
     <div className="my-6 flex gap-2">
       {isTracklistPending && tracklistType !== 'favorites' ? (
-        <div className="relative size-32 overflow-hidden rounded-[10px] bg-gray-600/60 xl:size-[140px]">
+        <div className="relative size-32 overflow-hidden rounded-[10px] bg-gray-600/60 xl:size-35">
           <ShimmerOverlay />
         </div>
       ) : (
@@ -104,7 +104,7 @@ function TracklistInfosPanelCover({
           <img
             src={playlistCover}
             alt={tracklistType === 'favorites' ? 'Your Favorites' : tracklist?.title}
-            className="size-32 object-cover xl:size-[140px]"
+            className="size-32 object-cover xl:size-35"
           />
           <div
             className={`absolute inset-0 flex size-full items-center justify-center p-3 transition-opacity duration-300 ${

@@ -33,7 +33,7 @@ function TracklistInfosPanelSongsList({ songs, isPending, tracklist, tracklistId
         initial="hidden"
         animate="show"
         exit="hidden"
-        className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${songs?.length || isPending ? 'overflow-y-auto' : 'overflow-visible'} ${isScrollbarLocked ? 'locked-scroll' : ''}`}
+        className={`flex grow flex-col gap-2 pe-2 pt-0.5 ${songs?.length || isPending ? 'overflow-y-auto' : 'overflow-visible'} ${isScrollbarLocked ? 'locked-scroll' : ''}`}
       >
         {isPending ? (
           Array(10)

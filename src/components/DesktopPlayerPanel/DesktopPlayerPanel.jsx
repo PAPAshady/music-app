@@ -73,7 +73,7 @@ function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
         <span>Back</span>
       </button>
 
-      <div className="flex min-h-full grow flex-col items-center justify-center gap-10 pb-24 min-[480px]:pb-28 sm:gap-12 sm:pb-32 lg:flex-row lg:justify-between lg:pb-8 xl:gap-16 2xl:!gap-24">
+      <div className="flex min-h-full grow flex-col items-center justify-center gap-10 pb-24 min-[480px]:pb-28 sm:gap-12 sm:pb-32 lg:flex-row lg:justify-between lg:pb-8 xl:gap-16 2xl:gap-24!">
         {isDesktop && (
           <div className="mx-auto w-full grow">
             <Swiper
@@ -84,7 +84,7 @@ function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
               direction="vertical"
               modules={[Mousewheel]}
               mousewheel={{ forceToAxis: true }}
-              className="max-h-[380px]"
+              className="max-h-95"
             >
               {isPending
                 ? Array(6)
@@ -95,7 +95,7 @@ function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
                       </SwiperSlide>
                     ))
                 : songs.map((music, musicIndex) => (
-                    <SwiperSlide key={music.id} className="!h-auto">
+                    <SwiperSlide key={music.id} className="h-auto!">
                       <MusicPlayerCard
                         isPlaying={music.id === currentMusic?.id}
                         onClick={playerCardClickHandler}
@@ -123,7 +123,7 @@ function DesktopPlayerPanel({ isPending, songs, isPlayerPanelOpen }) {
           {currentMusic?.lyrics ? (
             <>
               <div
-                className={`xs:text-base lyrics-wrapper flex max-h-[230px] flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-[275px] min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base ${shouldAutoTrackLyrics && 'hide-scrollbar'}`}
+                className={`xs:text-base lyrics-wrapper flex max-h-57.5 flex-col gap-3 overflow-y-auto px-3 text-center text-sm min-[480px]:max-h-68.75 min-[480px]:text-lg lg:px-4 lg:text-start lg:text-base ${shouldAutoTrackLyrics && 'hide-scrollbar'}`}
                 ref={containerRef}
               >
                 {currentMusic?.lyrics?.map((lyric, index) => (

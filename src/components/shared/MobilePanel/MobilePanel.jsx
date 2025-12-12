@@ -82,7 +82,7 @@ export default function MobilePanel() {
 
   return createPortal(
     <div
-      className={`bg-primary-800 fixed inset-0 z-[11] min-h-[100dvh] w-full overflow-hidden transition-all duration-300 ${isMobilePanelOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+      className={`bg-primary-800 fixed inset-0 z-11 min-h-dvh w-full overflow-hidden transition-all duration-300 ${isMobilePanelOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div
         className="absolute size-full bg-cover bg-center bg-no-repeat opacity-15 blur-md"
@@ -90,12 +90,12 @@ export default function MobilePanel() {
       ></div>
 
       <div
-        className="text-secondary-50 relative container mx-auto h-[100dvh] overflow-y-auto py-12 min-[360px]:px-3 md:pb-4"
+        className="text-secondary-50 relative container mx-auto h-dvh overflow-y-auto py-12 xs:px-3 md:pb-4"
         onScroll={handleScroll}
       >
         {/* Top bar */}
         <div
-          className={`fixed top-0 left-0 z-[2] flex w-full items-center justify-between border-b-2 px-2 py-3 transition-all duration-300 ${isTopbarVisible ? 'border-neutral-700 bg-neutral-800' : 'border-transparent'}`}
+          className={`fixed top-0 left-0 z-2 flex w-full items-center justify-between border-b-2 px-2 py-3 transition-all duration-300 ${isTopbarVisible ? 'border-neutral-700 bg-neutral-800' : 'border-transparent'}`}
         >
           <div className="flex items-center gap-3 sm:gap-6 sm:px-2 sm:py-1">
             <button className="size-6 sm:size-8" onClick={() => dispatch(closeMobilePanel())}>
@@ -117,7 +117,7 @@ export default function MobilePanel() {
           </div>
         </div>
 
-        <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center min-[360px]:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
+        <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center xs:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
           {isPending ? (
             <>
               <div className="relative size-46 overflow-hidden rounded-md bg-gray-600/60 sm:size-56 md:size-64 lg:size-80">

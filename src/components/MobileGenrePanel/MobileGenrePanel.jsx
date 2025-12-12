@@ -50,9 +50,9 @@ function MobileGenrePanel() {
 
   return createPortal(
     <div
-      className={`text-secondary-50 fixed inset-0 z-10 overflow-y-auto bg-gradient-to-b from-slate-700 to-slate-900 transition-all ${isOpen ? 'top-0 opacity-100' : 'top-full opacity-0'}`}
+      className={`text-secondary-50 fixed inset-0 z-10 overflow-y-auto bg-linear-to-b from-slate-700 to-slate-900 transition-all ${isOpen ? 'top-0 opacity-100' : 'top-full opacity-0'}`}
     >
-      <div className={`fixed top-0 z-[1] px-4 pt-3 ${!isOpen ? 'hidden' : ''}`}>
+      <div className={`fixed top-0 z-1 px-4 pt-3 ${!isOpen ? 'hidden' : ''}`}>
         <button
           className="grid size-12 place-content-center rounded-full bg-black/50"
           onClick={closePanel}
@@ -74,7 +74,7 @@ function MobileGenrePanel() {
               className="relative h-[40dvh] overflow-hidden bg-cover bg-center"
               style={{ backgroundImage: `url(${genre?.cover || defaultCover})` }}
             >
-              <div className="absolute top-0 flex size-full flex-col justify-end gap-2 bg-gradient-to-t from-black/80 to-transparent p-5 sm:gap-4 lg:p-10">
+              <div className="absolute top-0 flex size-full flex-col justify-end gap-2 bg-linear-to-t from-black/80 to-transparent p-5 sm:gap-4 lg:p-10">
                 <p className="text-5xl font-black lg:text-6xl">{genre?.title}</p>
                 <p className="text-secondary-100 text-sm sm:text-base lg:text-lg">
                   {genre?.description}

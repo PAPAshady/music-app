@@ -31,7 +31,7 @@ function AddSongToPlaylistMobilePanel() {
     <div
       className={`fixed inset-0 flex items-end bg-black/40 backdrop-blur transition-all duration-300 will-change-transform ${isOpen ? 'z-20 translate-y-0 opacity-100' : 'z-[-1] translate-y-full opacity-0'} `}
     >
-      <div className="text-secondary-50 flex h-[90%] grow flex-col rounded-t-2xl bg-gradient-to-b from-slate-700 to-slate-900">
+      <div className="text-secondary-50 flex h-[90%] grow flex-col rounded-t-2xl bg-linear-to-b from-slate-700 to-slate-900">
         <div className="flex justify-center pt-4 pb-3">
           <button
             className="rounded-md bg-slate-600 px-4"

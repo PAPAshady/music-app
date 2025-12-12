@@ -34,14 +34,14 @@ export default function PlayBarSlider({ songs, isPending, onPlay }) {
   }, [isScrollbarLocked]);
 
   return (
-    <div className="mx-auto w-[95%] max-w-[1050px]">
+    <div className="mx-auto w-[95%] max-w-262.5">
       <Swiper
         key={isOneSlideOnly}
         spaceBetween={24}
         slidesPerView={1}
         modules={[Pagination, FreeMode, Mousewheel, Scrollbar]}
         pagination={{ clickable: true, enabled: !isDesktop }}
-        className="max-w-[95dvw] lg:max-h-[450px]"
+        className="max-w-[95dvw] lg:max-h-112.5"
         scrollbar={{ enabled: false, draggable: true }}
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         breakpoints={{
@@ -67,7 +67,7 @@ export default function PlayBarSlider({ songs, isPending, onPlay }) {
       >
         {/* Divide the songs array into chunks of 3 or 5 (depnends on screen size) and map over each chunk */}
         {itemsToRender.map((chunk, chunkIndex) => (
-          <SwiperSlide key={chunkIndex} className="p-[1px] pb-11 lg:!h-auto lg:p-0 lg:pe-8">
+          <SwiperSlide key={chunkIndex} className="p-px pb-11 lg:h-auto! lg:p-0 lg:pe-8">
             <div className="flex flex-col gap-4 lg:gap-6">
               {chunk.map((item, songIndex) =>
                 isPending ? (

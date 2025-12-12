@@ -11,12 +11,12 @@ function SearchBoxPlaylistsSlider({ playlists, isPending }) {
         ? Array(8)
             .fill()
             .map((_, index) => (
-              <SwiperSlide key={index} className="!w-auto pb-11">
+              <SwiperSlide key={index} className="w-auto! pb-11">
                 <PlaylistCardSkeleton />
               </SwiperSlide>
             ))
         : playlists.map((playlist) => (
-            <SwiperSlide key={playlist.id} className="!w-auto pb-11">
+            <SwiperSlide key={playlist.id} className="w-auto! pb-11">
               <PlaylistCard {...playlist} />
             </SwiperSlide>
           ))}

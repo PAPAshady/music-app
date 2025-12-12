@@ -23,7 +23,7 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
 
   return createPortal(
     <motion.div
-      className={`text-secondary-50 border-secondary-300 absolute z-[5] flex w-[250px] flex-col rounded-md border bg-gradient-to-b from-slate-700 to-slate-900 p-2`}
+      className={`text-secondary-50 border-secondary-300 absolute z-5 flex w-62.5 flex-col rounded-md border bg-linear-to-b from-slate-700 to-slate-900 p-2`}
       style={{ top: `${position.top}px`, left: `${position.left}px` }}
       ref={ref}
       variants={{
@@ -81,7 +81,7 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
           <span className="text-sm">New playlist</span>
         </button>
       </div>
-      <div className="max-h-[250px] min-h-[180px] grow space-y-2 overflow-y-auto py-2 pe-1.5">
+      <div className="max-h-62.5 min-h-45 grow space-y-2 overflow-y-auto py-2 pe-1.5">
         {isPending ? (
           Array(4)
             .fill()

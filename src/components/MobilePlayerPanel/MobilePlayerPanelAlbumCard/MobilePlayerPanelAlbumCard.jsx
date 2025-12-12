@@ -18,14 +18,14 @@ function MobilePlayerPanelAlbumCard({ album, onClick }) {
 
   return (
     <Link
-      className="flex w-[150px] flex-col rounded-xl p-3"
+      className="flex w-37.5 flex-col rounded-xl p-3"
       onClick={clickHandler}
       to={`${pathname}?type=album&id=${album.id}`}
     >
       <img
         src={cover || musicCover}
         alt={title}
-        className="mb-2 h-[120px] w-full cursor-pointer rounded-lg object-cover"
+        className="mb-2 h-30 w-full cursor-pointer rounded-lg object-cover"
       />
       <h3 className="cursor-pointer truncate text-base font-semibold">{title}</h3>
       <div className="mt-1 flex items-center gap-1 truncate text-sm text-gray-400">

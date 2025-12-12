@@ -28,7 +28,7 @@ export default function PlaylistsSlider({
   };
 
   return (
-    <div className="mx-auto w-[95%] max-w-[940px]">
+    <div className="mx-auto w-[95%] max-w-235">
       <Swiper
         slidesPerView={1.5}
         spaceBetween={24}
@@ -62,14 +62,14 @@ export default function PlaylistsSlider({
             playlists.slice(0, numberOfPlaylists).map((playlist) => (
               <SwiperSlide
                 key={playlist.id}
-                className="xs:max-w-[150px] p-[1px] min-[480px]:max-w-[226px] sm:max-w-[190px] md:max-w-[205px] lg:p-0 xl:max-w-[190px]"
+                className="xs:max-w-37.5 p-px min-[480px]:max-w-56.5 sm:max-w-47.5 md:max-w-51.25 lg:p-0 xl:max-w-47.5"
               >
                 {playlist.type === 'add-playlist-button' ? ( // render a button to add playlist. this button will be rendered only in Playlists.jsx page.
                   <AddPlaylistButton />
                 ) : playlist.type === 'favorite-songs' ? (
                   // render a button to show favorite musics onClick
                   <Link
-                    className="hover:border-secondary-50 relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-transparent bg-gradient-to-br from-[#822F6A] via-[#434EAA] to-[#005E4B] transition-colors lg:h-48 lg:gap-3"
+                    className="hover:border-secondary-50 relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-transparent bg-linear-to-br from-[#822F6A] via-[#434EAA] to-[#005E4B] transition-colors lg:h-48 lg:gap-3"
                     onClick={showFavoriteSongs}
                     to={`${pathname}?type=favorites`}
                   >

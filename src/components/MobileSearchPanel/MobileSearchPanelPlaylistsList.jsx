@@ -15,19 +15,19 @@ function MobileSearchPanelPlaylistsList({ playlists, isPlaylistsPending }) {
         slidesPerView="auto"
         modules={[Pagination]}
         pagination={{ clickable: true }}
-        className="!m-0 !max-w-full !p-[1px]"
+        className="m-0! max-w-full! p-px!"
       >
         {isPlaylistsPending
           ? Array(8)
               .fill()
               .map((_, index) => (
-                <SwiperSlide key={index} className="!w-auto !pb-11">
-                  <PlaylistCardSkeleton classNames="!h-48" />
+                <SwiperSlide key={index} className="w-auto! pb-11!">
+                  <PlaylistCardSkeleton classNames="h-48!" />
                 </SwiperSlide>
               ))
           : playlists.map((playlist) => (
-              <SwiperSlide key={playlist.id} className="!w-auto !pb-11">
-                <PlaylistCard {...playlist} classNames="!h-48" />
+              <SwiperSlide key={playlist.id} className="w-auto! pb-11!">
+                <PlaylistCard {...playlist} classNames="h-48!" />
               </SwiperSlide>
             ))}
       </Swiper>

@@ -6,7 +6,7 @@ export default function PlaylistInfo({ title, icon }) {
   return (
     <div className="flex grow-[0.5] items-center gap-1">
       {styledIcon}
-      <span className="max-w-[90px] truncate text-sm xl:text-base">{title}</span>
+      <span className="max-w-22.5 truncate text-sm xl:text-base">{title}</span>
     </div>
   );
 }

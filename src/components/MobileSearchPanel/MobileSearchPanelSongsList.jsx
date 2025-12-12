@@ -23,7 +23,7 @@ function MobileSearchPanelSongsList({ songs, isSongsPending }) {
   return (
     <div>
       <MobileSearchPanelSectionTitle title="Songs" icon={<Musicnote />} />
-      <div className="grid grid-cols-1 gap-3 px-1 min-[992px]:!grid-cols-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 px-1 min-[992px]:grid-cols-3! sm:grid-cols-2">
         {isSongsPending
           ? Array(4)
               .fill()

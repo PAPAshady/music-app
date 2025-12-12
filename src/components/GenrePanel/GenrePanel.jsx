@@ -30,7 +30,7 @@ function GenrePanel() {
 
   return (
     <div className="sticky top-10 hidden xl:block">
-      <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 px-3 py-5 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
+      <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-175 min-h-107.5 w-67.5 flex-col rounded-xl border bg-linear-to-b from-slate-700 to-slate-900 px-3 py-5 xl:w-77.5 2xl:h-[calc(100dvh-200px)]">
         <div className="h-full overflow-y-auto scroll-smooth pe-4">
           <div className="h-full space-y-3">
             {isGenrePending ? (

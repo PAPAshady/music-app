@@ -29,7 +29,7 @@ const PlaylistSong = memo(({ song, buttonState, onClick }) => {
     <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
       <div className="flex grow items-center gap-2 overflow-hidden">
         <div
-          className="relative h-[45px] w-[45px] min-w-[45px] overflow-hidden rounded-sm"
+          className="relative h-11.25 w-11.25 min-w-11.25 overflow-hidden rounded-sm"
           onClick={playOnClick}
         >
           <img src={cover ? cover : playlistDefaultCover} className="size-full object-cover" />
