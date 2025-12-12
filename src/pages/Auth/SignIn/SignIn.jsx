@@ -86,8 +86,13 @@ export default function SignIn() {
             />
           ))}
         </div>
-        <div className="text-white-200 text-sm underline">
-          <Link to="/auth/forgot-pass">Forgot Password ?</Link>
+        <div>
+          <Link
+            to="/auth/forgot-pass"
+            className="text-white-200 hover:text-secondary-100 underline"
+          >
+            Forgot Password ?
+          </Link>
         </div>
         <LoginButton title={isSubmitting ? 'Please wait...' : 'Sign in'} size="md" />
       </form>
