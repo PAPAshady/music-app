@@ -8,7 +8,7 @@ import { setSelectedCollection } from '../../../redux/slices/playContextSlice';
 import { useMutation } from '@tanstack/react-query';
 import { likePlaylistMutationOptions, unlikePlaylistMutationOptions } from '../../../queries/likes';
 import NowPlayingIndicator from '../../NowPlayingIndicator/NowPlayingIndicator';
-import {Link, useLocation} from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const PlaylistCard = memo((playlist) => {
   const dispatch = useDispatch();
@@ -25,9 +25,8 @@ const PlaylistCard = memo((playlist) => {
     dispatch(openMobilePanel('playlist'));
   };
 
-
   const onLikeChange = (e) => {
-    e.stopPropagation();
+    e.preventDefault();
     mutate(id);
   };
 
