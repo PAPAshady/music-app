@@ -10,7 +10,7 @@ import useLockScrollbar from '../../../hooks/useLockScrollbar';
 
 export default function PlayBarSlider({ songs, isPending, onPlay }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const isTablet = useMediaQuery('(min-width: 640px)');
+  const isTablet = useMediaQuery('(max-width: 640px)');
   const songsPerChunk = isDesktop ? 5 : 3;
   const itemsToRender = chunkArray(isPending ? Array(10).fill() : songs, songsPerChunk);
   const { isScrollbarLocked, lockScroll, unlockScroll } = useLockScrollbar();
