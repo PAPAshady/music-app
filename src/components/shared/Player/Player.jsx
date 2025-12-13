@@ -48,7 +48,7 @@ export default function Player({ classNames, isPlayerPage }) {
   const musicVolume = useSelector((state) => state.musicPlayer.volume);
   const isPlayerPanelOpen = useSelector((state) => state.playerPanel.isOpen);
   const volume = [musicVolume];
-  const verticalVolumeSlider = useCloseOnClickOutside();
+  const { isVisible, setIsVisible, setRef } = useCloseOnClickOutside();
 
   const disabled = !queuelist?.length;
   const isLargeMobile = useMediaQuery('(max-width: 639px)');
@@ -177,12 +177,12 @@ export default function Player({ classNames, isPlayerPage }) {
           />
           <div
             className="relative hidden items-center gap-2 md:flex"
-            ref={verticalVolumeSlider.setRef}
+            ref={setRef}
             onClick={stopPropagation}
           >
             <IconButton
               icon={volume[0] ? <VolumeHigh /> : <VolumeSlash />}
-              onClick={() => verticalVolumeSlider.setIsVisible((prev) => !prev)}
+              onClick={() => setIsVisible((prev) => !prev)}
             />
 
             {/* Horizantal volume slider */}
@@ -220,7 +220,7 @@ export default function Player({ classNames, isPlayerPage }) {
 
             {/* Vertical volume slider (for devices less than 1400px) */}
             <div
-              className={`bg-secondary-400/40 border-secondary-300 absolute left-1/2 flex w-8 -translate-x-1/2 justify-center rounded-xl border py-4 backdrop-blur-md transition-all duration-200 ${verticalVolumeSlider.isVisible ? 'visible bottom-[130%] opacity-100' : 'invisible bottom-full opacity-0'} ${isPlayerPage ? 'lg:hidden' : '2xl:hidden'}`}
+              className={`bg-secondary-400/40 border-secondary-300 absolute left-1/2 flex w-8 -translate-x-1/2 justify-center rounded-xl border py-4 backdrop-blur-md transition-all duration-200 ${isVisible ? 'visible bottom-[130%] opacity-100' : 'invisible bottom-full opacity-0'} ${isPlayerPage ? 'lg:hidden' : '2xl:hidden'}`}
             >
               <Range
                 values={volume}
