@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Pause, Play } from 'iconsax-react';
+import { Pause, Play } from 'iconsax-reactjs';
 import { pause, play } from '../../redux/slices/musicPlayerSlice';
 import musicCover from '../../assets/images/covers/no-cover.jpg';
 import PropTypes from 'prop-types';

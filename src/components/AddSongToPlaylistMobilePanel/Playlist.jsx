@@ -5,7 +5,7 @@ import {
 } from '../../queries/playlists';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { getSingleSongByPlaylistIdQueryOptions } from '../../queries/musics';
-import { AddCircle, TickCircle } from 'iconsax-react';
+import { AddCircle, TickCircle } from 'iconsax-reactjs';
 import defaultCover from '../../assets/images/covers/no-cover.jpg';
 import { useSelector, useDispatch } from 'react-redux';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';

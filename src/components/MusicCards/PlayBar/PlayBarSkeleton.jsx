@@ -4,7 +4,7 @@ import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 const PlayBarSkeleton = ({ size, classNames }) => {
   return (
     <div
-      className={`relative flex max-w-[285px] items-center justify-between gap-4 overflow-hidden rounded-lg bg-gray-600/60 p-1.5 ${size === 'lg' ? 'lg:max-w-[890px]' : 'lg:max-w-[510px]'} ${classNames}`}
+      className={`relative flex max-w-71.25 items-center justify-between gap-4 overflow-hidden rounded-lg bg-gray-600/60 p-1.5 ${size === 'lg' ? 'lg:max-w-222.5' : 'lg:max-w-127.5'} ${classNames}`}
     >
       <ShimmerOverlay />
       <div className={`flex gap-2 overflow-hidden ${size === 'md' ? 'grow-2' : 'grow-2'}`}>

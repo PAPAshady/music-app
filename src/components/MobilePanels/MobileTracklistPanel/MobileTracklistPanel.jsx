@@ -9,7 +9,7 @@ import { setCurrentSongIndex, play, pause } from '../../../redux/slices/musicPla
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
 import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
-import { Play, Pause, Shuffle, RepeateOne, RepeateMusic } from 'iconsax-react';
+import { Play, Pause, Shuffle, RepeateOne, RepeateMusic } from 'iconsax-reactjs';
 import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
@@ -67,7 +67,7 @@ function MobileTracklistPanel() {
       {/* Playback buttons */}
       <div className="mt-3 flex w-full items-center justify-between gap-2 lg:px-8">
         <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
-          <button className="border-primary-200 h-10 w-8 rounded-sm border p-[2px] sm:h-12 sm:w-9">
+          <button className="border-primary-200 h-10 w-8 rounded-sm border p-0.5 sm:h-12 sm:w-9">
             <img
               src={selectedTracklist?.cover ?? playlistDefaultCover}
               className="size-full rounded-sm object-cover"

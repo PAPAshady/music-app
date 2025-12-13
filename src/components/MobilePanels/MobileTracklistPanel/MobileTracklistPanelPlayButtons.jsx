@@ -1,9 +1,9 @@
 import IconButton from '../../Buttons/IconButton/IconButton';
-import { Additem } from 'iconsax-react';
+import { Additem } from 'iconsax-reactjs';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { openModal as openConfirmModal } from '../../../redux/slices/confirmModalSlice';
-import { Edit, Trash } from 'iconsax-react';
+import { Edit, Trash } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import { useMutation } from '@tanstack/react-query';

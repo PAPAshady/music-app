@@ -13,7 +13,7 @@ import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/sto
 import { useDispatch } from 'react-redux';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { useSelector } from 'react-redux';
-import { Trash, Edit } from 'iconsax-react';
+import { Trash, Edit } from 'iconsax-reactjs';
 import { openModal } from '../../redux/slices/confirmModalSlice';
 import { updateUserAvatar } from '../../redux/slices/authSlice';
 
@@ -239,7 +239,7 @@ export default function Profile() {
           </span>
         </div>
       </div>
-      <div className="container flex !max-w-[720px] flex-col gap-6">
+      <div className="container flex max-w-180! flex-col gap-6">
         <p className="text-red mb-2 text-lg font-semibold">{errors.root?.message}</p>
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-4">
           {textInputs.map((input) => (

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import SearchInput from '../../Inputs/SearchInput/SearchInput';
 import useInput from '../../../hooks/useInput';
 import useDebounce from '../../../hooks/useDebounce';
-import { ArrowLeft, Music } from 'iconsax-react';
+import { ArrowLeft, Music } from 'iconsax-reactjs';
 import { addSongToPrivatePlaylistMutationOptions } from '../../../queries/playlists';
 import {
   getTrendingSongsQueryOptions,
@@ -70,7 +70,7 @@ function AddSongPanel({
 
   return (
     <div
-      className={`text-secondary-50 fixed inset-0 z-[10] size-full bg-gradient-to-b from-slate-700 to-slate-900 pb-4 text-start transition-all duration-300 ${isOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+      className={`text-secondary-50 fixed inset-0 z-10 size-full bg-linear-to-b from-slate-700 to-slate-900 pb-4 text-start transition-all duration-300 ${isOpen ? 'tranlate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div className="container flex h-full flex-col gap-4">
         <div className="flex items-center justify-between pt-4">

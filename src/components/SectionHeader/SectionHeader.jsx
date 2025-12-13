@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export default function SectionTitle({ title, isPending }) {
   return (
     <div
-      className={`mb-4 flex items-center justify-between lg:mb-6 ${isPending ? 'relative h-3 w-1/2 max-w-[270px] overflow-hidden rounded-full bg-gray-600/60 lg:h-3.5 lg:max-w-[350px]' : ''} `}
+      className={`mb-4 flex items-center justify-between lg:mb-6 ${isPending ? 'relative h-3 w-1/2 max-w-67.5 overflow-hidden rounded-full bg-gray-600/60 lg:h-3.5 lg:max-w-87.5' : ''} `}
     >
       {isPending ? (
         <ShimmerOverlay />

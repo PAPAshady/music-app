@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Play, Pause, Heart, Share } from 'iconsax-react';
+import { Play, Pause, Heart, Share } from 'iconsax-reactjs';
 import { useSelector } from 'react-redux';
 import defaultSongCover from '../../../assets/images/covers/no-cover.jpg';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -83,7 +83,7 @@ export default function SongInfosPanel() {
   return (
     <div className="sticky top-10 hidden xl:block">
       <aside
-        className={`border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col overflow-y-hidden rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 p-5 px-3 py-5 pb-4 text-white shadow-2xl xl:w-[310px] 2xl:h-[calc(100dvh-200px)]`}
+        className={`border-secondary-200 flex h-[calc(100dvh-100px)] max-h-175 min-h-107.5 w-67.5 flex-col overflow-y-hidden rounded-xl border bg-linear-to-b from-slate-700 to-slate-900 p-5 px-3 py-5 pb-4 text-white shadow-2xl xl:w-77.5 2xl:h-[calc(100dvh-200px)]`}
       >
         <AnimatePresence mode="wait">
           <motion.div

@@ -9,7 +9,7 @@ import GenreCardSkeleton from '../../MusicCards/GenreCard/GenreCardSkeleton';
 
 export default function GenresSlider({ genres, isPending }) {
   return (
-    <div className="mx-auto w-[95%] max-w-[940px]">
+    <div className="mx-auto w-[95%] max-w-235">
       <Swiper
         slidesPerView={1}
         spaceBetween={16}
@@ -29,7 +29,7 @@ export default function GenresSlider({ genres, isPending }) {
               </SwiperSlide>
             ))
           : chunkArray(genres, 3).map((tracksArray, index) => (
-              <SwiperSlide key={index} className="mb-11 p-[1px]">
+              <SwiperSlide key={index} className="mb-11 p-px">
                 <div className="flex flex-col gap-4">
                   {tracksArray.map((track) => (
                     <GenreCard key={track.id} {...track} classNames="xs:h-[80px]" />

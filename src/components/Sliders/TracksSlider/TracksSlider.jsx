@@ -23,7 +23,7 @@ export default function TracksSlider({ songs, isPending }) {
   }, [isScrollbarLocked]);
 
   return (
-    <div className="mx-auto w-[95%] xl:max-w-[940px]">
+    <div className="mx-auto w-[95%] xl:max-w-235">
       <Swiper
         slidesPerView={1}
         modules={[Pagination]}
@@ -64,7 +64,7 @@ export default function TracksSlider({ songs, isPending }) {
               </SwiperSlide>
             ))
           : chunkArray(songs || [], 2).map((songsArray, index) => (
-              <SwiperSlide key={index} className="p-[1px] pb-11">
+              <SwiperSlide key={index} className="p-px pb-11">
                 <div className="flex flex-col gap-3">
                   {songsArray.map((song) => (
                     <PlayBar

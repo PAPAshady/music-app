@@ -32,7 +32,7 @@ function ArtistInfosPanelSongsList({ artistId }) {
           initial="hidden"
           animate="show"
           exit="hidden"
-          className={`flex flex-col gap-2 pe-2 pt-[2px] ${!popularSongs?.length && 'h-full'}`}
+          className={`flex flex-col gap-2 pe-2 pt-0.5 ${!popularSongs?.length && 'h-full'}`}
         >
           {isPopularSongsPending ? (
             Array(5)

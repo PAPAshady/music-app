@@ -1,6 +1,6 @@
 import { cloneElement, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { Eye, EyeSlash } from 'iconsax-react';
+import { Eye, EyeSlash } from 'iconsax-reactjs';
 
 const TextField = forwardRef(
   ({ type = 'text', value, placeholder, icon, isInvalid, errorMsg, ...props }, ref) => {
@@ -22,7 +22,7 @@ const TextField = forwardRef(
 
     return (
       <div
-        className={`flex w-full items-center rounded-md border-2 transition-all duration-200 lg:rounded-lg ${isFocused ? 'border-primary-50 bg-transparent' : 'bg-primary-50/60 border-transparent'} ${isInvalid ? '!border-red' : ''}`}
+        className={`flex w-full items-center rounded-md border-2 transition-all duration-200 lg:rounded-lg ${isFocused ? 'border-primary-50 bg-transparent' : 'bg-primary-50/60 border-transparent'} ${isInvalid ? 'border-red!' : ''}`}
       >
         <div className={`relative grow ${isPassword ? 'pe-8' : ''} `}>
           <input
@@ -32,7 +32,7 @@ const TextField = forwardRef(
             onBlur={onBlur}
             ref={ref}
             autoComplete="new-password" // remove autocomplete for all input types
-            className={`relative z-[1] w-full !bg-transparent px-2 text-base outline-none lg:px-3 ${isFocused ? 'text-primary-50' : 'text-primary-800'} ${isPassword ? 'py-2.5 font-[Inter_UI,serif] text-lg tracking-wider' : 'py-3'}`}
+            className={`relative z-1 w-full bg-transparent! px-2 text-base outline-none lg:px-3 ${isFocused ? 'text-primary-50' : 'text-primary-800'} ${isPassword ? 'py-2.5 font-[Inter_UI,serif] text-lg tracking-wider' : 'py-3'}`}
           />
           <span
             className={`text-primary-800/50 absolute left-0 flex -translate-y-1/2 items-center gap-1 text-sm transition-all duration-200 ${isFocusedOrHasValue ? '-top-[38%]' : 'top-1/2 px-2'} `}
@@ -51,7 +51,7 @@ const TextField = forwardRef(
           {isPassword && (
             <button
               onMouseDown={togglePasswordVisibility} // using onMouseDown instead of onClick prevents the input from blurring after click.
-              className={`absolute top-1/2 right-0 z-[2] -translate-y-1/2 pe-3 ${isFocused ? 'inline' : 'hidden'}`}
+              className={`absolute top-1/2 right-0 z-2 -translate-y-1/2 pe-3 ${isFocused ? 'inline' : 'hidden'}`}
             >
               {isPasswordVisible ? (
                 <EyeSlash size={16} className="text-primary-50" />

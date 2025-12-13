@@ -1,6 +1,6 @@
 import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import usePlayBar from '../../../hooks/usePlayBar';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';

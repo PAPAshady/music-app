@@ -38,7 +38,7 @@ function MobileGenrePanelPlaylistsList({ genreId }) {
                   </SwiperSlide>
                 ))
             : playlists?.map((playlist) => (
-                <SwiperSlide key={playlist.id} className="p-[1px] min-[520px]:pb-10">
+                <SwiperSlide key={playlist.id} className="p-px min-[520px]:pb-10">
                   <PlaylistCard {...playlist} />
                 </SwiperSlide>
               ))}

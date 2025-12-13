@@ -1,6 +1,6 @@
 import useLyrics from '../../../../hooks/useLyrics';
 import { setAutoLyricsTracker } from '../../../../redux/slices/musicPlayerSlice';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';

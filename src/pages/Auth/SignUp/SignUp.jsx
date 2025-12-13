@@ -1,7 +1,7 @@
 import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import SocialSignUpButton from '../../../components/SocialSignUpButton/SocialSignUpButton';
-import { User, Sms, Lock } from 'iconsax-react';
+import { User, Sms, Lock } from 'iconsax-reactjs';
 import { Link } from 'react-router-dom';
 import { socialSignUpButtons } from '../../../data';
 import { useForm } from 'react-hook-form';

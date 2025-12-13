@@ -1,4 +1,4 @@
-import { Heart, HeartSlash, Edit2, Trash, MinusCirlce, AddCircle } from 'iconsax-react';
+import { Heart, HeartSlash, Edit2, Trash, MinusCirlce, AddCircle } from 'iconsax-reactjs';
 import { openModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { openModal as openConfirmModal } from '../../../redux/slices/confirmModalSlice';
 import DropDownList from '../../DropDownList/DropDownList';

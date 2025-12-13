@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useCloseOnClickOutside from '../../hooks/useCloseOnClickOutside';
 import useDebounce from '../../hooks/useDebounce';
 import useInput from '../../hooks/useInput';
 import { useQuery } from '@tanstack/react-query';
-import { Musicnote, Profile2User, MusicPlaylist } from 'iconsax-react';
+import { Musicnote, Profile2User, MusicPlaylist } from 'iconsax-reactjs';
 import SearchBoxTracksSlider from './SearchBoxSliders/SearchBoxTracksSlider';
 import SearchBoxArtistsSlider from './SearchBoxSliders/SearchBoxArtistsSlider';
 import SearchBoxAlbumsSlider from './SearchBoxSliders/SearchBoxAlbumsSlider';
@@ -50,18 +50,18 @@ function DesktopSearchBox() {
     <div className="relative w-full">
       <div
         ref={setRef}
-        className={`relative transition-all ease-in-out ${isDesktopSearchBoxOpen ? 'z-[30] w-[80%] min-[1200px]:w-[75%] min-[1400px]:w-[65%]' : 'w-[315px]'}`}
+        className={`relative transition-all ease-in-out ${isDesktopSearchBoxOpen ? 'z-30 w-[80%] min-[1200px]:w-[75%] 2xl:w-[65%]' : 'w-78.75'}`}
       >
         <SearchInput {...searchInput} onFocus={() => setIsDesktopSearchBoxOpen(true)} />
         <div
-          className={`text-secondary-50 absolute z-[-1] -mt-4 w-full rounded-md bg-gradient-to-b from-slate-800 to-slate-700 px-2 py-8 ${isDesktopSearchBoxOpen ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'}`}
+          className={`text-secondary-50 absolute z-[-1] -mt-4 w-full rounded-md bg-linear-to-b from-slate-800 to-slate-700 px-2 py-8 ${isDesktopSearchBoxOpen ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'}`}
         >
-          <div className="max-h-[450px] overflow-y-auto px-4">
+          <div className="max-h-112.5 overflow-y-auto px-4">
             {searchInput.value.trim() ? (
               !isLoading && !hasData ? (
-                <div className="mt-4 flex h-[300px] grow flex-col items-center justify-center gap-3 rounded-md px-8 text-center">
+                <div className="mt-4 flex h-75 grow flex-col items-center justify-center gap-3 rounded-md px-8 text-center">
                   <Music size={72} />
-                  <p className="max-w-[500px] text-2xl font-semibold">
+                  <p className="max-w-125 text-2xl font-semibold">
                     Couldn&apos;t find anyting. Try searching for something else.
                   </p>
                 </div>
@@ -97,7 +97,7 @@ function DesktopSearchBox() {
                 </div>
               )
             ) : (
-              <div className="dir-ltr mt-4 flex h-[300px] flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
+              <div className="dir-ltr mt-4 flex h-75 flex-col items-center justify-center gap-3 rounded-md border border-dashed px-8 text-center">
                 <Music size={72} />
                 <p className="text-2xl font-semibold">Let the music begin</p>
                 <p>You can now start searching for your tunes!</p>

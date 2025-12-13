@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sms } from 'iconsax-react';
+import { Sms } from 'iconsax-reactjs';
 import TextField from '../../../components/Inputs/TextField/TextField';
 import LoginButton from '../../../components/Buttons/LoginButton/LoginButton';
 import { useForm } from 'react-hook-form';

@@ -1,7 +1,7 @@
 import MobileSearchPanelSectionTitle from './MobileSearchPanelSectionTitle';
 import AlbumCard from '../MusicCards/AlbumCard/AlbumCard';
 import AlbumCardSkeleton from '../MusicCards/AlbumCard/AlbumCardSkeleton';
-import { MusicPlaylist } from 'iconsax-react';
+import { MusicPlaylist } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 
 function MobileSearchPanelAlbumsList({ albums, isAlbumsPending }) {

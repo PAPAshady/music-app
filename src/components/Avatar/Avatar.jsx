@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { User } from 'iconsax-react';
+import { User } from 'iconsax-reactjs';
 
 export default function Avatar({ size, profilePic, disabled }) {
   const avatarSizes = {

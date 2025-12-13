@@ -8,7 +8,7 @@ import 'swiper/css';
 export default function DiscoverPlaylistsSlider({ playlists }) {
   return (
     <div
-      className="mx-auto flex w-full max-w-[95dvw] flex-col overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat md:mx-auto lg:w-[93%] lg:max-w-[calc(95dvw-126px)] xl:w-[calc(95dvw-428px)] xl:max-w-[940px]"
+      className="mx-auto flex w-full max-w-[95dvw] flex-col overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat md:mx-auto lg:w-[93%] lg:max-w-[calc(95dvw-126px)] xl:w-[calc(95dvw-428px)] xl:max-w-235"
       style={{ backgroundImage: `url(${sectionBg})` }}
     >
       <div className="size-full items-center justify-between gap-4 backdrop-blur-md min-[480px]:flex min-[480px]:py-5 min-[480px]:ps-4 min-[480px]:pe-0 sm:flex-col sm:gap-8 sm:px-0 sm:py-8 lg:gap-10">
@@ -28,7 +28,7 @@ export default function DiscoverPlaylistsSlider({ playlists }) {
             modules={[Autoplay, FreeMode]}
             autoplay={{ delay: 2000 }}
             freeMode
-            className="mx-auto max-w-[85dvw] min-[480px]:max-w-[225px] min-[590px]:max-w-[300px] sm:max-w-[95dvw] sm:!px-4 md:!pe-7 xl:!pe-0"
+            className="mx-auto max-w-[85dvw] min-[480px]:max-w-56.25 min-[590px]:max-w-75 sm:max-w-[95dvw] sm:px-4! md:pe-7! xl:pe-0!"
             breakpoints={{
               360: { slidesPerView: 2, spaceBetween: 14 },
               480: {
@@ -49,7 +49,7 @@ export default function DiscoverPlaylistsSlider({ playlists }) {
             {playlists.map((playlist) => (
               <SwiperSlide
                 key={playlist.id}
-                className="p-[1px] min-[480px]:last-of-type:pe-4 sm:pe-[1px]"
+                className="p-px min-[480px]:last-of-type:pe-4 sm:pe-px"
               >
                 <PlaylistCard {...playlist} />
               </SwiperSlide>

@@ -1,12 +1,12 @@
 import { memo } from 'react';
-import { AddCircle } from 'iconsax-react';
+import { AddCircle } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import LoadingSpinner from '../../../LoadingSpinner/LoadingSpinner';
 import { setCurrentQueuelist, setSelectedSong } from '../../../../redux/slices/playContextSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { play, pause } from '../../../../redux/slices/musicPlayerSlice';
 import { setCurrentSongIndex } from '../../../../redux/slices/musicPlayerSlice';
-import { Play, Pause } from 'iconsax-react';
+import { Play, Pause } from 'iconsax-reactjs';
 import IconButton from '../../../Buttons/IconButton/IconButton';
 import playlistDefaultCover from '../../../../assets/images/covers/no-cover.jpg';
 
@@ -31,7 +31,7 @@ const SuggestedSong = memo(({ isPending, onAdd, song }) => {
     <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm md:border">
       <div className="flex grow items-center gap-2 overflow-hidden">
         <div
-          className="relative h-15 w-15 min-w-[60px] overflow-hidden rounded-sm sm:h-[70px] sm:w-[70px] sm:min-w-[70px]"
+          className="relative h-15 w-15 min-w-15 overflow-hidden rounded-sm sm:size-17.5 sm:min-w-17.5"
           onClick={playOnClick}
         >
           <img

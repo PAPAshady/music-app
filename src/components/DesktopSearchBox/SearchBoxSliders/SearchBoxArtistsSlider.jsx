@@ -16,12 +16,12 @@ function SearchBoxArtistsSlider({ artists, isPending }) {
         ? Array(10)
             .fill()
             .map((_, index) => (
-              <SwiperSlide key={index} className="!w-auto pb-11">
+              <SwiperSlide key={index} className="w-auto! pb-11">
                 <SmallArtistCardSkeleton size="md" />
               </SwiperSlide>
             ))
         : artists.map((artist) => (
-            <SwiperSlide key={artist.id} className="!w-auto p-[1px] pb-11">
+            <SwiperSlide key={artist.id} className="w-auto! p-px pb-11">
               <SmallArtistCard size="md" artist={artist} />
             </SwiperSlide>
           ))}

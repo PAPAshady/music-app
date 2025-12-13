@@ -1,5 +1,5 @@
 import { memo, useEffect } from 'react';
-import { Heart, Play, AddCircle } from 'iconsax-react';
+import { Heart, Play, AddCircle } from 'iconsax-reactjs';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { formatTime } from '../../../redux/slices/musicPlayerSlice';
@@ -94,10 +94,10 @@ const PlayBar = memo(
 
     return (
       <div
-        className={`bg-primary-800/60 hover:inset-shadow-secondary-400 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-[285px] items-center justify-between gap-4 rounded-lg border p-1.5 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${activeStateStyles} ${size === 'lg' ? 'lg:max-w-[890px]' : 'lg:max-w-[510px]'} ${classNames}`}
+        className={`bg-primary-800/60 hover:inset-shadow-secondary-400 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-71.25 items-center justify-between gap-4 rounded-lg border p-1.5 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${activeStateStyles} ${size === 'lg' ? 'lg:max-w-222.5' : 'lg:max-w-127.5'} ${classNames}`}
       >
         <div
-          className={`flex grow gap-2 overflow-hidden ${size === 'lg' ? 'lg:w-[270px] lg:max-w-[270px] lg:truncate' : ''}`}
+          className={`flex grow gap-2 overflow-hidden ${size === 'lg' ? 'lg:w-67.5 lg:max-w-67.5 lg:truncate' : ''}`}
         >
           <button
             className="relative size-14 min-h-14 min-w-14 overflow-hidden rounded-md"

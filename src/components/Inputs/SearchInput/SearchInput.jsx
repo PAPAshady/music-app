@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { SearchNormal1, CloseCircle } from 'iconsax-react';
+import { SearchNormal1, CloseCircle } from 'iconsax-reactjs';
 import { forwardRef } from 'react';
 
 const SearchInput = forwardRef(
@@ -15,7 +15,7 @@ const SearchInput = forwardRef(
           ref={ref}
           type="text"
           disabled={disabled}
-          className="placeholder:text-secondary-300 text-secondary-50 w-full grow-[1] py-1 text-base outline-0 sm:text-lg"
+          className="placeholder:text-secondary-300 text-secondary-50 w-full grow py-1 text-base outline-0 sm:text-lg"
           placeholder={disabled ? '' : 'Search'}
           onChange={(e) => onChange(e)}
           onFocus={onFocus}

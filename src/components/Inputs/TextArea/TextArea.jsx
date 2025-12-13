@@ -24,7 +24,7 @@ const TextArea = forwardRef(
           onFocus={() => setIsFocused(true)}
           onBlur={onBlur}
           ref={ref}
-          className={`focus:bg-primary-800/60 bg-primary-900 text-primary-50 min-h-[120px] w-full min-w-[280px] rounded-lg border px-3.5 py-2.5 font-medium transition-all duration-300 outline-none focus:inset-shadow-[4px_4px_10px_1px] focus:shadow-[4px_4px_8px_1px] focus:shadow-[black]/40 focus:inset-shadow-[#A7BBE9]/29 min-[480px]:h-[140px] md:w-full ${classNames} ${isInvalid ? 'border-red' : 'border-primary-50'}`}
+          className={`focus:bg-primary-800/60 bg-primary-900 text-primary-50 min-h-30 w-full min-w-70 rounded-lg border px-3.5 py-2.5 font-medium transition-all duration-300 outline-none focus:inset-shadow-[4px_4px_10px_1px] focus:shadow-[4px_4px_8px_1px] focus:shadow-[black]/40 focus:inset-shadow-[#A7BBE9]/29 min-[480px]:h-35 md:w-full ${classNames} ${isInvalid ? 'border-red' : 'border-primary-50'}`}
         ></textarea>
         {maxLength && (
           <p

@@ -2,7 +2,7 @@ import { setAutoLyricsTracker } from '../../../redux/slices/musicPlayerSlice';
 import useLyrics from '../../../hooks/useLyrics';
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import getRandomNoLyricsMessage from '../../../utils/getRandomNoLyricsMessage';
 
 function LyricsTab() {

@@ -2,7 +2,7 @@ import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import usePlayBar from '../../../hooks/usePlayBar';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import useLockScrollbar from '../../../hooks/useLockScrollbar';
 
@@ -33,7 +33,7 @@ function TracklistInfosPanelSongsList({ songs, isPending, tracklist, tracklistId
         initial="hidden"
         animate="show"
         exit="hidden"
-        className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${songs?.length || isPending ? 'overflow-y-auto' : 'overflow-visible'} ${isScrollbarLocked ? 'locked-scroll' : ''}`}
+        className={`flex grow flex-col gap-2 pe-2 pt-0.5 ${songs?.length || isPending ? 'overflow-y-auto' : 'overflow-visible'} ${isScrollbarLocked ? 'locked-scroll' : ''}`}
       >
         {isPending ? (
           Array(10)

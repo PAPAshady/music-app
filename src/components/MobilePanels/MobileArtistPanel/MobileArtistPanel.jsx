@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import artistDefaultImage from '../../../assets/images/Avatar/no-avatar.png';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import IconButton from '../../Buttons/IconButton/IconButton';
-import { Shuffle, RepeateOne, RepeateMusic, Play, Pause } from 'iconsax-react';
+import { Shuffle, RepeateOne, RepeateMusic, Play, Pause } from 'iconsax-reactjs';
 import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { useQuery } from '@tanstack/react-query';
@@ -43,13 +43,12 @@ function MobileArtistPanel() {
     <>
       <div className="mt-3 flex w-full items-center justify-between gap-2 lg:px-8">
         <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
-          <button className="border-primary-200 h-10 w-8 rounded-sm border p-[2px] sm:h-12 sm:w-9">
+          <button className="border-primary-200 h-10 w-8 rounded-sm border p-0.5 sm:h-12 sm:w-9">
             <img
               src={artist?.image || artistDefaultImage}
               className="size-full rounded-sm object-cover"
             />
           </button>
-
         </div>
         <div className="flex items-center gap-3.5 sm:gap-5 md:gap-7">
           <IconButton

@@ -21,7 +21,7 @@ export default function ProtectedRoute({ children }) {
     return (
       <div className="relative">
         <div
-          className={`fixed inset-0 z-20 grid h-[100dvh] w-full place-content-center backdrop-blur-md transition-all duration-300`}
+          className={`fixed inset-0 z-20 grid h-dvh w-full place-content-center backdrop-blur-md transition-all duration-300`}
         >
           <Logo size={isDesktop ? 'xl' : 'lg'} isLoading />
         </div>
