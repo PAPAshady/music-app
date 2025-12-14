@@ -1,14 +1,14 @@
 import MobileSearchPanelSectionTitle from './MobileSearchPanelSectionTitle';
 import SmallArtistCard from '../MusicCards/SmallArtistCard/SmallArtistCard';
 import SmallArtistCardSkeleton from '../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
-import { Profile2User } from 'iconsax-react';
+import { Profile2User } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 
 function MobileSearchPanelArtistsList({ artists, isArtistsPending }) {
   return (
     <div>
       <MobileSearchPanelSectionTitle title="Artists" icon={<Profile2User />} />
-      <div className="grid grid-cols-3 gap-4 px-1 min-[500px]:grid-cols-4 min-[900px]:!grid-cols-6 sm:grid-cols-5">
+      <div className="grid grid-cols-3 gap-4 px-1 min-[500px]:grid-cols-4 min-[900px]:grid-cols-6! sm:grid-cols-5">
         {isArtistsPending
           ? Array(6)
               .fill()

@@ -13,7 +13,7 @@ import {
   Heart,
   VolumeHigh,
   VolumeSlash,
-} from 'iconsax-react';
+} from 'iconsax-reactjs';
 import IconButton from '../../Buttons/IconButton/IconButton';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import { Range } from 'react-range';
@@ -48,7 +48,7 @@ export default function Player({ classNames, isPlayerPage }) {
   const musicVolume = useSelector((state) => state.musicPlayer.volume);
   const isPlayerPanelOpen = useSelector((state) => state.playerPanel.isOpen);
   const volume = [musicVolume];
-  const verticalVolumeSlider = useCloseOnClickOutside();
+  const { isVisible, setIsVisible, setRef } = useCloseOnClickOutside();
 
   const disabled = !queuelist?.length;
   const isLargeMobile = useMediaQuery('(max-width: 639px)');
@@ -82,12 +82,12 @@ export default function Player({ classNames, isPlayerPage }) {
     if (!isMobile) dispatch(openPlayerPanel());
   };
 
-  // avoids opening player panel on mobile devices in case user click on certian elements such as play buttons, song cover, progres bar, etc. 
+  // avoids opening player panel on mobile devices in case user click on certian elements such as play buttons, song cover, progres bar, etc.
   const stopPropagation = (e) => e.stopPropagation();
 
   return (
     <div
-      className={`border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-10 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-xs transition-all duration-300 min-[400px]:items-center min-[480px]:p-4 min-[1330px]:!w-[64dvw] sm:items-center sm:gap-4 md:sticky md:bottom-2 md:justify-between md:gap-8 md:rounded-lg md:border xl:w-[62.6dvw] xl:gap-4 2xl:!w-full ${disabled && !isPlayerPage ? 'translate-y-full opacity-0 md:translate-y-[calc(100%+8px)]' : 'translate-y-0 opacity-100'} ${classNames}`}
+      className={`border-secondary-300 bg-secondary-700/64 xs:items-start xs:pt-4 xs:pb-3 group fixed bottom-0 left-0 z-10 flex w-full items-center gap-3 rounded-t-lg border-t px-3 pt-3 pb-2 backdrop-blur-xs transition-all duration-300 min-[400px]:items-center min-[480px]:p-4 min-[1330px]:w-[64dvw]! sm:items-center sm:gap-4 md:sticky md:bottom-2 md:justify-between md:gap-8 md:rounded-lg md:border xl:w-[62.6dvw] xl:gap-4 2xl:w-full! ${disabled && !isPlayerPage ? 'translate-y-full opacity-0 md:translate-y-[calc(100%+8px)]' : 'translate-y-0 opacity-100'} ${classNames}`}
       onClick={openPlayerPanelOnClick}
     >
       <div className="flex items-center gap-4">
@@ -117,7 +117,7 @@ export default function Player({ classNames, isPlayerPage }) {
             </div>
           )}
         </div>
-        <div className="hidden w-[170px] truncate md:block">
+        <div className="hidden w-42.5 truncate md:block">
           <p className="text-white-50 truncate font-semibold">
             {currentMusic?.title || 'No music is playing'}
           </p>
@@ -138,14 +138,14 @@ export default function Player({ classNames, isPlayerPage }) {
             </div>
             <CurrentTimeNumber />
             <div
-              className="xs:gap-5 flex items-center gap-4 min-[400px]:gap-6 sm:gap-10 md:gap-12 2xl:!gap-16"
+              className="xs:gap-5 flex items-center gap-4 min-[400px]:gap-6 sm:gap-10 md:gap-12 2xl:gap-16!"
               onClick={stopPropagation}
             >
               {playButtons.map((button) => (
                 <PlayButton key={button.id} {...button} disabled={disabled} />
               ))}
             </div>
-            <span className="text-primary-100 hidden w-[42px] text-end text-sm md:block">
+            <span className="text-primary-100 hidden w-10.5 text-end text-sm md:block">
               {formatTime(currentMusic?.duration) ?? '00:00'}
             </span>
           </div>
@@ -177,12 +177,12 @@ export default function Player({ classNames, isPlayerPage }) {
           />
           <div
             className="relative hidden items-center gap-2 md:flex"
-            ref={verticalVolumeSlider.setRef}
+            ref={setRef}
             onClick={stopPropagation}
           >
             <IconButton
               icon={volume[0] ? <VolumeHigh /> : <VolumeSlash />}
-              onClick={() => verticalVolumeSlider.setIsVisible((prev) => !prev)}
+              onClick={() => setIsVisible((prev) => !prev)}
             />
 
             {/* Horizantal volume slider */}
@@ -210,7 +210,7 @@ export default function Player({ classNames, isPlayerPage }) {
                   key={2}
                 >
                   <span
-                    className={`bg-primary-400 absolute left-1/2 -translate-x-1/2 rounded-sm px-1.5 py-0.5 text-xs transition-all delay-150 duration-300 ${isDragged ? '-top-[26px] opacity-100' : '-top-5 opacity-0'}`}
+                    className={`bg-primary-400 absolute left-1/2 -translate-x-1/2 rounded-sm px-1.5 py-0.5 text-xs transition-all delay-150 duration-300 ${isDragged ? '-top-6.5 opacity-100' : '-top-5 opacity-0'}`}
                   >
                     {volume[0]}
                   </span>
@@ -220,7 +220,7 @@ export default function Player({ classNames, isPlayerPage }) {
 
             {/* Vertical volume slider (for devices less than 1400px) */}
             <div
-              className={`bg-secondary-400/40 border-secondary-300 absolute left-1/2 flex w-8 -translate-x-1/2 justify-center rounded-xl border py-4 backdrop-blur-md transition-all duration-200 ${verticalVolumeSlider.isVisible ? 'visible bottom-[130%] opacity-100' : 'invisible bottom-full opacity-0'} ${isPlayerPage ? 'lg:hidden' : '2xl:hidden'}`}
+              className={`bg-secondary-400/40 border-secondary-300 absolute left-1/2 flex w-8 -translate-x-1/2 justify-center rounded-xl border py-4 backdrop-blur-md transition-all duration-200 ${isVisible ? 'visible bottom-[130%] opacity-100' : 'invisible bottom-full opacity-0'} ${isPlayerPage ? 'lg:hidden' : '2xl:hidden'}`}
             >
               <Range
                 values={volume}
@@ -262,7 +262,7 @@ function PlayButton({ icon, onClick, disabled }) {
   const styledIcon = cloneElement(icon, { size: '100%' });
   return (
     <button
-      className="disabled:text-white-700 xs:size-[18px] size-4 disabled:cursor-not-allowed min-[480px]:size-5 sm:size-6 2xl:!size-7"
+      className="disabled:text-white-700 xs:size-4.5 size-4 disabled:cursor-not-allowed min-[480px]:size-5 sm:size-6 2xl:size-7!"
       onClick={onClick}
       disabled={disabled}
     >
@@ -286,7 +286,7 @@ function CurrentTimeNumber() {
     };
   }, []);
 
-  return <span className="text-primary-100 hidden w-[42px] text-sm md:block">{currentTime}</span>;
+  return <span className="text-primary-100 hidden w-10.5 text-sm md:block">{currentTime}</span>;
 }
 
 PlayButton.propTypes = {

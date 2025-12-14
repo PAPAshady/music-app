@@ -3,7 +3,7 @@ import TextField from '../../Inputs/TextField/TextField';
 import MainButton from '../../Buttons/MainButton/MainButton';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Sms } from 'iconsax-react';
+import { Sms } from 'iconsax-reactjs';
 import instagramImg from '../../../assets/images/socials/instagram.png';
 import twitterImg from '../../../assets/images/socials/twitter.png';
 import facebookImg from '../../../assets/images/socials/facebook.png';
@@ -69,11 +69,11 @@ export default function Footer() {
   return (
     <>
       <footer className="bg-primary-50/10 border-primary-200 w-full rounded-4xl border px-3 py-6 min-[420px]:p-6 lg:p-6">
-        <div className="!container !w-[90%]">
+        <div className="container! w-[90%]!">
           <div className="flex flex-col gap-10 md:flex-row md:items-center lg:justify-between">
             <div className="flex flex-col items-center gap-4">
               <Logo size={isDesktop ? 'lg' : 'md'} row={isDesktop ? true : false} />
-              <div className="lg:text-star lg:text-star mx-auto max-w-[310px] text-center">
+              <div className="lg:text-star lg:text-star mx-auto max-w-77.5 text-center">
                 <p className="text-primary-50 mb-2 text-sm sm:text-base lg:text-lg">
                   Welcome to VioTune!
                 </p>
@@ -82,15 +82,15 @@ export default function Footer() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto flex w-full justify-between gap-2 sm:max-w-[600px] md:max-w-none lg:m-0 lg:max-w-[580px]">
+            <div className="mx-auto flex w-full justify-between gap-2 sm:max-w-150 md:max-w-none lg:m-0 lg:max-w-145">
               {headerLinks.map((link) => (
                 <HeaderLinksWrapper key={link.id} headerLink={link} />
               ))}
             </div>
           </div>
-          <div className="bg-primary-50/50 mx-auto my-6 hidden h-[1px] w-full items-center justify-between lg:flex">
-            <span className="bg-primary-50 size-[3px] rotate-45"></span>
-            <span className="bg-primary-50 size-[3px] rotate-45"></span>
+          <div className="bg-primary-50/50 mx-auto my-6 hidden h-px w-full items-center justify-between lg:flex">
+            <span className="bg-primary-50 size-0.75 rotate-45"></span>
+            <span className="bg-primary-50 size-0.75 rotate-45"></span>
           </div>
           <div className="mt-10 items-end justify-between sm:flex sm:gap-4">
             <div className="mb-6 grow-[0.5] sm:m-0">

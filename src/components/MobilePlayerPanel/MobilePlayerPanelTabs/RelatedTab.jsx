@@ -4,7 +4,7 @@ import SmallArtistCard from '../../MusicCards/SmallArtistCard/SmallArtistCard';
 import SmallArtistCardSkeleton from '../../MusicCards/SmallArtistCard/SmallArtistCardSkeleton';
 import MobilePlayerPanelAlbumCard from '../MobilePlayerPanelAlbumCard/MobilePlayerPanelAlbumCard';
 import MobilePlayerPanelAlbumCardSkeleton from '../MobilePlayerPanelAlbumCard/MobilePlayerPanelAlbumCardSkeleton';
-import { getRelatedSongsBySongDataQueryOptions } from '../../../queries/musics';
+import { getRelatedSongsBySongDataQueryOptions } from '../../../queries/songs';
 import { getRelatedArtistsQueryOptions } from '../../../queries/artists';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import { getAlbumsByArtistIdQueryOptions } from '../../../queries/albums';
@@ -104,7 +104,11 @@ function RelatedTab({ onClose }) {
           <h2 className="mt-6 mb-4 text-xl font-bold">Song details</h2>
           <div className="flex items-center gap-3">
             <div className="size-24 overflow-hidden rounded-xl">
-              <img src={currentMusic?.cover} alt={currentMusic?.title} className="size-full object-cover" />
+              <img
+                src={currentMusic?.cover}
+                alt={currentMusic?.title}
+                className="size-full object-cover"
+              />
             </div>
             <div className="flex grow flex-col gap-1">
               <p className="font-bold">{currentMusic?.title}</p>

@@ -1,5 +1,5 @@
 import { useId, forwardRef } from 'react';
-import { Sms } from 'iconsax-react';
+import { Sms } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 
 const EmailInput = forwardRef(({ classNames, isInvalid, errorMsg, disabled, ...props }, ref) => {

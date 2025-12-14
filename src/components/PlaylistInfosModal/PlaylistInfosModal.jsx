@@ -9,12 +9,11 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../../redux/slices/playlistInfosModalSlice';
 import { uploadFile, getFileUrl, deleteFiles, listFiles } from '../../services/storage';
-import { setSelectedCollection } from '../../redux/slices/playContextSlice';
 import {
   createNewPrivatePlaylistMutationOptions,
   updatePrivatePlaylistMutationOptions,
 } from '../../queries/playlists';
-import { getSongsByPlaylistIdQueryOptions } from '../../queries/musics';
+import { getSongsByPlaylistIdQueryOptions } from '../../queries/songs';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { getPlaylistByIdQueryOptions } from '../../queries/playlists';
 import PlaylistInfosModalSongsList from './PlaylistInfosModalSongsList';
@@ -150,48 +149,28 @@ export default function PlaylistInfosModal() {
 
     // handle creating a playlist logic in database
     if (actionType === 'create_playlist') {
-      try {
-        await createNewPlaylistMutation.mutateAsync(modifiedFields);
-        dispatch(
-          showNewSnackbar({
-            message: 'Playlist created successfully.',
-            type: 'success',
-            hideDuration: 4000,
-          })
-        );
-        onClose();
-      } catch (err) {
-        if (err.code === '23505') {
-          setError('title', {
-            message: 'Playlist with this title already exists.',
-          });
-        } else {
-          dispatch(
-            showNewSnackbar({
-              message: 'Unexpected error occured while creating playlist. Try again.',
-              type: 'error',
-              hideDuration: 4000,
-            })
-          );
-          console.error('Error creating playlist in database : ', err);
-        }
-      }
+      createNewPlaylistMutation.mutate(modifiedFields, {
+        onSuccess: onClose,
+        onError: (err) => {
+          if (err.code === '23505') {
+            setError('title', {
+              message: 'Playlist with this title already exists.',
+            });
+          } else {
+            dispatch(
+              showNewSnackbar({
+                message: 'Unexpected error occured while creating playlist. Try again.',
+                type: 'error',
+                hideDuration: 4000,
+              })
+            );
+            console.error('Error creating playlist in database : ', err);
+          }
+        },
+      });
     } else {
       // handle updating playlist logic in database
-      try {
-        const newPlaylistData = await updatePlaylistMutation.mutateAsync(modifiedFields);
-        dispatch(setSelectedCollection({ ...newPlaylistData, musics: selectedPlaylistSongs })); // update redux store as well be synced with new changes
-        dispatch(showNewSnackbar({ message: 'Playlist updated successfully.', type: 'success' }));
-        onClose();
-      } catch (err) {
-        dispatch(
-          showNewSnackbar({
-            message: 'Unexpected error occured while updating the playlist. Try again.',
-            type: 'error',
-          })
-        );
-        console.error('Error updating playlist in database : ', err);
-      }
+      updatePlaylistMutation.mutate(modifiedFields, { onSuccess: onClose });
     }
   };
   const onClose = () => {

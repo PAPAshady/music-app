@@ -19,11 +19,11 @@ function SmallArtistCard({ artist, size = 'sm', classNames, onClick }) {
     <Link
       className={`group flex cursor-pointer flex-col items-center text-center ${classNames}`}
       onClick={showArtistInfos}
+      to={`${pathname}?type=artist&id=${id}`}
     >
       <img
         src={image ?? artistDefaultCover}
         className={`group-hover:outline-primary-50 mb-1 rounded-full object-cover outline-1 outline-transparent transition-colors ${size === 'sm' ? 'size-18' : 'size-24'}`}
-        to={`${pathname}?type=artist&id=${id}`}
       />
       <span className={size === 'sm' ? 'text-sm' : ''}>{name}</span>
     </Link>

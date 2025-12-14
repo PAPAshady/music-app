@@ -1,6 +1,6 @@
 import SongCardSkeleton from '../MusicCards/SongCard/SongCardSkeleton';
 import SongCard from '../MusicCards/SongCard/SongCard';
-import { Musicnote } from 'iconsax-react';
+import { Musicnote } from 'iconsax-reactjs';
 import usePlayBar from '../../hooks/usePlayBar';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
@@ -23,7 +23,7 @@ function MobileSearchPanelSongsList({ songs, isSongsPending }) {
   return (
     <div>
       <MobileSearchPanelSectionTitle title="Songs" icon={<Musicnote />} />
-      <div className="grid grid-cols-1 gap-3 px-1 min-[992px]:!grid-cols-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 px-1 min-[992px]:grid-cols-3! sm:grid-cols-2">
         {isSongsPending
           ? Array(4)
               .fill()

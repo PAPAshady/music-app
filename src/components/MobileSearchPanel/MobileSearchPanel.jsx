@@ -2,13 +2,13 @@ import { createPortal } from 'react-dom';
 import SearchInput from '../Inputs/SearchInput/SearchInput';
 import useInput from '../../hooks/useInput';
 import { useQuery } from '@tanstack/react-query';
-import { Music, ArrowLeft } from 'iconsax-react';
+import { Music, ArrowLeft } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 import useDebounce from '../../hooks/useDebounce';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeMobileSearchPanel } from '../../redux/slices/mobileSearchPanelSlice';
-import { getSongsByKeywordQueryOptions } from '../../queries/musics';
+import { getSongsByKeywordQueryOptions } from '../../queries/songs';
 import { getAlbumsByKeywordQueryOptions } from '../../queries/albums';
 import { getArtistsByKeywordQueryOptions } from '../../queries/artists';
 import { getPlaylistsByKeywordQueryOptions } from '../../queries/playlists';
@@ -57,7 +57,7 @@ export default function MobileSearchPanel() {
 
   return createPortal(
     <div
-      className={`text-secondary-50 fixed inset-0 z-10 bg-gradient-to-b from-slate-800 to-slate-700 transition ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+      className={`text-secondary-50 fixed inset-0 z-10 bg-linear-to-b from-slate-800 to-slate-700 transition ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div className="container flex h-full flex-col py-2">
         <div className="flex grow flex-col gap-4 overflow-y-auto pb-6">
@@ -75,7 +75,7 @@ export default function MobileSearchPanel() {
             !isLoading && !hasData ? (
               <div className="mt-4 flex grow flex-col items-center justify-center gap-3 rounded-md px-8 text-center">
                 <Music size={72} />
-                <p className="max-w-[500px] text-2xl font-semibold">
+                <p className="max-w-125 text-2xl font-semibold">
                   Couldn&apos;t find anyting. Try searching for something else.
                 </p>
               </div>

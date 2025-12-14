@@ -39,7 +39,15 @@ import teamMemeber3 from './assets/images/Team-members/team-member-3.jpg';
 import teamMemeber4 from './assets/images/Team-members/team-member-4.jpg';
 import googleLogo from './assets/images/socials/google.png';
 import githubLogo from './assets/images/socials/github.png';
-import { ReceiveSquare, User, Music, MusicSquareSearch, Sms, Call, Location } from 'iconsax-react';
+import {
+  ReceiveSquare,
+  User,
+  Music,
+  MusicSquareSearch,
+  Sms,
+  Call,
+  Location,
+} from 'iconsax-reactjs';
 
 export const songs = [
   {

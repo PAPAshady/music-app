@@ -8,7 +8,7 @@ import 'swiper/css/pagination';
 
 export default function ArtistsSlider({ artists, isLoading }) {
   return (
-    <div className="mx-auto w-[97%] max-w-[940px]">
+    <div className="mx-auto w-[97%] max-w-235">
       <Swiper
         slidesPerView={1.7}
         spaceBetween={20}

@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', albumCardStyles }) {
   return (
-    <div className="mx-auto w-[95%] xl:max-w-[940px]">
+    <div className="mx-auto w-[95%] xl:max-w-235">
       <Swiper
         slidesPerView={1}
         spaceBetween={24}
@@ -30,7 +30,7 @@ export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', 
       >
         {isLoading
           ? chunkArray(Array(9).fill(0), 3).map((skeletonCardsArray, index) => (
-              <SwiperSlide key={index} className="p-[1px] pb-11">
+              <SwiperSlide key={index} className="p-px pb-11">
                 <div className="flex flex-col gap-4">
                   {skeletonCardsArray.map((_, index) => (
                     <AlbumCardSkeleton
@@ -43,7 +43,7 @@ export default function AlbumsSlider({ albums, isLoading, albumCardSize = 'lg', 
               </SwiperSlide>
             ))
           : chunkArray(albums ?? [], 3).map((albumsArray, index) => (
-              <SwiperSlide key={index} className="p-[1px] pb-11">
+              <SwiperSlide key={index} className="p-px pb-11">
                 <div className="flex flex-col gap-4">
                   {albumsArray.map((album) => (
                     <AlbumCard

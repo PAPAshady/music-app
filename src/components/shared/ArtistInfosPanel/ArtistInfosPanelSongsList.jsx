@@ -2,9 +2,11 @@ import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
+import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/songs';
 import PropTypes from 'prop-types';
 import usePlayBar from '../../../hooks/usePlayBar';
+
+const MotionDiv = motion.div;
 
 function ArtistInfosPanelSongsList({ artistId }) {
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery({
@@ -19,7 +21,7 @@ function ArtistInfosPanelSongsList({ artistId }) {
       <p className="ps-3 pb-2 text-xl font-bold text-white">Popular</p>
 
       <AnimatePresence mode="wait">
-        <motion.div
+        <MotionDiv
           key={artistId}
           variants={{
             show: {
@@ -32,26 +34,26 @@ function ArtistInfosPanelSongsList({ artistId }) {
           initial="hidden"
           animate="show"
           exit="hidden"
-          className={`flex flex-col gap-2 pe-2 pt-[2px] ${!popularSongs?.length && 'h-full'}`}
+          className={`flex flex-col gap-2 pe-2 pt-0.5 ${!popularSongs?.length && 'h-full'}`}
         >
           {isPopularSongsPending ? (
             Array(5)
               .fill()
               .map((_, index) => (
-                <motion.div key={index} variants={itemVariants}>
+                <MotionDiv key={index} variants={itemVariants}>
                   <SongCardSkeleton />
-                </motion.div>
+                </MotionDiv>
               ))
           ) : popularSongs.length ? (
             popularSongs.map((song, index) => (
-              <motion.div key={song.id} variants={itemVariants}>
+              <MotionDiv key={song.id} variants={itemVariants}>
                 <SongCard song={song} index={index} onPlay={playArtistSongs} />
-              </motion.div>
+              </MotionDiv>
             ))
           ) : (
             <p className="ps-2 pt-1 text-sm">No popular song found from this artist.</p>
           )}
-        </motion.div>
+        </MotionDiv>
       </AnimatePresence>
     </div>
   );

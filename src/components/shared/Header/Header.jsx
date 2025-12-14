@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { HambergerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-react';
+import { HamburgerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-reactjs';
 import Logo from '../../Logo/Logo';
 import Avatar from '../../Avatar/Avatar';
 import NotificationMenu from '../NotificationMenu/NotificationMenu';
@@ -14,9 +14,17 @@ import DesktopSearchBox from '../../DesktopSearchBox/DesktopSearchBox';
 
 export default memo(function Header() {
   const dispatch = useDispatch();
-  const notificationMenu = useCloseOnClickOutside();
-  const mobileSearchBox = useCloseOnClickOutside();
-  const settingsMenu = useCloseOnClickOutside();
+  const {
+    isVisible: isNotificationMenuVisible,
+    setIsVisible: setIsNotificationMenuVisible,
+    setRef: setNotificationMenuRef,
+  } = useCloseOnClickOutside();
+  const { setRef: setMobileSearchBoxRef } = useCloseOnClickOutside();
+  const {
+    isVisible: isSettingsMenuVisible,
+    setIsVisible: setIsSettingsMenuVisible,
+    setRef: setSettingsMenuRef,
+  } = useCloseOnClickOutside();
   const userAvatar = useSelector((state) => state.auth.avatar);
   const hasNotifications = useSelector((state) => state.notifications.length);
 
@@ -26,9 +34,9 @@ export default memo(function Header() {
         <div className="flex items-center gap-2">
           <IconButton
             onClick={() => dispatch(setIsHamburgerMenuOpen(true))}
-            icon={<HambergerMenu />}
+            icon={<HamburgerMenu />}
           />
-          <div className="relative" ref={mobileSearchBox.setRef}>
+          <div className="relative" ref={setMobileSearchBoxRef}>
             <IconButton
               icon={<SearchNormal1 />}
               onClick={() => dispatch(openMobileSearchPanel())}
@@ -45,22 +53,22 @@ export default memo(function Header() {
         <DesktopSearchBox />
 
         <div className="text-secondary-100 flex items-center gap-2">
-          <div className="relative" ref={notificationMenu.setRef}>
+          <div className="relative" ref={setNotificationMenuRef}>
             <IconButton
-              onClick={() => notificationMenu.setIsVisible((prev) => !prev)}
+              onClick={() => setIsNotificationMenuVisible((prev) => !prev)}
               icon={<Notification />}
-              isActive={notificationMenu.isVisible}
+              isActive={isNotificationMenuVisible}
               showBadge={!!hasNotifications}
             />
-            <NotificationMenu isVisible={notificationMenu.isVisible} />
+            <NotificationMenu isVisible={isNotificationMenuVisible} />
           </div>
-          <div ref={settingsMenu.setRef} className="relative">
+          <div ref={setSettingsMenuRef} className="relative">
             <IconButton
               icon={<Setting2 />}
-              onClick={() => settingsMenu.setIsVisible((prev) => !prev)}
-              isActive={settingsMenu.isVisible}
+              onClick={() => setIsSettingsMenuVisible((prev) => !prev)}
+              isActive={isSettingsMenuVisible}
             />
-            <SettingsMenu isVisible={settingsMenu.isVisible} />
+            <SettingsMenu isVisible={isSettingsMenuVisible} />
           </div>
           <Link to="/settings/profile">
             <Avatar size="xs" profilePic={userAvatar} />

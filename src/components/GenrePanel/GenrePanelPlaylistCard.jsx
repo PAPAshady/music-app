@@ -17,13 +17,13 @@ function PlaylistCard({ playlist }) {
 
   return (
     <Link
-      className="flex w-[110px] flex-col rounded-xl"
+      className="flex w-27.5 flex-col rounded-xl"
       to={`${pathname}?type=playlist&id=${playlist.id}`}
     >
       <img
         src={cover || defaultCover}
         alt={title}
-        className="mb-2 h-[100px] w-full cursor-pointer rounded-lg object-cover"
+        className="mb-2 h-25 w-full cursor-pointer rounded-lg object-cover"
         onClick={showSelectedPlaylist}
       />
       <h3 className="cursor-pointer truncate text-sm font-semibold" onClick={showSelectedPlaylist}>

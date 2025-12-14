@@ -14,7 +14,7 @@ export default function TeamMemberCard({ name, profilePic, memberId, classNames 
 
   return (
     <div
-      className={`hover:bg-secondary-400/53 duraiton-300 !w-full flex flex-col items-center gap-5 rounded-2xl p-4 text-center transition-colors ${classNames}`}
+      className={`hover:bg-secondary-400/53 duraiton-300 w-full! flex flex-col items-center gap-5 rounded-2xl p-4 text-center transition-colors ${classNames}`}
     >
       <Avatar size="md" profilePic={profilePic} />
       <div className="w-full">

@@ -20,7 +20,7 @@ const ArtistCard = memo((artist) => {
       to={`${pathname}?type=artist&id=${artist.id}`}
     >
       <div className="px-6">
-        <div className="size-[100px] overflow-hidden rounded-full lg:size-[120px]">
+        <div className="size-25 overflow-hidden rounded-full lg:size-30">
           <img
             loading="lazy"
             className="flex size-full items-center justify-center object-cover"
@@ -30,7 +30,7 @@ const ArtistCard = memo((artist) => {
         </div>
       </div>
 
-      <p className="text-white-50 text-s mt-2 flex h-8 max-w-[100px] items-center px-3 text-center lg:max-w-[180px] lg:text-base">
+      <p className="text-white-50 text-s mt-2 flex h-8 max-w-25 items-center px-3 text-center lg:max-w-45 lg:text-base">
         {artist.name}
       </p>
     </Link>

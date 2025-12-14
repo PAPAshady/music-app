@@ -85,6 +85,13 @@ export const createNewPrivatePlaylistMutationOptions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['playlists', { is_public: false }] });
       store.dispatch(addNotification('Your new playlist has been created!'));
+      store.dispatch(
+        showNewSnackbar({
+          message: 'Playlist created successfully.',
+          type: 'success',
+          hideDuration: 4000,
+        })
+      );
     },
   });
 };
@@ -93,7 +100,21 @@ export const updatePrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { is_public: false, playlistId }],
   mutationFn: (newData) => updatePrivatePlaylist(playlistId, newData),
   enabled: !!playlistId,
-  onSuccess: () => queryClient.invalidateQueries({ queryKey: ['playlists'] }),
+  onSuccess: async (newPlaylistData) => {
+    await queryClient.invalidateQueries({ queryKey: ['playlists'] });
+    const selectedPlaylistSongs = queryClient.getQueryData(['songs', { playlistId }]);
+    store.dispatch(setSelectedCollection({ ...newPlaylistData, musics: selectedPlaylistSongs })); // update redux store as well be synced with new changes
+    store.dispatch(showNewSnackbar({ message: 'Playlist updated successfully.', type: 'success' }));
+  },
+  onError: (err) => {
+    store.dispatch(
+      showNewSnackbar({
+        message: 'Unexpected error occured while updating the playlist. Try again.',
+        type: 'error',
+      })
+    );
+    console.error('Error updating playlist in database : ', err);
+  },
 });
 
 export const deletePrivatePlaylistMutationOptions = (playlistId) => ({
@@ -118,6 +139,13 @@ export const deletePrivatePlaylistMutationOptions = (playlistId) => ({
       store.dispatch(closeMobilePanel());
       store.dispatch(setQueries({ type: null, id: null }));
     }
+    store.dispatch(showNewSnackbar({ message: 'Playlist removed successfully.', type: 'success' }));
+  },
+  onError: (err) => {
+    store.dispatch(
+      showNewSnackbar({ message: 'Error removing playlist. Try again.', type: 'error' })
+    );
+    console.error('Error deleting playlist : ', err);
   },
 });
 
@@ -125,18 +153,11 @@ export const addSongToPrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { playlistId }],
   mutationFn: (songId) => addSongToPrivatePlaylist(playlistId, songId),
   enabled: !!playlistId,
-  onSuccess: async () => {
+  onSuccess: async (_, songId) => {
+    await queryClient.invalidateQueries({ queryKey: ['playlists'] });
     await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId }] });
-    await queryClient.invalidateQueries({ queryKey: ['playlists', { playlistId }] });
-
-    // update playlists cache to show the new value of totaltracks field
-    queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
-      return prevPlaylists.map((playlist) =>
-        playlist.id === playlistId
-          ? { ...playlist, totaltracks: playlist.totaltracks + 1 }
-          : playlist
-      );
-    });
+    // invalidate getSingleSongByPlaylistIdQueryOptions to update isSongInPlaylist value
+    await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId, songId }] });
 
     const updatedPlaylistSongs = queryClient.getQueryData(['songs', { playlistId }]);
     const playingTracklist = store.getState().playContext.currentCollection; // the playlist which is currently playing
@@ -154,23 +175,12 @@ export const removeSongFromPrivatePlaylistMutationOptions = (playlistId) => ({
   mutationFn: (songId) => removeSongFromPrivatePlaylist(playlistId, songId),
   enabled: !!playlistId,
   onSuccess: async (_, songId) => {
-    const updatedPlaylistSongs = queryClient.setQueryData(
-      ['songs', { playlistId }],
-      (prevPlaylistSongs) => {
-        if (!prevPlaylistSongs) return [];
-        return prevPlaylistSongs.filter((song) => song.id !== songId);
-      }
-    );
+    await queryClient.invalidateQueries({ queryKey: ['playlists'] });
+    await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId }] });
+    // invalidate getSingleSongByPlaylistIdQueryOptions to update isSongInPlaylist value
+    await queryClient.invalidateQueries({ queryKey: ['songs', { playlistId, songId }] });
 
-    // update playlists cache to show the new value of totaltracks field
-    queryClient.setQueryData(['playlists', { is_public: false }], (prevPlaylists) => {
-      return prevPlaylists.map((playlist) =>
-        playlist.id === playlistId
-          ? { ...playlist, totaltracks: playlist.totaltracks - 1 }
-          : playlist
-      );
-    });
-
+    const updatedPlaylistSongs = queryClient.getQueryData(['songs', { playlistId }]);
     const playingTracklist = store.getState().playContext.currentCollection; // the playlist which is currently playing
     const musicPlayer = store.getState().musicPlayer;
     const { dispatch } = store;

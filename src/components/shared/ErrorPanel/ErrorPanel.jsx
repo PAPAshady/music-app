@@ -1,13 +1,15 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { Music, Musicnote } from 'iconsax-react';
+import { Music, Musicnote } from 'iconsax-reactjs';
 import Logo from '../../Logo/Logo';
+
+const MotionDiv = motion.div;
 
 export default function ErrorPanel() {
   return (
     <div className="sticky top-10 hidden xl:block">
       <AnimatePresence mode="wait">
-        <motion.div
+        <MotionDiv
           variants={{
             initial: { opacity: 0, y: 15 },
             animate: { opacity: 1, y: 0 },
@@ -18,7 +20,7 @@ export default function ErrorPanel() {
           animate="animate"
           exit="exit"
           transition={{ duration: 0.2 }}
-          className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col overflow-y-auto rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 px-3 pt-5 pb-4 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]"
+          className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-175 min-h-107.5 w-67.5 flex-col overflow-y-auto rounded-xl border bg-linear-to-b from-slate-700 to-slate-900 px-3 pt-5 pb-4 xl:w-77.5 2xl:h-[calc(100dvh-200px)]"
         >
           {/* Background Illustrations */}
           <Music className="text-secondary-500 absolute top-20 left-5 h-32 w-32 -rotate-12" />
@@ -33,7 +35,7 @@ export default function ErrorPanel() {
               been removed.
             </p>
           </div>
-        </motion.div>
+        </MotionDiv>
       </AnimatePresence>
     </div>
   );

@@ -1,6 +1,6 @@
 import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import usePlayBar from '../../../hooks/usePlayBar';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
@@ -10,7 +10,7 @@ import {
   getSongsByPlaylistIdQueryOptions,
   getSongsByAlbumIdQueryOptions,
   getPopularSongsByArtistIdQueryOptions,
-} from '../../../queries/musics';
+} from '../../../queries/songs';
 
 function QueuelistTab() {
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);

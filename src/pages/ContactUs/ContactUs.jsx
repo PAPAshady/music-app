@@ -25,7 +25,7 @@ export default function ContactUs() {
         />
         <form
           action="#"
-          className="container flex !max-w-[720px] flex-col gap-6"
+          className="container flex max-w-180! flex-col gap-6"
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-4">

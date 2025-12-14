@@ -6,13 +6,15 @@ import SmallArtistCardSkeleton from '../../../MusicCards/SmallArtistCard/SmallAr
 import SmallAlbumCard from '../../../MusicCards/SmallAlbumCard/SmallAlbumCard';
 import SmallAlbumCardSkeleton from '../../../MusicCards/SmallAlbumCard/SmallAlbumCardSkeleton';
 import { getRelatedArtistsQueryOptions } from '../../../../queries/artists';
-import { getRelatedSongsBySongDataQueryOptions } from '../../../../queries/musics';
+import { getRelatedSongsBySongDataQueryOptions } from '../../../../queries/songs';
 import { getAlbumsByArtistIdQueryOptions } from '../../../../queries/albums';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import SongCardSkeleton from '../../../MusicCards/SongCard/SongCardSkeleton';
 import SongCard from '../../../MusicCards/SongCard/SongCard';
 import PropTypes from 'prop-types';
+
+const MotionDiv = motion.div;
 
 function RelatedTab({ song, artist }) {
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
@@ -27,7 +29,7 @@ function RelatedTab({ song, artist }) {
   );
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <MotionDiv
         key={song?.id}
         initial="initial"
         animate="animate"
@@ -85,7 +87,7 @@ function RelatedTab({ song, artist }) {
               : similarArtists.map((artist) => (
                   <SwiperSlide
                     key={artist.id}
-                    className={`p-[1px] ${similarArtists.length > 2 ? 'mb-10' : 'mb-4'}`}
+                    className={`p-px ${similarArtists.length > 2 ? 'mb-10' : 'mb-4'}`}
                   >
                     <SmallArtistCard artist={artist} size="md" />
                   </SwiperSlide>
@@ -102,7 +104,7 @@ function RelatedTab({ song, artist }) {
               : albums.map((album) => <SmallAlbumCard key={album.id} {...album} />)}
           </div>
         </div>
-      </motion.div>
+      </MotionDiv>
     </AnimatePresence>
   );
 }

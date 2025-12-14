@@ -1,5 +1,5 @@
 import { cloneElement } from 'react';
-import { Menu as MenuIcon } from 'iconsax-react';
+import { Menu as MenuIcon } from 'iconsax-reactjs';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import PropTypes from 'prop-types';
 
@@ -12,13 +12,13 @@ export default function DropDownList({
   return (
     <Menu>
       <div className="relative">
-        <MenuButton className="hover:bg-primary-700 text-secondary-100 data-[open]:bg-primary-700 hover:text-secondary-50 size-8 rounded-md p-1 transition-colors duration-300">
+        <MenuButton className="hover:bg-primary-700 text-secondary-100 hover:text-secondary-50 data-open:bg-primary-700 size-8 rounded-md p-1 transition-colors duration-300">
           {styledMenuButtonIcon}
         </MenuButton>
         <MenuItems
           transition
           anchor={dropDownPlacement}
-          className="text-primary-50 bg-primary-500/60 absolute top-3 right-2 z-10 mt-1 flex !max-w-max flex-col gap-1 rounded-md p-1 backdrop-blur-sm transition duration-200 data-[closed]:translate-y-2 data-[closed]:opacity-0"
+          className="text-primary-50 bg-primary-500/60 absolute top-3 right-2 z-10 mt-1 flex max-w-max! flex-col gap-1 rounded-md p-1 backdrop-blur-sm transition duration-200 data-closed:translate-y-2 data-closed:opacity-0"
         >
           {menuItems.map((listItem) => (
             <DropDownListItem key={listItem.id} {...listItem} />
@@ -42,7 +42,7 @@ function DropDownListItem({ icon, title, onClick }) {
     <MenuItem>
       {({ close }) => (
         <button
-          className="hover:bg-primary-400/60 min-w-[130px] cursor-default"
+          className="hover:bg-primary-400/60 min-w-32.5 cursor-default"
           onClick={(e) => clickHandler(e, close)}
         >
           <div className="flex items-center gap-2 p-2 text-start text-sm">

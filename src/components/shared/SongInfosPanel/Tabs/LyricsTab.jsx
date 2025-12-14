@@ -1,11 +1,13 @@
 import useLyrics from '../../../../hooks/useLyrics';
 import { setAutoLyricsTracker } from '../../../../redux/slices/musicPlayerSlice';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import getRandomNoLyricsMessage from '../../../../utils/getRandomNoLyricsMessage';
+
+const MotionDiv = motion.div;
 
 function LyricsTab({ songId, lyrics }) {
   const dispatch = useDispatch();
@@ -17,7 +19,7 @@ function LyricsTab({ songId, lyrics }) {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <MotionDiv
         key={songId}
         initial="initial"
         animate="animate"
@@ -65,7 +67,7 @@ function LyricsTab({ songId, lyrics }) {
             </div>
           )}
         </div>
-      </motion.div>
+      </MotionDiv>
     </AnimatePresence>
   );
 }

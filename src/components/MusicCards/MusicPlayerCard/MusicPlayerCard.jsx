@@ -1,5 +1,5 @@
 import IconButton from '../../Buttons/IconButton/IconButton';
-import { Heart } from 'iconsax-react';
+import { Heart } from 'iconsax-reactjs';
 import noCoverImg from '../../../assets/images/covers/no-cover.jpg';
 import PropTypes from 'prop-types';
 import { formatTime } from '../../../redux/slices/musicPlayerSlice';
@@ -24,7 +24,7 @@ export default function MusicPlayerCard({
 
   return (
     <div
-      className={`border-secondary-300 hover:border-secondary-50 flex items-center gap-2 overflow-hidden rounded-lg border-2 p-2 transition-all duration-300 ${classNames} ${isPlaying ? 'bg-secondary-600/40 backdrop-blur-xs' : '!border-transparent'}`}
+      className={`border-secondary-300 hover:border-secondary-50 flex items-center gap-2 overflow-hidden rounded-lg border-2 p-2 transition-all duration-300 ${classNames} ${isPlaying ? 'bg-secondary-600/40 backdrop-blur-xs' : 'border-transparent!'}`}
     >
       <img
         onClick={() => onClick(musicIndex)}

@@ -10,6 +10,8 @@ import ArtistInfosPanelSongsList from './ArtistInfosPanelSongsList';
 import ArtistInfosPanelAlbumsList from './ArtistInfosPanelAlbumsList';
 import ArtistInfosPanelArtistsList from './ArtistInfosPanelArtistsList';
 
+const MotionDiv = motion.div;
+
 function ArtistInfosPanel() {
   const artistId = useSelector((state) => state.queryState.id);
   const {
@@ -32,12 +34,12 @@ function ArtistInfosPanel() {
 
   return (
     <div className="sticky top-10 hidden xl:block">
-      <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-[700px] min-h-[430px] w-[270px] flex-col rounded-xl border bg-gradient-to-b from-slate-700 to-slate-900 px-3 py-5 xl:w-[310px] 2xl:h-[calc(100dvh-200px)]">
+      <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-175 min-h-107.5 w-67.5 flex-col rounded-xl border bg-linear-to-b from-slate-700 to-slate-900 px-3 py-5 xl:w-77.5 2xl:h-[calc(100dvh-200px)]">
         <div className="flex h-full flex-col overflow-y-auto scroll-smooth" ref={containerRef}>
           <div>
             <span className="block text-center text-lg font-semibold">About Artist</span>
             <AnimatePresence mode="wait">
-              <motion.div
+              <MotionDiv
                 key={artistId}
                 variants={{
                   initial: { opacity: 0, y: 15 },
@@ -51,13 +53,13 @@ function ArtistInfosPanel() {
                 transition={{ duration: 0.2 }}
               >
                 {isPending ? (
-                  <div className="mx-auto h-[190px] w-[190px] p-3">
+                  <div className="mx-auto h-47.5 w-47.5 p-3">
                     <div className="relative size-full overflow-hidden rounded-2xl bg-gray-600/60">
                       <ShimmerOverlay />
                     </div>
                   </div>
                 ) : (
-                  <div className="mx-auto h-[190px] w-[190px] overflow-hidden p-3">
+                  <div className="mx-auto h-47.5 w-47.5 overflow-hidden p-3">
                     <img
                       src={selectedArtist.image || noImage}
                       alt={selectedArtist.name}
@@ -99,7 +101,7 @@ function ArtistInfosPanel() {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </MotionDiv>
             </AnimatePresence>
           </div>
           <div className="mt-4 flex grow flex-col gap-6">

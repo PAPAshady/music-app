@@ -1,12 +1,14 @@
 import SongCard from '../../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../../MusicCards/SongCard/SongCardSkeleton';
 import usePlayBar from '../../../../hooks/usePlayBar';
-import { getPopularSongsByArtistIdQueryOptions } from '../../../../queries/musics';
+import { getPopularSongsByArtistIdQueryOptions } from '../../../../queries/songs';
 import defaultArtistCover from '../../../../assets/images/Avatar/no-avatar.png';
 import PropTypes from 'prop-types';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import ShimmerOverlay from '../../../ShimmerOverlay/ShimmerOverlay';
+
+const MotionDiv = motion.div;
 
 function ArtistTab({ artist, isPending, artistId }) {
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery(
@@ -16,7 +18,7 @@ function ArtistTab({ artist, isPending, artistId }) {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <MotionDiv
         key={artistId}
         initial="initial"
         exit="exit"
@@ -86,7 +88,7 @@ function ArtistTab({ artist, isPending, artistId }) {
                 ))}
           </div>
         </div>
-      </motion.div>
+      </MotionDiv>
     </AnimatePresence>
   );
 }

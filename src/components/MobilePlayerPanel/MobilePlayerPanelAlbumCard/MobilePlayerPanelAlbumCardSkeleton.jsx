@@ -2,8 +2,8 @@ import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 
 function MobilePlayerPanelAlbumCardSkeleton() {
   return (
-    <div className="flex w-[150px] flex-col rounded-xl p-3">
-      <div className="relative mb-2 h-[120px] w-full overflow-hidden rounded-lg bg-gray-600/60">
+    <div className="flex w-37.5 flex-col rounded-xl p-3">
+      <div className="relative mb-2 h-30 w-full overflow-hidden rounded-lg bg-gray-600/60">
         <ShimmerOverlay />
       </div>
       <div className="relative h-2 w-3/4 overflow-hidden rounded-full bg-gray-600/60">

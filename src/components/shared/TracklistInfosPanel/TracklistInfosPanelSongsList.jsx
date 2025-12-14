@@ -2,9 +2,11 @@ import PlayBar from '../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../MusicCards/PlayBar/PlayBarSkeleton';
 import usePlayBar from '../../../hooks/usePlayBar';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Music } from 'iconsax-react';
+import { Music } from 'iconsax-reactjs';
 import PropTypes from 'prop-types';
 import useLockScrollbar from '../../../hooks/useLockScrollbar';
+
+const MotionDiv = motion.div;
 
 function TracklistInfosPanelSongsList({ songs, isPending, tracklist, tracklistId }) {
   const { isScrollbarLocked, lockScroll, unlockScroll } = useLockScrollbar(true);
@@ -27,25 +29,25 @@ function TracklistInfosPanelSongsList({ songs, isPending, tracklist, tracklistId
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <MotionDiv
         key={tracklistId}
         variants={listVariants}
         initial="hidden"
         animate="show"
         exit="hidden"
-        className={`flex grow flex-col gap-2 pe-2 pt-[2px] ${songs?.length || isPending ? 'overflow-y-auto' : 'overflow-visible'} ${isScrollbarLocked ? 'locked-scroll' : ''}`}
+        className={`flex grow flex-col gap-2 pe-2 pt-0.5 ${songs?.length || isPending ? 'overflow-y-auto' : 'overflow-visible'} ${isScrollbarLocked ? 'locked-scroll' : ''}`}
       >
         {isPending ? (
           Array(10)
             .fill()
             .map((_, index) => (
-              <motion.div key={index} variants={itemVariants}>
+              <MotionDiv key={index} variants={itemVariants}>
                 <PlayBarSkeleton size="sm" />
-              </motion.div>
+              </MotionDiv>
             ))
         ) : songs.length ? (
           songs.map((song, index) => (
-            <motion.div key={song.id} variants={itemVariants}>
+            <MotionDiv key={song.id} variants={itemVariants}>
               <PlayBar
                 size="sm"
                 index={index}
@@ -54,10 +56,10 @@ function TracklistInfosPanelSongsList({ songs, isPending, tracklist, tracklistId
                 onDropDownOpen={lockScroll}
                 onDropDownClose={unlockScroll}
               />
-            </motion.div>
+            </MotionDiv>
           ))
         ) : (
-          <motion.div
+          <MotionDiv
             variants={itemVariants}
             className="flex size-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-neutral-400 text-center"
           >
@@ -66,9 +68,9 @@ function TracklistInfosPanelSongsList({ songs, isPending, tracklist, tracklistId
               {tracklistType === 'favorites' ? 'Your' : 'This'} {tracklistType} is empty
             </p>
             <p>Let the music begin...</p>
-          </motion.div>
+          </MotionDiv>
         )}
-      </motion.div>
+      </MotionDiv>
     </AnimatePresence>
   );
 }

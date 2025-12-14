@@ -8,9 +8,9 @@ import {
   favoriteSongsInfos,
 } from '../redux/slices/playContextSlice';
 import { setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
-import { getPopularSongsByArtistIdQueryOptions } from '../queries/musics';
+import { getPopularSongsByArtistIdQueryOptions } from '../queries/songs';
 import { useQuery } from '@tanstack/react-query';
-import { getFavoriteSongsQueryOptions } from '../queries/musics';
+import { getFavoriteSongsQueryOptions } from '../queries/songs';
 import { openPanel as openPlayerPanel } from '../redux/slices/playerPanelSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 

@@ -3,7 +3,7 @@ import { setCurrentQueuelist, setSelectedSong } from '../../../redux/slices/play
 import IconButton from '../../Buttons/IconButton/IconButton';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import { memo } from 'react';
-import { AddCircle, Play, Pause, Trash } from 'iconsax-react';
+import { AddCircle, Play, Pause, Trash } from 'iconsax-reactjs';
 import { play, pause, setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import playlistDefaultCover from '../../../assets/images/covers/no-cover.jpg';
@@ -29,7 +29,7 @@ const PlaylistSong = memo(({ song, buttonState, onClick }) => {
     <div className="border-secondary-200 flex items-center justify-between gap-2 rounded-sm border py-1 ps-1">
       <div className="flex grow items-center gap-2 overflow-hidden">
         <div
-          className="relative h-[45px] w-[45px] min-w-[45px] overflow-hidden rounded-sm"
+          className="relative h-11.25 w-11.25 min-w-11.25 overflow-hidden rounded-sm"
           onClick={playOnClick}
         >
           <img src={cover ? cover : playlistDefaultCover} className="size-full object-cover" />

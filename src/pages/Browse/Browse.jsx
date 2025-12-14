@@ -13,7 +13,7 @@ import { playlists } from '../../data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import 'swiper/css';
-import { getTrendingSongsQueryOptions, getSongsByGenreIdQueryOptions } from '../../queries/musics';
+import { getTrendingSongsQueryOptions, getSongsByGenreIdQueryOptions } from '../../queries/songs';
 import {
   getTrendingPlaylistsQueryOptions,
   getPlaylistsByGenreQueryOptions,
@@ -83,12 +83,12 @@ export default function Browse() {
         <div className="xs:px-0 flex size-full flex-col items-center justify-between gap-3 bg-black/30 py-4 ps-4 backdrop-blur-sm min-[480px]:flex-row min-[480px]:py-6 min-[480px]:ps-4 sm:flex-col sm:px-0 sm:py-8 lg:gap-6">
           <div className="text-center min-[480px]:text-start sm:px-4">
             <div className="text-white-50 mb-4 sm:text-center">
-              <h4 className="md:text-2x mb-1.5 text-lg leading-relaxed sm:text-xl sm:font-semibold md:mx-auto md:mb-4 md:w-[620px] lg:text-3xl">
+              <h4 className="md:text-2x mb-1.5 text-lg leading-relaxed sm:text-xl sm:font-semibold md:mx-auto md:mb-4 md:w-155 lg:text-3xl">
                 {isDesktop
                   ? "Discover Inner Peace with Viotune's Curated Meditation Playlists"
                   : 'Meditation Playlists'}
               </h4>
-              <p className="text-secondary-100 text-sm sm:text-base md:mx-auto md:w-[700px] md:text-base lg:text-lg">
+              <p className="text-secondary-100 text-sm sm:text-base md:mx-auto md:w-175 md:text-base lg:text-lg">
                 {isDesktop ? (
                   <>
                     Experience tranquility with our specially crafted meditation playlists. Designed
@@ -115,7 +115,7 @@ export default function Browse() {
               modules={[FreeMode, Autoplay]}
               autoplay={{ delay: 2000 }}
               freeMode
-              className="mx-auto max-w-[90dvw] !bg-transparent min-[480px]:max-w-[225px] min-[480px]:!pe-4 min-[590px]:max-w-[300px] sm:max-w-[93dvw] lg:max-w-[calc(93dvw-86px)] lg:!pe-0 xl:max-w-[calc(95dvw-460px)] 2xl:!max-w-[888px]"
+              className="mx-auto max-w-[90dvw] bg-transparent! min-[480px]:max-w-56.25 min-[480px]:pe-4! min-[590px]:max-w-75 sm:max-w-[93dvw] lg:max-w-[calc(93dvw-86px)] lg:pe-0! xl:max-w-[calc(95dvw-460px)] 2xl:max-w-222!"
               breakpoints={{
                 360: { slidesPerView: 2 },
                 480: { slidesPerView: 1.3 },
