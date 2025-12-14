@@ -10,6 +10,8 @@ import ArtistInfosPanelSongsList from './ArtistInfosPanelSongsList';
 import ArtistInfosPanelAlbumsList from './ArtistInfosPanelAlbumsList';
 import ArtistInfosPanelArtistsList from './ArtistInfosPanelArtistsList';
 
+const MotionDiv = motion.div;
+
 function ArtistInfosPanel() {
   const artistId = useSelector((state) => state.queryState.id);
   const {
@@ -37,7 +39,7 @@ function ArtistInfosPanel() {
           <div>
             <span className="block text-center text-lg font-semibold">About Artist</span>
             <AnimatePresence mode="wait">
-              <motion.div
+              <MotionDiv
                 key={artistId}
                 variants={{
                   initial: { opacity: 0, y: 15 },
@@ -99,7 +101,7 @@ function ArtistInfosPanel() {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </MotionDiv>
             </AnimatePresence>
           </div>
           <div className="mt-4 flex grow flex-col gap-6">

@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import getRandomNoLyricsMessage from '../../../../utils/getRandomNoLyricsMessage';
 
+const MotionDiv = motion.div;
+
 function LyricsTab({ songId, lyrics }) {
   const dispatch = useDispatch();
   const shouldAutoTrackLyrics = useSelector((state) => state.musicPlayer.autoLyricsTracker);
@@ -17,7 +19,7 @@ function LyricsTab({ songId, lyrics }) {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <MotionDiv
         key={songId}
         initial="initial"
         animate="animate"
@@ -65,7 +67,7 @@ function LyricsTab({ songId, lyrics }) {
             </div>
           )}
         </div>
-      </motion.div>
+      </MotionDiv>
     </AnimatePresence>
   );
 }

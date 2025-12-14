@@ -19,6 +19,8 @@ import RelatedTab from './Tabs/RelatedTab';
 import ArtistTab from './Tabs/ArtistTab';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
+const MotionDiv = motion.div;
+
 export default function SongInfosPanel() {
   const songId = useSelector((state) => state.queryState.id);
   const dispatch = useDispatch();
@@ -86,7 +88,7 @@ export default function SongInfosPanel() {
         className={`border-secondary-200 flex h-[calc(100dvh-100px)] max-h-175 min-h-107.5 w-67.5 flex-col overflow-y-hidden rounded-xl border bg-linear-to-b from-slate-700 to-slate-900 p-5 px-3 py-5 pb-4 text-white shadow-2xl xl:w-77.5 2xl:h-[calc(100dvh-200px)]`}
       >
         <AnimatePresence mode="wait">
-          <motion.div
+          <MotionDiv
             initial="initial"
             animate="animate"
             exit="exit"
@@ -184,7 +186,7 @@ export default function SongInfosPanel() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </MotionDiv>
         </AnimatePresence>
 
         {activeTab === 'lyrics' && <LyricsTab songId={song?.id} lyrics={song?.lyrics} />}

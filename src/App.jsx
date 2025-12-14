@@ -7,6 +7,8 @@ import Snackbar from './components/shared/Snackbar/Snackbar';
 import routes from './Router';
 import './App.css';
 
+const MotionDiv = motion.div;
+
 const router = createBrowserRouter(routes);
 
 function App() {
@@ -18,7 +20,7 @@ function App() {
       <div className="fixed top-4 z-60 w-[95%] max-w-137.5 space-y-2 min-[1200px]:w-1/3! sm:w-[70%] md:w-1/2 lg:w-[40%]">
         <AnimatePresence>
           {snackbars.map((snackbar) => (
-            <motion.div
+            <MotionDiv
               key={snackbar.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -26,7 +28,7 @@ function App() {
               transition={{ duration: 0.3 }}
             >
               <Snackbar {...snackbar} />
-            </motion.div>
+            </MotionDiv>
           ))}
         </AnimatePresence>
       </div>

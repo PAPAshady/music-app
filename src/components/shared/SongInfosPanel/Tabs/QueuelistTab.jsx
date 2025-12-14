@@ -8,6 +8,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import useLockScrollbar from '../../../../hooks/useLockScrollbar';
 
+const MotionDiv = motion.div;
+
 function QueuelistTab({ artistId }) {
   const { playTracklist } = usePlayBar(artistId);
   const selectedSong = useSelector((state) => state.playContext.selectedSong);
@@ -18,7 +20,7 @@ function QueuelistTab({ artistId }) {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <MotionDiv
         key={selectedSong.id}
         initial="initial"
         animate="animate"
@@ -32,7 +34,7 @@ function QueuelistTab({ artistId }) {
         className={`mt-4 h-full space-y-4 overflow-auto pr-2 pb-2 ${isScrollbarLocked ? 'locked-scroll' : ''}`}
       >
         <div className="text-sm text-slate-300">Coming up</div>
-        <motion.div
+        <MotionDiv
           initial="hidden"
           animate="show"
           exit="hidden"
@@ -50,7 +52,7 @@ function QueuelistTab({ artistId }) {
             ? Array(10)
                 .fill()
                 .map((_, index) => (
-                  <motion.div
+                  <MotionDiv
                     key={index}
                     variants={{
                       hidden: { opacity: 0, y: 15 },
@@ -58,10 +60,10 @@ function QueuelistTab({ artistId }) {
                     }}
                   >
                     <PlayBarSkeleton size="sm" />
-                  </motion.div>
+                  </MotionDiv>
                 ))
             : queuelist.map((song, index) => (
-                <motion.div
+                <MotionDiv
                   key={song.id}
                   variants={{
                     hidden: { opacity: 0, y: 15 },
@@ -76,10 +78,10 @@ function QueuelistTab({ artistId }) {
                     onDropDownOpen={lockScroll}
                     onDropDownClose={unlockScroll}
                   />
-                </motion.div>
+                </MotionDiv>
               ))}
-        </motion.div>
-      </motion.div>
+        </MotionDiv>
+      </MotionDiv>
     </AnimatePresence>
   );
 }

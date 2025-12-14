@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { Music, Musicnote } from 'iconsax-reactjs';
 import Logo from '../../Logo/Logo';
 
+const MotionDiv = motion.div;
+
 export default function ErrorPanel() {
   return (
     <div className="sticky top-10 hidden xl:block">
       <AnimatePresence mode="wait">
-        <motion.div
+        <MotionDiv
           variants={{
             initial: { opacity: 0, y: 15 },
             animate: { opacity: 1, y: 0 },
@@ -33,7 +35,7 @@ export default function ErrorPanel() {
               been removed.
             </p>
           </div>
-        </motion.div>
+        </MotionDiv>
       </AnimatePresence>
     </div>
   );

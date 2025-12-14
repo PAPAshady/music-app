@@ -14,6 +14,8 @@ import SongCardSkeleton from '../../../MusicCards/SongCard/SongCardSkeleton';
 import SongCard from '../../../MusicCards/SongCard/SongCard';
 import PropTypes from 'prop-types';
 
+const MotionDiv = motion.div;
+
 function RelatedTab({ song, artist }) {
   const { data: relatedSongs, isPending: isRelatedSongsPending } = useQuery(
     getRelatedSongsBySongDataQueryOptions(song)
@@ -27,7 +29,7 @@ function RelatedTab({ song, artist }) {
   );
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <MotionDiv
         key={song?.id}
         initial="initial"
         animate="animate"
@@ -102,7 +104,7 @@ function RelatedTab({ song, artist }) {
               : albums.map((album) => <SmallAlbumCard key={album.id} {...album} />)}
           </div>
         </div>
-      </motion.div>
+      </MotionDiv>
     </AnimatePresence>
   );
 }

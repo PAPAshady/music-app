@@ -10,6 +10,8 @@ import useInput from '../../../hooks/useInput';
 import { openModal as openPlaylistInfosModal } from '../../../redux/slices/playlistInfosModalSlice';
 import { motion } from 'framer-motion';
 
+const MotionDiv = motion.div;
+
 const PlayBarDropDownMenu = forwardRef((_, ref) => {
   const dispatch = useDispatch();
   const position = useSelector((state) => state.addSongToPlaylist.position);
@@ -22,7 +24,7 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
   const noPlaylistsExist = data?.length === 0;
 
   return createPortal(
-    <motion.div
+    <MotionDiv
       className={`text-secondary-50 border-secondary-300 absolute z-5 flex w-62.5 flex-col rounded-md border bg-linear-to-b from-slate-700 to-slate-900 p-2`}
       style={{ top: `${position.top}px`, left: `${position.left}px` }}
       ref={ref}
@@ -104,7 +106,7 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
           playlists.map((playlist) => <PlaylistItem key={playlist.id} {...playlist} />)
         )}
       </div>
-    </motion.div>,
+    </MotionDiv>,
 
     document.getElementById('addSongToPlaylistDropDown')
   );

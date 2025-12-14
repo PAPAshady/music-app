@@ -6,6 +6,8 @@ import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
 import PropTypes from 'prop-types';
 import usePlayBar from '../../../hooks/usePlayBar';
 
+const MotionDiv = motion.div;
+
 function ArtistInfosPanelSongsList({ artistId }) {
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery({
     ...getPopularSongsByArtistIdQueryOptions(artistId),
@@ -19,7 +21,7 @@ function ArtistInfosPanelSongsList({ artistId }) {
       <p className="ps-3 pb-2 text-xl font-bold text-white">Popular</p>
 
       <AnimatePresence mode="wait">
-        <motion.div
+        <MotionDiv
           key={artistId}
           variants={{
             show: {
@@ -38,20 +40,20 @@ function ArtistInfosPanelSongsList({ artistId }) {
             Array(5)
               .fill()
               .map((_, index) => (
-                <motion.div key={index} variants={itemVariants}>
+                <MotionDiv key={index} variants={itemVariants}>
                   <SongCardSkeleton />
-                </motion.div>
+                </MotionDiv>
               ))
           ) : popularSongs.length ? (
             popularSongs.map((song, index) => (
-              <motion.div key={song.id} variants={itemVariants}>
+              <MotionDiv key={song.id} variants={itemVariants}>
                 <SongCard song={song} index={index} onPlay={playArtistSongs} />
-              </motion.div>
+              </MotionDiv>
             ))
           ) : (
             <p className="ps-2 pt-1 text-sm">No popular song found from this artist.</p>
           )}
-        </motion.div>
+        </MotionDiv>
       </AnimatePresence>
     </div>
   );

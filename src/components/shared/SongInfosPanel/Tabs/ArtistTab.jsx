@@ -8,6 +8,8 @@ import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import ShimmerOverlay from '../../../ShimmerOverlay/ShimmerOverlay';
 
+const MotionDiv = motion.div;
+
 function ArtistTab({ artist, isPending, artistId }) {
   const { data: popularSongs, isPending: isPopularSongsPending } = useQuery(
     getPopularSongsByArtistIdQueryOptions(artistId)
@@ -16,7 +18,7 @@ function ArtistTab({ artist, isPending, artistId }) {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <MotionDiv
         key={artistId}
         initial="initial"
         exit="exit"
@@ -86,7 +88,7 @@ function ArtistTab({ artist, isPending, artistId }) {
                 ))}
           </div>
         </div>
-      </motion.div>
+      </MotionDiv>
     </AnimatePresence>
   );
 }
