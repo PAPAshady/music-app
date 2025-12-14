@@ -3,7 +3,7 @@ import { setQueries } from '../redux/slices/queryStateSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigationType } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getSongByIdQueryOptions } from '../queries/musics';
+import { getSongByIdQueryOptions } from '../queries/songs';
 import { setCurrentQueuelist, setSelectedSong } from '../redux/slices/playContextSlice';
 import { pause, setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
 

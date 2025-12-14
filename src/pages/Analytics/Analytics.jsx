@@ -14,7 +14,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 import useMediaQuery from '../../hooks/useMediaQuery';
-import { getRecentSongsQueryOptions } from '../../queries/musics';
+import { getRecentSongsQueryOptions } from '../../queries/songs';
 
 export default function Analytics() {
   const artists = useQuery(getArtistsQueryOptions({ limit: 10 }));
@@ -24,7 +24,7 @@ export default function Analytics() {
   const isTablet = useMediaQuery('(min-width: 640px)');
 
   return (
-    <div className='space-y-10'>
+    <div className="space-y-10">
       <div className="my-16 text-center">
         <p className="mb-4 text-2xl font-bold md:text-4xl">Your Activity</p>
         <p className="text-primary-200 md:text-xl">

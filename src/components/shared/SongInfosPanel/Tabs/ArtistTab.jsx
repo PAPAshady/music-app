@@ -1,7 +1,7 @@
 import SongCard from '../../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../../MusicCards/SongCard/SongCardSkeleton';
 import usePlayBar from '../../../../hooks/usePlayBar';
-import { getPopularSongsByArtistIdQueryOptions } from '../../../../queries/musics';
+import { getPopularSongsByArtistIdQueryOptions } from '../../../../queries/songs';
 import defaultArtistCover from '../../../../assets/images/Avatar/no-avatar.png';
 import PropTypes from 'prop-types';
 import { useQuery } from '@tanstack/react-query';

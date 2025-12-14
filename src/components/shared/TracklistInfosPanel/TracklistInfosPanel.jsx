@@ -6,7 +6,7 @@ import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
   getFavoriteSongsQueryOptions,
-} from '../../../queries/musics';
+} from '../../../queries/songs';
 import { useQuery } from '@tanstack/react-query';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';

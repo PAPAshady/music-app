@@ -9,7 +9,7 @@ import { likeSongMutationOptions, unlikeSongMutationOptions } from '../../../que
 import { formatTime, play, pause } from '../../../redux/slices/musicPlayerSlice';
 import { useDispatch } from 'react-redux';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
-import { getSongByIdQueryOptions } from '../../../queries/musics';
+import { getSongByIdQueryOptions } from '../../../queries/songs';
 import ErrorPanel from '../ErrorPanel/ErrorPanel';
 import SongInfosPanelIconButton from './SongInfosPanelIconButton';
 import SongInfosPanelTabButton from './SongInfosPanelTabButton';

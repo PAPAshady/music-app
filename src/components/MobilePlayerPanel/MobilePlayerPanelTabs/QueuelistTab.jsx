@@ -10,7 +10,7 @@ import {
   getSongsByPlaylistIdQueryOptions,
   getSongsByAlbumIdQueryOptions,
   getPopularSongsByArtistIdQueryOptions,
-} from '../../../queries/musics';
+} from '../../../queries/songs';
 
 function QueuelistTab() {
   const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);

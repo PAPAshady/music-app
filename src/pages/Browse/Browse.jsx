@@ -13,7 +13,7 @@ import { playlists } from '../../data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import 'swiper/css';
-import { getTrendingSongsQueryOptions, getSongsByGenreIdQueryOptions } from '../../queries/musics';
+import { getTrendingSongsQueryOptions, getSongsByGenreIdQueryOptions } from '../../queries/songs';
 import {
   getTrendingPlaylistsQueryOptions,
   getPlaylistsByGenreQueryOptions,

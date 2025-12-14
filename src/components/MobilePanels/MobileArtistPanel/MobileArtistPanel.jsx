@@ -6,7 +6,7 @@ import { Shuffle, RepeateOne, RepeateMusic, Play, Pause } from 'iconsax-reactjs'
 import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { useQuery } from '@tanstack/react-query';
-import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
+import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/songs';
 import { setCurrentQueuelist } from '../../../redux/slices/playContextSlice';
 import { setCurrentSongIndex } from '../../../redux/slices/musicPlayerSlice';
 import AlbumsSlider from '../../Sliders/AlbumsSlider/AlbumsSlider';

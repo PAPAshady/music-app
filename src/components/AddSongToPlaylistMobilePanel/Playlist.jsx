@@ -4,7 +4,7 @@ import {
   removeSongFromPrivatePlaylistMutationOptions,
 } from '../../queries/playlists';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
-import { getSingleSongByPlaylistIdQueryOptions } from '../../queries/musics';
+import { getSingleSongByPlaylistIdQueryOptions } from '../../queries/songs';
 import { AddCircle, TickCircle } from 'iconsax-reactjs';
 import defaultCover from '../../assets/images/covers/no-cover.jpg';
 import { useSelector, useDispatch } from 'react-redux';

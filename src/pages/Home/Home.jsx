@@ -27,7 +27,7 @@ import {
   getRecommendedSongsQueryOptions,
   getTrendingSongsQueryOptions,
   getRecentSongsQueryOptions,
-} from '../../queries/musics';
+} from '../../queries/songs';
 import { getUserTopGenresQueryOptions } from '../../queries/genres';
 import usePlayBar from '../../hooks/usePlayBar';
 

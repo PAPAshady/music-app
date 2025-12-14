@@ -6,7 +6,7 @@ import {
   getSongsByPlaylistIdQueryOptions,
   getGeneratedQueuelistBySongDataQueryOptions,
   getFavoriteSongsQueryOptions,
-} from '../queries/musics';
+} from '../queries/songs';
 import { setCurrentMusic } from './slices/musicPlayerSlice';
 import { music, setPrevSongIndex, setCurrentSongIndex, play } from './slices/musicPlayerSlice';
 import {

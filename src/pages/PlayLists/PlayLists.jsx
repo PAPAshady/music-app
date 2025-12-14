@@ -12,7 +12,7 @@ import {
   getTrendingPlaylistsQueryOptions,
   getPlaylistsByGenreQueryOptions,
 } from '../../queries/playlists';
-import { getTrendingSongsQueryOptions } from '../../queries/musics';
+import { getTrendingSongsQueryOptions } from '../../queries/songs';
 import PropTypes from 'prop-types';
 import AddPlaylistButton from '../../components/AddPlaylistButton/AddPlaylistButton';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';

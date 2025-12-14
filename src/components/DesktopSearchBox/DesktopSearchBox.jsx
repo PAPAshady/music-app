@@ -11,7 +11,7 @@ import SearchBoxArtistsSlider from './SearchBoxSliders/SearchBoxArtistsSlider';
 import SearchBoxAlbumsSlider from './SearchBoxSliders/SearchBoxAlbumsSlider';
 import SearchBoxPlaylistsSlider from './SearchBoxSliders/SearchBoxPlaylistsSlider';
 import { getPlaylistsByKeywordQueryOptions } from '../../queries/playlists';
-import { getSongsByKeywordQueryOptions } from '../../queries/musics';
+import { getSongsByKeywordQueryOptions } from '../../queries/songs';
 import { getAlbumsByKeywordQueryOptions } from '../../queries/albums';
 import { getArtistsByKeywordQueryOptions } from '../../queries/artists';
 

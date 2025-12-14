@@ -4,7 +4,7 @@ import AlbumsSlider from '../../components/Sliders/AlbumsSlider/AlbumsSlider';
 import { useQuery } from '@tanstack/react-query';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { getFavoriteSongsQueryOptions } from '../../queries/musics';
+import { getFavoriteSongsQueryOptions } from '../../queries/songs';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
 import usePlayBar from '../../hooks/usePlayBar';
 import { getFavoritePlaylistsQueryOptions } from '../../queries/playlists';

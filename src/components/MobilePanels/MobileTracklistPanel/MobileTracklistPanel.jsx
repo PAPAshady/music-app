@@ -8,12 +8,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentSongIndex, play, pause } from '../../../redux/slices/musicPlayerSlice';
 import { setCurrentCollection } from '../../../redux/slices/playContextSlice';
 import { togglePlayState } from '../../../redux/slices/musicPlayerSlice';
-import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
+import { getFavoriteSongsQueryOptions } from '../../../queries/songs';
 import { Play, Pause, Shuffle, RepeateOne, RepeateMusic } from 'iconsax-reactjs';
 import {
   getSongsByAlbumIdQueryOptions,
   getSongsByPlaylistIdQueryOptions,
-} from '../../../queries/musics';
+} from '../../../queries/songs';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
 import { favoriteSongsInfos } from '../../../redux/slices/playContextSlice';

@@ -13,7 +13,7 @@ import favoritesCover from '../../../assets/images/covers/favorites-cover.png';
 import { useQuery } from '@tanstack/react-query';
 import { getAlbumByIdQueryOptions } from '../../../queries/albums';
 import { getPlaylistByIdQueryOptions } from '../../../queries/playlists';
-import { getFavoriteSongsQueryOptions } from '../../../queries/musics';
+import { getFavoriteSongsQueryOptions } from '../../../queries/songs';
 import { getArtistByIdQueryOptions } from '../../../queries/artists';
 import ShimmerOverlay from '../../ShimmerOverlay/ShimmerOverlay';
 import { Navigate } from 'react-router-dom';
@@ -90,7 +90,7 @@ export default function MobilePanel() {
       ></div>
 
       <div
-        className="text-secondary-50 relative container mx-auto h-dvh overflow-y-auto py-12 xs:px-3 md:pb-4"
+        className="text-secondary-50 xs:px-3 relative container mx-auto h-dvh overflow-y-auto py-12 md:pb-4"
         onScroll={handleScroll}
       >
         {/* Top bar */}
@@ -117,7 +117,7 @@ export default function MobilePanel() {
           </div>
         </div>
 
-        <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center xs:pb-12 min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
+        <div className="xs:pb-12 flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center min-[400px]:pb-16 sm:gap-5 sm:pb-22 md:pb-0 lg:gap-7">
           {isPending ? (
             <>
               <div className="relative size-46 overflow-hidden rounded-md bg-gray-600/60 sm:size-56 md:size-64 lg:size-80">

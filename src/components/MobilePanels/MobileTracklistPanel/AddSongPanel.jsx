@@ -7,7 +7,7 @@ import { addSongToPrivatePlaylistMutationOptions } from '../../../queries/playli
 import {
   getTrendingSongsQueryOptions,
   getSongsByKeywordQueryOptions,
-} from '../../../queries/musics';
+} from '../../../queries/songs';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';

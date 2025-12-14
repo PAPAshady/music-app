@@ -8,7 +8,7 @@ import { useEffect, useRef } from 'react';
 import useDebounce from '../../hooks/useDebounce';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeMobileSearchPanel } from '../../redux/slices/mobileSearchPanelSlice';
-import { getSongsByKeywordQueryOptions } from '../../queries/musics';
+import { getSongsByKeywordQueryOptions } from '../../queries/songs';
 import { getAlbumsByKeywordQueryOptions } from '../../queries/albums';
 import { getArtistsByKeywordQueryOptions } from '../../queries/artists';
 import { getPlaylistsByKeywordQueryOptions } from '../../queries/playlists';

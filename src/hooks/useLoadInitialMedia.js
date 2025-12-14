@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { getPlaylistByIdQueryOptions } from '../queries/playlists';
 import { getAlbumByIdQueryOptions } from '../queries/albums';
-import { getSongByIdQueryOptions } from '../queries/musics';
+import { getSongByIdQueryOptions } from '../queries/songs';
 import useMediaQuery from './useMediaQuery';
 import {
   setSelectedCollection,

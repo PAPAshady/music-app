@@ -2,7 +2,7 @@ import SongCard from '../../MusicCards/SongCard/SongCard';
 import SongCardSkeleton from '../../MusicCards/SongCard/SongCardSkeleton';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/musics';
+import { getPopularSongsByArtistIdQueryOptions } from '../../../queries/songs';
 import PropTypes from 'prop-types';
 import usePlayBar from '../../../hooks/usePlayBar';
 

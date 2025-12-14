@@ -10,14 +10,14 @@ import {
   getPopularSongsByArtistIdQueryOptions,
   getFavoriteSongsQueryOptions,
   getGeneratedQueuelistBySongDataQueryOptions,
-} from '../../../queries/musics';
+} from '../../../queries/songs';
 import 'swiper/css';
 import './PlayerPanel.css';
 import { closePanel as closePlayerPanel } from '../../../redux/slices/playerPanelSlice';
 import DesktopPlayerPanel from '../../DesktopPlayerPanel/DesktopPlayerPanel';
 import MobilePlayerPanel from '../../MobilePlayerPanel/MobilePlayerPanel';
 import useMediaQuery from '../../../hooks/useMediaQuery';
-import { getSongByIdQueryOptions } from '../../../queries/musics';
+import { getSongByIdQueryOptions } from '../../../queries/songs';
 
 export default function PlayerPanel() {
   const songId = useSelector((state) => state.queryState.id);

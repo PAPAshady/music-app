@@ -14,7 +14,7 @@ import {
   createNewPrivatePlaylistMutationOptions,
   updatePrivatePlaylistMutationOptions,
 } from '../../queries/playlists';
-import { getSongsByPlaylistIdQueryOptions } from '../../queries/musics';
+import { getSongsByPlaylistIdQueryOptions } from '../../queries/songs';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { getPlaylistByIdQueryOptions } from '../../queries/playlists';
 import PlaylistInfosModalSongsList from './PlaylistInfosModalSongsList';

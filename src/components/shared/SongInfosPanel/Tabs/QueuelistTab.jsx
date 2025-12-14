@@ -1,7 +1,7 @@
 import usePlayBar from '../../../../hooks/usePlayBar';
 import PlayBar from '../../../MusicCards/PlayBar/PlayBar';
 import PlayBarSkeleton from '../../../MusicCards/PlayBar/PlayBarSkeleton';
-import { getGeneratedQueuelistBySongDataQueryOptions } from '../../../../queries/musics';
+import { getGeneratedQueuelistBySongDataQueryOptions } from '../../../../queries/songs';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';

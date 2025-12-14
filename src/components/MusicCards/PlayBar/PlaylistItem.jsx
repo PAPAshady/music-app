@@ -1,4 +1,4 @@
-import { getSingleSongByPlaylistIdQueryOptions } from '../../../queries/musics';
+import { getSingleSongByPlaylistIdQueryOptions } from '../../../queries/songs';
 import defaultCover from '../../../assets/images/covers/no-cover.jpg';
 import { TickCircle, AddCircle } from 'iconsax-reactjs';
 import { useSelector, useDispatch } from 'react-redux';

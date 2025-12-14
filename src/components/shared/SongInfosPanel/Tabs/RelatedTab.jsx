@@ -6,7 +6,7 @@ import SmallArtistCardSkeleton from '../../../MusicCards/SmallArtistCard/SmallAr
 import SmallAlbumCard from '../../../MusicCards/SmallAlbumCard/SmallAlbumCard';
 import SmallAlbumCardSkeleton from '../../../MusicCards/SmallAlbumCard/SmallAlbumCardSkeleton';
 import { getRelatedArtistsQueryOptions } from '../../../../queries/artists';
-import { getRelatedSongsBySongDataQueryOptions } from '../../../../queries/musics';
+import { getRelatedSongsBySongDataQueryOptions } from '../../../../queries/songs';
 import { getAlbumsByArtistIdQueryOptions } from '../../../../queries/albums';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
