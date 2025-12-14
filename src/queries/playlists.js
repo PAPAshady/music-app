@@ -85,6 +85,13 @@ export const createNewPrivatePlaylistMutationOptions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['playlists', { is_public: false }] });
       store.dispatch(addNotification('Your new playlist has been created!'));
+      store.dispatch(
+        showNewSnackbar({
+          message: 'Playlist created successfully.',
+          type: 'success',
+          hideDuration: 4000,
+        })
+      );
     },
   });
 };
@@ -93,7 +100,21 @@ export const updatePrivatePlaylistMutationOptions = (playlistId) => ({
   queryKey: ['playlists', { is_public: false, playlistId }],
   mutationFn: (newData) => updatePrivatePlaylist(playlistId, newData),
   enabled: !!playlistId,
-  onSuccess: () => queryClient.invalidateQueries({ queryKey: ['playlists'] }),
+  onSuccess: async (newPlaylistData) => {
+    await queryClient.invalidateQueries({ queryKey: ['playlists'] });
+    const selectedPlaylistSongs = queryClient.getQueryData(['songs', { playlistId }]);
+    store.dispatch(setSelectedCollection({ ...newPlaylistData, musics: selectedPlaylistSongs })); // update redux store as well be synced with new changes
+    store.dispatch(showNewSnackbar({ message: 'Playlist updated successfully.', type: 'success' }));
+  },
+  onError: (err) => {
+    store.dispatch(
+      showNewSnackbar({
+        message: 'Unexpected error occured while updating the playlist. Try again.',
+        type: 'error',
+      })
+    );
+    console.error('Error updating playlist in database : ', err);
+  },
 });
 
 export const deletePrivatePlaylistMutationOptions = (playlistId) => ({
