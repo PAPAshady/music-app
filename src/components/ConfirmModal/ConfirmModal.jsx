@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import { deletePrivatePlaylistMutationOptions } from '../../queries/playlists';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
-import { listFiles, deleteFiles } from '../../services/storage';
+import { deletePlaylistCover, removeUserAvatar } from '../../services/storage';
 import { updateUser } from '../../services/users';
 import { useState } from 'react';
 import { updateUserAvatar } from '../../redux/slices/authSlice';
@@ -29,72 +29,20 @@ export default function ConfirmModal() {
   };
 
   const onConfirm = async () => {
+    setIsPending(true);
     if (actionType === 'delete_playlist') {
-      const { data: listingData, error: listingError } = await listFiles(
-        'playlist-covers',
-        userId,
-        undefined,
-        undefined,
-        selectedTracklist.title
-      );
-
-      if (listingError) {
+      try {
+        await deletePlaylistCover(selectedTracklist.title);
+        await deletePlaylistMutation.mutateAsync(undefined, { onSuccess: onClose });
+      } catch (err) {
         dispatch(
           showNewSnackbar({ message: 'Error removing playlist. Try again.', type: 'error' })
         );
-        console.error('Error listing files : ', listingError);
-        return;
+        console.error('Error deleting playlist : ', err);
       }
-
-      if (listingData.length) {
-        // remove playlist cover from storage
-        const { error: deleteError } = await deleteFiles('playlist-covers', [
-          `${userId}/${selectedTracklist.title}.${listingData[0].name.split('.').pop()}`,
-        ]);
-
-        if (deleteError) {
-          dispatch(
-            showNewSnackbar({ message: 'Error removing playlist. Try again.', type: 'error' })
-          );
-          console.error('Error deleting file : ', deleteError);
-          return;
-        }
-      }
-
-      deletePlaylistMutation.mutate(undefined, { onSuccess: onClose });
     } else if (actionType === 'remove_user_avatar') {
-      setIsPending(true);
       try {
-        const { data: listingData, error: listingError } = await listFiles(
-          'avatars',
-          userId,
-          undefined,
-          undefined,
-          'avatar'
-        );
-
-        if (listingError) {
-          dispatch(
-            showNewSnackbar({ message: 'Error removing avatar. Try again.', type: 'error' })
-          );
-          console.error('Error listing files : ', listingError);
-          return;
-        }
-
-        if (listingData.length) {
-          // remove avatar from storage
-          const { error: deleteError } = await deleteFiles('avatars', [
-            `${userId}/avatar.${listingData[0].name.split('.').pop()}`,
-          ]);
-
-          if (deleteError) {
-            dispatch(
-              showNewSnackbar({ message: 'Error removing avatar. Try again.', type: 'error' })
-            );
-            console.error('Error deleting file : ', deleteError);
-            return;
-          }
-        }
+        await removeUserAvatar();
         await updateUser(userId, { avatar_url: null });
         dispatch(updateUserAvatar()); // updates user avatar in redux
         dispatch(showNewSnackbar({ message: 'Avatar removed successfully.', type: 'success' }));
@@ -102,10 +50,9 @@ export default function ConfirmModal() {
       } catch (err) {
         dispatch(showNewSnackbar({ message: 'Error removing avatar. Try again.', type: 'error' }));
         console.error('Error deleting avatar : ', err);
-      } finally {
-        setIsPending(false);
       }
     }
+    setIsPending(false);
   };
 
   return (
@@ -119,8 +66,8 @@ export default function ConfirmModal() {
       cancelButton={buttons.cancel}
       confirmButtonClassNames={buttonsClassNames.confirm}
       cancelButtonClassNames={buttonsClassNames.cancel}
-      confirmButtonDisabled={deletePlaylistMutation.isPending}
-      isSubmitting={deletePlaylistMutation.isPending || isPending}
+      confirmButtonDisabled={isPending}
+      isSubmitting={isPending}
     >
       <p className="text-secondary-50 mb-2 text-sm min-[480px]:text-base">{message}</p>
     </Modal>

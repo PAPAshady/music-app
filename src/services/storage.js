@@ -1,4 +1,5 @@
 import supabase from './supabaseClient';
+import store from '../redux/store';
 
 export async function uploadFile(bucket, path, file) {
   const fileExtension = file.name.split('.').pop();
@@ -49,3 +50,47 @@ export function getFileUrl(bucket, path) {
   const result = supabase.storage.from(bucket).getPublicUrl(path);
   return result.data.publicUrl;
 }
+
+export const deletePlaylistCover = async (playlistTitle) => {
+  const userId = store.getState().auth.user?.id;
+  const { data: listingData, error: listingError } = await listFiles(
+    'playlist-covers',
+    userId,
+    undefined,
+    undefined,
+    playlistTitle
+  );
+
+  if (listingError) throw listingError;
+
+  if (listingData.length) {
+    // remove playlist cover from storage
+    const { error: deleteError } = await deleteFiles('playlist-covers', [
+      `${userId}/${playlistTitle}.${listingData[0].name.split('.').pop()}`,
+    ]);
+
+    if (deleteError) throw deleteError;
+  }
+};
+
+export const removeUserAvatar = async () => {
+  const userId = store.getState().auth.user?.id;
+  const { data: listingData, error: listingError } = await listFiles(
+    'avatars',
+    userId,
+    undefined,
+    undefined,
+    'avatar'
+  );
+
+  if (listingError) throw listingError;
+
+  if (listingData.length) {
+    // remove avatar from storage
+    const { error: deleteError } = await deleteFiles('avatars', [
+      `${userId}/avatar.${listingData[0].name.split('.').pop()}`,
+    ]);
+
+    if (deleteError) throw deleteError;
+  }
+};
