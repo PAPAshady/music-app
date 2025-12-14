@@ -139,6 +139,13 @@ export const deletePrivatePlaylistMutationOptions = (playlistId) => ({
       store.dispatch(closeMobilePanel());
       store.dispatch(setQueries({ type: null, id: null }));
     }
+    store.dispatch(showNewSnackbar({ message: 'Playlist removed successfully.', type: 'success' }));
+  },
+  onError: (err) => {
+    store.dispatch(
+      showNewSnackbar({ message: 'Error removing playlist. Try again.', type: 'error' })
+    );
+    console.error('Error deleting playlist : ', err);
   },
 });
 

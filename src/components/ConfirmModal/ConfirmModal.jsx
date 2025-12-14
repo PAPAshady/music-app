@@ -61,16 +61,7 @@ export default function ConfirmModal() {
         }
       }
 
-      try {
-        await deletePlaylistMutation.mutateAsync();
-        dispatch(showNewSnackbar({ message: 'Playlist removed successfully.', type: 'success' }));
-      } catch (err) {
-        dispatch(
-          showNewSnackbar({ message: 'Error removing playlist. Try again.', type: 'error' })
-        );
-        console.error('Error deleting playlist : ', err);
-      }
-      onClose();
+      deletePlaylistMutation.mutate(undefined, { onSuccess: onClose });
     } else if (actionType === 'remove_user_avatar') {
       setIsPending(true);
       try {
