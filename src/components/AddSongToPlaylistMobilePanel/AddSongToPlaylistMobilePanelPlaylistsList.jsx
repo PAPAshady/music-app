@@ -5,7 +5,9 @@ import { Add } from 'iconsax-reactjs';
 import { openModal as openPlaylistInfosModal } from '../../redux/slices/playlistInfosModalSlice';
 import Playlist from './Playlist';
 
-function AddSongToPlaylistMobilePanelPlaylistsList({ playlists, isPending }) {
+function AddSongToPlaylistMobilePanelPlaylistsList({ playlists, isPending, noPlaylistsExists }) {
+  const noSearchResults = playlists.length === 0;
+  const showEmptyMessage = noPlaylistsExists || noSearchResults;
   return (
     <div className="mt-3 grow space-y-1 overflow-y-auto px-1 pb-4 md:px-6">
       {isPending ? (
@@ -22,11 +24,15 @@ function AddSongToPlaylistMobilePanelPlaylistsList({ playlists, isPending }) {
               <Playlist key={playlist.id} {...playlist} />
             ))}
           </div>
-          {playlists.length === 0 && (
-            <div className="mb-6 space-y-2 pt-3 text-center">
-              <p className="text-xl font-bold">No results found</p>
+          {showEmptyMessage && (
+            <div className="mb-6 space-y-2 px-4 pt-10 text-center">
+              <p className="text-xl font-bold">
+                {noPlaylistsExists ? 'You have no playlist' : 'No results found'}
+              </p>
               <p className="text-secondary-100 text-sm">
-                Check the spelling, or try different keywords.
+                {noPlaylistsExists
+                  ? 'Create playlists to easily organize your favorite songs.'
+                  : 'Check the spelling, or try different keywords.'}
               </p>
             </div>
           )}
