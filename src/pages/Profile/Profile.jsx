@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '../../services/supabaseClient';
 import { updateUser } from '../../services/users';
-import { deleteFolderContents, uploadFile, getFileUrl } from '../../services/storage';
+import { deleteFolderContents, uploadFile, getFileUrl, listFiles } from '../../services/storage';
 import { useDispatch } from 'react-redux';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { useSelector } from 'react-redux';
@@ -99,7 +99,11 @@ export default function Profile() {
         const { success, error } = await deleteFolderContents('avatars', user.id);
 
         if (success) {
-          const { error } = await uploadFile('avatars', `${user.id}/avatar`, avatar);
+          const { error } = await uploadFile(
+            'avatars',
+            `${user.id}/avatar-${Date.now()}`, // // Backend always returns the same avatar URL, so the browser caches it. We append a timestamp to force a fresh download after updates.
+            avatar
+          );
           if (error) {
             console.error('Error uploading avatar: ', error);
             dispatch(
@@ -125,10 +129,17 @@ export default function Profile() {
         const newUserInfos = { full_name, user_name, email, bio };
 
         if (avatar) {
-          const newUserAvatar = getFileUrl(
+          const { data: listingData, error: listingError } = await listFiles(
             'avatars',
-            `${user.id}/avatar.${avatar.name.split('.').pop()}`
+            user.id,
+            undefined,
+            undefined,
+            'avatar'
           );
+
+          if (listingError) throw listingError;
+          const fileName = listingData[0].name;
+          const newUserAvatar = getFileUrl('avatars', `${user.id}/${fileName}`);
           newUserInfos.avatar_url = newUserAvatar;
         }
 
