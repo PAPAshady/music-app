@@ -6,7 +6,7 @@ import { openModal as openPlaylistInfosModal } from '../../redux/slices/playlist
 import Playlist from './Playlist';
 
 function AddSongToPlaylistMobilePanelPlaylistsList({ playlists, isPending, noPlaylistsExists }) {
-  const noSearchResults = playlists.length === 0;
+  const noSearchResults = playlists?.length === 0;
   const showEmptyMessage = noPlaylistsExists || noSearchResults;
   return (
     <div className="mt-3 grow space-y-1 overflow-y-auto px-1 pb-4 md:px-6">
