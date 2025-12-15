@@ -56,6 +56,7 @@ const TracklistInfosPanel = memo(() => {
     transition: { duration: 0.2 },
   };
 
+  
   if (showErrorPanel) return <ErrorPanel error={error} />;
 
   return (

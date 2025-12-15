@@ -9,6 +9,9 @@ import SmallAlbumCardSkeleton from '../MusicCards/SmallAlbumCard/SmallAlbumCardS
 import PropTypes from 'prop-types';
 import ErrorPanel from '../shared/ErrorPanel/ErrorPanel';
 import GenrePanelPlaylistsSlider from './GenrePanelPlaylistsSlider';
+import { AnimatePresence, motion } from 'framer-motion';
+
+const MotionDiv = motion.div;
 
 function GenrePanel() {
   const genreId = useSelector((state) => state.queryState.id);
@@ -31,64 +34,79 @@ function GenrePanel() {
   return (
     <div className="sticky top-10 hidden xl:block">
       <div className="border-secondary-200 flex h-[calc(100dvh-100px)] max-h-175 min-h-107.5 w-67.5 flex-col rounded-xl border bg-linear-to-b from-slate-700 to-slate-900 px-3 py-5 xl:w-77.5 2xl:h-[calc(100dvh-200px)]">
-        <div className="h-full overflow-y-auto scroll-smooth pe-4">
-          <div className="h-full space-y-3">
-            {isGenrePending ? (
-              <>
-                <div className="relative mt-3 mb-5 h-4 w-1/2 overflow-hidden rounded-full bg-gray-600/60">
-                  <ShimmerOverlay />
-                </div>
-                <div className="relative h-[30%] overflow-hidden rounded-lg bg-gray-600/60">
-                  <ShimmerOverlay />
-                </div>
-                <div className="mt-5 space-y-3">
-                  <DescriptionLineSkeleton width="100%" />
-                  <DescriptionLineSkeleton width="50%" />
-                </div>
-                <div className="mt-5 flex items-center justify-start gap-2 px-0.5">
-                  <TagSkeleton />
-                  <TagSkeleton />
-                  <TagSkeleton />
-                </div>
-              </>
-            ) : (
-              <>
-                <p className="mb-4 text-3xl font-bold">{genre?.title}</p>
-                <div className="h-[30%] overflow-hidden rounded-lg">
-                  <img
-                    src={genre?.cover || defaultCover}
-                    alt={genre?.title}
-                    className="size-full object-cover"
-                  />
-                </div>
-                <p className="text-[13px]">{genre?.description}</p>
-                <div className="flex flex-wrap items-center justify-start gap-x-2 gap-y-1.5">
-                  {genre?.tags.map((tag) => (
-                    <Tag key={tag} tag={tag} />
-                  ))}
-                </div>
-              </>
-            )}
-
-            <div className="space-y-6">
-              <GenrePanelPlaylistsSlider genreId={genreId} />
-              <div className="space-y-2">
-                <p className="font-bold">Related Albums</p>
-                {hasAlbums ? (
-                  <div className="space-y-1">
-                    {isAlbumsPending
-                      ? Array(3)
-                          .fill()
-                          .map((_, index) => <SmallAlbumCardSkeleton key={index} />)
-                      : albums.map((album) => <SmallAlbumCard key={album.id} {...album} />)}
+        <AnimatePresence mode="wait">
+          <MotionDiv
+            key={genreId}
+            variants={{
+              initial: { opacity: 0, y: 15 },
+              animate: { opacity: 1, y: 0 },
+              exit: { opacity: 0, y: 15 },
+              transition: { duration: 0.2 },
+            }}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.2 }}
+            className="h-full overflow-y-auto scroll-smooth pe-4"
+          >
+            <div className="h-full space-y-3">
+              {isGenrePending ? (
+                <>
+                  <div className="relative mt-3 mb-5 h-4 w-1/2 overflow-hidden rounded-full bg-gray-600/60">
+                    <ShimmerOverlay />
                   </div>
-                ) : (
-                  <p className="text-secondary-200 text-sm">No albums found</p>
-                )}
+                  <div className="relative h-[30%] overflow-hidden rounded-lg bg-gray-600/60">
+                    <ShimmerOverlay />
+                  </div>
+                  <div className="mt-5 space-y-3">
+                    <DescriptionLineSkeleton width="100%" />
+                    <DescriptionLineSkeleton width="50%" />
+                  </div>
+                  <div className="mt-5 flex items-center justify-start gap-2 px-0.5">
+                    <TagSkeleton />
+                    <TagSkeleton />
+                    <TagSkeleton />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="mb-4 text-3xl font-bold">{genre?.title}</p>
+                  <div className="h-[30%] overflow-hidden rounded-lg">
+                    <img
+                      src={genre?.cover || defaultCover}
+                      alt={genre?.title}
+                      className="size-full object-cover"
+                    />
+                  </div>
+                  <p className="text-[13px]">{genre?.description}</p>
+                  <div className="flex flex-wrap items-center justify-start gap-x-2 gap-y-1.5">
+                    {genre?.tags.map((tag) => (
+                      <Tag key={tag} tag={tag} />
+                    ))}
+                  </div>
+                </>
+              )}
+
+              <div className="space-y-6">
+                <GenrePanelPlaylistsSlider genreId={genreId} />
+                <div className="space-y-2">
+                  <p className="font-bold">Related Albums</p>
+                  {hasAlbums ? (
+                    <div className="space-y-1">
+                      {isAlbumsPending
+                        ? Array(3)
+                            .fill()
+                            .map((_, index) => <SmallAlbumCardSkeleton key={index} />)
+                        : albums.map((album) => <SmallAlbumCard key={album.id} {...album} />)}
+                    </div>
+                  ) : (
+                    <p className="text-secondary-200 text-sm">No albums found</p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </MotionDiv>
+        </AnimatePresence>
       </div>
     </div>
   );
