@@ -17,7 +17,7 @@ function AddSongToPlaylistMobilePanel() {
   const playlists = data?.filter((playlist) =>
     playlist.title.toLowerCase().includes(searchInput.value.toLowerCase())
   );
-  const noPlaylistsExists = !data.length;
+  const noPlaylistsExists = !data?.length;
 
   useEffect(() => {
     if (isOpen) {
