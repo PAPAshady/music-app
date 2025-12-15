@@ -7,7 +7,7 @@ import Footer from '../../Footer/Footer';
 import Logo from '../../../Logo/Logo';
 import MobilePanel from '../../MobilePanel/MobilePanel';
 import useMediaQuery from '../../../../hooks/useMediaQuery';
-import { useLocation, Outlet, Link, useMatches } from 'react-router-dom';
+import { useLocation, Outlet, Link, useMatches, ScrollRestoration } from 'react-router-dom';
 import TracklistInfosPanel from '../../TracklistInfosPanel/TracklistInfosPanel';
 import SidebarWelcomePanel from '../../SidebarWelcomePanel/SidebarWelcomePanel';
 import PlaylistInfosModal from '../../../PlaylistInfosModal/PlaylistInfosModal';
@@ -51,6 +51,7 @@ export default function MainLayout() {
 
   return (
     <>
+      <ScrollRestoration />
       <div className="bg-primary-800 relative min-h-dvh">
         <div
           className={`absolute size-full bg-cover bg-center bg-no-repeat ${currentPage.includes('/settings') ? 'opacity-70' : 'opacity-10 blur-md'}`}
