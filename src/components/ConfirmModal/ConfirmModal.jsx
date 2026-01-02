@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { deletePrivatePlaylistMutationOptions } from '../../queries/playlists';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { deletePlaylistCover, removeUserAvatar } from '../../services/storage';
-import { updateUser } from '../../services/users';
+// import { updateUser } from '../../services/users';
 import { useState } from 'react';
 import { updateUserAvatar } from '../../redux/slices/authSlice';
 
@@ -15,7 +15,7 @@ export default function ConfirmModal() {
     (state) => state.confirmModal
   );
   const selectedTracklist = useSelector((state) => state.playContext.selectedCollection);
-  const userId = useSelector((state) => state.auth.user?.id);
+  // const userId = useSelector((state) => state.auth.user?.id);
   const deletePlaylistMutation = useMutation(
     deletePrivatePlaylistMutationOptions(selectedTracklist.id)
   );
@@ -43,7 +43,8 @@ export default function ConfirmModal() {
     } else if (actionType === 'remove_user_avatar') {
       try {
         await removeUserAvatar();
-        await updateUser(userId, { avatar_url: null });
+        // incomplete logic
+        // await updateUser(userId, { avatar_url: null });
         dispatch(updateUserAvatar()); // updates user avatar in redux
         dispatch(showNewSnackbar({ message: 'Avatar removed successfully.', type: 'success' }));
         onClose();

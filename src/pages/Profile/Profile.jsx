@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '../../services/supabaseClient';
-import { updateUser } from '../../services/users';
 import { deleteFolderContents, uploadFile, getFileUrl, listFiles } from '../../services/storage';
 import { useDispatch } from 'react-redux';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
@@ -42,7 +41,7 @@ export default function Profile() {
   } = useForm({
     defaultValues: {
       full_name: user?.user_metadata.full_name ?? '',
-      user_name: user?.user_metadata.user_name ?? '',
+      username: user?.user_metadata.username ?? '',
       email: user?.email ?? '',
       bio: user?.user_metadata.bio ?? '',
     },
@@ -55,7 +54,7 @@ export default function Profile() {
 
   const textInputs = [
     { id: 1, placeholder: 'Fullname', name: 'full_name' },
-    { id: 2, placeholder: 'Username', name: 'user_name' },
+    { id: 2, placeholder: 'Username', name: 'username' },
   ];
 
   // handle validation and preview for the selected avatar
@@ -143,7 +142,8 @@ export default function Profile() {
           newUserInfos.avatar_url = newUserAvatar;
         }
 
-        await updateUser(user.id, newUserInfos);
+        // incomplete logic
+
       } catch (err) {
         console.error('An error occurred while updating user in database => ', err);
         setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
@@ -246,7 +246,7 @@ export default function Profile() {
             {user?.user_metadata.full_name}
           </p>
           <span className="text-primary-100 text-sm sm:text-base md:text-xl">
-            @{user?.user_metadata.user_name}
+            @{user?.user_metadata.username}
           </span>
         </div>
       </div>

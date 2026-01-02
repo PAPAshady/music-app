@@ -35,21 +35,21 @@ export default function SignUp() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      first_name: '',
-      last_name: '',
-      username: '',
-      email: '',
-      password: '',
+      first_name: 'Nima',
+      last_name: 'Zamani',
+      username: 'Papashady',
+      email: 'zamani.nima18@gmail.com',
+      password: '123456789',
     },
     resolver: zodResolver(formSchema),
   });
 
-  const submitHandler = async ({ email, password, username: user_name, first_name, last_name }) => {
+  const submitHandler = async ({ email, password, username, first_name, last_name }) => {
     try {
       const { error, data } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { user_name, full_name: `${first_name} ${last_name}` } },
+        options: { data: { username, full_name: `${first_name} ${last_name}` } },
       });
       if (data.user) {
         dispatch(setUser(data.user));
