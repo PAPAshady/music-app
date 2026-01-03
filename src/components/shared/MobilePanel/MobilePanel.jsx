@@ -97,7 +97,7 @@ export default function MobilePanel() {
         <div
           className={`fixed top-0 left-0 z-2 flex w-full items-center justify-between border-b-2 px-2 py-3 transition-all duration-300 ${isTopbarVisible ? 'border-neutral-700 bg-neutral-800' : 'border-transparent'}`}
         >
-          <div className="flex items-center gap-3 sm:gap-6 sm:px-2 sm:py-1">
+          <div className="flex items-center gap-6 sm:gap-6 px-3 py-1">
             <button className="size-9" onClick={() => dispatch(closeMobilePanel())}>
               <ArrowLeft size="100%" />
             </button>
