@@ -60,15 +60,14 @@ export default function MobileSearchPanel() {
       className={`text-secondary-50 fixed inset-0 z-10 bg-linear-to-b from-slate-800 to-slate-700 transition ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
     >
       <div className="container flex h-full flex-col py-2">
-        <div className="flex grow flex-col gap-4 overflow-y-auto pb-6">
-          <div>
-            <div className="flex items-center justify-between gap-3">
-              <button onClick={() => dispatch(closeMobileSearchPanel())}>
-                <ArrowLeft />
-              </button>
-              <div className="grow">
-                <SearchInput {...searchInput} ref={inputRef} />
-              </div>
+        <div className="flex w-full grow flex-col gap-4 overflow-y-auto pb-6">
+          <div className="flex max-w-full items-center gap-1">
+            <button className="size-6 sm:size-8" onClick={() => dispatch(closeMobileSearchPanel())}>
+              <ArrowLeft size="100%" />
+            </button>
+
+            <div className="grow px-2.5">
+              <SearchInput {...searchInput} ref={inputRef} />
             </div>
           </div>
           {searchInput.value.trim() ? (

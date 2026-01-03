@@ -10,13 +10,7 @@ const initialState = {
 
 export const openMobilePanel = createAsyncThunk(
   'mobilePanel/openMobilePanel',
-  (payload, { dispatch, getState }) => {
-    const isOpen = getState().mobilePanel.isMobilePanelOpen;
-    const isLargeTablet = window.matchMedia('(max-width: 1280px)');
-    // do not add a history if user is not using a mobile/tablet device or if mobile playlist is already open
-    if (!isOpen && isLargeTablet) {
-      window.history.pushState({ mobilePanel: true }, '');
-    }
+  (payload, { dispatch }) => {
     dispatch(openPanel(payload));
   }
 );
@@ -25,8 +19,6 @@ export const closeMobilePanel = createAsyncThunk(
   'mobilePanel/closeMobilePanel',
   (_, { dispatch, getState }) => {
     const panelType = getState().mobilePanel.type;
-    window.history.back();
-
     dispatch(closePanel());
     if (['playlist', 'album', 'favorites'].includes(panelType)) {
       const currentCollection = getState().playContext.currentCollection;
