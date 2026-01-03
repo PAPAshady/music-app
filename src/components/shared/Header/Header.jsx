@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { HamburgerMenu, SearchNormal1, Notification, Setting2 } from 'iconsax-reactjs';
 import Logo from '../../Logo/Logo';
 import Avatar from '../../Avatar/Avatar';
@@ -13,6 +13,7 @@ import { setIsHamburgerMenuOpen } from '../../../redux/slices/hamburgerMenuSlice
 import DesktopSearchBox from '../../DesktopSearchBox/DesktopSearchBox';
 
 export default memo(function Header() {
+  const searchParams = useLocation().search;
   const dispatch = useDispatch();
   const {
     isVisible: isNotificationMenuVisible,
@@ -70,7 +71,7 @@ export default memo(function Header() {
             />
             <SettingsMenu isVisible={isSettingsMenuVisible} />
           </div>
-          <Link to="/settings/profile">
+          <Link to={`/settings/profile${searchParams}`}>
             <Avatar size="xs" profilePic={userAvatar} />
           </Link>
         </div>
