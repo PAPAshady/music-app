@@ -5,9 +5,9 @@ import { useMutation } from '@tanstack/react-query';
 import { deletePrivatePlaylistMutationOptions } from '../../queries/playlists';
 import { showNewSnackbar } from '../../redux/slices/snackbarSlice';
 import { deletePlaylistCover, removeUserAvatar } from '../../services/storage';
-// import { updateUser } from '../../services/users';
 import { useState } from 'react';
 import { updateUserAvatar } from '../../redux/slices/authSlice';
+import supabase from '../../services/supabaseClient';
 
 export default function ConfirmModal() {
   const dispatch = useDispatch();
@@ -42,9 +42,11 @@ export default function ConfirmModal() {
       }
     } else if (actionType === 'remove_user_avatar') {
       try {
-        await removeUserAvatar();
-        // incomplete logic
-        // await updateUser(userId, { avatar_url: null });
+        await removeUserAvatar(); // delete user avatar from storage
+        const { error } = await supabase.auth.updateUser({
+          data: { avatar_overridden: true, user_avatar: null },
+        });
+        if (error) throw error;
         dispatch(updateUserAvatar()); // updates user avatar in redux
         dispatch(showNewSnackbar({ message: 'Avatar removed successfully.', type: 'success' }));
         onClose();

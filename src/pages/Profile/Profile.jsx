@@ -41,7 +41,7 @@ export default function Profile() {
   } = useForm({
     defaultValues: {
       full_name: user?.user_metadata.full_name ?? '',
-      username: user?.user_metadata.username ?? '',
+      user_name: user?.user_metadata.user_name ?? '',
       email: user?.email ?? '',
       bio: user?.user_metadata.bio ?? '',
     },
@@ -54,7 +54,7 @@ export default function Profile() {
 
   const textInputs = [
     { id: 1, placeholder: 'Fullname', name: 'full_name' },
-    { id: 2, placeholder: 'Username', name: 'username' },
+    { id: 2, placeholder: 'Username', name: 'user_name' },
   ];
 
   // handle validation and preview for the selected avatar
@@ -77,77 +77,73 @@ export default function Profile() {
     }
   };
 
-  const submitHandler = async ({ full_name, user_name, email, bio, avatar }) => {
+  const submitHandler = async ({ full_name, user_name, bio, avatar }) => {
     try {
-      // update user info in supabase authentication
-      const {
-        error,
-        data: { user },
-      } = await supabase.auth.updateUser({
-        email,
-        data: {
-          full_name,
-          user_name,
-          bio,
-        },
-      });
-      if (error) throw error;
+      let newUserData = { full_name, user_name, bio }; // this will be sent to supabase
 
-      // update user avatar
       if (avatar) {
-        const { success, error } = await deleteFolderContents('avatars', user.id);
+        //  delete prev avatars from storage if any
+        const { error: deleteError } = await deleteFolderContents('avatars', user.id);
 
-        if (success) {
-          const { error } = await uploadFile(
-            'avatars',
-            `${user.id}/avatar-${Date.now()}`, // // Backend always returns the same avatar URL, so the browser caches it. We append a timestamp to force a fresh download after updates.
-            avatar
-          );
-          if (error) {
-            console.error('Error uploading avatar: ', error);
-            dispatch(
-              showNewSnackbar({
-                message: 'Unexpected error occurred while updating avatar.',
-                type: 'error',
-              })
-            );
-          }
-        } else {
-          console.error('Error deleting avatars folder: ', error);
+        // if deleting avatars folder fails then return
+        if (deleteError) {
+          console.error('Error deleting avatars folder: ', deleteError);
           dispatch(
             showNewSnackbar({
               message: 'Unexpected error occurred while updating avatar.',
               type: 'error',
             })
           );
+          return;
         }
-      }
 
-      // update the user in database.
-      try {
-        const newUserInfos = { full_name, user_name, email, bio };
+        // upload new avatar to storage
+        const { error: uploadError } = await uploadFile(
+          'avatars',
+          `${user.id}/avatar-${Date.now()}`, // // Backend always returns the same avatar URL, so the browser caches it. We append a timestamp to force a fresh download after updates.
+          avatar
+        );
 
-        if (avatar) {
-          const { data: listingData, error: listingError } = await listFiles(
-            'avatars',
-            user.id,
-            undefined,
-            undefined,
-            'avatar'
+        // if uploading avatar fails then return
+        if (uploadError) {
+          console.error('Error uploading avatar: ', uploadError);
+          dispatch(
+            showNewSnackbar({
+              message: 'Unexpected error occurred while updating avatar.',
+              type: 'error',
+            })
           );
-
-          if (listingError) throw listingError;
-          const fileName = listingData[0].name;
-          const newUserAvatar = getFileUrl('avatars', `${user.id}/${fileName}`);
-          newUserInfos.avatar_url = newUserAvatar;
+          return;
         }
 
-        // incomplete logic
+        // get uploaded avatar url.
+        const { data: listingData, error: listingError } = await listFiles(
+          'avatars',
+          user.id,
+          undefined,
+          undefined,
+          'avatar'
+        );
 
-      } catch (err) {
-        console.error('An error occurred while updating user in database => ', err);
-        setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
+        if (listingError) {
+          console.error('An error occurred while updating user in database => ', listingError);
+          setError('root', { message: 'Sorry, an unexpected error occurred. Please try again.' });
+          return;
+        }
+        const fileName = listingData[0].name;
+        const newUserAvatar = getFileUrl('avatars', `${user.id}/${fileName}`);
+
+        // add the new avatar url to newUserData to be sent to supabase
+        newUserData = { ...newUserData, user_avatar: newUserAvatar, avatar_overridden: true };
       }
+
+      // update user info in supabase
+      const { error } = await supabase.auth.updateUser({
+        data: newUserData,
+      });
+
+      if (error) throw error;
+
       dispatch(updateUserAvatar()); // updates user avatar in redux
       dispatch(
         showNewSnackbar({ message: 'Your profile has been updated successfully!', type: 'success' })
@@ -245,13 +241,16 @@ export default function Profile() {
           <p className="text-primary-50 font-semibold sm:text-lg md:mb-2 md:text-2xl">
             {user?.user_metadata.full_name}
           </p>
-          <span className="text-primary-100 text-sm sm:text-base md:text-xl">
-            @{user?.user_metadata.username}
-          </span>
+          {/* if user signs up with google for the first time, he won't have a username */}
+          {user?.user_metadata.user_name && (
+            <span className="text-primary-100 text-sm sm:text-base md:text-xl">
+              @{user?.user_metadata.user_name}
+            </span>
+          )}
         </div>
       </div>
       <div className="container flex max-w-180! flex-col gap-6">
-        <p className="text-red mb-2 text-lg font-semibold">{errors.root?.message}</p>
+        <p className="text-red mt-6 mb-2 text-lg font-semibold">{errors.root?.message}</p>
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-4">
           {textInputs.map((input) => (
             <InputField
