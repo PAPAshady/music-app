@@ -98,7 +98,7 @@ export default function MobilePanel() {
           className={`fixed top-0 left-0 z-2 flex w-full items-center justify-between border-b-2 px-2 py-3 transition-all duration-300 ${isTopbarVisible ? 'border-neutral-700 bg-neutral-800' : 'border-transparent'}`}
         >
           <div className="flex items-center gap-3 sm:gap-6 sm:px-2 sm:py-1">
-            <button className="size-6 sm:size-8" onClick={() => dispatch(closeMobilePanel())}>
+            <button className="size-9" onClick={() => dispatch(closeMobilePanel())}>
               <ArrowLeft size="100%" />
             </button>
             {isPending ? (
@@ -109,7 +109,7 @@ export default function MobilePanel() {
               </div>
             ) : (
               <p
-                className={`transition-opacity duration-300 lg:text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
+                className={`transition-opacity duration-300  text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
               >
                 {title}
               </p>
