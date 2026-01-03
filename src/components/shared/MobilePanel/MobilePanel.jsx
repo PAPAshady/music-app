@@ -43,7 +43,7 @@ export default function MobilePanel() {
       : panelType === 'artist'
         ? data?.bio || 'No bio for this artist.'
         : data?.description || `No Description for this ${data?.tracklistType}.`;
-  const { isMobilePanelOpen } = useSelector((state) => state.mobilePanel);
+  const isMobilePanelOpen = useSelector((state) => state.mobilePanel.isMobilePanelOpen);
   const dispatch = useDispatch();
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
 
