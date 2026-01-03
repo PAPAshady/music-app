@@ -16,7 +16,6 @@ import supabase from '../../../services/supabaseClient';
 const formSchema = z.object({
   first_name: z.string().min(1, { message: 'Firstname is required' }),
   last_name: z.string().min(1, { message: 'Lastname is required' }),
-  user_name: z.string().min(1, { message: 'Username is required' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z
     .string()
@@ -33,23 +32,14 @@ export default function SignUp() {
     watch,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm({
-    defaultValues: {
-      first_name: 'Nima',
-      last_name: 'Zamani',
-      user_name: 'Papashady',
-      email: 'zamani.nima18@gmail.com',
-      password: '123456789',
-    },
-    resolver: zodResolver(formSchema),
-  });
+  } = useForm({ resolver: zodResolver(formSchema) });
 
-  const submitHandler = async ({ email, password, user_name, first_name, last_name }) => {
+  const submitHandler = async ({ email, password, first_name, last_name }) => {
     try {
       const { error, data } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { user_name, full_name: `${first_name} ${last_name}` } },
+        options: { data: { full_name: `${first_name} ${last_name}` } },
       });
       if (data.user) {
         dispatch(setUser(data.user));
@@ -95,20 +85,13 @@ export default function SignUp() {
     },
     {
       id: 3,
-      type: 'text',
-      name: 'user_name',
-      placeholder: 'Username',
-      icon: <User />,
-    },
-    {
-      id: 4,
       type: 'email',
       name: 'email',
       placeholder: 'Email',
       icon: <Sms />,
     },
     {
-      id: 5,
+      id: 4,
       type: 'password',
       name: 'password',
       placeholder: 'Password',

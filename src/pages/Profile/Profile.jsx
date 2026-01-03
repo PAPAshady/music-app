@@ -19,7 +19,6 @@ import { updateUserAvatar } from '../../redux/slices/authSlice';
 const formSchema = z.object({
   avatar: z.any().optional(),
   full_name: z.string().min(1, { message: 'Fullname is required' }),
-  user_name: z.string().min(1, { message: 'Username is required' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   bio: z.string(),
 });
@@ -41,7 +40,6 @@ export default function Profile() {
   } = useForm({
     defaultValues: {
       full_name: user?.user_metadata.full_name ?? '',
-      user_name: user?.user_metadata.user_name ?? '',
       email: user?.email ?? '',
       bio: user?.user_metadata.bio ?? '',
     },
@@ -51,11 +49,6 @@ export default function Profile() {
 
   // update avatar after it is fetched in authProvider
   useEffect(() => setAvatar(userAvatar), [userAvatar]);
-
-  const textInputs = [
-    { id: 1, placeholder: 'Fullname', name: 'full_name' },
-    { id: 2, placeholder: 'Username', name: 'user_name' },
-  ];
 
   // handle validation and preview for the selected avatar
   const avatarChangeHandler = (e) => {
@@ -77,9 +70,9 @@ export default function Profile() {
     }
   };
 
-  const submitHandler = async ({ full_name, user_name, bio, avatar }) => {
+  const submitHandler = async ({ full_name, bio, avatar }) => {
     try {
-      let newUserData = { full_name, user_name, bio }; // this will be sent to supabase
+      let newUserData = { full_name, bio }; // this will be sent to supabase
 
       if (avatar) {
         //  delete prev avatars from storage if any
@@ -241,7 +234,7 @@ export default function Profile() {
           <p className="text-primary-50 font-semibold sm:text-lg md:mb-2 md:text-2xl">
             {user?.user_metadata.full_name}
           </p>
-          {/* if user signs up with google for the first time, he won't have a username */}
+          {/* username is only available when user is logged in with github */}
           {user?.user_metadata.user_name && (
             <span className="text-primary-100 text-sm sm:text-base md:text-xl">
               @{user?.user_metadata.user_name}
@@ -251,17 +244,12 @@ export default function Profile() {
       </div>
       <div className="container flex max-w-180! flex-col gap-6">
         <p className="text-red mt-6 mb-2 text-lg font-semibold">{errors.root?.message}</p>
-        <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-4">
-          {textInputs.map((input) => (
-            <InputField
-              key={input.id}
-              isInvalid={!!errors[input.name]}
-              errorMsg={errors[input.name]?.message}
-              {...register(input.name)}
-              {...input}
-            />
-          ))}
-        </div>
+          <InputField
+            placeholder="Fullname"
+            isInvalid={!!errors.full_name}
+            errorMsg={errors.full_name?.message}
+            {...register('full_name')}
+          />
         <EmailInput
           placeholder="Email"
           isInvalid={!!errors.email}
