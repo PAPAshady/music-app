@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUserAvatarUrl } from '../../services/users';
 import supabase from '../../services/supabaseClient';
 
 export const signInWithOAuth = createAsyncThunk('auth/signInWithOAuth', async (provider) => {
@@ -15,10 +14,13 @@ export const signOut = createAsyncThunk('auth/signOut', async () => {
 export const updateUserAvatar = createAsyncThunk(
   'auth/updateUserAvatar',
   async (_, { getState, dispatch }) => {
-    const userId = getState().auth.user.id;
-    const avatar = await getUserAvatarUrl(userId); // the avatar which user uploaded him self
-    const oAuthAvatar = getState().auth.user.user_metadata.avatar_url; // the avatar which user got from supabase OAuth 2.0 authentication (from github, google, etc.)
-    dispatch(setAvatar(avatar || oAuthAvatar));
+    const {
+      avatar_url: oauth_avatar,
+      user_avatar,
+      avatar_overridden,
+    } = getState().auth.user.user_metadata;
+    const avatar = avatar_overridden ? user_avatar : oauth_avatar;
+    dispatch(setAvatar(avatar));
   }
 );
 
