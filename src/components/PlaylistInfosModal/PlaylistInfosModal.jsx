@@ -90,12 +90,14 @@ export default function PlaylistInfosModal() {
       return acc;
     }, {});
 
+    let cover_path = '';
+
     if (modifiedFields.cover) {
       clearErrors('cover');
       // handle cover uploading/removing logic
       if (formData.cover) {
         // if user selected a cover, upload it to server
-        const { playlistCoverError } = await uploadFile(
+        const { error: playlistCoverError, data: playlistCoverData } = await uploadFile(
           'playlist-covers',
           `${user.id}/${formData.title}`,
           formData.cover
@@ -107,11 +109,9 @@ export default function PlaylistInfosModal() {
           console.error('Error uploading playlist cover : ', playlistCoverError);
           return;
         }
-        const playlistCoverUrl = getFileUrl(
-          'playlist-covers',
-          `${user.id}/${formData.title}.${formData.cover.name.split('.').pop()}`
-        );
+        const playlistCoverUrl = getFileUrl('playlist-covers', playlistCoverData.path);
         modifiedFields.cover = playlistCoverUrl;
+        cover_path = playlistCoverData.path;
       } else {
         // if data.cover is null, user might want to remove the current cover from their playlist.
         // so we check if this playlist has any cover in storage
@@ -142,6 +142,7 @@ export default function PlaylistInfosModal() {
             console.error('Error deleting file : ', deleteError);
           } else {
             modifiedFields.cover = null;
+            cover_path = '';
           }
         }
       }
@@ -149,28 +150,31 @@ export default function PlaylistInfosModal() {
 
     // handle creating a playlist logic in database
     if (actionType === 'create_playlist') {
-      createNewPlaylistMutation.mutate(modifiedFields, {
-        onSuccess: onClose,
-        onError: (err) => {
-          if (err.code === '23505') {
-            setError('title', {
-              message: 'Playlist with this title already exists.',
-            });
-          } else {
-            dispatch(
-              showNewSnackbar({
-                message: 'Unexpected error occured while creating playlist. Try again.',
-                type: 'error',
-                hideDuration: 4000,
-              })
-            );
-            console.error('Error creating playlist in database : ', err);
-          }
-        },
-      });
+      createNewPlaylistMutation.mutate(
+        { ...modifiedFields, cover_path },
+        {
+          onSuccess: onClose,
+          onError: (err) => {
+            if (err.code === '23505') {
+              setError('title', {
+                message: 'Playlist with this title already exists.',
+              });
+            } else {
+              dispatch(
+                showNewSnackbar({
+                  message: 'Unexpected error occured while creating playlist. Try again.',
+                  type: 'error',
+                  hideDuration: 4000,
+                })
+              );
+              console.error('Error creating playlist in database : ', err);
+            }
+          },
+        }
+      );
     } else {
       // handle updating playlist logic in database
-      updatePlaylistMutation.mutate(modifiedFields, { onSuccess: onClose });
+      updatePlaylistMutation.mutate({ ...modifiedFields, cover_path }, { onSuccess: onClose });
     }
   };
   const onClose = () => {
