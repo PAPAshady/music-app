@@ -29,12 +29,12 @@ export const getSongById = async (songId) => {
 
 export const getSongsByAlbumId = async (albumId) => {
   const { data, error } = await supabase
-    .from('songs_extended')
-    .select('*')
+    .from('album_songs')
+    .select('songs(*)')
     .eq(`album_id`, albumId)
-    .order('track_number', { ascending: true });
+    .order('track_number', { referencedTable: 'songs', ascending: true });
   if (error) throw error;
-  return data;
+  return data.map((data) => data.songs);
 };
 
 export const getSongsByPlaylistId = async (playlistId) => {
@@ -165,4 +165,3 @@ export const getGeneratedQueuelistBySongData = async (song) => {
 
   return [song, ...sameArtist.data, ...sameGenre.data];
 };
-
