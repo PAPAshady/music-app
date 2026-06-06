@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 import supabase from '../../../services/supabaseClient';
 import { setUser } from '../../../redux/slices/authSlice';
+import { getUser } from '../../../services/users';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -47,6 +48,18 @@ export default function SignIn() {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ ...userInfo });
       if (data.user) {
+        const user = await getUser(data.user.id);
+        const isBanned = user.status === 'banned';
+
+        if (isBanned) {
+          await supabase.auth.signOut();
+          setError('root', {
+            message:
+              'You are banned from this platform. Contact zamani.nima18@gmail.com for more info.',
+          });
+          return;
+        }
+
         dispatch(setUser(data.user));
         dispatch(showNewSnackbar({ message: 'Welcome back to VioTune!', type: 'success' }));
         navigate('/');
@@ -73,7 +86,7 @@ export default function SignIn() {
         <p className="text-lg">Welcome Back To VioTune</p>
       </div>
       <form action="#" className="mb-10 flex flex-col gap-6" onSubmit={handleSubmit(submitHandler)}>
-        <p className="text-red mb-2 text-lg font-semibold">{errors.root?.message}</p>
+        <p className="text-red my-4 text-lg font-semibold">{errors.root?.message}</p>
         <div className="flex flex-col gap-10">
           {formInputs.map((input) => (
             <TextField
