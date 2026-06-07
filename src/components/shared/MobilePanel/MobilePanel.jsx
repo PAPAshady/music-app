@@ -6,7 +6,7 @@ import artistDefaultImage from '../../../assets/images/Avatar/no-avatar.png';
 import { ArrowLeft } from 'iconsax-reactjs';
 import Player from '../Player/Player';
 import { useDispatch, useSelector } from 'react-redux';
-import { closePanel, closeMobilePanel } from '../../../redux/slices/mobilePanelSlice';
+import { closeMobilePanel } from '../../../redux/slices/mobilePanelSlice';
 import MobileTracklistPanel from '../../MobilePanels/MobileTracklistPanel/MobileTracklistPanel';
 import MobileArtistPanel from '../../MobilePanels/MobileArtistPanel/MobileArtistPanel';
 import favoritesCover from '../../../assets/images/covers/favorites-cover.png';
@@ -47,17 +47,6 @@ export default function MobilePanel() {
   const dispatch = useDispatch();
   const [isTopbarVisible, setIsTopbarVisible] = useState(false);
 
-  // if user clicks on back button of their device, mobilePanel will close
-  useEffect(() => {
-    const handlePopState = () => {
-      if (isMobilePanelOpen) {
-        dispatch(closePanel());
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [dispatch, isMobilePanelOpen]);
-
   // remove the main scrolbar because it causes ui gliches in mobile devices
   useEffect(() => {
     if (isMobilePanelOpen) {
@@ -97,7 +86,7 @@ export default function MobilePanel() {
         <div
           className={`fixed top-0 left-0 z-2 flex w-full items-center justify-between border-b-2 px-2 py-3 transition-all duration-300 ${isTopbarVisible ? 'border-neutral-700 bg-neutral-800' : 'border-transparent'}`}
         >
-          <div className="flex items-center gap-6 sm:gap-6 px-3 py-1">
+          <div className="flex items-center gap-6 px-3 py-1 sm:gap-6">
             <button className="size-9" onClick={() => dispatch(closeMobilePanel())}>
               <ArrowLeft size="100%" />
             </button>
@@ -109,7 +98,7 @@ export default function MobilePanel() {
               </div>
             ) : (
               <p
-                className={`transition-opacity duration-300  text-xl ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
+                className={`text-xl transition-opacity duration-300 ${isTopbarVisible ? 'opacity-100' : 'opacity-0'}`}
               >
                 {title}
               </p>

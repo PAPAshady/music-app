@@ -1,11 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { setQueries } from '../redux/slices/queryStateSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigationType } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getSongByIdQueryOptions } from '../queries/songs';
-import { setCurrentQueuelist, setSelectedSong } from '../redux/slices/playContextSlice';
+import {
+  setCurrentQueuelist,
+  setSelectedSong,
+  resetPlayContext,
+} from '../redux/slices/playContextSlice';
 import { pause, setCurrentSongIndex } from '../redux/slices/musicPlayerSlice';
+import { closePanel as closePlayerPanel } from '../redux/slices/playerPanelSlice';
+import { openMobilePanel, closeMobilePanel } from '../redux/slices/mobilePanelSlice';
 
 // Syncs the Redux query state with the current URL search parameters.
 // Whenever the URL changes (e.g. ?type=album&id=123), this hook extracts
@@ -21,26 +27,33 @@ export default function useUrlListener() {
     ...getSongByIdQueryOptions(mediaId),
     enabled: mediaType === 'track' && !!mediaId,
   });
-  const locationKey = useRef(location.key);
+  const [locationKey] = useState(location.key);
   // Determines whether we should automatically start playback when the user navigates
   // through browser history (Back/Forward).
   // In this case, the previously visited track should resume playing automatically.
   const shouldAutoplayTrackOnHistoryNavigation =
-    navigationType === 'POP' &&
-    mediaType === 'track' &&
-    track &&
-    location.key !== locationKey.current; // prevent autoplay on initial page load
+    // prevent autoplay on initial page load
+    navigationType === 'POP' && mediaType === 'track' && track && location.key !== locationKey;
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const queries = Object.fromEntries(params.entries());
     dispatch(setQueries(queries));
 
+    if (queries.type !== 'track') dispatch(closePlayerPanel());
+
+    if (queries.type === 'album' || queries.type === 'playlist') {
+      dispatch(openMobilePanel(queries.type));
+      return;
+    } else {
+      dispatch(closeMobilePanel());
+    }
+
     // stop the playback if there is no search params
     if (!location.search) {
       dispatch(pause());
-      dispatch(setCurrentQueuelist([]));
-      dispatch(setSelectedSong({}));
+      dispatch(resetPlayContext());
+      dispatch(closePlayerPanel());
       return;
     }
 
