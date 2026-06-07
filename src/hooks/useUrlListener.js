@@ -40,13 +40,11 @@ export default function useUrlListener() {
     const queries = Object.fromEntries(params.entries());
     dispatch(setQueries(queries));
 
-    if (queries.type !== 'track') dispatch(closePlayerPanel());
-
-    if (queries.type === 'album' || queries.type === 'playlist') {
-      dispatch(openMobilePanel(queries.type));
-      return;
-    } else {
+    if (queries.type === 'track') {
       dispatch(closeMobilePanel());
+    } else {
+      dispatch(closePlayerPanel());
+      dispatch(openMobilePanel(queries.type));
     }
 
     // stop the playback if there is no search params
@@ -54,6 +52,7 @@ export default function useUrlListener() {
       dispatch(pause());
       dispatch(resetPlayContext());
       dispatch(closePlayerPanel());
+      dispatch(closeMobilePanel());
       return;
     }
 
