@@ -55,7 +55,7 @@ export default function PlayerPanel() {
 
   return createPortal(
     <div
-      className={`fixed inset-0 transition-all duration-300 will-change-transform ${isOpen ? 'z-10 translate-y-0 opacity-100' : 'z-[-1] translate-y-full opacity-0'} ${isMobile && 'overflow-y-auto'}`}
+      className={`fixed inset-0 transition-all duration-300 will-change-transform ${isOpen ? 'z-12 translate-y-0 opacity-100' : 'z-[-1] translate-y-full opacity-0'} ${isMobile && 'overflow-y-auto'}`}
     >
       <div
         className={`relative min-h-dvh overflow-y-auto bg-cover bg-center bg-no-repeat ${isMobile && 'flex'}`}
