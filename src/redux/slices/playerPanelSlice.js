@@ -11,7 +11,6 @@ const playerPanelSlice = createSlice({
       state.isOpen = false;
     },
     togglePanel: (state) => {
-      console.log(33);
       state.isOpen = !state.isOpen;
     },
   },
