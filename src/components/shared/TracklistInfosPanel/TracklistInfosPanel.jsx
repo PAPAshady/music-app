@@ -56,7 +56,6 @@ const TracklistInfosPanel = memo(() => {
     transition: { duration: 0.2 },
   };
 
-  
   if (showErrorPanel) return <ErrorPanel error={error} />;
 
   return (
@@ -84,11 +83,17 @@ const TracklistInfosPanel = memo(() => {
                   {tracklistType === 'favorites' ? 'Your Favorites' : selectedTracklist.title}
                 </p>
               )}
-              {tracklistType !== 'favorites' && (
-                <TracklistInfosPanelDropDownMenu
-                  tracklist={selectedTracklist}
-                  tracklistType={tracklistType}
-                />
+              {isSelectedTracklistPending ? (
+                <div className="relative size-8 overflow-hidden rounded-md bg-gray-600/60">
+                  <ShimmerOverlay />
+                </div>
+              ) : (
+                tracklistType !== 'favorites' && (
+                  <TracklistInfosPanelDropDownMenu
+                    tracklist={selectedTracklist}
+                    tracklistType={tracklistType}
+                  />
+                )
               )}
             </div>
             <TracklistInfosPanelCover
