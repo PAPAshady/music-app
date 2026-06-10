@@ -17,20 +17,15 @@ import { closePanel as closePlayerPanel } from '../../../redux/slices/playerPane
 import DesktopPlayerPanel from '../../DesktopPlayerPanel/DesktopPlayerPanel';
 import MobilePlayerPanel from '../../MobilePlayerPanel/MobilePlayerPanel';
 import useMediaQuery from '../../../hooks/useMediaQuery';
-import { getSongByIdQueryOptions } from '../../../queries/songs';
 
 export default function PlayerPanel() {
-  const songId = useSelector((state) => state.queryState.id);
+  const currentMusic = useSelector((state) => state.musicPlayer.currentMusic);
   const type = useSelector((state) => state.queryState.type);
   const isOpen = useSelector((state) => state.playerPanel.isOpen);
   const isMobile = useMediaQuery('(max-width: 1023px)');
   const dispatch = useDispatch();
   const playingTracklist = useSelector((state) => state.playContext.currentCollection);
   const selectedSong = useSelector((state) => state.playContext.selectedSong);
-  const { data: song } = useQuery({
-    ...getSongByIdQueryOptions(songId),
-    enabled: type === 'song' && !!songId,
-  });
 
   const { data, isPending } = useQuery(
     type === 'track'
@@ -40,7 +35,7 @@ export default function PlayerPanel() {
         : type === 'album'
           ? getSongsByAlbumIdQueryOptions(playingTracklist.id)
           : type === 'artist'
-            ? getPopularSongsByArtistIdQueryOptions(song?.artist_id)
+            ? getPopularSongsByArtistIdQueryOptions(currentMusic?.artist_id)
             : getFavoriteSongsQueryOptions()
   );
 
