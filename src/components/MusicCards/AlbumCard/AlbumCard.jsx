@@ -88,7 +88,7 @@ const AlbumCard = memo(({ size, album, classNames }) => {
               <p className="flex items-center gap-1">
                 <Music size={18} className="text-primary-50" />
                 <span className="text-xs text-white">
-                  {totaltracks ? `${totaltracks} Track${totaltracks > 1 && 's'}` : 'No tracks'}
+                  {totaltracks ? `${totaltracks} Track${totaltracks > 1 ? 's' : ''}` : 'No tracks'}
                 </span>
               </p>
               <div className="text-primary-50 flex items-center gap-2">
