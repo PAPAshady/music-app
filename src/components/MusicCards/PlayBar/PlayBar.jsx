@@ -81,23 +81,23 @@ const PlayBar = memo(
     const activeStateStyles = `${isCurrentSongPlaying ? `border-primary-100 shadow-[1px_1px_5px_rgba(216,223,245,.4),-1px_-1px_6px_rgba(216,223,245,.4)] ${size === 'sm' ? '!inset-shadow-[1px_1px_10px] !inset-shadow-[#d8dff5]/80 ' : '!inset-shadow-[#d8dff5]/45 '}` : 'border-primary-300'}`;
 
     const musicTitleSizes = {
-      lg: 'text-base lg:text-xl',
+      lg: 'text-base lg:text-lg',
       md: 'paragraph-1',
       sm: 'text-sm',
     };
 
     const albumNameSizes = {
-      lg: 'text-base lg:max-w-[250px] lg:w-[250px] lg:truncate',
+      lg: 'text-sm lg:max-w-[250px] lg:w-[250px] lg:truncate',
       md: 'text-sm',
       sm: 'hidden',
     };
 
     return (
       <div
-        className={`bg-primary-800/60 hover:inset-shadow-secondary-400 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-71.25 items-center justify-between gap-4 rounded-lg border p-1.5 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${activeStateStyles} ${size === 'lg' ? 'lg:max-w-222.5' : 'lg:max-w-127.5'} ${classNames}`}
+        className={`bg-primary-800/60 hover:inset-shadow-secondary-400 group hover:bg-primary-700/40 lg:hover:bg-primary-800 flex max-w-71.25 items-center justify-between gap-4 overflow-hidden rounded-lg border p-1.5 inset-shadow-transparent transition-all duration-300 lg:inset-shadow-[2px_2px_15px] ${activeStateStyles} ${size === 'lg' ? 'lg:max-w-222.5' : 'lg:max-w-127.5'} ${classNames}`}
       >
         <div
-          className={`flex grow gap-2 overflow-hidden ${size === 'lg' ? 'lg:w-67.5 lg:max-w-67.5 lg:truncate' : ''}`}
+          className={`flex w-[70%] grow gap-2 overflow-hidden min-[420px]:w-[60%] min-[480px]:w-[65%] ${size === 'lg' ? 'lg:w-67.5 lg:max-w-67.5 lg:truncate' : ''}`}
         >
           <button
             className="relative size-14 min-h-14 min-w-14 overflow-hidden rounded-md"
@@ -117,7 +117,7 @@ const PlayBar = memo(
               </span>
             </span>
           </button>
-          <div className="flex flex-col overflow-hidden">
+          <div className="flex grow flex-col overflow-hidden">
             <button
               className={`text-white-50 grow truncate text-start ${musicTitleSizes[size]}`}
               onClick={() => onPlay(song, songIndex)}
@@ -144,7 +144,7 @@ const PlayBar = memo(
               </span>
             </>
           )}
-          <div className={`flex items-center gap-2 ${size !== 'sm' ? 'lg:gap-4' : ''}`}>
+          <div className={`flex shrink-0 items-center gap-2 ${size !== 'sm' ? 'lg:gap-4' : ''}`}>
             <div className={` ${size === 'md' ? 'block lg:hidden' : 'block'}`}>
               {isActionButtonPending ? (
                 <LoadingSpinner />
