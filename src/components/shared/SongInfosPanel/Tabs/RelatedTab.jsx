@@ -27,6 +27,9 @@ function RelatedTab({ song, artist }) {
   const { data: albums, isPending: isAlbumsPending } = useQuery(
     getAlbumsByArtistIdQueryOptions(song?.artist_id, { limit: 3 })
   );
+
+  const slidesPerView = relatedSongs?.length <= 3 ? 1 : 1.1;
+
   return (
     <AnimatePresence mode="wait">
       <MotionDiv
@@ -48,7 +51,7 @@ function RelatedTab({ song, artist }) {
           <Swiper
             modules={[Pagination]}
             pagination={{ clickable: true }}
-            slidesPerView={1.15}
+            slidesPerView={slidesPerView}
             spaceBetween={8}
           >
             {isRelatedSongsPending
