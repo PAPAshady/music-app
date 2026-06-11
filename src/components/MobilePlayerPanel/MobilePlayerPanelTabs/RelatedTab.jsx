@@ -30,10 +30,12 @@ function RelatedTab({ onClose }) {
   );
   const { playSingleSong } = usePlayBar();
 
+  const relatedSongSlidesPerView = relatedSongs?.length <= 4 ? 1 : 1.15;
+
   return (
     <>
       <h2 className="mb-3 text-xl font-bold">You might also like</h2>
-      <Swiper spaceBetween={16} slidesPerView={1.15}>
+      <Swiper spaceBetween={16} slidesPerView={relatedSongSlidesPerView}>
         {isRelatedSongsPending
           ? chunkArray(Array(12).fill(), 4).map((skeletonCardsArray, index) => (
               <SwiperSlide key={index}>
