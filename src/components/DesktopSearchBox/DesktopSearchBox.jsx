@@ -66,7 +66,7 @@ function DesktopSearchBox() {
                   </p>
                 </div>
               ) : (
-                <div className="flex flex-col gap-4 py-6">
+                <div className="flex flex-col py-6">
                   {(isSongsPending || !!songs.length) && (
                     <div>
                       <SliderTitle icon={<Musicnote />} title="Tracks" />
