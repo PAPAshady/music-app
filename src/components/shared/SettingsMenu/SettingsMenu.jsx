@@ -5,6 +5,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { UserEdit, Chart, Headphone, Messages, Login } from 'iconsax-reactjs';
 import { useSelector, useDispatch } from 'react-redux';
 import { signOut } from '../../../redux/slices/authSlice';
+import { showNewSnackbar } from '../../../redux/slices/snackbarSlice';
 
 export default function SettingsMenu({ isVisible }) {
   const dispatch = useDispatch();
@@ -20,9 +21,11 @@ export default function SettingsMenu({ isVisible }) {
 
   const signOutHandler = async () => {
     try {
+      dispatch(showNewSnackbar({ message: 'Signing out...', type: 'success' }));
       dispatch(signOut());
     } catch (err) {
       console.error('An error occured while signing out user. => ', err);
+      dispatch(showNewSnackbar({ message: 'Failed to sign out', type: 'error' }));
     }
   };
 
