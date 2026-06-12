@@ -124,7 +124,9 @@ function PlaylistInfosModalSongsList({ tracklist, tracklistSongs }) {
           />
         ))}
       </div>
-      <SearchInput {...searchInput} />
+      <div className="px-1">
+        <SearchInput {...searchInput} />
+      </div>
       <div className="text-secondary-50">
         {!!numberOfSongsToRender && <p className="mb-4 font-semibold">{songsListTitle}</p>}
 
