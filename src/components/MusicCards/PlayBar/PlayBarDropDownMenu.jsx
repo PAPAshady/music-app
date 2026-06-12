@@ -25,7 +25,7 @@ const PlayBarDropDownMenu = forwardRef((_, ref) => {
 
   return createPortal(
     <MotionDiv
-      className={`text-secondary-50 border-secondary-300 absolute z-5 flex w-62.5 flex-col rounded-md border bg-linear-to-b from-slate-700 to-slate-900 p-2`}
+      className={`text-secondary-50 border-secondary-300 absolute z-20 flex w-62.5 flex-col rounded-md border bg-linear-to-b from-slate-700 to-slate-900 p-2`}
       style={{ top: `${position.top}px`, left: `${position.left}px` }}
       ref={ref}
       variants={{
