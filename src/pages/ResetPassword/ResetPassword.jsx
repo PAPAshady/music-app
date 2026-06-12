@@ -54,8 +54,14 @@ export default function ResetPassword() {
         setTimeout(() => navigate('/'), 2000);
       }
     } catch (err) {
+      if (err.code === 'same_password') {
+        setError('root', { message: err.message });
+        return;
+      }
       console.error('Error resetting password: ', err);
-      setError('root', { message: 'An unexpected error occurred. Please try again.' });
+      setError('root', {
+        message: err.message || 'An unexpected error occurred. Please try again.',
+      });
     }
   };
 
