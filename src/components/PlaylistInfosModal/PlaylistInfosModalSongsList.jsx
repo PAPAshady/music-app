@@ -29,12 +29,14 @@ function PlaylistInfosModalSongsList({ tracklist, tracklistSongs }) {
   const { mutateAsync: removeSongFromPlaylist } = useMutation(
     removeSongFromPrivatePlaylistMutationOptions(tracklist?.id)
   );
-  const { data: trendingSongs, isLoading: isTrendingSongsLoading } = useQuery(
-    getTrendingSongsQueryOptions()
-  );
-  const { data: searchedSongs, isLoading: isSearchedSongsLoading } = useQuery(
-    getSongsByKeywordQueryOptions(debouncedSearchValue)
-  );
+  const { data: trendingSongs, isLoading: isTrendingSongsLoading } = useQuery({
+    ...getTrendingSongsQueryOptions(),
+    enabled: selectedTab === 'add' && !debouncedSearchValue, // only fetch trending songs if user is on add tab and has no search value (because if search value exists, we will show searched songs instead of trending songs)
+  });
+  const { data: searchedSongs, isLoading: isSearchedSongsLoading } = useQuery({
+    ...getSongsByKeywordQueryOptions(debouncedSearchValue),
+    enabled: selectedTab === 'add' && !!debouncedSearchValue, // only fetch searched songs if there is a search value and user is on add tab (because if user is on view tab, we will show searched songs from the playlist instead of fetching them)
+  });
   const [pendingSongId, setPendingSongId] = useState(null); // tracks which song is in loading state (while adding or removing song from playlist)
   // Build a list of suggested songs by excluding any songs that already exist in the selected playlist
   const playlistSongIds = new Set((tracklistSongs ?? []).map((song) => song.id));
