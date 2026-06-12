@@ -17,9 +17,11 @@ import PropTypes from 'prop-types';
 import AddPlaylistButton from '../../components/AddPlaylistButton/AddPlaylistButton';
 import PlayBarSlider from '../../components/Sliders/PlayBarSlider/PlayBarSlider';
 import usePlayBar from '../../hooks/usePlayBar';
+import { useSelector } from 'react-redux';
 
 export default function PlayLists() {
-  const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions());
+  const userId = useSelector((state) => state.auth.user?.id);
+  const userPlaylists = useQuery(getAllPrivatePlaylistsQueryOptions(userId));
   const { data: subscribedPlaylists, isPending: isSusbscribedPlaylistsPending } = useQuery(
     getUserSubscribedPlaylistsQueryOptions()
   );

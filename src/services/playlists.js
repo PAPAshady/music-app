@@ -19,11 +19,12 @@ export const getAllPublicPlaylists = async () => {
   return data;
 };
 
-export const getAllPrivatePlaylists = async () => {
+export const getAllPrivatePlaylists = async (userId) => {
   const { data, error } = await supabase
     .from('playlists_extended')
     .select('*')
     .eq('is_public', false)
+    .eq('user_id', userId)
     .order('title', { ascending: true });
   if (error) throw error;
   return data;

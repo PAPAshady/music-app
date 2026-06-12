@@ -30,13 +30,15 @@ import {
 } from '../../queries/songs';
 import { getUserTopGenresQueryOptions } from '../../queries/genres';
 import usePlayBar from '../../hooks/usePlayBar';
+import { useSelector } from 'react-redux';
 
 export default function Home() {
+  const userId = useSelector((state) => state.auth.user?.id);
   const { data: trendingArtists, isPending: isTrendingArtistsPending } = useQuery(
     getTrendingArtistsQueryOptions()
   );
   const { data: userPlaylists, isPending: isUserPlaylistsPending } = useQuery(
-    getAllPrivatePlaylistsQueryOptions()
+    getAllPrivatePlaylistsQueryOptions(userId)
   );
   const { data: recommendedPlaylists, isPending: isRecommendedPlaylistsPending } = useQuery(
     getRecommendedPlaylistsQueryOptions()

@@ -15,7 +15,8 @@ const MotionDiv = motion.div;
 const PlayBarDropDownMenu = forwardRef((_, ref) => {
   const dispatch = useDispatch();
   const position = useSelector((state) => state.addSongToPlaylist.position);
-  const { data, isPending } = useQuery(getAllPrivatePlaylistsQueryOptions());
+  const userId = useSelector((state) => state.auth.user?.id);
+  const { data, isPending } = useQuery(getAllPrivatePlaylistsQueryOptions(userId));
   const searchInput = useInput();
   const playlists = data?.filter((playlist) =>
     playlist.title.toLowerCase().includes(searchInput.value.trim().toLowerCase())

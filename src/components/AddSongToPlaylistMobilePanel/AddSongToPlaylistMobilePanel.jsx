@@ -12,8 +12,9 @@ import { openModal as openPlaylistInfosModal } from '../../redux/slices/playlist
 function AddSongToPlaylistMobilePanel() {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => state.addSongToPlaylist.isMobilePanelOpen);
+  const userId = useSelector((state) => state.auth.user?.id);
   const searchInput = useInput();
-  const { data, isPending } = useQuery(getAllPrivatePlaylistsQueryOptions());
+  const { data, isPending } = useQuery(getAllPrivatePlaylistsQueryOptions(userId));
   const playlists = data?.filter((playlist) =>
     playlist.title.toLowerCase().includes(searchInput.value.toLowerCase())
   );
