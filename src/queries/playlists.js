@@ -59,13 +59,14 @@ export const getAllPublicPlaylistsQueryOptions = () => {
   });
 };
 
-export const getAllPrivatePlaylistsQueryOptions = () => {
+export const getAllPrivatePlaylistsQueryOptions = (userId) => {
   return queryOptions({
-    queryKey: ['playlists', { is_public: false }],
-    queryFn: getAllPrivatePlaylists,
+    queryKey: ['playlists', { is_public: false, userId }],
+    queryFn: () => getAllPrivatePlaylists(userId),
     staleTime: Infinity,
     retry: true,
     retryDelay: 5000,
+    enabled: !!userId,
   });
 };
 
