@@ -30,6 +30,7 @@ function usePlayBar(artistId) {
       dispatch(setCurrentSongIndex(0));
       dispatch(openPlayerPanel());
       dispatch(setSelectedSong(song));
+      dispatch(setCurrentCollection({}));
       navigate(`${pathname}?type=track&id=${song.id}`);
     },
     [dispatch, navigate, pathname]

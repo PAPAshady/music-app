@@ -70,7 +70,7 @@ const AlbumCard = memo(({ size, album, classNames }) => {
           </div>
         </Link>
         <div className="flex grow items-center justify-between overflow-hidden px-3.5 lg:block">
-          <div className="overflow-hidden text-start">
+          <div className="truncate text-start">
             <Link
               className={`text-white-50 cursor-pointer truncate text-base ${size === 'lg' ? 'lg:text-lg' : ''}`}
               title={title}
