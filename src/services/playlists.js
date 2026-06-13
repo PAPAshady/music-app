@@ -99,7 +99,11 @@ export const getFavoritePlaylists = async () => {
 };
 
 export const getTrendingPlaylists = async () => {
-  const { data, error } = await supabase.from('most_played_playlists').select('*').limit(10);
+  const { data, error } = await supabase
+    .from('most_played_playlists')
+    .select('*')
+    .eq('is_public', true)
+    .limit(10);
   if (error) throw error;
   return data;
 };

@@ -1,11 +1,12 @@
 import sectionBg from '../../../assets/images/backgrounds/section-bg-1.jpg';
 import PlaylistCard from '../../MusicCards/PlaylistCard/PlaylistCard';
+import PlaylistCardSkeleton from '../../MusicCards/PlaylistCard/PlaylistCardSkeleton';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import PropTypes from 'prop-types';
 import 'swiper/css';
 
-export default function DiscoverPlaylistsSlider({ playlists }) {
+export default function DiscoverPlaylistsSlider({ playlists, isPending }) {
   return (
     <div
       className="mx-auto flex w-full max-w-[95dvw] flex-col overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat md:mx-auto lg:w-[93%] lg:max-w-[calc(95dvw-126px)] xl:w-[calc(95dvw-428px)] xl:max-w-235"
@@ -46,14 +47,25 @@ export default function DiscoverPlaylistsSlider({ playlists }) {
               1024: { slidesPerView: 4.5 },
             }}
           >
-            {playlists.map((playlist) => (
-              <SwiperSlide
-                key={playlist.id}
-                className="p-px min-[480px]:last-of-type:pe-4 sm:pe-px"
-              >
-                <PlaylistCard {...playlist} />
-              </SwiperSlide>
-            ))}
+            {isPending
+              ? Array(12)
+                  .fill()
+                  .map((_, index) => (
+                    <SwiperSlide
+                      key={index}
+                      className="p-px min-[480px]:last-of-type:pe-4 sm:pe-px"
+                    >
+                      <PlaylistCardSkeleton />
+                    </SwiperSlide>
+                  ))
+              : playlists?.map((playlist) => (
+                  <SwiperSlide
+                    key={playlist.id}
+                    className="p-px min-[480px]:last-of-type:pe-4 sm:pe-px"
+                  >
+                    <PlaylistCard {...playlist} />
+                  </SwiperSlide>
+                ))}
           </Swiper>
         </div>
       </div>
