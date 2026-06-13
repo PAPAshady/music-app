@@ -17,7 +17,7 @@ function SearchBoxPlaylistsSlider({ playlists, isPending }) {
             ))
         : playlists.map((playlist) => (
             <SwiperSlide key={playlist.id} className="w-auto! pb-11">
-              <PlaylistCard {...playlist} />
+              <PlaylistCard {...playlist} classNames="max-w-37!" />
             </SwiperSlide>
           ))}
     </Swiper>
