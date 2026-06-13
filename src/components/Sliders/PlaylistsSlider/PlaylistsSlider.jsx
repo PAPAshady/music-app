@@ -30,11 +30,14 @@ export default function PlaylistsSlider({
   return (
     <div className="mx-auto w-[95%] max-w-235">
       <Swiper
-        slidesPerView={1.5}
+        slidesPerView={1.8}
         spaceBetween={24}
         modules={[FreeMode]}
         freeMode
         breakpoints={{
+          380: {
+            slidesPerView: 2,
+          },
           480: {
             slidesPerView: 2.5,
           },
@@ -60,10 +63,7 @@ export default function PlaylistsSlider({
               ))
           : playlists &&
             playlists.slice(0, numberOfPlaylists).map((playlist) => (
-              <SwiperSlide
-                key={playlist.id}
-                className="xs:max-w-37.5 p-px min-[480px]:max-w-56.5 sm:max-w-47.5 md:max-w-51.25 lg:p-0 xl:max-w-47.5"
-              >
+              <SwiperSlide key={playlist.id} className="p-px lg:p-0">
                 {playlist.type === 'add-playlist-button' ? ( // render a button to add playlist. this button will be rendered only in Playlists.jsx page.
                   <AddPlaylistButton />
                 ) : playlist.type === 'favorite-songs' ? (
