@@ -27,7 +27,7 @@ function MobileSearchPanelPlaylistsList({ playlists, isPlaylistsPending }) {
               ))
           : playlists.map((playlist) => (
               <SwiperSlide key={playlist.id} className="w-auto! pb-11!">
-                <PlaylistCard {...playlist} classNames="h-48!" />
+                <PlaylistCard {...playlist} classNames="h-48! max-w-36.25!" />
               </SwiperSlide>
             ))}
       </Swiper>
