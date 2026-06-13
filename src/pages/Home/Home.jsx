@@ -5,7 +5,6 @@ import DiscoverPlaylistsSlider from '../../components/Sliders/DiscoverPlaylistsS
 import ArtistsSlider from '../../components/Sliders/ArtistsSlider/ArtistsSlider';
 import { getTrendingArtistsQueryOptions } from '../../queries/artists';
 import GenresSlider from '../../components/Sliders/GenresSlider/GenresSlider';
-import { playlists } from '../../data';
 import { useQuery } from '@tanstack/react-query';
 import {
   getTrendingAlbumsQueryOptions,
@@ -61,10 +60,9 @@ export default function Home() {
   const showRecommendedSongs = recommendedSongs?.length > 5;
   const showRecentSongs = recentSongs?.length > 5;
   const showRecentAlbums = !!recentAlbums?.length;
-  const { data: trendingPlaylists, isLoading: isTrendingPlaylistsPending } = useQuery({
-    ...getTrendingPlaylistsQueryOptions(),
-    enabled: !showUserPlaylists,
-  });
+  const { data: trendingPlaylists, isLoading: isTrendingPlaylistsPending } = useQuery(
+    getTrendingPlaylistsQueryOptions()
+  );
   const { data: trendingAlbums, isLoading: isTrendingAlbumsPending } = useQuery({
     ...getTrendingAlbumsQueryOptions(),
     enabled: !showRecommendedAlbums,
@@ -140,7 +138,10 @@ export default function Home() {
         <SectionHeader title="Popular artists" />
         <ArtistsSlider artists={trendingArtists} isLoading={isTrendingArtistsPending} />
       </div>
-      <DiscoverPlaylistsSlider playlists={playlists} />
+      <DiscoverPlaylistsSlider
+        playlists={trendingPlaylists}
+        isPending={isTrendingPlaylistsPending}
+      />
       {(showRecommendedPlaylistsByGenre || isRecommendedPlaylistsByGenrePending) && (
         <div>
           <SectionHeader

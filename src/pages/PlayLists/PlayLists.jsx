@@ -45,10 +45,6 @@ export default function PlayLists() {
     ...getPlaylistsByGenreQueryOptions('bd3083dc-dc17-4bf9-872e-016b40aa11e1'), // get pop playlists
     enabled: !showRecentPlaylists,
   });
-  const { data: hipHopPlaylists, isLoading: isHipHopPlaylistsLoading } = useQuery({
-    ...getPlaylistsByGenreQueryOptions('22cebc0a-01a0-4f3d-a6b9-45039290936c'), //  get hip-hop playlists
-    enabled: !showRecommendedPlaylists,
-  });
   const { playSingleSong } = usePlayBar();
   // Render the "Add New Playlist" button as the first item in the playlists list.
   const privatePlaylists = [{ id: 0, type: 'add-playlist-button' }, ...(userPlaylists.data ?? [])];
@@ -76,9 +72,9 @@ export default function PlayLists() {
     },
     {
       id: 4,
-      title: showRecommendedPlaylists ? 'Popular playlists based on you' : 'Best of hip-hop',
-      playlists: showRecommendedPlaylists ? reccomendedPlaylists : hipHopPlaylists,
-      isLoading: isReccomendedPlaylistsPending || isHipHopPlaylistsLoading,
+      title: showRecommendedPlaylists ? 'Popular playlists based on you' : 'Trending Playlists',
+      playlists: showRecommendedPlaylists ? reccomendedPlaylists : tredningPlaylists,
+      isLoading: isReccomendedPlaylistsPending || isTrendingPlaylistsLoading,
     },
   ];
 

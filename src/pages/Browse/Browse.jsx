@@ -9,18 +9,15 @@ import PlaylistCard from '../../components/MusicCards/PlaylistCard/PlaylistCard'
 import useMediaQuery from '../../hooks/useMediaQuery';
 import sectionBgImage from '../../assets/images/backgrounds/section-bg-2.jpg';
 import { useQuery } from '@tanstack/react-query';
-import { playlists } from '../../data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import { getTrendingSongsQueryOptions, getSongsByGenreIdQueryOptions } from '../../queries/songs';
-import {
-  getTrendingPlaylistsQueryOptions,
-  getPlaylistsByGenreQueryOptions,
-} from '../../queries/playlists';
+import { getTrendingPlaylistsQueryOptions } from '../../queries/playlists';
 import { getTrendingArtistsQueryOptions } from '../../queries/artists';
 import { getAllGenresQueryOptions } from '../../queries/genres';
 import { getTrendingAlbumsQueryOptions } from '../../queries/albums';
+import PlaylistCardSkeleton from '../../components/MusicCards/PlaylistCard/PlaylistCardSkeleton';
 
 export default function Browse() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -37,11 +34,8 @@ export default function Browse() {
   const { data: trendingAlbums, isPending: isTrendingAlbumsPending } = useQuery(
     getTrendingAlbumsQueryOptions()
   );
-  const { data: happySongs, isPending: isHappySongsPending } = useQuery(
-    getSongsByGenreIdQueryOptions('040f2756-1bae-41d7-a1c1-c4a29b054979', { limit: 15 }) // get songs with 'DNB' genre
-  );
-  const { data: workoutPlaylists, isPending: isWorkoutPlaylistsPending } = useQuery(
-    getPlaylistsByGenreQueryOptions('9e504c54-f571-4a53-bace-16f3e5bbdd33') // get playlists woth 'phonk' genere
+  const { data: hipHopSongs, isPending: isHipHopSongsPending } = useQuery(
+    getSongsByGenreIdQueryOptions('22cebc0a-01a0-4f3d-a6b9-45039290936c', { limit: 15 }) // get songs with 'hip-hop' genre
   );
 
   return (
@@ -54,7 +48,10 @@ export default function Browse() {
         <SectionTitle title="Trending Playlists" />
         <PlaylistsSlider playlists={trendingPlaylists} isLoading={isTrendingPlaylistsPending} />
       </div>
-      <DiscoverPlaylistsSlider playlists={playlists} />
+      <DiscoverPlaylistsSlider
+        playlists={trendingPlaylists}
+        isPending={isTrendingPlaylistsPending}
+      />
       <div>
         <SectionTitle title="People's Favorite Artists" />
         <ArtistsSlider artists={tredingArtists} isLoading={isTredingArtistsPending} />
@@ -74,7 +71,7 @@ export default function Browse() {
       </div>
       <div>
         <SectionTitle title="Let's Party" />
-        <TracksSlider songs={happySongs} isPending={isHappySongsPending} />
+        <TracksSlider songs={hipHopSongs} isPending={isHipHopSongsPending} />
       </div>
       <div
         className="relative overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat lg:rounded-xl"
@@ -124,18 +121,26 @@ export default function Browse() {
                 1024: { slidesPerView: 5, spaceBetween: 16 },
               }}
             >
-              {playlists.map((album) => (
-                <SwiperSlide key={album.id} className="overflow-hidden rounded-lg">
-                  <PlaylistCard {...album} />
-                </SwiperSlide>
-              ))}
+              {isTrendingPlaylistsPending
+                ? Array(12)
+                    .fill()
+                    .map((_, index) => (
+                      <SwiperSlide key={index} className="overflow-hidden rounded-lg">
+                        <PlaylistCardSkeleton />
+                      </SwiperSlide>
+                    ))
+                : trendingPlaylists?.map((album) => (
+                    <SwiperSlide key={album.id} className="overflow-hidden rounded-lg">
+                      <PlaylistCard {...album} />
+                    </SwiperSlide>
+                  ))}
             </Swiper>
           </div>
         </div>
       </div>
       <div>
         <SectionTitle title="Workout Playlists" />
-        <PlaylistsSlider playlists={workoutPlaylists} isLoading={isWorkoutPlaylistsPending} />
+        <PlaylistsSlider playlists={trendingPlaylists} isLoading={isTrendingPlaylistsPending} />
       </div>
       <div>
         <SectionTitle title="Best Albums Of 2025" />
