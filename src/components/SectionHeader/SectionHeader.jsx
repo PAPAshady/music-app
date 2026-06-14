@@ -9,9 +9,7 @@ export default function SectionTitle({ title, isPending }) {
       {isPending ? (
         <ShimmerOverlay />
       ) : (
-        <p className="text-secondary-50 text-lg font-medium lg:text-2xl lg:font-semibold">
-          {title}
-        </p>
+        <p className="text-secondary-50 text-xl font-bold lg:text-2xl">{title}</p>
       )}
     </div>
   );
