@@ -72,7 +72,7 @@ const routes = [
     path: '/auth',
     element: <AuthLayout />,
     children: [
-      { index: true, element: <Navigate to="/auth/sign-up" replace /> },
+      { index: true, element: <Navigate to="/auth/sign-in" replace /> },
       { path: 'sign-in', element: <SignIn /> },
       { path: 'forgot-pass', element: <ForgotPassword /> },
       { path: 'sign-up', element: <SignUp /> },
