@@ -40,7 +40,7 @@ export default function useUrlListener() {
     const queries = Object.fromEntries(params.entries());
     dispatch(setQueries(queries));
 
-    if (queries.type === 'track') {
+    if (queries.type === 'track' || queries.type === 'genre') {
       dispatch(closeMobilePanel());
     } else {
       dispatch(closePlayerPanel());
