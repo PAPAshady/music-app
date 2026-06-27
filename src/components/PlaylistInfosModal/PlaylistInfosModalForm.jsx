@@ -21,6 +21,7 @@ const PlaylistInfosModalForm = forwardRef(function (
   },
   ref
 ) {
+  'use no memo';
   const isMobileSmall = useMediaQuery('(min-width: 371px)');
 
   const validateFileInput = (e) => {
